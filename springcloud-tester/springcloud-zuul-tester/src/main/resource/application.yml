@@ -1,0 +1,72 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka/
+management:
+  security:
+    enabled: false
+zuul:
+  retryable: false    #重试机制（全局）
+  routes:
+    api-sina-url:
+      path: /sina/**
+      url: http://www.sina.com/
+    feign-consumer: 
+      sensitiveHeaders:   #默认情况下，敏感的头信息无法经过API网关进行传递，我们可以通过如下配置使之可以传递：
+      retryable: false    #重试机制
+    #api-test-url:
+      #path: /eureka-client/**
+      #serviceId: testeureka-client
+  add-host-header: true    #默认情况下，重定向的地址是具体的服务实例的地址，而不是API网关的跳转地址，这种做法会暴露真实的服务地址，所以需要在Zuul中配置，配置方式很简单 
+logging:
+  level:
+    org:
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
+    com:
+      longyou: 
+        springcloud: DEBUG
+    root: INFO
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 1024
+    response:
+      enabled: true
+spring:
+  datasource:
+    name: test
+    url: jdbc:mysql://127.0.0.1:3306/framework
+    username: root
+    password: 123456
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    filters: stat
+    maxActive: 20
+    initialSize: 1
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select 'x'
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+## 该配置节点为独立的节点，有很多同学容易将这个配置放在spring的节点下，导致配置无法被识别
+mybatis:
+  mapper-locations: classpath:mapping/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.longyou.springcloud.zuul.tester.model  # 注意：对应实体类的路径
+
+#pagehelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+

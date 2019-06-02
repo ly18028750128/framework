@@ -3,11 +3,16 @@ package com.longyou.springcloud.zuul.tester;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
+@Service
 public class AccessFilter extends ZuulFilter
 {
+    private final Logger logger = Logger.getLogger(AccessFilter.class);
     
     @Override
     public Object run()
@@ -16,9 +21,15 @@ public class AccessFilter extends ZuulFilter
         HttpServletRequest request = ctx.getRequest();
         HttpServletResponse response = ctx.getResponse();
         
+       
+        logger.debug("session id is "+request.getSession().getId());
+       
+        
         // TODO Auto-generated method stub
         return null;
     }
+    
+//    public 
     
     @Override
     public boolean shouldFilter()
