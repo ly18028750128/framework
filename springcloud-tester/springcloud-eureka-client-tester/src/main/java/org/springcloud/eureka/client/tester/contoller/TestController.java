@@ -19,6 +19,6 @@ public class TestController
     @RequestMapping(value="/redis/setValue/{key}",method=RequestMethod.POST)
     public Map<String,Object> setValue(@PathVariable("key") String key , @RequestBody Map<String,Object> value){
         redisUtil.set(key, value);
-        return value;
+        return (Map<String,Object>)redisUtil.get(key);
     }
 }
