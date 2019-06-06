@@ -5,3 +5,17 @@ eureka:
 management:
   security:
     enabled: false
+logging:
+  level:
+    org:
+      springcloud:
+        eureka:
+          client:
+            tester: DEBUG
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
+    com:
+      longyou:
+        springcloud: DEBUG
+    root: INFO

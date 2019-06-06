@@ -10,11 +10,6 @@ spring:
       label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
   profiles:
     active: dev
-  logging:
-    path: /logs/${spring.application.name}
-    file: ${spring.application.name}.log
-    level:
-      root: debug
   datasource:
     url: jdbc:mysql://localhost:3306/framework?useUnicode=true&charaterEncoding=utf-8
     username: root
