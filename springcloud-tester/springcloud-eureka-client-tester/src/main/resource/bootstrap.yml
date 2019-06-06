@@ -1,8 +1,6 @@
-server:
-  port: 8183
 spring:
   application:
-    group: 
+    group:
     name: ${spring.application.group:}eureka-client # 对应config-server所获取的配置文件的{application}
   cloud:
     config:
@@ -10,3 +8,16 @@ spring:
       name: eureka-client-tester
       profile: dev # 指定profile，对应config-server所获取的配置文件中的{profile}
       label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
+  profiles:
+    active: dev
+  logging:
+    path: /logs/${spring.application.name}
+    file: ${spring.application.name}.log
+    level:
+      root: debug
+  datasource:
+    url: jdbc:mysql://localhost:3306/framework?useUnicode=true&charaterEncoding=utf-8
+    username: root
+    password: x5
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
