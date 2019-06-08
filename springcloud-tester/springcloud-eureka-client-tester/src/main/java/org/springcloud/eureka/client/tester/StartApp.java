@@ -2,6 +2,7 @@ package org.springcloud.eureka.client.tester;
 
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -19,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class StartApp 
 {
     public static void main( String[] args ){
-        SpringApplicationBuilder builer = new SpringApplicationBuilder(StartApp.class);
-        builer.web(true).run(args);
+        SpringApplication.run(StartApp.class,args);
     }
 }

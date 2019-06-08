@@ -17,6 +17,6 @@ public class StartApp
     public static void main(String[] args)
     {
         SpringApplicationBuilder builer = new SpringApplicationBuilder(StartApp.class);
-        builer.web(true).run(args);
+        builer.logStartupInfo(true).run(args);
     }
 }

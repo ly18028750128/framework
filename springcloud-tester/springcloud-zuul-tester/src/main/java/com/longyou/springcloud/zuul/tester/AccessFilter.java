@@ -3,7 +3,8 @@ package com.longyou.springcloud.zuul.tester;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.netflix.zuul.ZuulFilter;
@@ -12,7 +13,7 @@ import com.netflix.zuul.context.RequestContext;
 @Service
 public class AccessFilter extends ZuulFilter
 {
-    private final Logger logger = Logger.getLogger(AccessFilter.class);
+    final Logger logger = LoggerFactory.getLogger(AccessFilter.class);
     
     @Override
     public Object run()
