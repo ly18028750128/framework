@@ -1,5 +1,6 @@
 package com.longyou.springcloud.zuul.tester;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.SpringCloudApplication;
@@ -16,7 +17,6 @@ public class StartApp
 {
     public static void main(String[] args)
     {
-        SpringApplicationBuilder builer = new SpringApplicationBuilder(StartApp.class);
-        builer.logStartupInfo(true).run(args);
+        SpringApplication.run(StartApp.class,args);
     }
 }

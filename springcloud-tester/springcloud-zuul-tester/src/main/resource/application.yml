@@ -37,6 +37,8 @@ feign:
     response:
       enabled: true
 spring:
+  profiles:
+    active: dev
   datasource:
     name: test
     url: jdbc:mysql://127.0.0.1:3306/framework
