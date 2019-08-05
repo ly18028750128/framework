@@ -3,6 +3,7 @@ package org.springcloud.eureka.client.tester.contoller;
 import java.util.Map;
 
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.utils.HttpServletUtil;
 import org.springcloud.eureka.client.tester.dao.IUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,6 +31,7 @@ public class TestController
     @RequestMapping(value="/user/get/{userName}",method=RequestMethod.GET)
     @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
     public Map<String,Object> getByUserName(@PathVariable("userName") String userName ){
+        HttpServletUtil.signle().getHttpServlet().getSession();
         return userDao.getUserByName(userName);
     }
 }

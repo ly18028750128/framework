@@ -21,7 +21,7 @@ public final class JdbcTypeConvertUtil {
         private static JdbcTypeConvertUtil instance = new JdbcTypeConvertUtil();
     }
 
-    public static JdbcTypeConvertUtil create() {
+    public static JdbcTypeConvertUtil signle() {
         return Handler.instance;
     }
 

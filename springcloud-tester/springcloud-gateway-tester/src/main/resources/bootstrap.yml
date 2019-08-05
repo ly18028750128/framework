@@ -1,0 +1,35 @@
+spring:
+  application:
+    group:
+    name: ${spring.application.group:}spring-gateway # 对应config-server所获取的配置文件的{application}
+  cloud:
+    config:
+      uri: http://localhost:8040/
+      name: spring-gateway
+      profile: dev # 指定profile，对应config-server所获取的配置文件中的{profile}
+      label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
+  profiles:
+    active: dev
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+    reactor.netty: DEBUG
+    org:
+      springcloud:
+        eureka:
+          client:
+            tester: DEBUG
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
+    com:
+      longyou:
+        springcloud: DEBUG
+    root: INFO
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka,http://localhost:8082/eureka
