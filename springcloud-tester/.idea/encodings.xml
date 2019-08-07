@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/cloud-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/com.longyou.commservice" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springcloud-config-tester" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springcloud-eureka-client-tester" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springcloud-eureka-tester" charset="UTF-8" />

@@ -137,5 +137,6 @@
         <module>springcloud-config-tester</module>
 <!--        <module>jdk8.tester</module>-->
         <module>springcloud-gateway-tester</module>
+        <module>com.longyou.commservice</module>
     </modules>
 </project>

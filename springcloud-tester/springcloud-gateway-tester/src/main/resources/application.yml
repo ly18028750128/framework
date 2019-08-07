@@ -12,7 +12,7 @@ spring:
             - Path=/framework/**
       discovery:
         locator:
-          enabled: true
+          enabled: true   #直接从配置中心获取应用并转发
 management:
   security:
     enabled: false
