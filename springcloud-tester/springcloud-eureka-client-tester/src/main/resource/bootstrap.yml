@@ -4,7 +4,7 @@ spring:
     name: ${spring.application.group:}eureka-client # 对应config-server所获取的配置文件的{application}
   security:
     user:
-      name: anxminise
+      name: admin
       password: 123456
   cloud:
     config:
@@ -14,6 +14,8 @@ spring:
       label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:mysql://127.0.0.1:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
     username: framework

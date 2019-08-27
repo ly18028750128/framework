@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameDataSpConfigMapper">
+  <resultMap id="BaseResultMap" type="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    <id column="data_code" jdbcType="VARCHAR" property="dataCode" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="data_source" jdbcType="VARCHAR" property="dataSource" />
+    <result column="database_type" jdbcType="VARCHAR" property="databaseType" />
+    <result column="data_dao_name" jdbcType="VARCHAR" property="dataDaoName" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    <result column="sql_content" jdbcType="LONGVARCHAR" property="sqlContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    data_code, id, data_source, database_type, data_dao_name
+  </sql>
+  <sql id="Blob_Column_List">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    sql_content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_frame_data_sp_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    delete from t_frame_data_sp_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_sp_config (data_code, id, data_source, 
+      database_type, data_dao_name, sql_content
+      )
+    values (#{dataCode,jdbcType=VARCHAR}, #{id,jdbcType=BIGINT}, #{dataSource,jdbcType=VARCHAR}, 
+      #{databaseType,jdbcType=VARCHAR}, #{dataDaoName,jdbcType=VARCHAR}, #{sqlContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_sp_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        data_code,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dataSource != null">
+        data_source,
+      </if>
+      <if test="databaseType != null">
+        database_type,
+      </if>
+      <if test="dataDaoName != null">
+        data_dao_name,
+      </if>
+      <if test="sqlContent != null">
+        sql_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        #{dataCode,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dataSource != null">
+        #{dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="databaseType != null">
+        #{databaseType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDaoName != null">
+        #{dataDaoName,jdbcType=VARCHAR},
+      </if>
+      <if test="sqlContent != null">
+        #{sqlContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_sp_config
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dataSource != null">
+        data_source = #{dataSource,jdbcType=VARCHAR},
+      </if>
+      <if test="databaseType != null">
+        database_type = #{databaseType,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDaoName != null">
+        data_dao_name = #{dataDaoName,jdbcType=VARCHAR},
+      </if>
+      <if test="sqlContent != null">
+        sql_content = #{sqlContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_sp_config
+    set id = #{id,jdbcType=BIGINT},
+      data_source = #{dataSource,jdbcType=VARCHAR},
+      database_type = #{databaseType,jdbcType=VARCHAR},
+      data_dao_name = #{dataDaoName,jdbcType=VARCHAR},
+      sql_content = #{sqlContent,jdbcType=LONGVARCHAR}
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longyou.comm.model.TFrameDataSpConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_sp_config
+    set id = #{id,jdbcType=BIGINT},
+      data_source = #{dataSource,jdbcType=VARCHAR},
+      database_type = #{databaseType,jdbcType=VARCHAR},
+      data_dao_name = #{dataDaoName,jdbcType=VARCHAR}
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKeyWithLock" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_frame_data_sp_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPageList"  resultMap="ResultMapWithBLOBs">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_frame_data_sp_config
+    where data_code = #{params.dataCode,jdbcType=VARCHAR}
+    for update
+  </select>
+</mapper>

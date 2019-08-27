@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameDataInterfaceParamsMapper">
+  <resultMap id="BaseResultMap" type="com.longyou.comm.model.TFrameDataInterfaceParams">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    <id column="data_code" jdbcType="VARCHAR" property="dataCode" />
+    <id column="seq" jdbcType="INTEGER" property="seq" />
+    <id column="param_name" jdbcType="VARCHAR" property="paramName" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+    <result column="param_desc" jdbcType="VARCHAR" property="paramDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    data_code, seq, param_name, id, param_type, param_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_data_interface_params
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+      and seq = #{seq,jdbcType=INTEGER}
+      and param_name = #{paramName,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    delete from t_frame_data_interface_params
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+      and seq = #{seq,jdbcType=INTEGER}
+      and param_name = #{paramName,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.longyou.comm.model.TFrameDataInterfaceParams">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_interface_params (data_code, seq, param_name, 
+      id, param_type, param_desc
+      )
+    values (#{dataCode,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{paramName,jdbcType=VARCHAR}, 
+      #{id,jdbcType=BIGINT}, #{paramType,jdbcType=VARCHAR}, #{paramDesc,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longyou.comm.model.TFrameDataInterfaceParams">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_interface_params
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        data_code,
+      </if>
+      <if test="seq != null">
+        seq,
+      </if>
+      <if test="paramName != null">
+        param_name,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="paramType != null">
+        param_type,
+      </if>
+      <if test="paramDesc != null">
+        param_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        #{dataCode,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null">
+        #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="paramName != null">
+        #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="paramType != null">
+        #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDesc != null">
+        #{paramDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longyou.comm.model.TFrameDataInterfaceParams">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_interface_params
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="paramType != null">
+        param_type = #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDesc != null">
+        param_desc = #{paramDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+      and seq = #{seq,jdbcType=INTEGER}
+      and param_name = #{paramName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longyou.comm.model.TFrameDataInterfaceParams">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_interface_params
+    set id = #{id,jdbcType=BIGINT},
+      param_type = #{paramType,jdbcType=VARCHAR},
+      param_desc = #{paramDesc,jdbcType=VARCHAR}
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+      and seq = #{seq,jdbcType=INTEGER}
+      and param_name = #{paramName,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKeyWithLock" parameterType="map" resultMap="BaseResultMap">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_data_interface_params
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+      and seq = #{seq,jdbcType=INTEGER}
+      and param_name = #{paramName,jdbcType=VARCHAR}
+    for update
+  </select>
+</mapper>

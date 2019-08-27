@@ -1,0 +1,16 @@
+#<!--myibatis log configure-->
+logging:
+  level:
+    org.hibernate: ERROR
+    org.springframework.web: DEBUG
+    com.longyou.common: DEBUG
+    com.apache.ibatis: DEBUG
+    java.sql.Connection: DEBUG
+    java.sql.PreparedStatement: DEBUG
+    java.sql.Statement: DEBUG
+    root: INFO
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params:
