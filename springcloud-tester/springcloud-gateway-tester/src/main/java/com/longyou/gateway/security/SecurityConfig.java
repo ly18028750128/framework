@@ -4,7 +4,9 @@ package com.longyou.gateway.security;
 import com.longyou.gateway.security.handler.AuthenticationFaillHandler;
 import com.longyou.gateway.security.handler.AuthenticationSuccessHandler;
 import com.longyou.gateway.security.handler.CustomHttpBasicServerAuthenticationEntryPoint;
+import com.longyou.gateway.util.MD5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -26,13 +28,10 @@ public class SecurityConfig {
 
 
     //security的鉴权排除列表
-    private static final String[] excludedAuthPages = {
-            "/auth/login",
-            "/auth/logout",
-            "/health",
-            "/api/socket/**",
-            "/user/info/authentication"
-    };
+    @Value("${spring.security.excludedAuthPages:}")
+    private   String[] excludedAuthPages ;
+
+
 
     @Bean
     SecurityWebFilterChain webFluxSecurityFilterChain(ServerHttpSecurity http) throws Exception {
@@ -48,8 +47,9 @@ public class SecurityConfig {
                 .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
                 .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
                 .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
-                .and() .csrf().disable()//必须支持跨域
-                .logout().disable()
+                .and().csrf().disable()//必须支持跨域
+                .logout()
+//                .disable()
         ;
 
         return http.build();
@@ -57,7 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return  NoOpPasswordEncoder.getInstance(); //默认
+        return new MD5PasswordEncoder(); //默认
     }
 
 

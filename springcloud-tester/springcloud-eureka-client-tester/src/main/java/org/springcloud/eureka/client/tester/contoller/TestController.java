@@ -1,8 +1,8 @@
 package org.springcloud.eureka.client.tester.contoller;
 
-import com.alibaba.fastjson.JSONObject;
 import org.cloud.core.redis.RedisUtil;
-import org.cloud.entity.AuthUserDetails;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
@@ -11,27 +11,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springcloud.eureka.client.tester.dao.IUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.springframework.security.core.userdetails.User;
 
 @RestController
 //@RequestMapping(value = "/tester", produces = "application/vnd.spring-boot.actuator.v1+json;charset=UTF-8")
@@ -58,9 +49,17 @@ public class TestController {
     public Map<String, Object> getByUserName(@PathVariable("userName") String userName, HttpServletRequest request) {
 
         HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-        AuthUserDetails user = RestTemplateUtil.single().execute("http://SPRING-GATEWAY/user/info/authentication", HttpMethod.GET, null, headers, AuthUserDetails.class);
+        LoginUserDetails user = RestTemplateUtil.single().execute("http://SPRING-GATEWAY/user/info/authentication", HttpMethod.GET, null, headers, LoginUserDetails.class);
         JavaBeanResultMap<Object> result = userDao.getUserByName(userName);
         return result;
+    }
+
+    @RequestMapping(value = "/user/loginuser", method = RequestMethod.GET)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public LoginUserDetails loginuser(HttpServletRequest request) {
+        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
+        LoginUserDetails user = RestTemplateUtil.single().execute("http://SPRING-GATEWAY/user/info/authentication", HttpMethod.GET, null, headers, LoginUserDetails.class);
+        return user;
     }
 
     @RequestMapping(value = "/testProcess/{threedSize}/{poolSize}", method = RequestMethod.GET)

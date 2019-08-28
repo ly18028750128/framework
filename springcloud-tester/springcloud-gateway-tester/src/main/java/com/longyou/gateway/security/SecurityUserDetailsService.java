@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Function;
+
 @Component
 public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
@@ -30,7 +32,6 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
        //todo 预留调用数据库根据用户名获取用户
         if(userFromDb!=null && StringUtils.equals(userFromDb.getUsername(),username)){
-//        if(StringUtils.equals(userName,username)){
             UserDetails user = User.withUserDetails(userFromDb).build();
             return Mono.just(user);
         }

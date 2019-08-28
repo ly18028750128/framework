@@ -3,6 +3,7 @@ spring:
     group:
     name: ${spring.application.group:}eureka-client # 对应config-server所获取的配置文件的{application}
   security:
+    password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     user:
       name: admin
       password: 123456
