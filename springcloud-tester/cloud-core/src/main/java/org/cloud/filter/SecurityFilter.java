@@ -1,6 +1,7 @@
 package org.cloud.filter;
 
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -26,8 +27,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Value("${spring.security.excludedAuthPages:}")
     private String[] excludedAuthPages;
 
-    @Value("${spring.security.user_url:http://SPRING-GATEWAY/user/info/authentication}")
-    private String gatewayUserUrl;//获取网关的获取用户的URL配置
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -50,10 +49,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
-        LoginUserDetails user = RestTemplateUtil.single().execute(gatewayUserUrl, HttpMethod.GET, null, headers, LoginUserDetails.class);
-
+//        LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
+        LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-
-
     }
 }

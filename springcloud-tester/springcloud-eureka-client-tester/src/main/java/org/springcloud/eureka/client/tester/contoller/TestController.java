@@ -3,6 +3,7 @@ package org.springcloud.eureka.client.tester.contoller;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
@@ -55,9 +56,7 @@ public class TestController {
     @RequestMapping(value = "/user/loginuser", method = RequestMethod.GET)
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public LoginUserDetails loginuser(HttpServletRequest request) {
-        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-        LoginUserDetails user = RestTemplateUtil.single().execute("http://SPRING-GATEWAY/user/info/authentication", HttpMethod.GET, null, headers, LoginUserDetails.class);
-        return user;
+        return CommonUtil.single().getLoginUser();
     }
 
     @RequestMapping(value = "/testProcess/{threedSize}/{poolSize}", method = RequestMethod.GET)
