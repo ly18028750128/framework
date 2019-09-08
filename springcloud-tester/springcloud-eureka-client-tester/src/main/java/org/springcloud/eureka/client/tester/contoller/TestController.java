@@ -48,8 +48,6 @@ public class TestController {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Map<String, Object> getByUserName(@PathVariable("userName") String userName, HttpServletRequest request) {
 
-        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-        LoginUserDetails user = RestTemplateUtil.single().execute("http://SPRING-GATEWAY/user/info/authentication", HttpMethod.GET, null, headers, LoginUserDetails.class);
         JavaBeanResultMap<Object> result = userDao.getUserByName(userName);
         return result;
     }

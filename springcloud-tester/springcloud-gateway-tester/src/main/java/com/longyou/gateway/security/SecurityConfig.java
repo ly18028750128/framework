@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
                 .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
                 .and().csrf().disable()//必须支持跨域
-                .logout()
+                .logout().logoutUrl("/auth/logout")
 //                .disable()
         ;
 
