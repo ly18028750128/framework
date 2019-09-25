@@ -49,7 +49,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
-//        LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
         LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }

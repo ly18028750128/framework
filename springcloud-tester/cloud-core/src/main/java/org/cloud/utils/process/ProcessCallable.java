@@ -1,5 +1,7 @@
 package org.cloud.utils.process;
 
+import org.cloud.context.RequestContext;
+import org.cloud.context.RequestContextManager;
 import org.cloud.utils.HttpServletUtil;
 import org.springframework.http.HttpRequest;
 
@@ -9,27 +11,37 @@ import java.util.concurrent.Callable;
 
 public abstract class ProcessCallable<V> implements Callable, Runnable {
 
-    private static final ThreadLocal<HttpServletRequest> requestThreadLocal = new ThreadLocal<HttpServletRequest>();
-    private static final ThreadLocal<HttpServletResponse> responseThreadLocal = new ThreadLocal<HttpServletResponse>();
+    private RequestContext requestContext;
 
-    public static HttpServletRequest getHttpServletRequest() {
-        return requestThreadLocal.get();
+    public ProcessCallable() {
+        this.requestContext = RequestContextManager.single().getRequestContext();
     }
 
-    public static HttpServletResponse getHttpServletResponse() {
-        return responseThreadLocal.get();
+    /**
+     * 是否克隆当前的上下文
+     *
+     * @param isCloneCurrentRequestContext
+     */
+    public ProcessCallable(Boolean isCloneCurrentRequestContext) {
+        if (isCloneCurrentRequestContext) {
+            this.requestContext = RequestContextManager.single().cloneRequestContext();
+        } else {
+            this.requestContext = RequestContextManager.single().getRequestContext();
+        }
+    }
+
+    public ProcessCallable(RequestContext requestContext) {
+        this.requestContext = requestContext;
     }
 
     private void init() {
         //初始化一些信息，比如如request，方便在多线程中调用
-        requestThreadLocal.set(HttpServletUtil.signle().getHttpServlet());
-        responseThreadLocal.set(HttpServletUtil.signle().getHttpServletResponse());
+        RequestContextManager.single().setRequestContext(requestContext);
     }
 
     private void unInit() {
         //结束后要将初始化的信息清空
-        requestThreadLocal.set(null);
-        responseThreadLocal.set(null);
+        RequestContextManager.single().setRequestContext(null);
     }
 
     @Override

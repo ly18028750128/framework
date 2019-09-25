@@ -1,5 +1,6 @@
 package org.cloud.utils;
 
+import org.cloud.context.RequestContextManager;
 import org.cloud.utils.process.ProcessCallable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,7 +32,7 @@ public final class HttpServletUtil {
         }
 
         if (request == null) {
-            request = ProcessCallable.getHttpServletRequest();
+            request = RequestContextManager.single().getRequestContext().getHttpServletRequest();
         }
 
         return request;
@@ -45,7 +46,7 @@ public final class HttpServletUtil {
         }
 
         if (response != null) {
-            response = ProcessCallable.getHttpServletResponse();
+            response = RequestContextManager.single().getRequestContext().getHttpServletResponse();
         }
 
         return response;
