@@ -4,16 +4,20 @@ package com.longyou.gateway.security;
 import com.longyou.gateway.security.handler.AuthenticationFaillHandler;
 import com.longyou.gateway.security.handler.AuthenticationSuccessHandler;
 import com.longyou.gateway.security.handler.CustomHttpBasicServerAuthenticationEntryPoint;
+import com.longyou.gateway.security.handler.CustomServerLogoutSuccessHandler;
 import com.longyou.gateway.util.MD5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.HttpBasicServerAuthenticationEntryPoint;
+import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
 
 @EnableWebFluxSecurity
 public class SecurityConfig {
@@ -23,14 +27,13 @@ public class SecurityConfig {
     private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
     private AuthenticationFaillHandler authenticationFaillHandler;
-    @Autowired
-    private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
+//    @Autowired
+//    private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
 
 
     //security的鉴权排除列表
     @Value("${spring.security.excludedAuthPages:}")
-    private   String[] excludedAuthPages ;
-
+    private String[] excludedAuthPages;
 
 
     @Bean
@@ -46,10 +49,9 @@ public class SecurityConfig {
                 .formLogin().loginPage("/auth/login")
                 .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
                 .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
-                .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
+                .and().exceptionHandling().authenticationEntryPoint(new HttpBasicServerAuthenticationEntryPoint())  //基于http的接口请求鉴权失败
                 .and().csrf().disable()//必须支持跨域
-                .logout().logoutUrl("/auth/logout")
-//                .disable()
+                .logout().logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK)).logoutUrl("/auth/logout")
         ;
 
         return http.build();

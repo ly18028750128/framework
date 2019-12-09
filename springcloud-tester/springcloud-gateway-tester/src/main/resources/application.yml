@@ -16,6 +16,21 @@ spring:
   management:
     security:
       enabled: false
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
+                      classpath:/static/,classpath:/public/,file:${system.static.web-uploadpath}
+system:
+  auth_basic_expire_time: 18000000
+  route:
+    cors:
+      allow-headers: x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN,token,username,client
+#      allow-headers: "*"
+      allow-methods: "*"
+      allow-orgins: "*"
+      allow-expose: "*"
+      max-age: 1800L
+  static:
+    web-uploadpath: E:/work/workspace/web/
 redis:
   host: localhost
   port: 6379

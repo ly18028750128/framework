@@ -15,12 +15,23 @@ public class DataInterfaceController {
     @Autowired
     DataInterfaceService dataInterfaceService;
 
+
     @RequestMapping(value = "/page/list/{page}/{pageSize}", method = RequestMethod.POST)
     public PageInfo<?> selectPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) {
 
         queryParamVO.setPageNum(pageNum);
         queryParamVO.setPageSize(pageSize);
         Page<?> result = dataInterfaceService.selectPageList(queryParamVO);
+
+        return new PageInfo<>(result);
+    }
+
+    @RequestMapping(value = "/params/page/list/{page}/{pageSize}", method = RequestMethod.POST)
+    public PageInfo<?> selectDataInterfaceParamsPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) {
+
+        queryParamVO.setPageNum(pageNum);
+        queryParamVO.setPageSize(pageSize);
+        Page<?> result = dataInterfaceService.selectDataInterfaceParamsPageList(queryParamVO);
 
         return new PageInfo<>(result);
     }

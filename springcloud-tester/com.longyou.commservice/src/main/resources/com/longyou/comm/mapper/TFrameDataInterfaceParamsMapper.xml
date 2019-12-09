@@ -121,4 +121,19 @@
       and param_name = #{paramName,jdbcType=VARCHAR}
     for update
   </select>
+
+  <select id="selectPageList" parameterType="org.cloud.vo.QueryParamVO" resultMap="BaseResultMap">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_data_interface_params
+    <where>
+      <if test="params.dataCode != null">
+        data_code = #{params.dataCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+
+
+  </select>
+
 </mapper>

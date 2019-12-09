@@ -1,12 +1,12 @@
 package com.longyou.gateway.security;
 
-import com.longyou.gateway.dao.IUserInfoDao;
-import com.longyou.gateway.security.entity.AuthUserDetails;
-import com.longyou.gateway.util.MD5Encoder;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CommonUtil;
+import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,27 +16,28 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
-
 @Component
 public class SecurityUserDetailsService implements ReactiveUserDetailsService {
-
-    @Autowired
-    IUserInfoDao userInfoDao;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Mono<UserDetails> findByUsername(String username) {
-
-       UserDetails userFromDb = userInfoDao.getUserByName(username);
-
-       //todo 预留调用数据库根据用户名获取用户
+       UserDetails userFromDb = getUserByName(username);
         if(userFromDb!=null && StringUtils.equals(userFromDb.getUsername(),username)){
             UserDetails user = User.withUserDetails(userFromDb).build();
+            user = userFromDb;
             return Mono.just(user);
         }
         else{
             return Mono.error(new UsernameNotFoundException("User Not Found"));
         }
     }
+
+    @Value("${system.userinfo.query_user_url:http://COMMON-SERVICE/userinfo/getUserByName}")
+    private String userinfoUrl;
+    private LoginUserDetails getUserByName(String UserName){
+        LoginUserDetails user = RestTemplateUtil.single().execute(userinfoUrl+"?userName="+UserName, HttpMethod.GET, null, null, LoginUserDetails.class);
+        return user;
+    }
+
 }

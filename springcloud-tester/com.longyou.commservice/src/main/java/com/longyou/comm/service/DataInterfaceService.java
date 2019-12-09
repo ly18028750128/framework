@@ -12,4 +12,7 @@ public interface DataInterfaceService {
      * @return
      */
     public Page<?> selectPageList(QueryParamVO queryParamVO);
+
+    public Page<?> selectDataInterfaceParamsPageList(QueryParamVO queryParamVO);
+
 }

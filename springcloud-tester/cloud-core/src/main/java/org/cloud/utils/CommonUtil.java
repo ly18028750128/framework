@@ -53,4 +53,14 @@ public final class CommonUtil {
         return getLoginUser(HttpServletUtil.signle().getHttpServlet());
     }
 
+    private long timeSaltPre= System.currentTimeMillis(); //上一个时间盐的值
+    public String getTimeSalt(){
+        final String timeSaltChangeInterval=this.getEnv("system.time_salt_change_interval",Long.toString(5*60*1000));
+        final long  lTimeSaltChangeInterval = Long.valueOf(timeSaltChangeInterval);
+        if(System.currentTimeMillis() - timeSaltPre > lTimeSaltChangeInterval){
+            timeSaltPre = System.currentTimeMillis();
+        }
+        return Long.toString(timeSaltPre);
+    }
+
 }

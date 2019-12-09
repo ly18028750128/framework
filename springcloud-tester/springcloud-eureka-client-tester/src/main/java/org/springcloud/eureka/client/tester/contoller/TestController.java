@@ -2,9 +2,7 @@ package org.springcloud.eureka.client.tester.contoller;
 
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
-import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.JavaBeanResultMap;
@@ -12,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springcloud.eureka.client.tester.dao.IUserDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;

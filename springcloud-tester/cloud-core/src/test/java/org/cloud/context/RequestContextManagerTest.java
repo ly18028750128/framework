@@ -7,12 +7,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static org.junit.Assert.*;
 
 public class RequestContextManagerTest {
 

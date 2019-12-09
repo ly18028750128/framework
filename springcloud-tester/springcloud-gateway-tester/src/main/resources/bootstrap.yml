@@ -1,7 +1,8 @@
 spring:
   application:
-    group:
-    name: ${spring.application.group:}spring-gateway # 对应config-server所获取的配置文件的{application}
+    group: ''
+    noGroupName: spring-gateway
+    name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
     config:
       uri: http://localhost:8040/
@@ -12,18 +13,20 @@ spring:
     active: dev
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
-    excludedAuthPages: /auth/login,/auth/logout,**/logout,${management.endpoints.web.base-path:monitor}/health,/api/socket/**,/user/info/authentication,/user/info/salt
+    excludedAuthPages: /login?logout,/auth/login,,/vueadmin/**,*/logout,\
+                      ${management.endpoints.web.base-path:monitor}/health,\
+                      /api/socket/**,/user/info/authentication*,/user/info/salt
     user:
       name: admin
-      password: 123456
+      password: fwedsflja123u120318412jlwejf
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    url: jdbc:mysql://127.0.0.1:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
-    username: framework
-    password: 1qaz@WSX
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+#  datasource:
+#    url: jdbc:mysql://127.0.0.1:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+#    username: framework
+#    password: 1qaz@WSX
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
 logging:
   level:
     org.springframework.cloud.gateway: TRACE

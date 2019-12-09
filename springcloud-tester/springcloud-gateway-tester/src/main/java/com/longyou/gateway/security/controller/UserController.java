@@ -1,8 +1,13 @@
 package com.longyou.gateway.security.controller;
 
+import org.cloud.utils.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,8 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user/info")
 public class UserController {
     @RequestMapping("/authentication")
-    public User getAuthentication(Authentication authentication) {
-        return (User) authentication.getPrincipal();
+    public UserDetails getAuthentication(Authentication authentication, ServerHttpResponse response) {
+
+        if(authentication==null){
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return null;
+        }
+        return (UserDetails) authentication.getPrincipal();
     }
 
     @Value("${spring.security.password_salt:}")
