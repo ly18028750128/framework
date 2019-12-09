@@ -62,6 +62,15 @@ public class RouteConfiguration {
                         return Mono.empty();
                     }
                 }
+                String uri = swe.getRequest().getURI().getPath();
+                if (uri.endsWith("/")) {
+                    ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri + "index.html").build();
+                    return wfc.filter(swe.mutate().request(newRequest).build());
+                }
+                if (uri.startsWith("//")) {
+                    ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri.replaceFirst("//", "/")).build();
+                    return wfc.filter(swe.mutate().request(newRequest).build());
+                }
                 return wfc.filter(swe);
             }
         };
