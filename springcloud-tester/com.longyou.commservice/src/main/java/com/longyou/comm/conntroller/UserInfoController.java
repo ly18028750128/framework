@@ -3,6 +3,8 @@ package com.longyou.comm.conntroller;
 import com.longyou.comm.service.IUserInfoService;
 import org.cloud.entity.LoginUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,9 +19,12 @@ public class UserInfoController {
     @Autowired
     IUserInfoService userInfoService;
 
-    @RequestMapping(value = "/getUserByName",method = RequestMethod.GET)
+    @RequestMapping(value = "/getUserByName", method = RequestMethod.GET)
     public LoginUserDetails getUserByName(HttpServletRequest request, @RequestParam("userName") String userName) {
-        return userInfoService.getUserByName(userName);
+        LoginUserDetails loginUserDetails = userInfoService.getUserByName(userName);
+        if (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty()) {
+            loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
+        }
+        return loginUserDetails;
     }
-
 }

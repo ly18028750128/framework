@@ -8,6 +8,7 @@ import com.longyou.gateway.security.handler.CustomServerLogoutSuccessHandler;
 import com.longyou.gateway.util.MD5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.HttpBasicServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
+
+import java.util.List;
 
 @EnableWebFluxSecurity
 public class SecurityConfig {
@@ -33,14 +36,23 @@ public class SecurityConfig {
 
     //security的鉴权排除列表
     @Value("${spring.security.excludedAuthPages:}")
-    private String[] excludedAuthPages;
+    private List<String> excludedAuthPages;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
 
 
     @Bean
     SecurityWebFilterChain webFluxSecurityFilterChain(ServerHttpSecurity http) throws Exception {
+
+        List<String> services = discoveryClient.getServices();
+
+        services.forEach((value)->{
+            excludedAuthPages.add("/"+value.toUpperCase()+"/**");
+        });
         http
                 .authorizeExchange()
-                .pathMatchers(excludedAuthPages).permitAll()  //无需进行权限过滤的请求路径
+                .pathMatchers(excludedAuthPages.toArray(new String[]{})).permitAll()  //无需进行权限过滤的请求路径
                 .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
                 .anyExchange().authenticated()
                 .and()

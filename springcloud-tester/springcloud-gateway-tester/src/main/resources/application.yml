@@ -2,23 +2,6 @@ gateway:
   discovery:
     locator:
       enabled: true
-spring:
-  cloud:
-    gateway:
-      routes:
-        - id: framework
-          uri: http://localhost:20040/framework,http://localhost:20050/framework
-          predicates:
-            - Path=/framework/**
-      discovery:
-        locator:
-          enabled: true   #直接从配置中心获取应用并转发
-  management:
-    security:
-      enabled: false
-  resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
-                      classpath:/static/,classpath:/public/,file:${system.static.web-uploadpath}
 system:
   auth_basic_expire_time: 18000000
   route:
@@ -31,6 +14,8 @@ system:
       max-age: 1800L
   static:
     web-uploadpath: E:/work/workspace/web/
+  userinfo:
+    query_user_url: http://${spring.application.group:}COMMON-SERVICE/userinfo/getUserByName
 redis:
   host: localhost
   port: 6379

@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8081/eureka,http://localhost:8082/eureka
+      defaultZone: http://172.16.1.51:8081/eureka,http://172.16.1.51:8082/eureka
   instance:
     metadata-map:
       user.name: admin

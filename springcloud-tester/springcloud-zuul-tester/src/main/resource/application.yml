@@ -41,7 +41,7 @@ spring:
     active: dev
   datasource:
     name: test
-    url: jdbc:mysql://127.0.0.1:3306/framework
+    url: jdbc:mysql://172.16.1.51:3306/framework
     username: root
     password: x5
     # 使用druid数据源

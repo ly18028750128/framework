@@ -1,15 +1,16 @@
 package org.cloud.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.cloud.deserializer.GrantedAuthorityDeserializer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class LoginUserDetails implements UserDetails {
+
     private Long id;
 
     public Long getId() {
@@ -23,11 +24,11 @@ public class LoginUserDetails implements UserDetails {
     private String username;
     //    @JsonIgnore
     private String password;
-    private Collection<String> roles;
+    private Collection<String> roles = new ArrayList<>();
     private String token;
 
-    private Collection<? extends GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
+    private Collection<GrantedAuthority> authorities = new ArrayList<>();
 
     public void setUsername(String username) {
         this.username = username;
@@ -42,12 +43,12 @@ public class LoginUserDetails implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (authorities == null || authorities.isEmpty()) {
-            return AuthorityUtils.commaSeparatedStringToAuthorityList("User");
-        } else {
-            return authorities;
+    @JsonDeserialize(using = GrantedAuthorityDeserializer.class)
+    public Collection<GrantedAuthority> getAuthorities() {
+        if (roles != null && !roles.isEmpty()) {
+            authorities = AuthorityUtils.createAuthorityList(roles.toArray(new String[]{}));
         }
+        return authorities;
     }
 
     @Override
@@ -86,5 +87,9 @@ public class LoginUserDetails implements UserDetails {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Collection<String> getRoles() {
+        return roles;
     }
 }

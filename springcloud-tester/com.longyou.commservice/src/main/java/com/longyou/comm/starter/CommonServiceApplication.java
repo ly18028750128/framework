@@ -1,18 +1,23 @@
 package com.longyou.comm.starter;
 
 import com.github.pagehelper.PageHelper;
+import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Properties;
 @EnableDiscoveryClient
 @ComponentScan({"org.cloud.core.*","com.longyou.comm.*"})
 @MapperScan("com.longyou.comm.mapper")
+@ServletComponentScan({"org.cloud.filter"})
 @SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
     public static void main(String[] args) {
@@ -43,4 +48,16 @@ public class CommonServiceApplication {
         pageHelper.setProperties(p);
         return pageHelper;
     }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public SpringContextUtil springContextUtil() {
+        return new SpringContextUtil();
+    }
+
 }

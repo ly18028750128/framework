@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8081/eureka,http://localhost:8082/eureka
+      defaultZone: http://172.16.1.51:8081/eureka,http://172.16.1.51:8082/eureka
   instance:
     easeRenewalIntervalInSeconds: 10
     health-check-url-path: /monitor/health
@@ -16,7 +16,7 @@ management:
       base-path: /monitor
 spring:
   application:
-    group: ''
+    #group: 'LONGYOU' #这里写在启动参数里
     noGroupName: common-service
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
@@ -24,12 +24,19 @@ spring:
       label: master
       name: ${spring.application.noGroupName:}
       profile: dev
-      uri: http://localhost:8040/
+      uri: http://172.16.1.51:8040/
+  security:
+    password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
+    #excludedAuthPages: /** #暂时不走验证
+    excludedAuthPages: /common/config/datainterface/**,/userinfo/getUserByName
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    username: framework
     password: 1qaz@WSX
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
-    username: framework
+    url: jdbc:mysql://172.16.1.51:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
   profiles:
     active: dev
+system:
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication

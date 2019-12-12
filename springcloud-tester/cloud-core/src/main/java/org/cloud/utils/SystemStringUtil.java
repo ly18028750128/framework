@@ -82,4 +82,13 @@ public final class SystemStringUtil {
         return result.toString();
     }
 
+    public boolean isEmpty(String value){
+        return value==null||"".equals(value);
+    }
+
+
+    public boolean isNotEmpty(String value){
+        return !isEmpty(value);
+    }
+
 }
