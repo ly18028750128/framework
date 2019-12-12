@@ -28,7 +28,7 @@ spring:
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
-    excludedAuthPages: /common/config/datainterface/**,/userinfo/getUserByName
+    excludedAuthPages: /userinfo/getUserByName #/common/config/datainterface/**
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: framework

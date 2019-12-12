@@ -17,7 +17,7 @@ public class DataInterfaceController {
 
 
     @RequestMapping(value = "/page/list/{page}/{pageSize}", method = RequestMethod.POST)
-    public PageInfo<?> selectPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) {
+    public PageInfo<?> selectPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) throws Exception {
 
         queryParamVO.setPageNum(pageNum);
         queryParamVO.setPageSize(pageSize);
@@ -27,7 +27,7 @@ public class DataInterfaceController {
     }
 
     @RequestMapping(value = "/params/page/list/{page}/{pageSize}", method = RequestMethod.POST)
-    public PageInfo<?> selectDataInterfaceParamsPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) {
+    public PageInfo<?> selectDataInterfaceParamsPageList(@PathVariable("page") int pageNum, @PathVariable("pageSize") int pageSize, @RequestBody QueryParamVO queryParamVO) throws Exception {
 
         queryParamVO.setPageNum(pageNum);
         queryParamVO.setPageSize(pageSize);

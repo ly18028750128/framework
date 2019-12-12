@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Properties;
 @EnableDiscoveryClient
-@ComponentScan({"org.cloud.core.*","com.longyou.comm.*"})
+@ComponentScan({"org.cloud.*","com.longyou.comm.*"})
 @MapperScan("com.longyou.comm.mapper")
 @ServletComponentScan({"org.cloud.filter"})
 @SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})

@@ -50,6 +50,7 @@ public class SecurityConfig {
         services.forEach((value)->{
             excludedAuthPages.add("/"+value.toUpperCase()+"/**");
         });
+
         http
                 .authorizeExchange()
                 .pathMatchers(excludedAuthPages.toArray(new String[]{})).permitAll()  //无需进行权限过滤的请求路径

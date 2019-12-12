@@ -50,7 +50,7 @@ public final class CommonUtil {
     public LoginUserDetails getLoginUser(HttpServletRequest request) {
         final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
         HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-        ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, null, headers, LoginUserDetails.class);
+        ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
         return responseEntity.getBody();
     }
 

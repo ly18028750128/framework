@@ -60,11 +60,11 @@ public class RestTemplateUtil {
         return response;
     }
 
-    public <T> ResponseEntity<T> getResponse(final String url, final HttpMethod method, Class<T> responseType, String requestBody) {
+    public <T> ResponseEntity<T> getResponse(final String url, final HttpMethod method, String requestBody, Class<T> responseType) {
         return getResponse(url, method, requestBody, null, responseType);
     }
 
-    public <T> ResponseEntity<T> getResponse(final String url, final HttpMethod method, Class<T> responseType, HttpHeaders headers) {
+    public <T> ResponseEntity<T> getResponse(final String url, final HttpMethod method, HttpHeaders headers, Class<T> responseType) {
         return getResponse(url, method, null, headers, responseType);
     }
 
