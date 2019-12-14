@@ -1,15 +1,3 @@
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://172.16.1.51:8081/eureka,http://172.16.1.51:8082/eureka
-  instance:
-    easeRenewalIntervalInSeconds: 10
-    health-check-url-path: /monitor/health
-    metadata-map:
-      user:
-        name: admin
-        password: 1qaz@WSX
-    prefer-ip-address: true
 management:
   endpoints:
     web:
@@ -23,8 +11,8 @@ spring:
     config:
       label: master
       name: ${spring.application.noGroupName:}
-      profile: dev
-      uri: http://172.16.1.51:8040/
+      profile: ${spring.profiles.active:dev}
+      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
@@ -36,7 +24,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://172.16.1.51:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
   profiles:
-    active: dev
+    active: ${sys.curr_profile:dev}
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication

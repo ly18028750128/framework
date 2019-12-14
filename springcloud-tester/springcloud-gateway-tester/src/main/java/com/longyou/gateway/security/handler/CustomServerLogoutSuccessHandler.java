@@ -3,6 +3,8 @@ package com.longyou.gateway.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -13,6 +15,9 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 public class CustomServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
+
+    Logger logger = LoggerFactory.getLogger(CustomServerLogoutSuccessHandler.class);
+
     @Override
     public Mono<Void> onLogoutSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         ServerWebExchange exchange = webFilterExchange.getExchange();
@@ -23,13 +28,12 @@ public class CustomServerLogoutSuccessHandler implements ServerLogoutSuccessHand
         httpHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         //设置body
         WsResponse<String> wsResponse = WsResponse.success();
-        byte[]   dataBytes={};
+        byte[] dataBytes = {};
         try {
             ObjectMapper mapper = new ObjectMapper();
-            dataBytes=mapper.writeValueAsBytes(wsResponse);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
+            dataBytes = mapper.writeValueAsBytes(wsResponse);
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));

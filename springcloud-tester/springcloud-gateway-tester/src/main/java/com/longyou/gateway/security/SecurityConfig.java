@@ -50,10 +50,9 @@ public class SecurityConfig {
         services.forEach((value)->{
             excludedAuthPages.add("/"+value.toUpperCase()+"/**");
         });
-
         http
                 .authorizeExchange()
-                .pathMatchers(excludedAuthPages.toArray(new String[]{})).permitAll()  //无需进行权限过滤的请求路径
+                .pathMatchers(new String[]{"/**"}).permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验
                 .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
                 .anyExchange().authenticated()
                 .and()

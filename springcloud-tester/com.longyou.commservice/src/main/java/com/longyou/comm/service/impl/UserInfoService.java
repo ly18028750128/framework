@@ -13,7 +13,7 @@ public class UserInfoService implements IUserInfoService {
     UserInfoMapper userInfoMapper ;
 
     @Override
-    public LoginUserDetails getUserByName(String userName) {
-        return userInfoMapper.getUserByName(userName);
+    public LoginUserDetails getUserByNameForAuth(String userName) {
+        return userInfoMapper.getUserByNameForAuth(userName);
     }
 }

@@ -5,10 +5,10 @@ spring:
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
     config:
-      uri: http://172.16.1.51:8040/
-      name: spring-gateway
-      profile: dev # 指定profile，对应config-server所获取的配置文件中的{profile}
-      label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
+      label: master
+      name: ${spring.application.noGroupName:}
+      profile: ${spring.profiles.active:dev}
+      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
     gateway:
       routes:
         - id: framework
@@ -25,7 +25,7 @@ spring:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/,\
       classpath:/static/,classpath:/public/,file:${system.static.web-uploadpath}
   profiles:
-    active: dev
+    active: ${sys.curr_profile:dev}
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludeMicroServices: /COMMON-SERVICE/**  #网关转发时权限权限在各微服务调用网关的登录信息来处理，这里过滤掉不验证
@@ -56,7 +56,3 @@ logging:
       longyou:
         springcloud: DEBUG
     root: INFO
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://172.16.1.51:8081/eureka,http://172.16.1.51:8082/eureka

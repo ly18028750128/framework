@@ -2,8 +2,6 @@ eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
-server:
-  port: 8040
 spring:
   application:
     name: microservice-config-server

@@ -38,7 +38,7 @@ feign:
       enabled: true
 spring:
   profiles:
-    active: dev
+    active: ${sys.curr_profile:dev}
   datasource:
     name: test
     url: jdbc:mysql://172.16.1.51:3306/framework

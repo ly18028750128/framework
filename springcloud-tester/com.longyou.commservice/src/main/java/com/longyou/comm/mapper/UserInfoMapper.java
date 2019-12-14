@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserInfoMapper {
-    LoginUserDetails getUserByName(@Param("userName") String userName);
+    LoginUserDetails getUserByNameForAuth(@Param("userName") String userName);
 }

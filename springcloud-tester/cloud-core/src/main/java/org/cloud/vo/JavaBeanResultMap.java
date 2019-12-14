@@ -24,7 +24,7 @@ public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {
 
     @Override
     public V put(String key, V value) {
-        key = SystemStringUtil.signle().camelName(key.toLowerCase());
+        key = SystemStringUtil.single().camelName(key.toLowerCase());
 
         if (value instanceof Clob) {
             return super.put(key, (V) JdbcTypeConvertUtil.signle().ClobToString((Clob) value));

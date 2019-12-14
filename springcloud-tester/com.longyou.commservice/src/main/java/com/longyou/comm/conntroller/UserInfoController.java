@@ -2,6 +2,7 @@ package com.longyou.comm.conntroller;
 
 import com.longyou.comm.service.IUserInfoService;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.http.OKHttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.util.CollectionUtils;
@@ -21,10 +22,13 @@ public class UserInfoController {
 
     @RequestMapping(value = "/getUserByName", method = RequestMethod.GET)
     public LoginUserDetails getUserByName(HttpServletRequest request, @RequestParam("userName") String userName) {
-        LoginUserDetails loginUserDetails = userInfoService.getUserByName(userName);
+        LoginUserDetails loginUserDetails = userInfoService.getUserByNameForAuth(userName);
         if (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty()) {
             loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
         }
         return loginUserDetails;
     }
+
+
+
 }

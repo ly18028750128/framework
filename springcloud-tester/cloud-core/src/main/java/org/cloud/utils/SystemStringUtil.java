@@ -9,13 +9,13 @@ public final class SystemStringUtil {
     }
 
     private static class Handler {
-        private void Handler() {
+        private Handler() {
         }
 
         private static SystemStringUtil handler = new SystemStringUtil();
     }
 
-    public static SystemStringUtil signle() {
+    public static SystemStringUtil single() {
         return Handler.handler;
     }
 
