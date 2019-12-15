@@ -12,8 +12,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
-        <springboot.version>2.1.5.RELEASE</springboot.version>
-        <springcloud.eureka.version>1.4.6.RELEASE</springcloud.eureka.version>
+        <springboot.version>2.2.2.RELEASE</springboot.version>
+        <springcloud.eureka.version>1.4.7.RELEASE</springcloud.eureka.version>
         <springcloud.zuul.version>1.4.6.RELEASE</springcloud.zuul.version>
     </properties>
     <dependencyManagement>
