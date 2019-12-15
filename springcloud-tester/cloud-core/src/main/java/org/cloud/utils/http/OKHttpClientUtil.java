@@ -13,19 +13,15 @@ public final class OKHttpClientUtil {
 
     Logger logger = LoggerFactory.getLogger(OKHttpClientUtil.class);
 
-    private static class OKHttpClientUtilHandler {
-        private OKHttpClientUtilHandler() {
-        }
-        private static OKHttpClientUtil singleInstance = new OKHttpClientUtil();
-    }
+    private static OKHttpClientUtil singleInstance = new OKHttpClientUtil();
 
     public static OKHttpClientUtil single() {
-        return OKHttpClientUtilHandler.singleInstance;
+        return singleInstance;
     }
 
-    private final OkHttpClient okHttpClient = OKHttpClientBuilder.buildOKHttpClient().build();
-
+    private final OkHttpClient okHttpClient;
     private OKHttpClientUtil() {
+        okHttpClient = OKHttpClientBuilder.buildOKHttpClient().build();
         okHttpClient.dispatcher().setMaxRequests(10000);
         okHttpClient.dispatcher().setMaxRequestsPerHost(5000);  //每台服务器最大5000个请求
     }
@@ -35,7 +31,7 @@ public final class OKHttpClientUtil {
     }
 
     // 获取数据进行异步的call，针对get请求
-    public Call createGetCall(HttpRequestParams httpRequestParams, String url) {
+    public Call createGetCall(HttpRequestParams httpRequestParams, String url) throws Exception {
         Request.Builder request = new Request.Builder();
         // 设置header头
         httpRequestParams.getHeaders().forEach((key, value) -> {
@@ -54,7 +50,7 @@ public final class OKHttpClientUtil {
     }
 
     // 获取数据进行异步的call，针对post请求
-    public Call createPostCall(HttpRequestParams httpRequestParams, String url) throws IOException {
+    public Call createPostCall(HttpRequestParams httpRequestParams, String url) throws Exception {
         MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
         Request.Builder request = new Request.Builder();
         // 设置header头
@@ -94,12 +90,12 @@ public final class OKHttpClientUtil {
     }
 
     // 同步请求GET请求
-    public String getResponse(HttpRequestParams httpRequestParams, String url) throws IOException {
+    public String getResponse(HttpRequestParams httpRequestParams, String url) throws Exception {
         return createGetCall(httpRequestParams, url).execute().body().string();
     }
 
     // 同步发送POST请求
-    public String postResponse(HttpRequestParams httpRequestParams, String url) throws IOException {
+    public String postResponse(HttpRequestParams httpRequestParams, String url) throws Exception {
         return createPostCall(httpRequestParams, url).execute().body().string();
     }
 

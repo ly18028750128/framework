@@ -1,19 +1,21 @@
 spring:
   application:
     group:
-    name: ${spring.application.group:}eureka-client # 对应config-server所获取的配置文件的{application}
+    noGroupName: eureka-client # 对应config-server所获取的配置文件的{application}
+    name: ${spring.application.group:}${spring.application.noGroupName:}
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     excludedAuthPages: ${management.endpoints.web.base-path:monitor}/health,/api/socket/**
     user:
       name: admin
       password: 123456
+
   cloud:
     config:
-      uri: http://172.16.1.51:8040/
-      name: eureka-client-tester
-      profile: dev # 指定profile，对应config-server所获取的配置文件中的{profile}
-      label: master # 指定git仓库的分支，对应config-server所获取的配置文件的{label}
+      label: master
+      name: ${spring.application.noGroupName:}
+      profile: ${spring.profiles.active:dev}
+      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
   profiles:
     active: ${sys.curr_profile:dev}
   main:

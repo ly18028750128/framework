@@ -16,6 +16,9 @@ public class HttpRequestParams {
 
 
     public Map<String, Object> getQueryParams() {
+        if (queryParams == null) {
+            queryParams = new LinkedHashMap<>();
+        }
         return queryParams;
     }
 
@@ -36,6 +39,9 @@ public class HttpRequestParams {
 
 
     public Map<String, Object> getRequestBody() {
+        if (requestBody == null) {
+            requestBody = new LinkedHashMap<>();
+        }
         return requestBody;
     }
 
