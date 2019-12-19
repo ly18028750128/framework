@@ -13,13 +13,14 @@ public final class OKHttpClientUtil {
 
     Logger logger = LoggerFactory.getLogger(OKHttpClientUtil.class);
 
-    private static OKHttpClientUtil singleInstance = new OKHttpClientUtil();
+    private static final OKHttpClientUtil singleInstance = new OKHttpClientUtil();
 
     public static OKHttpClientUtil single() {
         return singleInstance;
     }
 
     private final OkHttpClient okHttpClient;
+
     private OKHttpClientUtil() {
         okHttpClient = OKHttpClientBuilder.buildOKHttpClient().build();
         okHttpClient.dispatcher().setMaxRequests(10000);
@@ -51,7 +52,6 @@ public final class OKHttpClientUtil {
 
     // 获取数据进行异步的call，针对post请求
     public Call createPostCall(HttpRequestParams httpRequestParams, String url) throws Exception {
-        MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
         Request.Builder request = new Request.Builder();
         // 设置header头
         httpRequestParams.getHeaders().forEach((key, value) -> {
@@ -73,10 +73,9 @@ public final class OKHttpClientUtil {
             request.url(url);
             request.post(formBody);
         } else {
-            //如果request不为空那么将其添加到参数中去
-            final HashMap<HttpUrl, List<Cookie>> cookieStore = new HashMap<>();
+            //如果getRequestBody不为空那么将其添加到参数中去
             HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
-            if (httpRequestParams.getQueryParams() != null) {
+            if (httpRequestParams.getQueryParams() != null && !httpRequestParams.getQueryParams().isEmpty()) {
                 httpRequestParams.getQueryParams().forEach((key, value) -> {
                     if (key != null && value != null) {
                         urlBuilder.addQueryParameter(key, value.toString());
@@ -84,6 +83,7 @@ public final class OKHttpClientUtil {
                 });
             }
             request.url(urlBuilder.build());
+            MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
             request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaTypeJSON));
         }
         return okHttpClient.newCall(request.build());

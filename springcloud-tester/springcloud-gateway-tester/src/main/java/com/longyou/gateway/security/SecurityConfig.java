@@ -45,6 +45,8 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain webFluxSecurityFilterChain(ServerHttpSecurity http) throws Exception {
 
+
+
         List<String> services = discoveryClient.getServices();
 
         services.forEach((value)->{

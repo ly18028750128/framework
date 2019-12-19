@@ -52,7 +52,7 @@ public class RestTemplateUtil {
         if (StringUtils.isEmpty(requestBody)) {
             httpEntity = new HttpEntity<String>("", headers);
         } else {
-            httpEntity = new HttpEntity<String>(headers);
+            httpEntity = new HttpEntity<String>(requestBody,headers);
         }
         RequestCallback requestCallback = restTemplate.httpEntityCallback(httpEntity, responseType);
         ResponseExtractor<ResponseEntity<String>> responseExtractor = restTemplate.responseEntityExtractor(responseType);

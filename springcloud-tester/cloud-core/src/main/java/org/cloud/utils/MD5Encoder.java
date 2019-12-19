@@ -1,4 +1,4 @@
-package com.longyou.gateway.util;
+package org.cloud.utils;
 
 import java.security.MessageDigest;
 

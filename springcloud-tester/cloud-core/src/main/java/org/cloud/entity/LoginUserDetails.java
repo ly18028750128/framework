@@ -92,4 +92,24 @@ public class LoginUserDetails implements UserDetails {
     public Collection<String> getRoles() {
         return roles;
     }
+
+    public String userType;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    private String defaultRole;
+
+    public String getDefaultRole() {
+        return defaultRole;
+    }
+
+    public void setDefaultRole(String defaultRole) {
+        this.defaultRole = defaultRole;
+    }
 }

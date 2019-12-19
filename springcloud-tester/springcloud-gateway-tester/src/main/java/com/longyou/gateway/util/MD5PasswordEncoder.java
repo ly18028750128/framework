@@ -1,10 +1,13 @@
 package com.longyou.gateway.util;
 
+import com.longyou.gateway.filter.CrosWebFilter;
 import org.cloud.utils.CommonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.WebFilterExchange;
+import org.springframework.web.server.ServerWebExchange;
 
 public class MD5PasswordEncoder implements PasswordEncoder {
 

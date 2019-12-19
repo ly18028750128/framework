@@ -27,4 +27,15 @@ public final class CoreConstant {
         }
     }
 
+    public final static String _MICRO_LOGIN_CODE_KEY = "micrLoginCode";
+
+    public final static String _MICRO_APPINDEX_KEY = "microAppindex";
+
+    public final static String _MICRO_APPNAME_KEY = "microAppName";
+
+    public final static String _USER_TYPE_KEY = "userType";
+
+    public final static String _USER_TYPE_DEFAULT_VALUE = "admin";
+
+
 }

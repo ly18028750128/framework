@@ -1,6 +1,7 @@
 package com.longyou.gateway.config;
 
 import com.longyou.gateway.config.vo.CorsConfigVO;
+import com.longyou.gateway.filter.CrosWebFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
@@ -27,8 +28,7 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class RouteConfiguration {
 
-    @Autowired
-    private CorsConfigVO corsConfigVO;
+
 
 //    @Bean
 //    public CorsWebFilter corsFilter() {
@@ -43,37 +43,12 @@ public class RouteConfiguration {
 //        return new CorsWebFilter(source);
 //    }
 
+
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public WebFilter croseFilter() {
-        return new WebFilter() {
-            @Override
-            public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {
-                ServerHttpRequest request = swe.getRequest();
-                if (CorsUtils.isCorsRequest(request)) {
-                    ServerHttpResponse response = swe.getResponse();
-                    HttpHeaders headers = response.getHeaders();
-                    headers.add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
-                    headers.add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
-                    headers.add("Access-Control-Max-Age", "3600");
-                    headers.add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
-                    if (request.getMethod() == HttpMethod.OPTIONS) {
-                        response.setStatusCode(HttpStatus.OK);
-                        return Mono.empty();
-                    }
-                }
-                String uri = swe.getRequest().getURI().getPath();
-                if (uri.endsWith("/")) {
-                    ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri + "index.html").build();
-                    return wfc.filter(swe.mutate().request(newRequest).build());
-                }
-                if (uri.startsWith("//")) {
-                    ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri.replaceFirst("//", "/")).build();
-                    return wfc.filter(swe.mutate().request(newRequest).build());
-                }
-                return wfc.filter(swe);
-            }
-        };
+        return new CrosWebFilter();
     }
 
     /**

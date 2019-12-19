@@ -6,16 +6,27 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="user_name" jdbcType="VARCHAR" property="username"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="default_Role" jdbcType="VARCHAR" property="defaultRole"/>
     </resultMap>
 
-    <select id="getUserByNameForAuth" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select id,user_name,password
+    <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
+        select id,user_name,password,default_Role
         from t_frame_user
-        where user_name = #{userName,jdbcType=VARCHAR}
-        and status = 1
+        where status = 1
+        <if test="userName!=null or userName!=''">
+            and user_name = #{userName,jdbcType=VARCHAR}
+        </if>
+        <if test="userId!=null">
+            and id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="params.userType!=null">
+            and user_Type = #{params.userType,jdbcType=VARCHAR}
+        </if>
     </select>
 
-
-
+    <insert id="insertIntoUserInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into t_frame_user(user_name,password,email,full_name,sex,create_by,create_date,update_by,update_date,status,default_role,user_type,user_regist_source)
+        values (#{userName},#{password},#{email},#{fullName},#{sex},#{createBy},CURRENT_TIMESTAMP,#{updateBy},CURRENT_TIMESTAMP,#{status},#{defaultRole},#{userType},#{userRegistSource})
+    </insert>
 
 </mapper>

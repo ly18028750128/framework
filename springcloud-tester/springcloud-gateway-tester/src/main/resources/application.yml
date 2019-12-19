@@ -6,7 +6,7 @@ system:
   auth_basic_expire_time: 18000000
   route:
     cors:
-      allow-headers: x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN,token,username,client
+      allow-headers: x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN,token,username,client,microAppindex,userType
 #      allow-headers: "*"
       allow-methods: "*"
       allow-orgins: "*"
