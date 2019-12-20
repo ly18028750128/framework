@@ -16,7 +16,7 @@ public class UserInfoService implements IUserInfoService {
     UserInfoMapper userInfoMapper ;
 
     @Override
-    public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) {
+    public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         return userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
     }
 }

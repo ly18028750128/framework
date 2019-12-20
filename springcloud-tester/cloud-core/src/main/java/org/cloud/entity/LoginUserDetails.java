@@ -112,4 +112,45 @@ public class LoginUserDetails implements UserDetails {
     public void setDefaultRole(String defaultRole) {
         this.defaultRole = defaultRole;
     }
+
+    private String email;
+
+    private String fullName;
+
+    private String userRegistSource;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUserRegistSource() {
+        return userRegistSource;
+    }
+
+    public void setUserRegistSource(String userRegistSource) {
+        this.userRegistSource = userRegistSource;
+    }
+
+    //    @JsonIgnore
+    private String sessionKey;
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
+    }
 }

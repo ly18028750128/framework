@@ -32,12 +32,10 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         final String microAppindex = request.getHeaders().getFirst(CoreConstant._MICRO_APPINDEX_KEY);
         final String userType =request.getHeaders().getFirst(CoreConstant._USER_TYPE_KEY);
 
-
-
         if(userType!=null){
             loginUserGetParamsDTO.getParams().put(CoreConstant._USER_TYPE_KEY,userType);
         }else{
-            loginUserGetParamsDTO.getParams().put(CoreConstant._USER_TYPE_KEY,CoreConstant._USER_TYPE_DEFAULT_VALUE);
+            loginUserGetParamsDTO.getParams().remove(CoreConstant._USER_TYPE_KEY);
         }
 
         if (microAppindex != null) {

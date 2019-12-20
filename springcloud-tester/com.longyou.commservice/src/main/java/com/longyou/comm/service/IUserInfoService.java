@@ -6,5 +6,5 @@ import org.cloud.vo.LoginUserGetParamsDTO;
 import java.util.Map;
 
 public interface IUserInfoService {
-    public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO);
+    public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception;
 }

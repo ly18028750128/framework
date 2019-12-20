@@ -19,6 +19,7 @@ import org.cloud.vo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,13 +38,13 @@ public class WeixinLoginUserGetService implements LoginUserGetInterface {
     MicroAppConfigList microAppConfigList;
 
     @Override
+    @Transactional
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
 
         final MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
 
         final String wenxinLoginUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
 
-        // TODO 通过wexinAppindex获取appid和APP_SECRET
         LoginUserDetails userDetails = new LoginUserDetails();
         final String micrLoginCode = (String) loginUserGetParamsDTO.getParams().get(CoreConstant._MICRO_LOGIN_CODE_KEY);
 
@@ -56,31 +57,37 @@ public class WeixinLoginUserGetService implements LoginUserGetInterface {
         responeWexinLoginInfo.body().close();
         final String userName = (String)weixinUserMap.get("openid");
 
-
         if(userName == null){
             userDetails.setUsername("未授权的微信用户!");
             userDetails.setPassword("未授权的微信用户!");
             return userDetails;
         }
-        final String password  = MD5Encoder.encode((String)weixinUserMap.get("session_key"), salt);
-
-        // TODO 保存到t_frame_user表里
-        Map<String,Object> userMap = new HashMap<>();
-        userMap.put("userName",micrLoginCode);
-        userMap.put("password",password);
-        userMap.put("createBy",micrLoginCode);
-        userMap.put("updateBy",micrLoginCode);
-        userMap.put("status",1);
-        userMap.put("defaultRole","User");
-        userMap.put("userType",microAppConfig.getAppName());
-        userMap.put("userRegistSource",microAppConfig.getAppid());
-        userInfoMapper.insertIntoUserInfo(userMap);
-
+        final String password  = MD5Encoder.encode(micrLoginCode, salt);
+        final String sessionKey = (String)weixinUserMap.get("session_key");
+        // 设置成获取的用户名
         loginUserGetParamsDTO.setUserName(userName);
-
+        loginUserGetParamsDTO.getParams().put(CoreConstant._USER_TYPE_KEY,microAppConfig.getAppName());
         userDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
 
-        // TODO 通过用户名获取userDetails并返回userDetails
+        if(userDetails==null){
+            // TODO 保存到t_frame_user表里
+            Map<String,Object> userMap = new HashMap<>();
+            userMap.put("userName",userName);
+            userMap.put("password",password);
+            userMap.put("createBy",userName);
+            userMap.put("updateBy",userName);
+            userMap.put("status",1);
+            userMap.put("defaultRole","User");
+            userMap.put("userType",microAppConfig.getAppName());
+            userMap.put("userRegistSource",microAppConfig.getAppid());
+            userMap.put("sessionKey",sessionKey);
+            userInfoMapper.insertIntoUserInfo(userMap);
+        }else{
+            userDetails.setPassword(password);
+            userDetails.setSessionKey(sessionKey);
+            userInfoMapper.updateLoginUserById(userDetails);
+        }
+        userDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
         return userDetails;
     }
 }

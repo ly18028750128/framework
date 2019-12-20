@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Repository
 public interface UserInfoMapper {
-    LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO);
-    int insertIntoUserInfo(Map<String,?> params);
+    LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception;
+    int insertIntoUserInfo(Map<String,?> params) throws Exception;
+    int updateLoginUserById(LoginUserDetails loginUserDetails) throws Exception;
 }

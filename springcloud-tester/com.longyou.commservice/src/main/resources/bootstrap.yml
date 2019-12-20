@@ -13,14 +13,14 @@ spring:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
     excludedAuthPages: /userinfo/getUserByName #/common/config/datainterface/**
+  profiles:
+    active: ${sys.curr_profile:dev}
+system:
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: framework
     password: 1qaz@WSX
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://172.16.1.51:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
-  profiles:
-    active: ${sys.curr_profile:dev}
-system:
-  userinfo:
-    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
