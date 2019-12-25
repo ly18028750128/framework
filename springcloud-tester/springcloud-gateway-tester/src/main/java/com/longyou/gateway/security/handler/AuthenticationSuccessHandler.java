@@ -5,8 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
+import org.cloud.constant.CoreConstant;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -25,8 +31,14 @@ import java.util.Base64;
 @Component
 public class AuthenticationSuccessHandler extends WebFilterChainServerAuthenticationSuccessHandler {
 
+    final Logger logger = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
+
+    @Autowired
+    RedisUtil redisUtil;
+
     @Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
+
         ServerWebExchange exchange = webFilterExchange.getExchange();
         ServerHttpResponse response = exchange.getResponse();
         ServerHttpRequest request = exchange.getRequest();
@@ -40,12 +52,14 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         ObjectMapper mapper = new ObjectMapper();
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
             final String timeSalt=Long.toString(System.currentTimeMillis());
-
-            final StringBuffer authValue = new StringBuffer(userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), timeSalt));
-            authValue.append("::"+timeSalt);
-//            webFilterExchange.getExchange().getLogPrefix()
+            final String userBasic64Random = Double.toString(Math.random());
+            final String userBasic64RandomKey = userDetails.getUsername()+webFilterExchange.getExchange().getLogPrefix();
+            final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(24*60*60L)));
+            final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
+            redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX+userBasic64RandomKey,userBasic64Random,timeSaltChangeInterval);
+            final StringBuffer authValue = new StringBuffer(userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random));
+            authValue.append(basic64SplitStr+userBasic64RandomKey);
             byte[] authorization = authValue.toString().getBytes();
             String token = Base64.getEncoder().encodeToString(authorization);
             if (userDetails instanceof LoginUserDetails) {
@@ -55,7 +69,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             wsResponse.setResult(userDetails);
             dataBytes = mapper.writeValueAsBytes(wsResponse);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage(),ex);
             JsonObject result = new JsonObject();
             result.addProperty("status", MessageCode.COMMON_FAILURE.getCode());
             result.addProperty("message", "授权异常");
@@ -64,14 +78,4 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));
     }
-
-
-//    private LoginUserDetails buildUser(User user) {
-//        LoginUserDetails userDetails = new LoginUserDetails();
-//        userDetails.setUsername(user.getUsername());
-//        userDetails.setPassword(user.getPassword().substring(user.getPassword().lastIndexOf("}") + 1, user.getPassword().length()));
-//        return userDetails;
-//    }
-
-
 }

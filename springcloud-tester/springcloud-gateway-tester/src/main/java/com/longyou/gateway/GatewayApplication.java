@@ -16,7 +16,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.pattern.PathPatternParser;
 
 @SpringBootApplication(
-    scanBasePackages = {"com.longyou.gateway"}
+    scanBasePackages = {"com.longyou.gateway","org.cloud.core.redis"}
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession

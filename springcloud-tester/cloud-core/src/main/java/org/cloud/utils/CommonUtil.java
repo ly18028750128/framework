@@ -3,6 +3,8 @@ package org.cloud.utils;
 
 import org.apache.catalina.util.RequestUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public final class CommonUtil {
+
+    Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+
     private CommonUtil() {
     }
 
@@ -48,10 +53,15 @@ public final class CommonUtil {
      * @return
      */
     public LoginUserDetails getLoginUser(HttpServletRequest request) {
-        final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
-        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-        ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
-        return responseEntity.getBody();
+        try {
+            final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
+            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
+            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
+            return responseEntity.getBody();
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            return null;
+        }
     }
 
     public LoginUserDetails getLoginUser() {

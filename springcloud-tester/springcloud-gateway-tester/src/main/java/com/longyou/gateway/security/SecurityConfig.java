@@ -30,8 +30,8 @@ public class SecurityConfig {
     private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
     private AuthenticationFaillHandler authenticationFaillHandler;
-//    @Autowired
-//    private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
+    @Autowired
+    private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
 
 
     //security的鉴权排除列表
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .formLogin().loginPage("/auth/login")
                 .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
                 .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
-                .and().exceptionHandling().authenticationEntryPoint(new HttpBasicServerAuthenticationEntryPoint())  //基于http的接口请求鉴权失败
+                .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
                 .and().csrf().disable()//必须支持跨域
                 .logout().logoutSuccessHandler(new HttpStatusReturningServerLogoutSuccessHandler(HttpStatus.OK)).logoutUrl("/auth/logout")
         ;

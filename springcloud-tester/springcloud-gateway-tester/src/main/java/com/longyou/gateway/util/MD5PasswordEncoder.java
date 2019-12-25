@@ -1,8 +1,11 @@
 package com.longyou.gateway.util;
 
 import com.longyou.gateway.filter.CrosWebFilter;
+import org.cloud.constant.CoreConstant;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,22 +22,22 @@ public class MD5PasswordEncoder implements PasswordEncoder {
     @Value("${spring.security.password_salt:}")
     String salt;
 
+    @Autowired
+    RedisUtil redisUtil;
+
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         String sRawPassword = (String) rawPassword;
-        if (!encodedPassword.equals(MD5Encoder.encode(sRawPassword, salt))) {   //如果用明文加盐密码处理不了，那么用basic 反向加密处理
-            final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(5 * 60 * 1000)));
-            final String[] values = sRawPassword.split("::");
-            if(values.length<2){
-                return false;
-            }
-            final long timeSalt = Long.parseLong(values[1]);
-            if(System.currentTimeMillis() - timeSalt>timeSaltChangeInterval){   //如果超出时间，那么返回false;
-                return false;
-            }
+        final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
+        final String[] values = sRawPassword.split(basic64SplitStr);
+        if (values.length == 1) {
+            return encodedPassword.equals(MD5Encoder.encode(sRawPassword, salt));
+        } else if (values.length == 2) {
+            final String userBasic64RandomKey = values[1];
+            String salt = (String)redisUtil.get(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX+userBasic64RandomKey);
             final String password = values[0];
-            return password.equals(MD5Encoder.encode(encodedPassword, Long.toString(timeSalt)));
+            return password.equals(MD5Encoder.encode(encodedPassword, salt));
         }
-        return true;
+        return false;
     }
 }

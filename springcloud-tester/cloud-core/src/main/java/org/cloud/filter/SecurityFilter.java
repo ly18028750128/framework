@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -40,17 +41,18 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-        if (isExcludeUri) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-            RequestContextManager.single().setRequestContext(requestContext);
-            return;
-        }
-        // 设置上下文信息
+
+        // 设置上下文的用户信息
         HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
         LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
-        requestContext.setUser(user);
+        if(user!=null){
+            requestContext.setUser(user);
+        }
         RequestContextManager.single().setRequestContext(requestContext);
-
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        if (isExcludeUri) {
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+        }else if(user==null){
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }
