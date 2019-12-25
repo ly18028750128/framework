@@ -31,16 +31,8 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
 
     @Override
     public Mono<Void> onLogoutSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
-        ServerWebExchange exchange = webFilterExchange.getExchange();
-        ServerHttpResponse response = exchange.getResponse();
-        //设置headers
-        HttpHeaders httpHeaders = response.getHeaders();
-        httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
-        httpHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-        //设置body
-        WsResponse<String> wsResponse = WsResponse.success();
-        byte[] dataBytes = {};
         try {
+            // 退出时将生成的随机加密值给清空
             final String userBasic64RandomKey = authentication.getName()+webFilterExchange.getExchange().getLogPrefix();
             redisUtil.remove(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX+userBasic64RandomKey);
         } catch (Exception ex) {
