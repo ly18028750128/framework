@@ -2,6 +2,7 @@ package org.cloud.exception.handler;
 
 import org.cloud.exception.BusinessException;
 import org.cloud.vo.ResponseResult;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     final  Logger logger = LoggerFactory.getLogger(GlobExceptionHandler.class);
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public Map<String,Object> handlerHttpClientErrorException(HttpClientErrorException e, HttpServletResponse response){
+    public Map<String,Object> handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response){
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(e.getStatusCode().value());
@@ -29,7 +30,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public Map<String,Object> handlerHttpClientErrorException(RuntimeException e, HttpServletResponse response){
+    public Map<String,Object> handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response){
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -38,7 +39,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public Map<String,Object> handlerBusinessException(BusinessException e, HttpServletResponse response){
+    public Map<String,Object> handlerBusinessException(@NotNull BusinessException e,@NotNull HttpServletResponse response){
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -47,7 +48,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public Map<String,Object> handlerException(Exception e, HttpServletResponse response){
+    public Map<String,Object> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response){
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
