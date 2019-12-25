@@ -23,6 +23,10 @@ public class DataInterfaceController {
         queryParamVO.setPageSize(pageSize);
         Page<?> result = dataInterfaceService.selectPageList(queryParamVO);
 
+//        if(result!=null){
+//            throw new Exception("测试的错误信息！");
+//        }
+
         return new PageInfo<>(result);
     }
 
