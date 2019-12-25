@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,10 +60,14 @@ public final class CommonUtil {
             HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
             ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
             return responseEntity.getBody();
-        }catch (Exception e){
-            logger.error(e.getMessage(),e);
-            return null;
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
+                logger.error(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
+        return null;
     }
 
     public LoginUserDetails getLoginUser() {

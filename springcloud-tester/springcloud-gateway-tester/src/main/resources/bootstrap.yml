@@ -29,8 +29,8 @@ spring:
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludeMicroServices: /COMMON-SERVICE/**  #网关转发时权限权限在各微服务调用网关的登录信息来处理，这里过滤掉不验证
-    excludedAuthPages: /login?logout,/auth/login,,/vueadmin/**,*/logout,
-                      ${management.endpoints.web.base-path:monitor}/health,
+    excludedAuthPages: /login?logout,/auth/login,,/vueadmin/**,*/logout,\
+                      ${management.endpoints.web.base-path:monitor}/health,\
                       /api/socket/**,/user/info/authentication*,/user/info/salt,${spring.security.excludeMicroServices:}
     user:
       name: admin

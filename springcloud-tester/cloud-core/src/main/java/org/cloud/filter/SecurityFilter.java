@@ -37,22 +37,23 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         final String requestUri = httpServletRequest.getRequestURI();
-        boolean isExcludeUri = CommonUtil.single().pathMatch(requestUri,excludedAuthPages);
+        boolean isExcludeUri = CommonUtil.single().pathMatch(requestUri, excludedAuthPages);
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
 
         // 设置上下文的用户信息
-        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
-        LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
-        if(user!=null){
-            requestContext.setUser(user);
+        if (!isExcludeUri) {
+            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
+            LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
+            if (user != null) {
+                requestContext.setUser(user);
+            } else {
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return;
+            }
         }
         RequestContextManager.single().setRequestContext(requestContext);
-        if (isExcludeUri) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        }else if(user==null){
-            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-        }
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
