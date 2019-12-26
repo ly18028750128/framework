@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @RequestMapping("/authentication")
     public UserDetails getAuthentication(Authentication authentication, ServerHttpResponse response) {
-
         if(authentication==null){
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return null;
         }
         return (UserDetails) authentication.getPrincipal();
