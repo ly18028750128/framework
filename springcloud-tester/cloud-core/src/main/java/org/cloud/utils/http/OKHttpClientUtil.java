@@ -49,11 +49,11 @@ public final class OKHttpClientUtil {
 
     public Call createPostCall(HttpRequestParams httpRequestParams, String url) throws Exception {
         MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
-        return createPostCall(httpRequestParams,url,mediaTypeJSON);
+        return createPostCall(httpRequestParams, url, mediaTypeJSON);
     }
 
     // 获取数据进行异步的call，针对post请求
-    public Call createPostCall(HttpRequestParams httpRequestParams, String url,MediaType mediaType) throws Exception {
+    public Call createPostCall(HttpRequestParams httpRequestParams, String url, MediaType mediaType) throws Exception {
         Request.Builder request = new Request.Builder();
         // 设置header头
         httpRequestParams.getHeaders().forEach((key, value) -> {
@@ -86,9 +86,9 @@ public final class OKHttpClientUtil {
             }
             request.url(urlBuilder.build());
 
-            if(mediaType.type().equals(MediaType.parse("application/xml").type())){
+            if (mediaType.type().equals(MediaType.parse("application/xml").type())) {
                 request.post(RequestBody.create(XmlUtil.single().Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
-            }else{
+            } else {
                 request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
             }
         }
@@ -105,7 +105,7 @@ public final class OKHttpClientUtil {
 
     // 同步发送POST请求
     public String postResponse(HttpRequestParams httpRequestParams, String url) throws Exception {
-        ResponseBody body =  createPostCall(httpRequestParams, url).execute().body();
+        ResponseBody body = createPostCall(httpRequestParams, url).execute().body();
         String result = body.string();
         body.close();
         return result;
