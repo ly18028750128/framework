@@ -2,6 +2,7 @@ package org.cloud.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,15 @@ import java.io.IOException;
 
 public class XmlUtil {
 
+    private XmlUtil(){};
+
+    private  final static XmlUtil instance = new XmlUtil();
+
     private static final ObjectMapper OBJECT_MAPPER = new XmlMapper();
+
+    public static XmlUtil single(){
+        return instance;
+    }
 
     /**
      * 将Object转换为XML字符串
@@ -17,7 +26,7 @@ public class XmlUtil {
      * @return
      * @throws JsonProcessingException
      */
-    public static String Object2XmlString(@NotNull Object object) throws JsonProcessingException {
+    public String Object2XmlString(@NotNull Object object) throws JsonProcessingException {
         return OBJECT_MAPPER.writeValueAsString(object);
     }
 
@@ -29,7 +38,7 @@ public class XmlUtil {
      * @return
      * @throws IOException
      */
-    public static <T> T xmlString2Object(@NotNull String content, @NotNull Class<T> tClass) throws IOException {
+    public <T> T xmlString2Object(@NotNull String content, @NotNull Class<T> tClass) throws IOException {
         return OBJECT_MAPPER.readValue(content, tClass);
     }
 }

@@ -87,7 +87,7 @@ public final class OKHttpClientUtil {
             request.url(urlBuilder.build());
 
             if(mediaType.type().equals(MediaType.parse("application/xml").type())){
-                request.post(RequestBody.create(XmlUtil.Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
+                request.post(RequestBody.create(XmlUtil.single().Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
             }else{
                 request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
             }
