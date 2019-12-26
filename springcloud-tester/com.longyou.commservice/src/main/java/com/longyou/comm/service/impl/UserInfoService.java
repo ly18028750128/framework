@@ -6,6 +6,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -16,6 +17,7 @@ public class UserInfoService implements IUserInfoService {
     UserInfoMapper userInfoMapper ;
 
     @Override
+    @Transactional(readOnly = true)
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         return userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
     }
