@@ -5,10 +5,6 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
 public final class OKHttpClientUtil {
 
     Logger logger = LoggerFactory.getLogger(OKHttpClientUtil.class);
@@ -50,8 +46,13 @@ public final class OKHttpClientUtil {
         return okHttpClient.newCall(request.build());
     }
 
-    // 获取数据进行异步的call，针对post请求
     public Call createPostCall(HttpRequestParams httpRequestParams, String url) throws Exception {
+        MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
+        return createPostCall(httpRequestParams,url,mediaTypeJSON);
+    }
+
+    // 获取数据进行异步的call，针对post请求
+    public Call createPostCall(HttpRequestParams httpRequestParams, String url,MediaType mediaType) throws Exception {
         Request.Builder request = new Request.Builder();
         // 设置header头
         httpRequestParams.getHeaders().forEach((key, value) -> {
@@ -83,20 +84,25 @@ public final class OKHttpClientUtil {
                 });
             }
             request.url(urlBuilder.build());
-            MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
-            request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaTypeJSON));
+            request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
         }
         return okHttpClient.newCall(request.build());
     }
 
     // 同步请求GET请求
     public String getResponse(HttpRequestParams httpRequestParams, String url) throws Exception {
-        return createGetCall(httpRequestParams, url).execute().body().string();
+        ResponseBody body = createGetCall(httpRequestParams, url).execute().body();
+        String result = body.string();
+        body.close();
+        return result;
     }
 
     // 同步发送POST请求
     public String postResponse(HttpRequestParams httpRequestParams, String url) throws Exception {
-        return createPostCall(httpRequestParams, url).execute().body().string();
+        ResponseBody body =  createPostCall(httpRequestParams, url).execute().body();
+        String result = body.string();
+        body.close();
+        return result;
     }
 
     public WebSocket connectionWebsocket(String url, WebSocketListener webSocketListener) {
