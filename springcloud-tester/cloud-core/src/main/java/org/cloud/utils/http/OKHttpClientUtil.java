@@ -2,6 +2,7 @@ package org.cloud.utils.http;
 
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
+import org.cloud.utils.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +85,12 @@ public final class OKHttpClientUtil {
                 });
             }
             request.url(urlBuilder.build());
-            request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
+
+            if(mediaType.type().equals(MediaType.parse("application/xml").type())){
+                request.post(RequestBody.create(XmlUtil.Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
+            }else{
+                request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
+            }
         }
         return okHttpClient.newCall(request.build());
     }
