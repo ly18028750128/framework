@@ -1,6 +1,7 @@
 package com.longyou.gateway.security.controller;
 
 import org.cloud.utils.HttpServletUtil;
+import org.cloud.utils.http.OKHttpClientUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -19,6 +20,7 @@ public class UserController {
         if(authentication==null){
             return null;
         }
+
         return (UserDetails) authentication.getPrincipal();
     }
 
