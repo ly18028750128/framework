@@ -9,6 +9,7 @@ import com.longyou.comm.service.IUserInfoService;
 import com.netflix.ribbon.proxy.annotation.Http;
 import okhttp3.Call;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.userinfo.LoginUserGetInterface;
@@ -52,9 +53,9 @@ public class WeixinLoginUserGetService implements LoginUserGetInterface {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         final Call call = OKHttpClientUtil.single().createGetCall(httpRequestParams, String.format(wenxinLoginUrl, microAppConfig.getAppid(), microAppConfig.getAppPassword(), micrLoginCode));
 
-        Response responeWexinLoginInfo = call.execute();
-        Map weixinUserMap = JSON.parseObject(responeWexinLoginInfo.body().string(),Map.class);
-        responeWexinLoginInfo.body().close();
+        ResponseBody responeWexinLoginInfo = call.execute().body();
+        Map weixinUserMap = JSON.parseObject(responeWexinLoginInfo.string(),Map.class);
+        responeWexinLoginInfo.close();
         final String userName = (String)weixinUserMap.get("openid");
 
         if(userName == null){

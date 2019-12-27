@@ -85,8 +85,8 @@ public final class OKHttpClientUtil {
                 });
             }
             request.url(urlBuilder.build());
-
-            if (mediaType.type().equals(MediaType.parse("application/xml").type())) {
+            MediaType xmlMediaType = MediaType.parse("application/xml");
+            if (mediaType.type().equalsIgnoreCase(xmlMediaType.type()) && mediaType.subtype().equalsIgnoreCase(xmlMediaType.subtype()) ) {
                 request.post(RequestBody.create(XmlUtil.single().Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
             } else {
                 request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));

@@ -1,5 +1,6 @@
 package org.cloud.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.cloud.deserializer.GrantedAuthorityDeserializer;
 import org.springframework.security.core.GrantedAuthority;
@@ -45,8 +46,8 @@ public class LoginUserDetails implements UserDetails {
     @Override
     @JsonDeserialize(using = GrantedAuthorityDeserializer.class)
     public Collection<GrantedAuthority> getAuthorities() {
-        if (roles != null && !roles.isEmpty()) {
-            authorities = AuthorityUtils.createAuthorityList(roles.toArray(new String[]{}));
+        if (getRoles() != null && !getRoles().isEmpty()) {
+            authorities = AuthorityUtils.createAuthorityList(getRoles().toArray(new String[]{}));
         }
         return authorities;
     }
@@ -90,6 +91,10 @@ public class LoginUserDetails implements UserDetails {
     }
 
     public Collection<String> getRoles() {
+        if(roles==null || roles.isEmpty()){
+            roles = new ArrayList<>();
+            roles.add(getDefaultRole());
+        }
         return roles;
     }
 

@@ -42,7 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
 
-        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
+//        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
         LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
 
         // 设置上下文的用户信息

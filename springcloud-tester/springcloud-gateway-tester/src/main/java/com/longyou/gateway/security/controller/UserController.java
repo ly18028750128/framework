@@ -11,17 +11,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/user/info")
 public class UserController {
     @RequestMapping("/authentication")
-    public UserDetails getAuthentication(Authentication authentication, ServerHttpResponse response) {
-        if(authentication==null){
-            return null;
+    public Mono<UserDetails>  getAuthentication(Authentication authentication, ServerHttpResponse response) {
+        UserDetails user = null;
+        if(authentication==null || authentication.getPrincipal() == null){
+            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        }else{
+            user = (UserDetails) authentication.getPrincipal();
         }
-
-        return (UserDetails) authentication.getPrincipal();
+        return Mono.just(user);
     }
 
     @Value("${spring.security.password_salt:}")
