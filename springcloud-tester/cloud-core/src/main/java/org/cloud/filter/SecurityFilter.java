@@ -41,10 +41,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-
-//        HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(httpServletRequest);
         LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
-
         // 设置上下文的用户信息
         if ( (!isExcludeUri) && (user == null) ) {
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -53,7 +50,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (user != null) {
             requestContext.setUser(user);
         }
-
         RequestContextManager.single().setRequestContext(requestContext);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }

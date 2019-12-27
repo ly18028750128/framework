@@ -93,5 +93,21 @@ public class RestTemplateUtil {
         return headers;
     }
 
+    public HttpHeaders getHttpHeadersFromHttpRequest(HttpServletRequest request,String[] headerNameContains) {
+        HttpHeaders headers = new HttpHeaders();
+        for(String containName:headerNameContains){
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String key = (String) headerNames.nextElement();
+                if(key.equals(containName)){
+                    String value = request.getHeader(key);
+                    headers.add(key, value);
+                    break;
+                }
+            }
+        }
+        return headers;
+    }
+
 
 }

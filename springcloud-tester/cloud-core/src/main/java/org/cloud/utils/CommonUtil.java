@@ -50,15 +50,17 @@ public final class CommonUtil {
 
     /**
      * 获取当前登录用户
-     *
      * @param request
      * @return
      */
     public LoginUserDetails getLoginUser(HttpServletRequest request) {
         try {
             final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
-            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request);
-            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, LoginUserDetails.class);
+            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request,new String[]{"authorization","cookie"});
+            if(headers.size()==0){
+                return null;
+            }
+            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
             return responseEntity.getBody();
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {

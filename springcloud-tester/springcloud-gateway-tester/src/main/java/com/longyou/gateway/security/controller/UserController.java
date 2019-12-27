@@ -18,33 +18,14 @@ import reactor.core.publisher.Mono;
 public class UserController {
     @RequestMapping("/authentication")
     public Mono<UserDetails>  getAuthentication(Authentication authentication, ServerHttpResponse response) {
-        UserDetails user = null;
         if(authentication==null || authentication.getPrincipal() == null){
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+//            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+            return Mono.empty();
         }else{
-            user = (UserDetails) authentication.getPrincipal();
+            UserDetails user = (UserDetails) authentication.getPrincipal();
+            return Mono.just(user);
         }
-        return Mono.just(user);
     }
 
-    @Value("${spring.security.password_salt:}")
-    String salt;
 
-    /**
-     * 增加salt防止密码破解，由于md5加密是不可逆的
-     *
-     * @return
-     */
-    @RequestMapping("/salt")
-    public String getSalt() {
-        return salt;
-    }
-
-//    @RequestMapping("/logout")
-//    public String logout(HttpServletRequest request, HttpServletResponse response,Authentication authentication) {
-//        if (authentication != null) {
-//            new CookieClearingLogoutHandler("remember-me").logout(request, response, authentication);
-//        }
-//        return "welcome";
-//    }
 }
