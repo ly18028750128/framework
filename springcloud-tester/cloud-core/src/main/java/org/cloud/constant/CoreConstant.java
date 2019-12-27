@@ -74,6 +74,6 @@ public final class CoreConstant {
     public final static String _REDIS_USER_SUCCESS_TOKEN_PREFIX = "USER:LOGIN:SUCCESS:NANCE:";
 
     // 改动后所有的basic64验证将全部失效！！！！,也可以通过system.auth_basic64_split配置覆盖这个值
-    public final static String _USER_BASIC64_SPLIT_STR = "adnf56ds34fj232lnz81h7a91d5f43a343n3zb0ga";
+    public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
 
 }
