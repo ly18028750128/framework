@@ -2,9 +2,12 @@ package org.cloud.utils.http;
 
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
+import org.cloud.utils.SystemStringUtil;
 import org.cloud.utils.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public final class OKHttpClientUtil {
 
@@ -19,7 +22,12 @@ public final class OKHttpClientUtil {
     private final OkHttpClient okHttpClient;
 
     private OKHttpClientUtil() {
-        okHttpClient = OKHttpClientBuilder.buildOKHttpClient().build();
+        okHttpClient = OKHttpClientBuilder.buildOKHttpClient()
+                .callTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .build();
         okHttpClient.dispatcher().setMaxRequests(10000);
         okHttpClient.dispatcher().setMaxRequestsPerHost(5000);  //每台服务器最大5000个请求
     }
@@ -55,6 +63,7 @@ public final class OKHttpClientUtil {
     // 获取数据进行异步的call，针对post请求
     public Call createPostCall(HttpRequestParams httpRequestParams, String url, MediaType mediaType) throws Exception {
         Request.Builder request = new Request.Builder();
+
         // 设置header头
         httpRequestParams.getHeaders().forEach((key, value) -> {
             if (value != null) {
@@ -64,16 +73,16 @@ public final class OKHttpClientUtil {
         // 如果requestbody为空，那么将查询参数按form表单的形式提交
         if (httpRequestParams.getRequestBody() == null || httpRequestParams.getRequestBody().isEmpty()) {
             FormBody.Builder formBodyBuilder = new FormBody.Builder();
-            if (httpRequestParams.getQueryParams() != null) {
+            request.url(url);
+            if (httpRequestParams.getQueryParams() != null && !httpRequestParams.getQueryParams().isEmpty()) {
                 httpRequestParams.getQueryParams().forEach((key, value) -> {
                     if (key != null && value != null) {
                         formBodyBuilder.add(key, value.toString());
                     }
                 });
+                FormBody formBody = formBodyBuilder.build();
+                request.post(formBody);
             }
-            FormBody formBody = formBodyBuilder.build();
-            request.url(url);
-            request.post(formBody);
         } else {
             //如果getRequestBody不为空那么将其添加到参数中去
             HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
@@ -85,12 +94,18 @@ public final class OKHttpClientUtil {
                 });
             }
             request.url(urlBuilder.build());
-            MediaType xmlMediaType = MediaType.parse("application/xml");
-            if (mediaType.type().equalsIgnoreCase(xmlMediaType.type()) && mediaType.subtype().equalsIgnoreCase(xmlMediaType.subtype()) ) {
-                request.post(RequestBody.create(XmlUtil.single().Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
-            } else {
-                request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
+            if (SystemStringUtil.single().isEmpty(httpRequestParams.getRequestBodyStr())) {
+                MediaType xmlMediaType = MediaType.parse("application/xml");
+                if (mediaType.type().equalsIgnoreCase(xmlMediaType.type()) && mediaType.subtype().equalsIgnoreCase(xmlMediaType.subtype())) {
+                    request.post(RequestBody.create(XmlUtil.single().Object2XmlString(httpRequestParams.getRequestBody()), mediaType));
+                } else {
+                    request.post(RequestBody.create(JSON.toJSONString(httpRequestParams.getRequestBody()), mediaType));
+                }
             }
+        }
+
+        if (!SystemStringUtil.single().isEmpty(httpRequestParams.getRequestBodyStr())) {
+            request.post(RequestBody.create(httpRequestParams.getRequestBodyStr(), mediaType));
         }
         return okHttpClient.newCall(request.build());
     }

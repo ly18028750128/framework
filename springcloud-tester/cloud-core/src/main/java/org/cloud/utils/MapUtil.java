@@ -21,7 +21,11 @@ public final class MapUtil {
         Map<String,String> result=new HashMap<>();
         for(String key:mapValue.keySet()){
             Object value = mapValue.get(key);
-            if(value!=null){
+            if(value==null) continue;
+
+            if(value instanceof String){
+                result.put(key, (String)value);
+            }else{
                 result.put(key, JSON.toJSONString(value));
             }
         }

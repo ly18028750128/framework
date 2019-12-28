@@ -49,4 +49,14 @@ public class HttpRequestParams {
         this.requestBody = requestBody;
     }
 
+    private String requestBodyStr;
+
+
+    public String getRequestBodyStr() {
+        return requestBodyStr;
+    }
+
+    public void setRequestBodyStr(String requestBodyStr) {
+        this.requestBodyStr = requestBodyStr;
+    }
 }
