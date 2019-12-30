@@ -1,8 +1,0 @@
-org\cloud\utils\XmlUtilTest.class
-org\cloud\context\RequestContextManagerTest.class
-org\cloud\context\RequestContextManagerTest$1.class
-org\cloud\utils\CollectionUtilTest.class
-org\cloud\core\AppTest.class
-org\cloud\utils\MD5EncoderTest.class
-org\cloud\context\RequestContextManagerTest$2.class
-org\cloud\utils\process\ProcessUtilTest.class
