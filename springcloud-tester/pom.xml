@@ -151,8 +151,8 @@
     </dependencyManagement>
     <modules>
         <module>springcloud-eureka-tester</module>
-        <module>springcloud-zuul-tester</module>
-        <module>springcloud-eureka-client-tester</module>
+<!--        <module>springcloud-zuul-tester</module>-->
+<!--        <module>springcloud-eureka-client-tester</module>-->
         <module>cloud-core</module>
         <module>springcloud-config-tester</module>
 <!--        <module>jdk8.tester</module>-->
