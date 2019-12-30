@@ -2,6 +2,7 @@ package org.cloud.vo;
 
 import org.cloud.constant.CoreConstant;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
@@ -44,16 +45,24 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
 
     /**
      * 批量增加返回数据，如果为空那么直接赋值，如果当前为集合，那么增加到尾部，如果不为集合那么，将原来的值覆盖
-     * @param values
+     *
+     * @param value
      */
-    public void addDatas(Collection<Object> values) {
+    public void addData(Object value) {
         Object datas = this.get(_DATA_KEY);
         if (datas == null) {
-            setData(values);
-        } else if (datas instanceof Collection) {
-            ((Collection) datas).addAll(values);
-        }else{
-            setData(values);
+            this.put(_DATA_KEY, new ArrayList<>());
+            datas = this.get(_DATA_KEY);
+        }
+        if (datas instanceof Collection) {
+            Collection dataCollection = ((Collection) datas);
+            if (value instanceof Collection) {
+                dataCollection.addAll((Collection) value);
+            } else {
+                dataCollection.add(value);
+            }
+        } else {
+            setData(value);
         }
     }
 }
