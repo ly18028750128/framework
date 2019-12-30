@@ -1,0 +1,14 @@
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\util\MD5PasswordEncoder.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\handler\AuthenticationSuccessHandler.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\handler\CustomHttpBasicServerAuthenticationEntryPoint.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\handler\AuthenticationFaillHandler.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\response\WsResponse.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\handler\CustomServerLogoutSuccessHandler.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\GatewayApplication.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\SecurityUserDetailsService.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\filter\CrosWebFilter.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\SecurityConfig.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\config\vo\CorsConfigVO.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\controller\UserController.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\security\response\MessageCode.java
+D:\longyou\workspace\git\oschina\springcloud-tester\springcloud-tester\springcloud-gateway-tester\src\main\java\com\longyou\gateway\config\RouteConfiguration.java

@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/longyou/springcloud-config # 配置git仓库的地址
+          search-paths: ${sys.config_path:tester}  #git仓库地址下的相对地址，可以配置多个，用,分割。
+          username: 18028750128@126.com  #账号密码写真实的快一些我觉得，不使用也能访问有点慢
+          password: sskxttkl11
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /monitor
+      exposure:
+        include: '*'
