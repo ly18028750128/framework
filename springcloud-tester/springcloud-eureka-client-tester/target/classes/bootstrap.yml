@@ -1,0 +1,32 @@
+spring:
+  application:
+    group:
+    noGroupName: eureka-client # 对应config-server所获取的配置文件的{application}
+    name: ${spring.application.group:}${spring.application.noGroupName:}
+  security:
+    password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
+    excludedAuthPages: ${management.endpoints.web.base-path:monitor}/health,/api/socket/**
+    user:
+      name: admin
+      password: 123456
+
+  cloud:
+    config:
+      label: master
+      name: ${spring.application.noGroupName:}
+      profile: ${spring.profiles.active:dev}
+      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
+  profiles:
+    active: ${sys.curr_profile:dev}
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://172.16.1.51:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    username: framework
+    password: 1qaz@WSX
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+management:
+  endpoints:
+    web:
+      base-path: /monitor

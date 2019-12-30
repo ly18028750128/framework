@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameDataRestConfigMapper">
+  <resultMap id="BaseResultMap" type="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    <id column="data_code" jdbcType="VARCHAR" property="dataCode" />
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="method" jdbcType="CHAR" property="method" />
+    <result column="must_login" jdbcType="VARCHAR" property="mustLogin" />
+    <result column="login_bean" jdbcType="VARCHAR" property="loginBean" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    <result column="uri" jdbcType="LONGVARCHAR" property="uri" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    data_code, id, `method`, must_login, login_bean
+  </sql>
+  <sql id="Blob_Column_List">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    uri
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_frame_data_rest_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    delete from t_frame_data_rest_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_rest_config (data_code, id, `method`, 
+      must_login, login_bean, uri
+      )
+    values (#{dataCode,jdbcType=VARCHAR}, #{id,jdbcType=BIGINT}, #{method,jdbcType=CHAR}, 
+      #{mustLogin,jdbcType=VARCHAR}, #{loginBean,jdbcType=VARCHAR}, #{uri,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    insert into t_frame_data_rest_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        data_code,
+      </if>
+      <if test="id != null">
+        id,
+      </if>
+      <if test="method != null">
+        `method`,
+      </if>
+      <if test="mustLogin != null">
+        must_login,
+      </if>
+      <if test="loginBean != null">
+        login_bean,
+      </if>
+      <if test="uri != null">
+        uri,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataCode != null">
+        #{dataCode,jdbcType=VARCHAR},
+      </if>
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="method != null">
+        #{method,jdbcType=CHAR},
+      </if>
+      <if test="mustLogin != null">
+        #{mustLogin,jdbcType=VARCHAR},
+      </if>
+      <if test="loginBean != null">
+        #{loginBean,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null">
+        #{uri,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_rest_config
+    <set>
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="method != null">
+        `method` = #{method,jdbcType=CHAR},
+      </if>
+      <if test="mustLogin != null">
+        must_login = #{mustLogin,jdbcType=VARCHAR},
+      </if>
+      <if test="loginBean != null">
+        login_bean = #{loginBean,jdbcType=VARCHAR},
+      </if>
+      <if test="uri != null">
+        uri = #{uri,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_rest_config
+    set id = #{id,jdbcType=BIGINT},
+      `method` = #{method,jdbcType=CHAR},
+      must_login = #{mustLogin,jdbcType=VARCHAR},
+      login_bean = #{loginBean,jdbcType=VARCHAR},
+      uri = #{uri,jdbcType=LONGVARCHAR}
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longyou.comm.model.TFrameDataRestConfig">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    update t_frame_data_rest_config
+    set id = #{id,jdbcType=BIGINT},
+      `method` = #{method,jdbcType=CHAR},
+      must_login = #{mustLogin,jdbcType=VARCHAR},
+      login_bean = #{loginBean,jdbcType=VARCHAR}
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKeyWithLock" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    <!-- @mbg.generated: generated automatically, do not modify! -->
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_frame_data_rest_config
+    where data_code = #{dataCode,jdbcType=VARCHAR}
+    for update
+  </select>
+</mapper>

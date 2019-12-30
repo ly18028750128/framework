@@ -1,0 +1,22 @@
+eureka:
+  instance:
+    metadata-map:
+      user.name: admin
+      user.password: 1qaz@WSX
+    easeRenewalIntervalInSeconds: 10
+    health-check-url-path: /monitor/health
+    prefer-ip-address: true
+logging:
+  level:
+    org:
+      springcloud:
+        eureka:
+          client:
+            tester: DEBUG
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
+    com:
+      longyou:
+        springcloud: DEBUG
+    root: INFO
