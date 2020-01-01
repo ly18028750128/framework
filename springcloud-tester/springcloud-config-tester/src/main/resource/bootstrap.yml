@@ -5,3 +5,13 @@ eureka:
 spring:
   application:
     name: microservice-config-server
+encrypt:
+  rsa:
+    algorithm: default
+    salt: justtest
+    strong: true
+  key-store:
+    location: classpath:/server.jks
+    alias: config-server-key
+    password: 1qaz@WSX
+    secret: 1qaz@WSX
