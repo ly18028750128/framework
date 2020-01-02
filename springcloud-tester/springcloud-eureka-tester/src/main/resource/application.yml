@@ -1,26 +1,26 @@
 eureka:
-    client:
-        fetch-registry: true
-        register-with-eureka: true
-hello-service:
-    ribbon:
-        ConnectTimeout: 250
-        MaxAutoRetries: 1
-        MaxAutoRetriesNextServer: 2
-        OkToRetryOnAllOperations: true
-        ReadTimeout: l000
-hystrix:
-    command:
-        default:
-            execution:
-                isolation:
-                    thread:
-                        timeoutinMilliseconds: l0000
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    healthcheck:
+      enabled: true
+  instance:
+    health-check-url-path: /monitor/health
 ribbon:
-    ConnectTimeout: 10000
-    ReadTimeout: 10000
+  ConnectTimeout: 10000
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  OkToRetryOnAllOperations: true
+  ReadTimeout: 10000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutinMilliseconds: l0000
 spring:
-    cloud:
-        loadbalancer:
-            retry:
-                enabled: true
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
