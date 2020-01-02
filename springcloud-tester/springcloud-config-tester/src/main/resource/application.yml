@@ -7,19 +7,3 @@ spring:
           search-paths: ${sys.config_path:tester}
           username: 18028750128@126.com
           password: sskxttkl11
-  security:
-    basic:
-      enabled: true
-    user:
-      name: user
-      password: password123
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /monitor
-      exposure:
-        include: '*'

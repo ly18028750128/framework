@@ -1,17 +1,31 @@
 eureka:
-  client:
-    register-with-eureka: false
-    fetch-registry: false
+    client:
+        register-with-eureka: false
+        fetch-registry: false
 spring:
-  application:
-    name: microservice-config-server
+    security:
+        basic:
+            enabled: true
+        user:
+            name: administrator
+            password: admin2020pasword1qaz3edc
 encrypt:
-  rsa:
-    algorithm: default
-    salt: justtest
-    strong: true
-  key-store:
-    location: classpath:/server.jks
-    alias: config-server-key
-    password: 1qaz@WSX
-    secret: 1qaz@WSX
+    rsa:
+        algorithm: default
+        salt: justtest
+        strong: true
+    key-store:
+        location: classpath:/server.jks
+        alias: config-server-key
+        password: 1qaz@WSX
+        secret: 1qaz@WSX
+management:
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        enabled-by-default: true
+        web:
+            base-path: /monitor
+            exposure:
+                include: '*'
