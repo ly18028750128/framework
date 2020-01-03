@@ -7,6 +7,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 
 @SpringBootApplication(
 //        exclude = {SecurityAutoConfiguration.class}
+        scanBasePackages = {"org.springcloud.config"}
 )
 @EnableConfigServer
 public class ConfigServerApplication

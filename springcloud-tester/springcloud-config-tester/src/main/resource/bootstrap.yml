@@ -11,14 +11,17 @@ spring:
             password: admin2020pasword1qaz3edc
 encrypt:
     rsa:
-        algorithm: default
-        salt: justtest
-        strong: true
+#        algorithm: default
+#        salt: htcloud2020
+#        strong: false
     key-store:
         location: classpath:/server.jks
         alias: config-server-key
         password: 1qaz@WSX
         secret: 1qaz@WSX
+        type: jks
+#    key: htcloud201239193213214121s21312dsfas78fgedsf
+
 management:
     endpoint:
         health:
