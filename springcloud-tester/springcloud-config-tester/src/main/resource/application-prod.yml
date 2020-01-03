@@ -3,7 +3,7 @@ spring:
     config:
       server:
         git:
-          uri: http://office-dev03.ly-huangtu.cn:10001/dev_group/config.git # 配置git仓库的地址
+          uri: http://10.8.1.14:10001/dev_group/config.git # 配置git仓库的地址
           search-paths: ${sys.config_path:htcloud}  #git仓库地址下的相对地址，可以配置多个，用,分割。
           username: htconfig  #账号密码写真实的快一些我觉得，不使用也能访问有点慢
           password: htconfig123
