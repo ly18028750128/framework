@@ -10,7 +10,7 @@ spring:
             name: administrator
             password: admin2020pasword1qaz3edc
 encrypt:
-    rsa:
+#    rsa:
 #        algorithm: default
 #        salt: htcloud2020
 #        strong: false

@@ -1,22 +1,22 @@
-#spring:
-#  cloud:
-#    config:
-#      server:
-#        git:
-#          uri: https://gitee.com/longyou/springcloud-config
-#          search-paths: ${sys.config_path:tester}
-#          username: 18028750128@126.com
-#          password: sskxttkl11
-
 spring:
   cloud:
     config:
       server:
         git:
           uri: https://gitee.com/longyou/springcloud-config
-          search-paths: ${sys.config_path:htcloud}
+          search-paths: ${sys.config_path:tester}
           username: 18028750128@126.com
           password: sskxttkl11
+
+#spring:
+#  cloud:
+#    config:
+#      server:
+#        git:
+#          uri: https://gitee.com/longyou/springcloud-config
+#          search-paths: ${sys.config_path:htcloud}
+#          username: 18028750128@126.com
+#          password: sskxttkl11
 
 #spring:
 #  cloud:
