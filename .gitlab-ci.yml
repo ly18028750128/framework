@@ -1,0 +1,35 @@
+stages:
+- build
+- deploy_master
+- deploy_dev
+
+build_maven:
+  stage: build
+  script:
+  - echo "build maven....."
+  - mvn clean test
+deploy_dev:
+  stage: deploy_dev
+  script:
+  - echo "deploy_dev"
+  - echo "done"
+  - cd xgsixteen
+  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  - cd ../paycenter
+  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  only:
+  - dev
+
+
+deploy_master:
+  stage: deploy_master
+  script:
+  - echo "run java test....."
+  - cd xgsixteen
+  -  mvn clean package docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh xgsixteen_20004 "
+  - cd ../paycenter
+  -  mvn clean package docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh paycenter_20005 "
+  only:
+    - master
