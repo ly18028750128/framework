@@ -183,12 +183,12 @@
         <repository>
             <id>nexus-releases</id>
             <name>Nexus Release Repository</name>
-            <url>http://172.16.6.32:8082/repository/maven-releases/</url>
+            <url>http://172.16.4.24:10000/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Nexus Snapshot Repository</name>
-            <url>http://172.16.6.32:8082/repository/maven-snapshots/</url>
+            <url>http://172.16.4.24:10000/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>

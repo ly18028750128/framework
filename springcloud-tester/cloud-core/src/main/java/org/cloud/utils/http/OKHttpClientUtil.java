@@ -22,15 +22,11 @@ public final class OKHttpClientUtil {
     private final OkHttpClient okHttpClient;
 
     private OKHttpClientUtil() {
-        okHttpClient = OKHttpClientBuilder.buildOKHttpClient()
-                .callTimeout(60, TimeUnit.SECONDS)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .build();
+        okHttpClient = OKHttpClientBuilder.single().buildOKHttpClient().build();
         okHttpClient.dispatcher().setMaxRequests(10000);
         okHttpClient.dispatcher().setMaxRequestsPerHost(5000);  //每台服务器最大5000个请求
     }
+
 
     public OkHttpClient getOkHttpClient() {
         return okHttpClient;
