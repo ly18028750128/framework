@@ -13,9 +13,14 @@ deploy_dev:
   script:
   - echo "deploy_dev"
   - echo "done"
-  - cd xgsixteen
+  - cd springcloud-tester
+  - cd springcloud-eureka-tester
   -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
-  - cd ../paycenter
+  - cd ../springcloud-config-tester
+  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  - cd ../com.longyou.commservice
+  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  - cd ../springcloud-gateway-tester
   -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
   only:
   - dev
@@ -25,11 +30,19 @@ deploy_master:
   stage: deploy_master
   script:
   - echo "run java test....."
-  - cd xgsixteen
-  -  mvn clean package docker:build  -Dsssversion='test' -DpushImage
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh xgsixteen_20004 "
-  - cd ../paycenter
-  -  mvn clean package docker:build  -Dsssversion='test' -DpushImage
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh paycenter_20005 "
+  - cd springcloud-tester
+  - cd springcloud-eureka-tester
+  -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_19999 "
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_20000 "
+  - cd ../springcloud-config-tester
+  -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_config_20001 "
+  - cd ../com.longyou.commservice
+  -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20001 "
+  - cd ../springcloud-gateway-tester
+  -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_gateway_20001 "
   only:
     - master

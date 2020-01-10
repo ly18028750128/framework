@@ -83,7 +83,7 @@
                 <version>0.4.13</version>
                 <artifactId>docker-maven-plugin</artifactId>
                 <configuration>
-    <imageName>172.16.4.24:10003/commservice:${sssversion}</imageName> 
+    <imageName>172.16.4.24:10003/springcloud_commservice:${sssversion}</imageName> 
     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
     <serverId>172.16.4.24:10003</serverId>
     <registryUrl>http://172.16.4.24:10003/</registryUrl>
