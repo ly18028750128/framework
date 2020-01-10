@@ -178,7 +178,7 @@
         <module>springcloud-gateway-tester</module>
         <module>com.longyou.commservice</module>
     </modules>
-    <distributionManagement>
+<distributionManagement>
         <!-- 两个ID必须与 setting.xml中的<server><id>nexus-releases</id></server>保持一致-->
         <repository>
             <id>nexus-releases</id>
@@ -191,4 +191,5 @@
             <url>http://172.16.4.24:10000/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
 </project>

@@ -41,9 +41,9 @@ deploy_master:
   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_config_20001 "
   - cd ../com.longyou.commservice
   -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20001 "
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20002 "
   - cd ../springcloud-gateway-tester
   -  mvn clean package deploy docker:build  -Dsssversion='test' -DpushImage
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_gateway_20001 "
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_gateway_20003 "
   only:
     - master
