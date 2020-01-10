@@ -7,6 +7,7 @@ build_maven:
   stage: build
   script:
   - echo "build maven....."
+  - cd springcloud-tester
   - mvn clean test
 deploy_dev:
   stage: deploy_dev
