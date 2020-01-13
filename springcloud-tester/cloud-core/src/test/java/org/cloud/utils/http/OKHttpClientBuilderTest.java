@@ -8,6 +8,6 @@ public class OKHttpClientBuilderTest {
 
     @Test
     public void testBuildOKHttpClient() throws Exception{
-        OKHttpClientBuilder.single().buildOKHttpClient("PKCS12","certs/szhtcloud.p12","1554920771");
+//        O0KHttpClientBuilder.single().buildOKHttpClient("PKCS12","D:/work/certs/apiclient_cert.p12","1554920771");
     }
 }
