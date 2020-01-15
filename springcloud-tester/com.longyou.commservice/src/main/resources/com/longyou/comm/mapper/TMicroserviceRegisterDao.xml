@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TMicroserviceRegisterDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TMicroserviceRegister">
+    <id column="microservice_id" jdbcType="INTEGER" property="microserviceId" />
+    <result column="microservice_name" jdbcType="VARCHAR" property="microserviceName" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    microservice_id, microservice_name, create_by, create_date, update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_microservice_register
+    where microservice_id = #{microserviceId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByMicroserviceName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_microservice_register
+    where microservice_name = #{microserviceName,jdbcType=VARCHAR}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_microservice_register
+    where microservice_id = #{microserviceId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="microservice_id" keyProperty="microserviceId" parameterType="org.cloud.model.TMicroserviceRegister" useGeneratedKeys="true">
+    insert into t_microservice_register (microservice_name, create_by, create_date, 
+      update_by, update_date)
+    values (#{microserviceName,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="microservice_id" keyProperty="microserviceId" parameterType="org.cloud.model.TMicroserviceRegister" useGeneratedKeys="true">
+    insert into t_microservice_register
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="microserviceName != null">
+        microservice_name,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="microserviceName != null">
+        #{microserviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TMicroserviceRegister">
+    update t_microservice_register
+    <set>
+      <if test="microserviceName != null">
+        microservice_name = #{microserviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where microservice_id = #{microserviceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TMicroserviceRegister">
+    update t_microservice_register
+    set microservice_name = #{microserviceName,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where microservice_id = #{microserviceId,jdbcType=INTEGER}
+  </update>
+</mapper>

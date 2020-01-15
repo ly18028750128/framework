@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameworkResourceDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TFrameworkResource">
+    <id column="resource_id" jdbcType="BIGINT" property="resourceId" />
+    <result column="resource_code" jdbcType="VARCHAR" property="resourceCode" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_path" jdbcType="VARCHAR" property="resourcePath" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="belong_microservice" jdbcType="VARCHAR" property="belongMicroservice" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    resource_id, resource_code, resource_name, resource_path, `method`, belong_microservice, 
+    create_by, create_date, update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_framework_resource
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByResourceCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_framework_resource
+    where resource_code = #{resourceCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_framework_resource
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="resource_id" keyProperty="resourceId" parameterType="org.cloud.model.TFrameworkResource" useGeneratedKeys="true">
+    insert into t_framework_resource (resource_code, resource_name, resource_path, 
+      `method`, belong_microservice, create_by, 
+      create_date, update_by, update_date
+      )
+    values (#{resourceCode,jdbcType=VARCHAR}, #{resourceName,jdbcType=VARCHAR}, #{resourcePath,jdbcType=VARCHAR}, 
+      #{method,jdbcType=VARCHAR}, #{belongMicroservice,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="resource_id" keyProperty="resourceId" parameterType="org.cloud.model.TFrameworkResource" useGeneratedKeys="true">
+    insert into t_framework_resource
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resourceCode != null">
+        resource_code,
+      </if>
+      <if test="resourceName != null">
+        resource_name,
+      </if>
+      <if test="resourcePath != null">
+        resource_path,
+      </if>
+      <if test="method != null">
+        `method`,
+      </if>
+      <if test="belongMicroservice != null">
+        belong_microservice,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resourceCode != null">
+        #{resourceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceName != null">
+        #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourcePath != null">
+        #{resourcePath,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null">
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="belongMicroservice != null">
+        #{belongMicroservice,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameworkResource">
+    update t_framework_resource
+    <set>
+      <if test="resourceCode != null">
+        resource_code = #{resourceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceName != null">
+        resource_name = #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourcePath != null">
+        resource_path = #{resourcePath,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null">
+        `method` = #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="belongMicroservice != null">
+        belong_microservice = #{belongMicroservice,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameworkResource">
+    update t_framework_resource
+    set resource_code = #{resourceCode,jdbcType=VARCHAR},
+      resource_name = #{resourceName,jdbcType=VARCHAR},
+      resource_path = #{resourcePath,jdbcType=VARCHAR},
+      `method` = #{method,jdbcType=VARCHAR},
+      belong_microservice = #{belongMicroservice,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </update>
+</mapper>

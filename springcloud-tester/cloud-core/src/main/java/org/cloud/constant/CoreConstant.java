@@ -76,4 +76,42 @@ public final class CoreConstant {
     // 改动后所有的basic64验证将全部失效！！！！,也可以通过system.auth_basic64_split配置覆盖这个值
     public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
 
+
+
+    /**
+     * 用户权限验证方式
+     */
+    public static enum AuthMethodMethod implements BasicEnum{
+
+        ALLSYSTEMUSER("ALLSYSTEMUSER","所有登录用户","rest.AuthMethodMethod.ALLSYSTEMUSER"),
+        BYUSERPERMISSION("BYUSERPERMISSION","通过用户所属权限验证","rest.AuthMethodMethod.BYUSERPERMISSION"),
+        NOAUTH("NOAUTH","不用授权","rest.AuthMethodMethod.BYUSERPERMISSION"),
+        ;
+
+        private String value;     // 值
+        private String name;  // 名称和描述
+        private String i18nValue;  // 国际化
+
+        AuthMethodMethod(String value, String name, String i18nValue) {
+            this.value = value;
+            this.name = name;
+            this.i18nValue = i18nValue;
+        }
+
+        @Override
+        public String value() {
+            return this.value;
+        }
+
+        @Override
+        public String i18nValue() {
+            return i18nValue;
+        }
+
+        @Override
+        public String description(){
+            return this.name;
+        }
+    }
+
 }
