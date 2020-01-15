@@ -58,17 +58,19 @@ public final class OKHttpClientBuilder {
     }
 
     public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCertsPath, final String trustCertsPassword) throws Exception {
+        return this.buildOKHttpClient(trustCertsType,trustCertsPath,trustCertsPassword,"TLSv1");
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCertsPath, final String trustCertsPassword,final String tlsVersion) throws Exception {
         InputStream inputStream = null;
         try {
             KeyStore keyStore = KeyStore.getInstance(trustCertsType);
-            inputStream = getClass().getClassLoader().getResourceAsStream(trustCertsPath);
+            inputStream= getClass().getClassLoader().getResourceAsStream(trustCertsPath);
             keyStore.load(inputStream, trustCertsPassword.toCharArray());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, trustCertsPassword.toCharArray());
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(keyStore);
-            final SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), new SecureRandom());
+            final SSLContext sslContext = SSLContext.getInstance(tlsVersion);
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             return buildOKHttpClient(sslSocketFactory);
         } catch (NoSuchAlgorithmException | KeyManagementException e) {

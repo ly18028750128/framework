@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameMenuDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TFrameMenu">
+    <id column="menu_id" jdbcType="BIGINT" property="menuId" />
+    <result column="menu_code" jdbcType="VARCHAR" property="menuCode" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="seq_no" jdbcType="INTEGER" property="seqNo" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="parent_menu_id" jdbcType="BIGINT" property="parentMenuId" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    menu_id, menu_code, menu_name, menu_url, seq_no, `status`, parent_menu_id, create_by, 
+    create_date, update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_menu
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_frame_menu
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="menu_id" keyProperty="menuId" parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
+    insert into t_frame_menu (menu_code, menu_name, menu_url, 
+      seq_no, `status`, parent_menu_id, 
+      create_by, create_date, update_by, 
+      update_date)
+    values (#{menuCode,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, 
+      #{seqNo,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{parentMenuId,jdbcType=BIGINT}, 
+      #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <select id="selectByMenuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_menu
+    where menu_code = #{menuCode,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertSelective" keyColumn="menu_id" keyProperty="menuId" parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
+    insert into t_frame_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="menuCode != null">
+        menu_code,
+      </if>
+      <if test="menuName != null">
+        menu_name,
+      </if>
+      <if test="menuUrl != null">
+        menu_url,
+      </if>
+      <if test="seqNo != null">
+        seq_no,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="parentMenuId != null">
+        parent_menu_id,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="menuCode != null">
+        #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null">
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null">
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="seqNo != null">
+        #{seqNo,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="parentMenuId != null">
+        #{parentMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameMenu">
+    update t_frame_menu
+    <set>
+      <if test="menuCode != null">
+        menu_code = #{menuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null">
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null">
+        menu_url = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="seqNo != null">
+        seq_no = #{seqNo,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="parentMenuId != null">
+        parent_menu_id = #{parentMenuId,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameMenu">
+    update t_frame_menu
+    set menu_code = #{menuCode,jdbcType=VARCHAR},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      seq_no = #{seqNo,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER},
+      parent_menu_id = #{parentMenuId,jdbcType=BIGINT},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where menu_id = #{menuId,jdbcType=BIGINT}
+  </update>
+</mapper>
