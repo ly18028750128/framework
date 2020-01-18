@@ -57,5 +57,5 @@ public class TFrameworkResource implements Serializable {
      */
     private Date updateDate;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6087342908235773196L;
 }

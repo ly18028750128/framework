@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameRoleDataDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TFrameRoleData">
+    <id column="data_auth_list_id" jdbcType="INTEGER" property="dataAuthListId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="data_dimension" jdbcType="VARCHAR" property="dataDimension" />
+    <result column="data_dimension_value" jdbcType="VARCHAR" property="dataDimensionValue" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    data_auth_list_id, role_id, data_dimension, data_dimension_value, create_by, create_date, 
+    update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_role_data
+    where data_auth_list_id = #{dataAuthListId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_role_data
+    where role_id = #{roleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_frame_role_data
+    where data_auth_list_id = #{dataAuthListId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.TFrameRoleData" useGeneratedKeys="true">
+    insert into t_frame_role_data (role_id, data_dimension, data_dimension_value, 
+      create_by, create_date, update_by, 
+      update_date)
+    values (#{roleId,jdbcType=INTEGER}, #{dataDimension,jdbcType=VARCHAR}, #{dataDimensionValue,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.TFrameRoleData" useGeneratedKeys="true">
+    insert into t_frame_role_data
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="dataDimension != null">
+        data_dimension,
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="dataDimension != null">
+        #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameRoleData">
+    update t_frame_role_data
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="dataDimension != null">
+        data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where data_auth_list_id = #{dataAuthListId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameRoleData">
+    update t_frame_role_data
+    set role_id = #{roleId,jdbcType=INTEGER},
+      data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where data_auth_list_id = #{dataAuthListId,jdbcType=INTEGER}
+  </update>
+</mapper>

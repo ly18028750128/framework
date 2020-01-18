@@ -13,10 +13,11 @@
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="full_name" jdbcType="VARCHAR" property="fullName"/>
         <result column="user_regist_source" jdbcType="VARCHAR" property="userRegistSource"/>
+        <result column="user_Type" jdbcType="VARCHAR" property="userType"/>
     </resultMap>
 
     <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
-        select id,user_name,password,default_Role
+        select id,user_name,password,default_Role,user_regist_source,user_type
         from t_frame_user
         where status = 1
         <if test="userName!=null or userName!=''">
@@ -30,7 +31,8 @@
         </if>
     </select>
 
-    <insert id="insertIntoUserInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    <insert id="insertIntoUserInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
         insert into t_frame_user(user_name,password,email,full_name,sex,create_by,create_date,update_by,update_date,status,default_role,user_type,user_regist_source,session_Key)
         values (#{userName},#{password},#{email},#{fullName},#{sex},#{createBy},CURRENT_TIMESTAMP,#{updateBy},CURRENT_TIMESTAMP,#{status},#{defaultRole},#{userType},#{userRegistSource},#{sessionKey})
     </insert>
@@ -61,5 +63,6 @@
         </set>
         WHERE id = #{id,jdbcType=INTEGER}
     </update>
+
 
 </mapper>

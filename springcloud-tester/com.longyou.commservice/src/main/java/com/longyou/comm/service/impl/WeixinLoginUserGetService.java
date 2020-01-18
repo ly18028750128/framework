@@ -34,9 +34,11 @@ public class WeixinLoginUserGetService implements LoginUserGetInterface {
     @Autowired
     UserInfoMapper userInfoMapper ;
 
-
     @Autowired
     MicroAppConfigList microAppConfigList;
+
+    @Autowired
+    IUserInfoService userInfoService;
 
     @Override
     @Transactional
@@ -88,7 +90,7 @@ public class WeixinLoginUserGetService implements LoginUserGetInterface {
             userDetails.setSessionKey(sessionKey);
             userInfoMapper.updateLoginUserById(userDetails);
         }
-        userDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
+        userDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
         return userDetails;
     }
 }
