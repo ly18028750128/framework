@@ -34,16 +34,16 @@ deploy_master:
   - cd springcloud-tester
   - cd springcloud-eureka-tester
   -  mvn clean -U package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_19999 "
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_20000 "
   - cd ../springcloud-config-tester
   -  mvn clean -U package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_config_20001 "
   - cd ../com.longyou.commservice
   -  mvn clean -U package deploy docker:build  -Dsssversion='test' -DpushImage
+  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20002 "
   - cd ../springcloud-gateway-tester
   -  mvn clean -U package deploy docker:build  -Dsssversion='test' -DpushImage
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_19999 "
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_20000 " 
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_config_20001 "
-  -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20002 "  
   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_gateway_20003 "
   only:
     - master
