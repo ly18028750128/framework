@@ -16,13 +16,13 @@ deploy_dev:
   - echo "done"
   - cd springcloud-tester
   - cd springcloud-eureka-tester
-  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  -  mvn clean -U  package docker:build  -Dsssversion='dev' -DpushImage
   - cd ../springcloud-config-tester
-  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
   - cd ../com.longyou.commservice
-  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
   - cd ../springcloud-gateway-tester
-  -  mvn clean package docker:build  -Dsssversion='dev' -DpushImage
+  -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
   only:
   - dev
 
