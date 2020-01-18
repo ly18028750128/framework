@@ -57,11 +57,13 @@ public class SystemResourceAspect {
         if (systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             return joinPoint.proceed();
         }
+
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         // 如果是全部登录用户的情况那么直接通过校验！
-        if (systemResource.authMethod().equals(CoreConstant.AuthMethod.ALLSYSTEMUSER) && loginUserDetails != null) {
-            return joinPoint.proceed();
+        if (loginUserDetails == null) {
+            throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED,"请登录！",null,null, Charset.forName("utf8"));
         }
+
         Set<String> userFunctions =  (Set<String>)redisUtil.get(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY+loginUserDetails.getId());
         if(userFunctions!=null && !userFunctions.isEmpty() && userFunctions.contains(systemResource.value()) ){
             return joinPoint.proceed();
