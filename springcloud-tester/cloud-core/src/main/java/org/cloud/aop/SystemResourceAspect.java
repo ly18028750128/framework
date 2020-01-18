@@ -45,7 +45,7 @@ public class SystemResourceAspect {
 
         //用的最多通知的签名
         Signature signature = joinPoint.getSignature();
-        MethodSignature msg=(MethodSignature) signature;
+        MethodSignature msg = (MethodSignature) signature;
         Object target = joinPoint.getTarget();
         //获取注解标注的方法
         Method method = target.getClass().getMethod(msg.getName(), msg.getParameterTypes());
@@ -53,22 +53,23 @@ public class SystemResourceAspect {
         SystemResource systemResource = method.getAnnotation(SystemResource.class);
 
         logger.info(systemResource.authMethod().value());
+
         // 如果是不校验，那么全部用户均可以通过
         if (systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             return joinPoint.proceed();
+        } else {
+            LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+            if (loginUserDetails == null) {
+                throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "请登录！", null, null, Charset.forName("utf8"));
+            }
+            // 校验数据权限！
+            if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
+                Set<String> userFunctions = (Set<String>) redisUtil.get(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY + loginUserDetails.getId());
+                if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(systemResource.value()))
+                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
+            }
         }
-
-        LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        // 如果是全部登录用户的情况那么直接通过校验！
-        if (loginUserDetails == null) {
-            throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED,"请登录！",null,null, Charset.forName("utf8"));
-        }
-
-        Set<String> userFunctions =  (Set<String>)redisUtil.get(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY+loginUserDetails.getId());
-        if(userFunctions!=null && !userFunctions.isEmpty() && userFunctions.contains(systemResource.value()) ){
-            return joinPoint.proceed();
-        }
-        throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED,"没有操作权限！",null,null, Charset.forName("utf8"));
+        return joinPoint.proceed();
     }
 
 
