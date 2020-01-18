@@ -1,8 +1,6 @@
 package com.longyou.comm.service;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
-import com.longyou.comm.model.TFrameDataInterface;
 import org.cloud.vo.QueryParamVO;
 
 public interface DataInterfaceService {

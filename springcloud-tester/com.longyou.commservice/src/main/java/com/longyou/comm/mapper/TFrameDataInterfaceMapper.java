@@ -1,7 +1,7 @@
 package com.longyou.comm.mapper;
 
 import com.github.pagehelper.Page;
-import com.longyou.comm.model.TFrameDataInterface;
+import org.cloud.model.TFrameDataInterface;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.stereotype.Repository;
 

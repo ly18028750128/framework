@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameRoleMenuDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TFrameRoleMenu">
+    <id column="role_menu_id" jdbcType="BIGINT" property="roleMenuId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <association property="frameMenu" column="menu_id" select="com.longyou.comm.mapper.TFrameMenuDao.selectByPrimaryKey"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    role_menu_id, role_id, menu_id, role_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_role_menu
+    where role_menu_id = #{roleMenuId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_role_menu
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_frame_role_menu
+    where role_menu_id = #{roleMenuId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="role_menu_id" keyProperty="roleMenuId" parameterType="org.cloud.model.TFrameRoleMenu" useGeneratedKeys="true">
+    insert into t_frame_role_menu (role_id, menu_id, role_code
+      )
+    values (#{roleId,jdbcType=INTEGER}, #{menuId,jdbcType=BIGINT}, #{roleCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="role_menu_id" keyProperty="roleMenuId" parameterType="org.cloud.model.TFrameRoleMenu" useGeneratedKeys="true">
+    insert into t_frame_role_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="menuId != null">
+        menu_id,
+      </if>
+      <if test="roleCode != null">
+        role_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null">
+        #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="roleCode != null">
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameRoleMenu">
+    update t_frame_role_menu
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null">
+        menu_id = #{menuId,jdbcType=BIGINT},
+      </if>
+      <if test="roleCode != null">
+        role_code = #{roleCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where role_menu_id = #{roleMenuId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameRoleMenu">
+    update t_frame_role_menu
+    set role_id = #{roleId,jdbcType=INTEGER},
+      menu_id = #{menuId,jdbcType=BIGINT},
+      role_code = #{roleCode,jdbcType=VARCHAR}
+    where role_menu_id = #{roleMenuId,jdbcType=BIGINT}
+  </update>
+</mapper>

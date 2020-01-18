@@ -25,5 +25,5 @@ public class TMicroserviceRegister implements Serializable {
 
     private Date updateDate;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6410542977386540758L;
 }

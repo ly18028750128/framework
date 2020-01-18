@@ -2,12 +2,10 @@ package com.longyou.comm.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.longyou.comm.mapper.TFrameDataInterfaceMapper;
 import com.longyou.comm.mapper.TFrameDataInterfaceParamsMapper;
-import com.longyou.comm.model.TFrameDataInterface;
-import com.longyou.comm.model.TFrameDataInterfaceParams;
 import com.longyou.comm.service.DataInterfaceService;
+import org.cloud.model.TFrameDataInterface;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

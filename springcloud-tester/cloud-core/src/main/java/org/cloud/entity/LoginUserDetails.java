@@ -1,18 +1,35 @@
 package org.cloud.entity;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Data;
 import org.cloud.deserializer.GrantedAuthorityDeserializer;
+import org.cloud.deserializer.GrantedFrameRoleDeserializer;
+import org.cloud.model.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 
 public class LoginUserDetails implements UserDetails {
-
     private Long id;
+    private String username;
+    private String password;
+    private Collection<TFrameRole> roles = new ArrayList<>();
+    // 菜单列表
+    private Collection<TFrameMenu> frameMenuList = new ArrayList<>();
+    private Collection<GrantedAuthority> authorities ;
+    private String token;
+    public String userType;
+    private String defaultRole;
+    private String email;
+    private String fullName;
+    private String userRegistSource;
+    private String sessionKey;
 
     public Long getId() {
         return id;
@@ -22,15 +39,6 @@ public class LoginUserDetails implements UserDetails {
         this.id = id;
     }
 
-    private String username;
-    //    @JsonIgnore
-    private String password;
-    private Collection<String> roles = new ArrayList<>();
-    private String token;
-
-
-    private Collection<GrantedAuthority> authorities = new ArrayList<>();
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -39,16 +47,28 @@ public class LoginUserDetails implements UserDetails {
         this.password = password;
     }
 
-    public void setRoles(Collection<String> roles) {
+    public void setRoles(Collection<TFrameRole> roles) {
         this.roles = roles;
     }
 
-    @Override
-    @JsonDeserialize(using = GrantedAuthorityDeserializer.class)
-    public Collection<GrantedAuthority> getAuthorities() {
-        if (getRoles() != null && !getRoles().isEmpty()) {
-            authorities = AuthorityUtils.createAuthorityList(getRoles().toArray(new String[]{}));
+    public Collection<TFrameRole> getRoles() {
+        if (roles == null) {
+            roles = new ArrayList<>();
         }
+        return roles;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<GrantedAuthority> getAuthorities() {
+        if(authorities!=null){
+            return authorities;
+        }
+        List<String> roleList = new ArrayList<>();
+        for (TFrameRole frameRole : getRoles()) {
+            roleList.add(frameRole.getRoleCode());
+        }
+        authorities = AuthorityUtils.createAuthorityList(roleList.toArray(new String[]{}));
         return authorities;
     }
 
@@ -90,15 +110,7 @@ public class LoginUserDetails implements UserDetails {
         this.token = token;
     }
 
-    public Collection<String> getRoles() {
-        if(roles==null || roles.isEmpty()){
-            roles = new ArrayList<>();
-            roles.add(getDefaultRole());
-        }
-        return roles;
-    }
 
-    public String userType;
 
     public String getUserType() {
         return userType;
@@ -108,8 +120,6 @@ public class LoginUserDetails implements UserDetails {
         this.userType = userType;
     }
 
-    private String defaultRole;
-
     public String getDefaultRole() {
         return defaultRole;
     }
@@ -117,12 +127,6 @@ public class LoginUserDetails implements UserDetails {
     public void setDefaultRole(String defaultRole) {
         this.defaultRole = defaultRole;
     }
-
-    private String email;
-
-    private String fullName;
-
-    private String userRegistSource;
 
     public String getEmail() {
         return email;
@@ -148,9 +152,6 @@ public class LoginUserDetails implements UserDetails {
         this.userRegistSource = userRegistSource;
     }
 
-    //    @JsonIgnore
-    private String sessionKey;
-
     public String getSessionKey() {
         return sessionKey;
     }
@@ -158,4 +159,17 @@ public class LoginUserDetails implements UserDetails {
     public void setSessionKey(String sessionKey) {
         this.sessionKey = sessionKey;
     }
+
+    public Collection<TFrameMenu> getFrameMenuList() {
+        if (frameMenuList == null) {
+            frameMenuList = new ArrayList<>();
+        }
+        return frameMenuList;
+    }
+
+    public void setFrameMenuList(Collection<TFrameMenu> frameMenuList) {
+        this.frameMenuList = frameMenuList;
+    }
+
+    private static final long serialVersionUID = -6997588753870506318L;
 }

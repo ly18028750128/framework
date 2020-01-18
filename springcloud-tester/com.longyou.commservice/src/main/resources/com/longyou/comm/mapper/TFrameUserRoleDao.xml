@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TFrameUserRoleDao">
+  <resultMap id="BaseResultMap" type="org.cloud.model.TFrameUserRole">
+    <id column="user_role_id" jdbcType="BIGINT" property="userRoleId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="validator_start" jdbcType="TIMESTAMP" property="validatorStart" />
+    <result column="validator_end" jdbcType="TIMESTAMP" property="validatorEnd" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <association property="frameRole" column="role_id" select="com.longyou.comm.mapper.TFrameRoleDao.selectByPrimaryKey" >
+
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_role_id, user_id, role_id, validator_start, validator_end, create_by, create_date,
+    update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_user_role
+    where user_role_id = #{userRoleId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_user_role
+    where user_id = #{userId,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_frame_user_role
+    where user_role_id = #{userRoleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="user_role_id" keyProperty="userRoleId" parameterType="org.cloud.model.TFrameUserRole" useGeneratedKeys="true">
+    insert into t_frame_user_role (user_id, role_id, validator_start, 
+      validator_end, create_by, create_date, 
+      update_by, update_date)
+    values (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=INTEGER}, #{validatorStart,jdbcType=TIMESTAMP}, 
+      #{validatorEnd,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="user_role_id" keyProperty="userRoleId" parameterType="org.cloud.model.TFrameUserRole" useGeneratedKeys="true">
+    insert into t_frame_user_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="validatorStart != null">
+        validator_start,
+      </if>
+      <if test="validatorEnd != null">
+        validator_end,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="validatorStart != null">
+        #{validatorStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validatorEnd != null">
+        #{validatorEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameUserRole">
+    update t_frame_user_role
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="validatorStart != null">
+        validator_start = #{validatorStart,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validatorEnd != null">
+        validator_end = #{validatorEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_role_id = #{userRoleId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameUserRole">
+    update t_frame_user_role
+    set user_id = #{userId,jdbcType=BIGINT},
+      role_id = #{roleId,jdbcType=INTEGER},
+      validator_start = #{validatorStart,jdbcType=TIMESTAMP},
+      validator_end = #{validatorEnd,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where user_role_id = #{userRoleId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,7 +1,6 @@
 package com.longyou.comm.mapper;
 
 import com.github.pagehelper.Page;
-import com.longyou.comm.model.TFrameDataInterface;
 import com.longyou.comm.model.TFrameDataInterfaceParams;
 import org.apache.ibatis.annotations.Param;
 import org.cloud.vo.QueryParamVO;

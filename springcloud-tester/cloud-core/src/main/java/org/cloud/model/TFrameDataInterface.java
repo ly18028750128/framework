@@ -1,11 +1,12 @@
-package com.longyou.comm.model;
+package org.cloud.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Table: t_frame_data_interface
  */
-public class TFrameDataInterface {
+public class TFrameDataInterface implements Serializable {
     /**
      * Column: data_code
      * Remark: 数据编号
@@ -144,4 +145,6 @@ public class TFrameDataInterface {
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
     }
+
+    private static final long serialVersionUID = 5889491168601391668L;
 }

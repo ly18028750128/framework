@@ -23,5 +23,5 @@ public @interface SystemResource {
     int index() default 0;  // 序号
     String description() default "";     // 资源名称，注解在方法上时会自动将菜单资源挂在菜单下面
     String value() default "";     // 资源名称，注解在方法上时会自动将菜单资源挂在菜单下面
-    CoreConstant.AuthMethodMethod authMethod() default CoreConstant.AuthMethodMethod.ALLSYSTEMUSER;   //验证方式,默认为所有的登录用户,ByUserAuth
+    CoreConstant.AuthMethod authMethod() default CoreConstant.AuthMethod.ALLSYSTEMUSER;   //验证方式,默认为所有的登录用户,ByUserAuth
 }
