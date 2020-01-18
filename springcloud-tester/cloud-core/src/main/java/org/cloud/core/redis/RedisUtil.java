@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisUtil {
-    @SuppressWarnings("rawtypes")
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -37,10 +36,8 @@ public class RedisUtil {
      *
      * @param pattern
      */
-    @SuppressWarnings("unchecked")
     public void removePattern(final String pattern) {
         Set<Serializable> keys = redisTemplate.keys(pattern);
-        
         redisTemplate.delete(keys);
     }
 
@@ -62,7 +59,6 @@ public class RedisUtil {
      * @param key
      * @return
      */
-    @SuppressWarnings("unchecked")
     public boolean exists(final String key) {
         return redisTemplate.hasKey(cacheName + key);
     }
@@ -73,12 +69,9 @@ public class RedisUtil {
      * @param key
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public Object get(final String key) {
-        Object result = null;
+    public <T> T get(final String key) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        result = operations.get(cacheName + key);
-        return result;
+        return (T) operations.get(cacheName + key);
     }
 
     /**
@@ -90,15 +83,9 @@ public class RedisUtil {
      */
     @SuppressWarnings("unchecked")
     public boolean set(final String key, Object value) {
-        boolean result = false;
-        try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(cacheName + key, value);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        operations.set(cacheName + key, value);
+        return true;
     }
 
     /**
@@ -108,18 +95,11 @@ public class RedisUtil {
      * @param value
      * @return
      */
-    @SuppressWarnings("unchecked")
     public boolean set(final String key, Object value, Long expireTime) {
-        boolean result = false;
-        try {
-            ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-            operations.set(cacheName + key, value);
-            redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        operations.set(cacheName + key, value);
+        redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        return true;
     }
 
 }
