@@ -64,7 +64,7 @@ public class SystemResourceAspect {
             }
             // 校验数据权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
-                Set<String> userFunctions = (Set<String>) redisUtil.get(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY + loginUserDetails.getId());
+                Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),CoreConstant.UserCacheKey.FUNCTION.value());
                 if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(systemResource.value()))
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
             }

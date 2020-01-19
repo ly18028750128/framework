@@ -29,6 +29,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -61,45 +62,59 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);
             final StringBuffer authValue = new StringBuffer(userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random));
             authValue.append(basic64SplitStr + userBasic64RandomKey);
-            String token = Base64.getEncoder().encodeToString( authValue.toString().getBytes());
+            String token = Base64.getEncoder().encodeToString(authValue.toString().getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
                 loginUserDetails.setToken(token);
                 // 缓存用户的角色列表
-                redisUtil.set(CoreConstant.USER_ROLE_LIST_CACHE_KEY + loginUserDetails.getId(), loginUserDetails.getRoles(), 24 * 60 * 60L);
+//                redisUtil.set(CoreConstant.USER_ROLE_LIST_CACHE_KEY + loginUserDetails.getId(), loginUserDetails.getRoles(), 24 * 60 * 60L);
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                        CoreConstant.UserCacheKey.ROLE.value(),
+                        loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode,role->role)),
+                        24 * 60 * 60L);
+
+
                 Set<String> userFunctions = new HashSet<>();
-                Map<String,Set<String>> userDatas=new HashMap<>();
-                Set<String> roles=new HashSet<>();
+                Map<String, Set<String>> userDatas = new HashMap<>();
+                Set<String> roles = new HashSet<>();
                 for (TFrameRole frameRole : loginUserDetails.getRoles()) {
-                    for(TFrameRoleResource frameRoleResource:frameRole.getFrameRoleResourceList()) {
+                    for (TFrameRoleResource frameRoleResource : frameRole.getFrameRoleResourceList()) {
                         userFunctions.add(frameRoleResource.getFrameworkResource().getResourceCode());
                     }
-                    for(TFrameRoleData frameRoleResource:frameRole.getFrameRoleDataList()) {
+                    for (TFrameRoleData frameRoleResource : frameRole.getFrameRoleDataList()) {
                         Set<String> dataDimensionset = userDatas.get(frameRoleResource.getDataDimension());
-                        if(dataDimensionset==null) {
-                            userDatas.put(frameRoleResource.getDataDimension(),new HashSet<String>());
+                        if (dataDimensionset == null) {
+                            userDatas.put(frameRoleResource.getDataDimension(), new HashSet<String>());
                         }
                         userDatas.get(frameRoleResource.getDataDimension()).add(frameRoleResource.getDataDimensionValue());
                     }
                     roles.add(frameRole.getRoleCode());
                 }
 
+
+//                redisUtil.set(CoreConstant.USER_DATA_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
+
                 // 缓存用户数据权限，按维度缓存
-                redisUtil.set(CoreConstant.USER_DATA_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                        CoreConstant.UserCacheKey.DATA.value(), userDatas, 24 * 60 * 60L);
 
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY+loginUserDetails.getId(),"datas",userFunctions,24 * 60 * 60L);
-
-
-
-                // 缓存用操作仅限信息
-                redisUtil.set(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
+                // 缓存全部操作权限列表
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                        CoreConstant.UserCacheKey.FUNCTION.value(), userFunctions, 24 * 60 * 60L);
 
                 // 缓存角色名称
-                redisUtil.set(CoreConstant.USER_ROLE_STR_CACHE_KEY+loginUserDetails.getId(),roles, 24 * 60 * 60L);
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                        CoreConstant.UserCacheKey.ROLE_NAME.value(), roles, 24 * 60 * 60L);
+
+                //缓存菜单
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                        CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(), 24 * 60 * 60L);
 
                 // 缓存登录用户信息
                 loginUserDetails.setRoles(null);
+                loginUserDetails.setFrameMenuList(null);
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + "basic " + token, userDetails, 24 * 60 * 60L);
+                loginUserDetails.setPassword(null);
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
             wsResponse.setResult(userDetails);

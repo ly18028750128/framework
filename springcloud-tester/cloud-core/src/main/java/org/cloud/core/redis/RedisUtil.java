@@ -102,6 +102,7 @@ public class RedisUtil {
      */
     public boolean set(final String key, Object value, Long expireTime) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        redisTemplate.opsForValue().set(key,value);
         redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         return true;
     }

@@ -52,6 +52,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
             loginUserGetParamsDTO.setUserName(username);
             userDetails = getUserByName(loginUserGetParamsDTO);
         }
+
         if (userDetails != null && StringUtils.equals(userDetails.getUsername(), username)) {
             UserDetails user = User.withUserDetails(userDetails).build();
             user = userDetails;
@@ -81,9 +82,5 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
             loginUserDetails = responseEntity.getBody();
         }
         return loginUserDetails;
-
-//        ResponseEntity<String> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.POST, JSON.toJSONString(loginUserGetParamsDTO), headers, String.class);
-//        return JSON.parseObject(responseEntity.getBody(),LoginUserDetails.class) ;
-
     }
 }

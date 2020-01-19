@@ -70,13 +70,45 @@ public final class CoreConstant {
     public final static String _USER_TYPE_KEY = "userType";
     public final static String _USER_TYPE_DEFAULT_VALUE = "admin";
     public final static String _REDIS_USER_SUCCESS_TOKEN_PREFIX = "USER:LOGIN:SUCCESS:CACHE:NANCE:";
-    public final static String _BASIC64_TOKEN_USER_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:USER:";
-    public final static String USER_ROLE_LIST_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:ROLE:";
-    public final static String USER_FUNCTION_LIST_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:FUNCTION:";
-    public final static String USER_DATA_LIST_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:DATA:";
-    public final static String USER_ROLE_STR_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:ROLE:STR:";
-
+    public final static String _BASIC64_TOKEN_USER_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:USER:"; // 登录成功后的用户信息
     public final static String USER_LOGIN_SUCCESS_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:";
+
+    // rest服务返回值处理，可以继续增加
+    public static enum UserCacheKey implements BasicEnum{
+
+        DATA("data","数据权限",""),
+        FUNCTION("function","功能权限",""),
+        MENU("menu","菜单权限",""),
+        DATA_INTERFACE("dataInterface","数据接口权限",""),
+        ROLE("role","角色",""),
+        ROLE_NAME("roleName","角色名列表",""),
+        ;
+
+        private String key;     // 值
+        private String statusName;  // 名称和描述
+        private String i18nValue;  // 国际化
+
+        UserCacheKey(String key, String statusName, String i18nValue) {
+            this.key = key;
+            this.statusName = statusName;
+            this.i18nValue = i18nValue;
+        }
+
+        @Override
+        public String value() {
+            return this.key;
+        }
+
+        @Override
+        public String i18nValue() {
+            return i18nValue;
+        }
+
+        @Override
+        public String description(){
+            return this.statusName;
+        }
+    }
 
     // 改动后所有的basic64验证将全部失效！！！！,也可以通过system.auth_basic64_split配置覆盖这个值
     public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
