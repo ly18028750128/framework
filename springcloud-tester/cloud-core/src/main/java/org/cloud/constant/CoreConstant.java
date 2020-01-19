@@ -76,6 +76,8 @@ public final class CoreConstant {
     public final static String USER_DATA_LIST_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:DATA:";
     public final static String USER_ROLE_STR_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:ROLE:STR:";
 
+    public final static String USER_LOGIN_SUCCESS_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:";
+
     // 改动后所有的basic64验证将全部失效！！！！,也可以通过system.auth_basic64_split配置覆盖这个值
     public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
 

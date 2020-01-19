@@ -87,6 +87,10 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 // 缓存用户数据权限，按维度缓存
                 redisUtil.set(CoreConstant.USER_DATA_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
 
+                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY+loginUserDetails.getId(),"datas",userFunctions,24 * 60 * 60L);
+
+
+
                 // 缓存用操作仅限信息
                 redisUtil.set(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
 
