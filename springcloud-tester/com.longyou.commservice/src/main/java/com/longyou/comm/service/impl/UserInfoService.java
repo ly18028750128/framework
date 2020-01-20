@@ -85,10 +85,7 @@ public class UserInfoService implements IUserInfoService {
             userRole.setRoleId(frameRole.getRoleId());
             userRole.setRoleCode(frameRole.getRoleCode());
             userRole.setRoleName(frameRole.getRoleName());
-
-            if(!userRoles.contains(userRole)){
-                userRoles.add(userRole);
-            }
+            userRoles.add(userRole);
         }
         loginUserDetails.setUserRoles(userRoles);
         // 缓存用户的角色列表

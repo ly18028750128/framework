@@ -26,9 +26,10 @@ public class UserRoleTest {
         Assert.assertEquals(role1,role2);
         Assert.assertEquals(roles.contains(role2),true);
         roles.add(role2);
+        Assert.assertEquals(roles.size(),1);
+        role2.setRoleId(2);
+        roles.add(role2);
         Assert.assertEquals(roles.size(),2);
-
-
 
     }
 }
