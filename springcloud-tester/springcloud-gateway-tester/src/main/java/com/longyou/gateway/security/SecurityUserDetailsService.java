@@ -70,11 +70,11 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
     private LoginUserDetails getUserByName(LoginUserGetParamsDTO loginUserGetParamsDTO) {
         LoginUserDetails loginUserDetails = null;
-        ServerHttpRequest request = CrosWebFilter.serverWebExchangeThreadLocal.get().getRequest();
-        final String headerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (headerToken != null) {
-            loginUserDetails = (LoginUserDetails) redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY+headerToken);
+
+        if (CrosWebFilter.serverWebExchangeThreadLocal.get() != null && CrosWebFilter.serverWebExchangeThreadLocal.get().getLogPrefix() != null) {
+            loginUserDetails = (LoginUserDetails) redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + CrosWebFilter.serverWebExchangeThreadLocal.get().getLogPrefix());
         }
+
         if (loginUserDetails == null) {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
