@@ -65,52 +65,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
                 loginUserDetails.setToken(token);
-
                 // 缓存当前登录用户的登录信息
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + webFilterExchange.getExchange().getLogPrefix(), userDetails, 24 * 60 * 60L);
-
-                // 缓存用户的角色列表
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-                        CoreConstant.UserCacheKey.ROLE.value(),
-                        loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode,role->role)),
-                        24 * 60 * 60L);
-
-                Set<String> userFunctions = new HashSet<>();
-                Map<String, Set<String>> userDatas = new HashMap<>();
-                Set<String> roles = new HashSet<>();
-                for (TFrameRole frameRole : loginUserDetails.getRoles()) {
-                    for (TFrameRoleResource frameRoleResource : frameRole.getFrameRoleResourceList()) {
-                        userFunctions.add(frameRoleResource.getFrameworkResource().getResourceCode());
-                    }
-                    for (TFrameRoleData frameRoleResource : frameRole.getFrameRoleDataList()) {
-                        Set<String> dataDimensionset = userDatas.get(frameRoleResource.getDataDimension());
-                        if (dataDimensionset == null) {
-                            userDatas.put(frameRoleResource.getDataDimension(), new HashSet<String>());
-                        }
-                        userDatas.get(frameRoleResource.getDataDimension()).add(frameRoleResource.getDataDimensionValue());
-                    }
-                    roles.add(frameRole.getRoleCode());
-                }
-
-                // 缓存用户数据权限，按维度缓存
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-                        CoreConstant.UserCacheKey.DATA.value(), userDatas, 24 * 60 * 60L);
-
-                // 缓存全部操作权限列表
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-                        CoreConstant.UserCacheKey.FUNCTION.value(), userFunctions, 24 * 60 * 60L);
-
-                // 缓存角色名称
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-                        CoreConstant.UserCacheKey.ROLE_NAME.value(), roles, 24 * 60 * 60L);
-
-                //缓存菜单
-                redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-                        CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(), 24 * 60 * 60L);
-
-                // 缓存登录用户信息
-                loginUserDetails.setRoles(null);
-                loginUserDetails.setFrameMenuList(null);
                 loginUserDetails.setPassword(null);
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);

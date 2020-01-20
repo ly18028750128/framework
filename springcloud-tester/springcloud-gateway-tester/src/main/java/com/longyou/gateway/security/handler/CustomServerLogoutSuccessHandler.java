@@ -32,9 +32,8 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
     @Override
     public Mono<Void> onLogoutSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         try {
-            // 退出时将生成的随机加密值给清空
-            final String userBasic64RandomKey = authentication.getName()+webFilterExchange.getExchange().getLogPrefix();
-            redisUtil.remove(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX+userBasic64RandomKey);
+            // 退出时将生成的随机加密值给清空，token直接失效（自动失效时间为24小时），如果想token有效，请不要调用登出接口
+            redisUtil.remove(webFilterExchange.getExchange().getLogPrefix());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
