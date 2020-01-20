@@ -20,13 +20,11 @@ public class UserRole implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
         UserRole userRole = (UserRole) o;
-        return Objects.equals(roleId, userRole.roleId) &&
-                Objects.equals(roleName, userRole.roleName) &&
-                Objects.equals(roleCode, userRole.roleCode);
+        return Objects.equals(roleId, userRole.roleId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(roleId, roleName, roleCode);
+        return Objects.hash(roleId);
     }
 }
