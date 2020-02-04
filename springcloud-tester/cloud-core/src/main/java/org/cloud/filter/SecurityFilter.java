@@ -37,17 +37,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         // 这里只取上下文的信息授权通过 @SystemResource 注解来控制
-//        final String requestUri = httpServletRequest.getRequestURI();
-//        boolean isExcludeUri = CommonUtil.single().pathMatch(requestUri, excludedAuthPages);
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
         LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
-        // 设置上下文的用户信息
-//        if ( (!isExcludeUri) && (user == null) ) {
-//            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-//            return;
-//        }
         if (user != null) {
             requestContext.setUser(user);
         }
