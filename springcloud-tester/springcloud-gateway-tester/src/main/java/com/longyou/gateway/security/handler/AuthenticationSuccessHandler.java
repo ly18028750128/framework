@@ -57,8 +57,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             // 生成token加盐值和key
-            final String userBasic64Random = Double.toString(Math.random() * 10000000);
-            final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix()+ (Math.random() * 10000000));
+            final String userBasic64Random =  MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(),"天下无双");
+            final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
             final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(24 * 60 * 60L)));
             // 获取解密分隔符的处理
