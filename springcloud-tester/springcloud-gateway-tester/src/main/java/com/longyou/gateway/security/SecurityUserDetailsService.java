@@ -41,6 +41,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
             loginUserGetParamsDTO.getParams().remove(CoreConstant._USER_TYPE_KEY);
         }
 
+        // 小程序登录后会获取用户名，并进行校验！
         if (microAppindex != null) {
             Mono<MultiValueMap<String, String>> formdata = CrosWebFilter.serverWebExchangeThreadLocal.get().getFormData();
             final String weixinLoginCode = formdata.block().getFirst("password");
