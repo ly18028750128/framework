@@ -3,24 +3,29 @@ package org.cloud.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.cloud.deserializer.GrantedAuthorityDeserializer;
 import org.cloud.deserializer.GrantedFrameRoleDeserializer;
 import org.cloud.model.*;
+import org.cloud.vo.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 public class LoginUserDetails implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    @JsonIgnore
     private Collection<TFrameRole> roles = new ArrayList<>();
+    @Setter @Getter
+    private Set<UserRole> userRoles = new HashSet<>();
     // 菜单列表
+    @JsonIgnore
     private Collection<TFrameMenu> frameMenuList = new ArrayList<>();
     private Collection<GrantedAuthority> authorities ;
     private String token;
@@ -109,8 +114,6 @@ public class LoginUserDetails implements UserDetails {
     public void setToken(String token) {
         this.token = token;
     }
-
-
 
     public String getUserType() {
         return userType;

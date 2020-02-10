@@ -1,5 +1,6 @@
 package com.longyou.gateway.security.controller;
 
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.HttpServletUtil;
 import org.cloud.utils.http.OKHttpClientUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,9 @@ public class UserController {
             return Mono.empty();
         }else{
             UserDetails user = (UserDetails) authentication.getPrincipal();
+            if(user instanceof LoginUserDetails){
+                ((LoginUserDetails) user).setPassword(null);
+            }
             return Mono.just(user);
         }
     }

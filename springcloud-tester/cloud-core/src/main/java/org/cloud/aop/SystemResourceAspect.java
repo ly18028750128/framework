@@ -53,18 +53,15 @@ public class SystemResourceAspect {
         SystemResource systemResource = method.getAnnotation(SystemResource.class);
 
         logger.info(systemResource.authMethod().value());
-
         // 如果是不校验，那么全部用户均可以通过
-        if (systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
-            return joinPoint.proceed();
-        } else {
+        if (!systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
             if (loginUserDetails == null) {
                 throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "请登录！", null, null, Charset.forName("utf8"));
             }
             // 校验数据权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
-                Set<String> userFunctions = (Set<String>) redisUtil.get(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY + loginUserDetails.getId());
+                Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
                 if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(systemResource.value()))
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
             }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
+import com.longyou.gateway.util.MD5PasswordEncoder;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -29,6 +30,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -54,48 +56,26 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         ObjectMapper mapper = new ObjectMapper();
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            final String userBasic64Random = Double.toString(Math.random() * 10000000);
-            final String userBasic64RandomKey = userDetails.getUsername() + webFilterExchange.getExchange().getLogPrefix();
+            // 生成token加盐值和key
+            final String userBasic64Random =  MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(),"天下无双");
+            final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
+            // 获取token的超时时间设置
             final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(24 * 60 * 60L)));
+            // 获取解密分隔符的处理
             final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
+            // 将token加盐的值放到redis缓存中
             redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);
+            // 分隔userName, 备注用户名和密码不能包含 ：
             final StringBuffer authValue = new StringBuffer(userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random));
+            // 将token加盐的key增加到尾部
             authValue.append(basic64SplitStr + userBasic64RandomKey);
-            String token = Base64.getEncoder().encodeToString( authValue.toString().getBytes());
+            String token = Base64.getEncoder().encodeToString(authValue.toString().getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
                 loginUserDetails.setToken(token);
-                // 缓存用户的角色列表
-                redisUtil.set(CoreConstant.USER_ROLE_LIST_CACHE_KEY + loginUserDetails.getId(), loginUserDetails.getRoles(), 24 * 60 * 60L);
-                Set<String> userFunctions = new HashSet<>();
-                Map<String,Set<String>> userDatas=new HashMap<>();
-                Set<String> roles=new HashSet<>();
-                for (TFrameRole frameRole : loginUserDetails.getRoles()) {
-                    for(TFrameRoleResource frameRoleResource:frameRole.getFrameRoleResourceList()) {
-                        userFunctions.add(frameRoleResource.getFrameworkResource().getResourceCode());
-                    }
-                    for(TFrameRoleData frameRoleResource:frameRole.getFrameRoleDataList()) {
-                        Set<String> dataDimensionset = userDatas.get(frameRoleResource.getDataDimension());
-                        if(dataDimensionset==null) {
-                            userDatas.put(frameRoleResource.getDataDimension(),new HashSet<String>());
-                        }
-                        userDatas.get(frameRoleResource.getDataDimension()).add(frameRoleResource.getDataDimensionValue());
-                    }
-                    roles.add(frameRole.getRoleCode());
-                }
-
-                // 缓存用户数据权限，按维度缓存
-                redisUtil.set(CoreConstant.USER_DATA_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
-
-                // 缓存用操作仅限信息
-                redisUtil.set(CoreConstant.USER_FUNCTION_LIST_CACHE_KEY+loginUserDetails.getId(),userFunctions, 24 * 60 * 60L);
-
-                // 缓存角色名称
-                redisUtil.set(CoreConstant.USER_ROLE_STR_CACHE_KEY+loginUserDetails.getId(),roles, 24 * 60 * 60L);
-
-                // 缓存登录用户信息
-                loginUserDetails.setRoles(null);
-                redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + "basic " + token, userDetails, 24 * 60 * 60L);
+                // 缓存当前登录用户的登录信息
+                redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic "+token), userDetails, 24 * 60 * 60L);
+                loginUserDetails.setPassword(null);
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
             wsResponse.setResult(userDetails);

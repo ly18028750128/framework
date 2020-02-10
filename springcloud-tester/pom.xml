@@ -15,6 +15,7 @@
         <springboot.version>2.2.2.RELEASE</springboot.version>
         <springcloud.eureka.version>1.4.7.RELEASE</springcloud.eureka.version>
         <springcloud.zuul.version>1.4.6.RELEASE</springcloud.zuul.version>
+        <skipTests>true</skipTests>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -83,11 +84,11 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>1.1.9</version>
             </dependency>
-			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>8.0.16</version>
-			</dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.16</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
@@ -177,15 +178,15 @@
     </dependencyManagement>
     <modules>
         <module>springcloud-eureka-tester</module>
-<!--        <module>springcloud-zuul-tester</module>-->
-<!--        <module>springcloud-eureka-client-tester</module>-->
+        <!--        <module>springcloud-zuul-tester</module>-->
+        <!--        <module>springcloud-eureka-client-tester</module>-->
         <module>cloud-core</module>
         <module>springcloud-config-tester</module>
-<!--        <module>jdk8.tester</module>-->
+        <!--        <module>jdk8.tester</module>-->
         <module>springcloud-gateway-tester</module>
         <module>com.longyou.commservice</module>
     </modules>
-<distributionManagement>
+    <distributionManagement>
         <!-- 两个ID必须与 setting.xml中的<server><id>nexus-releases</id></server>保持一致-->
         <repository>
             <id>nexus-releases</id>
@@ -198,5 +199,6 @@
             <url>http://172.16.4.24:10000/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
 
 </project>

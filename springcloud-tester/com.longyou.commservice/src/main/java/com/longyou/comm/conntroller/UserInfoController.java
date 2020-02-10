@@ -25,11 +25,11 @@ public class UserInfoController {
     @Autowired
     MicroAppConfigList microAppConfigList;
 
-    @RequestMapping(value = "/getUserByName", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/getUserByName", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public LoginUserDetails getUserByName(HttpServletRequest request, @RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = null;
         if (loginUserGetParamsDTO.getMicroAppIndex() == null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理
-            Map<String,Object> userQueryParams = new HashMap<>();
+            Map<String, Object> userQueryParams = new HashMap<>();
             loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
             if (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty()) {
                 loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
@@ -42,7 +42,4 @@ public class UserInfoController {
 
         return loginUserDetails;
     }
-
-
-
 }
