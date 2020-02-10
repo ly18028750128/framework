@@ -79,7 +79,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         }
         final String token = CrosWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         // 如果带了token那么从缓存中获取数据
-        if (token != null) {
+        if (token != null && !"0".equals(token) && token.length()>15) {
             return redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode(token));
         } else if (loginUserDetails == null) {
             HttpHeaders headers = new HttpHeaders();
