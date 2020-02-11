@@ -12,7 +12,7 @@ public interface TFrameworkResourceDao {
 
     TFrameworkResource selectByPrimaryKey(@Param("resourceId") Long resourceId);
 
-    TFrameworkResource selectByResourceCodeAndPath(@Param("resourceCode") String resourceCode,@Param("resourcePath") String resourcePath );
+    TFrameworkResource selectByResourceCodeAndPath(@Param("resourceCode") String resourceCode, @Param("resourcePath") String resourcePath, @Param("belongMicroservice") String belongMicroservice);
 
     int updateByPrimaryKeySelective(TFrameworkResource record);
 

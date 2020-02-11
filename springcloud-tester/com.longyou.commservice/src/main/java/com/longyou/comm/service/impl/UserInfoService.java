@@ -72,7 +72,9 @@ public class UserInfoService implements IUserInfoService {
         // 获取数据权限和操作权限
         for (TFrameRole frameRole : loginUserDetails.getRoles()) {
             for (TFrameRoleResource frameRoleResource : frameRole.getFrameRoleResourceList()) {
-                final String functionSetStr = frameRoleResource.getFrameworkResource().getResourcePath() + CoreConstant._FUNCTION_SPLIT_STR + frameRoleResource.getFrameworkResource().getResourceCode();
+                final String functionSetStr = frameRoleResource.getFrameworkResource().getBelongMicroservice() + CoreConstant._FUNCTION_SPLIT_STR +
+                        frameRoleResource.getFrameworkResource().getResourcePath() + CoreConstant._FUNCTION_SPLIT_STR +
+                        frameRoleResource.getFrameworkResource().getResourceCode();
                 userFunctions.add(functionSetStr);
             }
             for (TFrameRoleData frameRoleResource : frameRole.getFrameRoleDataList()) {
@@ -93,7 +95,7 @@ public class UserInfoService implements IUserInfoService {
         // 缓存用户的角色列表
         redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
                 CoreConstant.UserCacheKey.ROLE.value(),
-                loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode, role->role)),
+                loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode, role -> role)),
                 24 * 60 * 60L);
 
         // 缓存用户数据权限，按维度缓存
