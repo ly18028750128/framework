@@ -5,8 +5,8 @@ spring:
         git:
           uri: https://gitee.com/longyou/springcloud-config
           search-paths: ${sys.config_path:tester}
-          username: 18028750128@126.com
-          password: sskxttkl11
+          username: 609925924@qq.com
+          password: 1qaz@WSX
 
 #spring:
 #  cloud:
