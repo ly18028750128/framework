@@ -24,7 +24,7 @@
 			<appender-ref ref="CONSOLE"/>
 			<appender-ref ref="FILE"/>
 		</root>
-        <logger name="com.longyou.comm" level="DEBUG">
+        <logger name="com.longyou.gateway" level="DEBUG">
             <appender-ref ref="MY_MONGODB_FILE"/>
         </logger>
         <logger name="org.springframework.web" level="INFO">
@@ -37,7 +37,7 @@
 			<appender-ref ref="CONSOLE"/>
 			<appender-ref ref="FILE"/>
 		</root>
-        <logger name="com.longyou.comm" level="INFO">
+        <logger name="com.longyou.gateway" level="INFO">
             <appender-ref ref="MY_MONGODB_FILE"/>
         </logger>
         <logger name="org.springframework.web" level="ERROR">

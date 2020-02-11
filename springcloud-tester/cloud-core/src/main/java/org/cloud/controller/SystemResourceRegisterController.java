@@ -111,6 +111,7 @@ public class SystemResourceRegisterController {
                     frameworkResource.setResourceCode(methodResourceAnnotation.value());
                     frameworkResource.setResourceName(methodResourceAnnotation.description());
                     frameworkResource.setBelongMicroservice(microName);
+                    frameworkResource.setMethod(methodResourceAnnotation.authMethod().value());
                     frameworkResource.setCreateBy("admin");
                     frameworkResource.setCreateDate(new Date());
                     frameworkResource.setUpdateBy("admin");
