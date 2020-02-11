@@ -1,3 +1,5 @@
 spring:
   profiles:
     active: junit
+sys:
+  configcenter_url: http://administrator:admin2020pasword1qaz3edc@172.16.4.22.20001

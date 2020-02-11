@@ -1,7 +1,6 @@
 package org.cloud.core.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.math.DoubleMath;
 import com.longyou.comm.starter.CommonServiceApplication;
 import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
@@ -13,26 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CommonServiceApplication.class}, properties = "classpath:testYml.yml")
-//@ActiveProfiles(value = "${spring.profiles.active:dev}")
+@ActiveProfiles(value = "dev")
 public class RedisUtilTest {
 
     Logger logger = LoggerFactory.getLogger(RedisUtilTest.class);
