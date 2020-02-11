@@ -186,4 +186,6 @@ public final class CoreConstant {
         }
     }
 
+    public final static String _FUNCTION_SPLIT_STR="::";
+
 }

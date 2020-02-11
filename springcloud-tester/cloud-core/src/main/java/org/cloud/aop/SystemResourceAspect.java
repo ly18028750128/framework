@@ -47,10 +47,13 @@ public class SystemResourceAspect {
         Signature signature = joinPoint.getSignature();
         MethodSignature msg = (MethodSignature) signature;
         Object target = joinPoint.getTarget();
+
+        final SystemResource classResourceAnnotation = target.getClass().getAnnotation(SystemResource.class);
+
         //获取注解标注的方法
         Method method = target.getClass().getMethod(msg.getName(), msg.getParameterTypes());
         //通过方法获取注解
-        SystemResource systemResource = method.getAnnotation(SystemResource.class);
+        final SystemResource systemResource = method.getAnnotation(SystemResource.class);
 
         logger.info(systemResource.authMethod().value());
         // 如果是不校验，那么全部用户均可以通过
@@ -62,8 +65,10 @@ public class SystemResourceAspect {
             // 校验数据权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
                 Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
-                if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(systemResource.value()))
+                final String functionSetStr = classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
+                if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)){
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
+                }
             }
         }
         return joinPoint.proceed();

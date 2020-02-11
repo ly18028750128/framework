@@ -12,7 +12,7 @@ public interface TFrameworkResourceDao {
 
     TFrameworkResource selectByPrimaryKey(@Param("resourceId") Long resourceId);
 
-    TFrameworkResource selectByResourceCode(@Param("resourceCode") String resourceCode );
+    TFrameworkResource selectByResourceCodeAndPath(@Param("resourceCode") String resourceCode,@Param("resourcePath") String resourcePath );
 
     int updateByPrimaryKeySelective(TFrameworkResource record);
 
