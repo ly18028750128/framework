@@ -18,6 +18,7 @@ import org.cloud.model.TFrameRoleResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,9 @@ import java.util.Set;
 @Component
 public class SystemResourceAspect {
     private Logger logger = LoggerFactory.getLogger(SystemResourceAspect.class);
+
+    @Value("${spring.application.noGroupName:}")
+    private String microName;
 
     @Autowired
     RedisUtil redisUtil;
@@ -65,7 +69,7 @@ public class SystemResourceAspect {
             // 校验数据权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
                 Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
-                final String functionSetStr = classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
+                final String functionSetStr = microName+CoreConstant._FUNCTION_SPLIT_STR+classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
                 if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)){
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
                 }

@@ -60,7 +60,7 @@ public class SystemResourceService implements ISystemResourceService {
 
     @Override
     public Integer saveOrUpdateResource(TFrameworkResource frameworkResource) throws Exception {
-        TFrameworkResource selectData = frameworkResourceDao.selectByResourceCodeAndPath(frameworkResource.getResourceCode(),frameworkResource.getResourcePath());
+        TFrameworkResource selectData = frameworkResourceDao.selectByResourceCodeAndPath(frameworkResource.getResourceCode(),frameworkResource.getResourcePath(),frameworkResource.getBelongMicroservice());
         if (selectData == null) {
             return frameworkResourceDao.insert(frameworkResource);
         } else {
