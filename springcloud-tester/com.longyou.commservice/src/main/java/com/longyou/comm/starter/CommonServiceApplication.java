@@ -5,6 +5,8 @@ import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -18,7 +20,7 @@ import java.util.Properties;
 @ComponentScan({"org.cloud.*","com.longyou.comm.*"})
 @MapperScan("com.longyou.comm.mapper")
 @ServletComponentScan({"org.cloud.filter"})
-@SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})
+@SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class CommonServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(CommonServiceApplication.class,args);
