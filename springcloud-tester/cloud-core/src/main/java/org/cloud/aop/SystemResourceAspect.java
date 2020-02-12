@@ -66,7 +66,7 @@ public class SystemResourceAspect {
             if (loginUserDetails == null) {
                 throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "请登录！", null, null, Charset.forName("utf8"));
             }
-            // 校验数据权限！
+            // 校验功能权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
                 Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
                 final String functionSetStr = microName+CoreConstant._FUNCTION_SPLIT_STR+classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
@@ -77,7 +77,5 @@ public class SystemResourceAspect {
         }
         return joinPoint.proceed();
     }
-
-
 }
 
