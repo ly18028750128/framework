@@ -122,7 +122,7 @@ public final class CoreConstant {
 
         ALLSYSTEMUSER("ALLSYSTEMUSER","所有登录用户","rest.AuthMethod.ALLSYSTEMUSER"),
         BYUSERPERMISSION("BYUSERPERMISSION","通过用户所属权限验证","rest.AuthMethod.BYUSERPERMISSION"),
-        NOAUTH("NOAUTH","不用授权","rest.AuthMethod.BYUSERPERMISSION"),
+        NOAUTH("NOAUTH","不用授权","rest.AuthMethod.NOAUTH"),
         ;
 
         private String value;     // 值
