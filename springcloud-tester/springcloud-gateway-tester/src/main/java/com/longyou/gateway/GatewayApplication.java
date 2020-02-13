@@ -18,8 +18,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.pattern.PathPatternParser;
 
 @SpringBootApplication(
-        scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.aop"},
-        exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class}
+        scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.aop"}
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession
