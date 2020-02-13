@@ -20,7 +20,7 @@ import java.util.Properties;
 @ComponentScan({"org.cloud.*","com.longyou.comm.*"})
 @MapperScan("com.longyou.comm.mapper")
 @ServletComponentScan({"org.cloud.filter"})
-@SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(CommonServiceApplication.class,args);
