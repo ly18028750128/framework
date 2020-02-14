@@ -1,6 +1,4 @@
 spring:
-  datasource:
-    max-active: 10
   application:
     #group: 'LONGYOU' #这里写在启动参数里
     noGroupName: common-service

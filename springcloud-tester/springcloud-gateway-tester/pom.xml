@@ -90,6 +90,10 @@
                     <artifactId>mybatis-spring-boot-starter</artifactId>
                     <groupId>org.mybatis.spring.boot</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                    <groupId>com.baomidou</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
