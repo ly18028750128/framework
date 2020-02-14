@@ -85,6 +85,4 @@ public class CommonServiceApplication {
     public DataSource quartzDataSource(){
         return new DruidDataSource();
     }
-
-
 }

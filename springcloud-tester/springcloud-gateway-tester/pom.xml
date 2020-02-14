@@ -94,6 +94,14 @@
                     <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
                     <groupId>com.baomidou</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>spring-boot-starter-quartz</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>quartz</artifactId>
+                    <groupId>org.quartz-scheduler</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
