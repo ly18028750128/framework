@@ -57,10 +57,6 @@ public class QuartzService {
         TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
                 .withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
-        // 是否增加时就启动
-        if (isStartNow) {
-            triggerBuilder = triggerBuilder.startNow();
-        }
         trigger = triggerBuilder.build();
 
         // 设置job参数
@@ -70,7 +66,10 @@ public class QuartzService {
         }
 
         scheduler.scheduleJob(jobDetail, trigger);
-//        this.pauseJob(jobName, jobGroupName);  // 注册完后先暂停
+        // 是否增加时就启动
+        if (isStartNow) {
+            this.runAJobNow(jobName,jobGroupName);
+        }
     }
 
     /**
@@ -97,11 +96,6 @@ public class QuartzService {
                 .withDescription(getDescription(jobData)).startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
                 .withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
 
-        // 是否增加时就启动
-        if (isStartNow) {
-            triggerBuilder = triggerBuilder.startNow();
-        }
-
         Trigger trigger = triggerBuilder.build();
 
         // 设置job参数
@@ -112,7 +106,11 @@ public class QuartzService {
 
         // 把作业和触发器注册到任务调度中
         scheduler.scheduleJob(jobDetail, trigger);
-//        this.pauseJob(jobName, jobGroupName); // 注册完后先暂停，调用启动才可以正式的启用
+
+        // 是否增加时就启动
+        if (isStartNow) {
+            this.runAJobNow(jobName,jobGroupName);
+        }
     }
 
     /**
@@ -134,9 +132,6 @@ public class QuartzService {
         TriggerBuilder<CronTrigger> triggerBuilder = cronTrigger.getTriggerBuilder().withIdentity(triggerKey).
                 withDescription(getDescription(jobData)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
 
-        if (isStartNow) {
-            triggerBuilder.startNow();
-        }
         cronTrigger = triggerBuilder.build();
         cronTrigger.getJobDataMap().clear();
         if (jobData != null) {
@@ -144,6 +139,11 @@ public class QuartzService {
         }
         // 重启触发器
         scheduler.rescheduleJob(triggerKey, cronTrigger);
+
+        // 是否增加时就启动
+        if (isStartNow) {
+            this.runAJobNow(jobName,jobGroupName);
+        }
 
     }
 
@@ -171,9 +171,6 @@ public class QuartzService {
         }
         TriggerBuilder<SimpleTrigger> triggerBuilder = simpleTrigger.getTriggerBuilder().withIdentity(triggerKey).withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
-        if (isStartNow) {
-            triggerBuilder.startNow();
-        }
         simpleTrigger = triggerBuilder.build();
 
         simpleTrigger.getJobDataMap().clear();
@@ -182,6 +179,11 @@ public class QuartzService {
         }
         // 重启触发器
         scheduler.rescheduleJob(triggerKey, simpleTrigger);
+
+        // 是否增加时就启动
+        if (isStartNow) {
+            this.runAJobNow(jobName,jobGroupName);
+        }
     }
 
     /**
