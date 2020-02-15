@@ -3,7 +3,6 @@ package org.cloud.scheduler.controller;
 
 import org.cloud.scheduler.service.QuartzService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +19,6 @@ public class QuartzController {
 
     @Autowired
     QuartzService quartzService;
-
-    @Value("${spring.application.name:}")
-    private String applicationName;
-
 
     public static enum JobFieldName {
         CLASSNAME("jobClass", "类名,一定要继承QuartzJobBean"),
@@ -53,27 +48,37 @@ public class QuartzController {
         return quartzService.queryAllJob();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/runJob")
+    @RequestMapping(method = RequestMethod.GET, value = "/allRunJob")
     public List<Map<String, Object>> queryRunJob() throws Exception {
         return quartzService.queryRunJob();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/add")
     public void addJob(@RequestBody Map<String, Object> params) throws Exception {
-        Class<? extends QuartzJobBean> jobClass = (Class<? extends QuartzJobBean>) Class.forName(params.get(JobFieldName.CLASSNAME.value()).toString());
-        String jobName = applicationName + "::" + params.get(JobFieldName.JOBNAME.value());
-        String jobGroupName = applicationName + "::" + params.get(JobFieldName.JOBGROUPNAME.value());
+
+        Class<? extends QuartzJobBean> jobClass = null;
+        String clsName = params.get(JobFieldName.CLASSNAME.value()).toString();
+        try{
+            jobClass = (Class<? extends QuartzJobBean>) Class.forName(clsName);
+        }catch (Exception e){
+            throw new Exception(clsName+" 不存在，或者不是继承QuartzJobBean");
+        }
+
+
+        String jobName = (String)params.get(JobFieldName.JOBNAME.value());
+        String jobGroupName = (String)params.get(JobFieldName.JOBGROUPNAME.value());
         Object jobTime = params.get(JobFieldName.JOBTIME.value());
         Map jobData = (Map) params.get(JobFieldName.JOBDATA.value());
-
+        Boolean isStarNow = (Boolean) params.get("isStartNow");
+        isStarNow = (isStarNow==null?false:isStarNow);
         if (jobTime instanceof String) { // 按corn表达式
-            quartzService.addJob(jobClass, jobName, jobGroupName, (String) jobTime, jobData);
+            quartzService.addJob(jobClass, jobName, jobGroupName, (String) jobTime, jobData,isStarNow);
         } else {  // 按时间间隔
             int jobTimes = -1;
             if (params.get(JobFieldName.JOBTIMES.value()) != null) {
                 jobTimes = Integer.parseInt(params.get(JobFieldName.JOBTIMES.value()).toString());
             }
-            quartzService.addJob(jobClass, jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData);
+            quartzService.addJob(jobClass, jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData,isStarNow);
         }
     }
 
@@ -82,15 +87,17 @@ public class QuartzController {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
         Object jobTime = params.get(JobFieldName.JOBTIME.value());
-        Map jobData = (Map) params.get(JobFieldName.JOBDATA.value());
+        Map<String,?> jobData = (Map) params.get(JobFieldName.JOBDATA.value());
+        Boolean isStarNow = (Boolean) params.get("isStartNow");
+        isStarNow = (isStarNow==null?false:isStarNow);
         if (jobTime instanceof String) { // 按corn表达式
-            quartzService.updateJob(jobName, jobGroupName, (String) jobTime);
+            quartzService.updateJob(jobName, jobGroupName, (String) jobTime,jobData,isStarNow);
         } else {  // 按时间间隔
             int jobTimes = -1;
             if (params.get(JobFieldName.JOBTIMES.value()) != null) {
                 jobTimes = Integer.parseInt(params.get(JobFieldName.JOBTIMES.value()).toString());
             }
-            quartzService.updateJob(jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes);
+            quartzService.updateJob(jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes,jobData,isStarNow);
         }
     }
 
@@ -100,20 +107,36 @@ public class QuartzController {
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
         quartzService.deleteJob(jobName, jobGroupName);
     }
-
+    // 暂停一个任务定义
     @RequestMapping(method = RequestMethod.POST, value = "/pause")
+    public void pauseTrigger(@RequestBody Map<String, Object> params) throws Exception {
+        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
+        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
+        quartzService.pauseTrigger(jobName, jobGroupName);
+    }
+
+    // 暂停一个任务执行的job
+    @RequestMapping(method = RequestMethod.POST, value = "/pauseJob")
     public void pauseJob(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
         quartzService.pauseJob(jobName, jobGroupName);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/resume")
+    @RequestMapping(method = RequestMethod.POST, value = "/resumeJob")
     public void resumeJob(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
         quartzService.resumeJob(jobName, jobGroupName);
     }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/resume")
+    public void resumeTrigger(@RequestBody Map<String, Object> params) throws Exception {
+        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
+        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
+        quartzService.resumeTrigger(jobName, jobGroupName);
+    }
+
 
     @RequestMapping(method = RequestMethod.POST, value = "/runNow")
     public void runAJobNow(@RequestBody Map<String, Object> params) throws Exception {

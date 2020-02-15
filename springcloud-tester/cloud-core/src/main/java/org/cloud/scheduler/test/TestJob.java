@@ -1,4 +1,4 @@
-package com.longyou.comm.quartz;
+package org.cloud.scheduler.test;
 
 import com.alibaba.fastjson.JSON;
 import org.quartz.JobExecutionContext;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 
-@Component
+@Component("JustTest.testJob")
 public class TestJob extends QuartzJobBean {
 
     private final Logger logger = LoggerFactory.getLogger(TestJob.class);
@@ -21,6 +21,7 @@ public class TestJob extends QuartzJobBean {
 
         logger.info(new Date() + "::" +context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getJobClass() + " 开始执行！");
 
+        logger.info("context.getTrigger().getJobDataMap()="+ JSON.toJSONString(context.getTrigger().getJobDataMap()));
         logger.info("context.getJobDetail().getJobDataMap()="+ JSON.toJSONString(context.getJobDetail().getJobDataMap()));
 
         logger.info(new Date() + "::" +context.getJobDetail().getKey().getGroup() + ":" + context.getJobDetail().getJobClass() + " 结束执行！");
