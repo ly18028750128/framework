@@ -1,5 +1,6 @@
 package com.longyou.comm.starter;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageHelper;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
@@ -8,13 +9,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.client.RestTemplate;
 
+import javax.sql.DataSource;
 import java.util.Properties;
 @EnableDiscoveryClient
 @ComponentScan({"org.cloud.*","com.longyou.comm.*"})
@@ -62,4 +67,22 @@ public class CommonServiceApplication {
         return new SpringContextUtil();
     }
 
+
+    @Primary
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DruidDataSource druidDataSource() {
+        return new DruidDataSource();
+    }
+
+
+    /**
+     * 配置Quartz独立数据源的配置
+     */
+    @Bean
+    @QuartzDataSource
+    @ConfigurationProperties(prefix = "spring.datasource.quartz")
+    public DataSource quartzDataSource(){
+        return new DruidDataSource();
+    }
 }
