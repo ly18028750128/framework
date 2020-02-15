@@ -23,6 +23,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
+            <appender-ref ref="MY_MONGODB_FILE"/>
         </root>
         <logger name="org.cloud" level="DEBUG">
             <appender-ref ref="MY_MONGODB_FILE"/>
@@ -39,6 +40,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
+            <appender-ref ref="MY_MONGODB_FILE"/>
         </root>
         <logger name="org.cloud" level="DEBUG">
             <appender-ref ref="MY_MONGODB_FILE"/>
