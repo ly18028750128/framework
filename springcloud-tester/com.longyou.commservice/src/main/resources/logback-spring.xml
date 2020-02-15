@@ -20,10 +20,13 @@
     <appender name="MY_MONGODB_FILE" class="org.cloud.logger.MongoDBAppender"></appender>
 
     <springProfile name="dev,test,sit,uat"> <!--开发，测试，uat，sit-->
-		<root level="INFO">
-			<appender-ref ref="CONSOLE"/>
-			<appender-ref ref="FILE"/>
-		</root>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="org.cloud" level="DEBUG">
+            <appender-ref ref="MY_MONGODB_FILE"/>
+        </logger>
         <logger name="com.longyou.comm" level="DEBUG">
             <appender-ref ref="MY_MONGODB_FILE"/>
         </logger>
@@ -32,18 +35,21 @@
         </logger>
     </springProfile>
 
-	<springProfile name="prod,preProd">
-		<root level="INFO">
-			<appender-ref ref="CONSOLE"/>
-			<appender-ref ref="FILE"/>
-		</root>
+    <springProfile name="prod,preProd">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+        <logger name="org.cloud" level="DEBUG">
+            <appender-ref ref="MY_MONGODB_FILE"/>
+        </logger>
         <logger name="com.longyou.comm" level="INFO">
             <appender-ref ref="MY_MONGODB_FILE"/>
         </logger>
         <logger name="org.springframework.web" level="ERROR">
             <appender-ref ref="MY_MONGODB_FILE"/>
         </logger>
-	</springProfile>
+    </springProfile>
 
 
 </configuration>
