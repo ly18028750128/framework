@@ -68,7 +68,7 @@ public class QuartzService {
         scheduler.scheduleJob(jobDetail, trigger);
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName,jobGroupName);
+            this.runAJobNow(jobName, jobGroupName);
         }
     }
 
@@ -109,7 +109,7 @@ public class QuartzService {
 
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName,jobGroupName);
+            this.runAJobNow(jobName, jobGroupName);
         }
     }
 
@@ -133,18 +133,22 @@ public class QuartzService {
                 withDescription(getDescription(jobData)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
 
         cronTrigger = triggerBuilder.build();
+        JobDetail jobDetail = scheduler.getJobDetail(cronTrigger.getJobKey());
         cronTrigger.getJobDataMap().clear();
+        jobDetail.getJobDataMap().clear();
         if (jobData != null) {
             cronTrigger.getJobDataMap().putAll(jobData);
+            jobDetail.getJobDataMap().putAll(jobData);
         }
-        // 重启触发器
-        scheduler.rescheduleJob(triggerKey, cronTrigger);
 
+        // 重启触发器
+//        scheduler.rescheduleJob(triggerKey, cronTrigger);
+        this.deleteJob(jobName, jobGroupName);
+        scheduler.scheduleJob(jobDetail, cronTrigger);
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName,jobGroupName);
+            this.runAJobNow(jobName, jobGroupName);
         }
-
     }
 
     /**
@@ -172,18 +176,23 @@ public class QuartzService {
         TriggerBuilder<SimpleTrigger> triggerBuilder = simpleTrigger.getTriggerBuilder().withIdentity(triggerKey).withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
         simpleTrigger = triggerBuilder.build();
+        JobDetail jobDetail = scheduler.getJobDetail(simpleTrigger.getJobKey());
 
         simpleTrigger.getJobDataMap().clear();
+        jobDetail.getJobDataMap().clear();
         if (jobData != null) {
             simpleTrigger.getJobDataMap().putAll(jobData);
+            jobDetail.getJobDataMap().putAll(jobData);
         }
         // 重启触发器
-        scheduler.rescheduleJob(triggerKey, simpleTrigger);
+//        scheduler.rescheduleJob(triggerKey, simpleTrigger);
+        this.deleteJob(jobName, jobGroupName);
+        scheduler.scheduleJob(jobDetail, simpleTrigger);
 
         // 是否增加时就启动
-        if (isStartNow) {
-            this.runAJobNow(jobName,jobGroupName);
-        }
+//        if (isStartNow) {  // simpleTrigger 时，这个参数无效，启动的时候一定会执行一次。
+//            this.runAJobNow(jobName, jobGroupName);
+//        }
     }
 
     /**
@@ -253,7 +262,8 @@ public class QuartzService {
 
     public void runAJobNow(String jobName, String jobGroupName) throws Exception {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
-        scheduler.triggerJob(jobKey);
+        Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
+        scheduler.triggerJob(jobKey,trigger.getJobDataMap());
     }
 
     /**
@@ -301,6 +311,7 @@ public class QuartzService {
     }
 
     private void putPublicAttr(Trigger trigger, JobKey jobKey, Map<String, Object> map) throws Exception {
+        map.put(QuartzController.JobFieldName.CLASSNAME.value(), scheduler.getJobDetail(jobKey).getJobClass().getName());
         map.put(QuartzController.JobFieldName.JOBNAME.value(), jobKey.getName());
         map.put(QuartzController.JobFieldName.JOBGROUPNAME.value(), jobKey.getGroup());
         map.put(QuartzController.JobFieldName.DESCRIPTION.value(), "触发器[" + trigger.getKey() + "]");
@@ -316,6 +327,7 @@ public class QuartzService {
             map.put("repeatCount", simpleTrigger.getRepeatCount());
             map.put("repeatInterval", simpleTrigger.getRepeatInterval());
         }
+
         map.put(QuartzController.JobFieldName.JOBDATA.value(), trigger.getJobDataMap());
         map.put("nextFireTime", trigger.getNextFireTime());
         map.put("previousFireTime", trigger.getPreviousFireTime());

@@ -22,6 +22,7 @@ public class TestJob extends QuartzJobBean {
         logger.info(new Date() + "::" +context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getJobClass() + " 开始执行！");
 
         logger.info("context.getTrigger().getJobDataMap()="+ JSON.toJSONString(context.getTrigger().getJobDataMap()));
+        logger.info("context.getJobDetail().getJobDataMap()="+ JSON.toJSONString(context.getJobDetail().getJobDataMap()));
 
         logger.info(new Date() + "::" +context.getJobDetail().getKey().getGroup() + ":" + context.getJobDetail().getJobClass() + " 结束执行！");
 
