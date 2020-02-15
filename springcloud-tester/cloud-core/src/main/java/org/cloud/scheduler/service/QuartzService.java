@@ -66,10 +66,10 @@ public class QuartzService {
         }
 
         scheduler.scheduleJob(jobDetail, trigger);
-        // 是否增加时就启动
-        if (isStartNow) {
-            this.runAJobNow(jobName, jobGroupName);
-        }
+//        // 是否增加时就启动,时间间隔模式，默认第一次就是新建时就启动，所以这里不用设置
+//        if (isStartNow) {
+//            this.runAJobNow(jobName, jobGroupName);
+//        }
     }
 
     /**
@@ -251,6 +251,11 @@ public class QuartzService {
     public void resumeTrigger(String jobName, String jobGroupName) throws Exception {
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
         scheduler.resumeTrigger(triggerKey);
+    }
+
+    public boolean isExists(String jobName, String jobGroupName) throws Exception {
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
+        return scheduler.checkExists(triggerKey);
     }
 
     /**

@@ -188,4 +188,24 @@ public final class CoreConstant {
 
     public final static String _FUNCTION_SPLIT_STR="::";
 
+    public static enum MongoDbLogConfig{
+        MONGODB_LOG_SUFFIX("_logbackLogCollection","日志存储collection后缀"),
+        CREATE_DATE_FIELD("createDate","创建日期字段")
+        ;
+        private String value;
+        private String desc;
+
+        MongoDbLogConfig(String value,String desc){
+            this.value = value;
+            this.desc = desc;
+        }
+
+        public String value(){
+            return value;
+        }
+
+    }
+
+//    public final static String MONGODB_LOG_SUFFIX = "_logbackLogCollection";
+
 }
