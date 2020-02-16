@@ -19,7 +19,7 @@ public class TestJob extends BaseQuartzJobBean {
     @Override
     protected void init() {
         this.jobTime = 10;
-        this.jobTimes = 10;
+//        this.jobTimes = 10;
     }
 
     @Override
