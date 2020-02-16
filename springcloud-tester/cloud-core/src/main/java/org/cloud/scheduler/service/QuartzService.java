@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import org.cloud.scheduler.controller.QuartzController;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.spi.MutableTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -326,6 +325,7 @@ public class QuartzService {
             CronTrigger cronTrigger = (CronTrigger) trigger;
             String cronExpression = cronTrigger.getCronExpression();
             map.put(QuartzController.JobFieldName.JOBTIME.value(), cronExpression);
+            map.put("timeZone", cronTrigger.getTimeZone());
         } else if (trigger instanceof SimpleTrigger) {
             SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
             map.put("timesTriggered", simpleTrigger.getTimesTriggered());
