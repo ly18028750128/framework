@@ -53,7 +53,6 @@ public class SystemResourceAspect {
         //通过方法获取注解
         final SystemResource systemResource = method.getAnnotation(SystemResource.class);
 
-        logger.info(systemResource.authMethod().value());
         // 如果是不校验，那么全部用户均可以通过
         if (!systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
@@ -65,7 +64,7 @@ public class SystemResourceAspect {
                 Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
                 final String functionSetStr = microName+CoreConstant._FUNCTION_SPLIT_STR+classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
                 if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)){
-                    logger.info(loginUserDetails.getUsername() + "非法的请求：" + functionSetStr);
+                    logger.error(loginUserDetails.getUsername() + ",正在非法的请求：" + functionSetStr);
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
                 }
             }
