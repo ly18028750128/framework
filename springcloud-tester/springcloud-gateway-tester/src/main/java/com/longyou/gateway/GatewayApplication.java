@@ -1,24 +1,27 @@
 package com.longyou.gateway;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.util.pattern.PathPatternParser;
+
+import javax.sql.DataSource;
 
 @SpringBootApplication(
-        scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.aop"}
+        scanBasePackages = {
+                "com.longyou.gateway",
+                "org.cloud.core.redis",
+                "org.cloud.controller",
+                "org.cloud.scheduler",
+                "org.cloud.aop",}
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession
@@ -38,6 +41,23 @@ public class GatewayApplication {
         return new SpringContextUtil();
     }
 
+    @Primary
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DruidDataSource druidDataSource() {
+        return new DruidDataSource();
+    }
+
+
+    /**
+     * 配置Quartz独立数据源的配置
+     */
+    @Bean
+    @QuartzDataSource
+    @ConfigurationProperties(prefix = "spring.datasource.quartz")
+    public DataSource quartzDataSource() {
+        return new DruidDataSource();
+    }
 
 
 }
