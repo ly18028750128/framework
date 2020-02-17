@@ -115,12 +115,13 @@ public class QuartzController {
     public ResponseResult runAJobNow(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
-        quartzService.runAJobNow(jobName, jobGroupName);
+        Map jobData = (Map) params.get(JobFieldName.JOBDATA.value());
+        quartzService.runAJobNow(jobName, jobGroupName, jobData);
         return ResponseResult.createSuccessResult();
     }
 
 
-    private void addJob(@RequestBody Map<String, Object> params) throws Exception {
+    private void addJob(Map<String, Object> params) throws Exception {
 
         Class<? extends QuartzJobBean> jobClass = null;
         String clsName = params.get(JobFieldName.CLASSNAME.value()).toString();

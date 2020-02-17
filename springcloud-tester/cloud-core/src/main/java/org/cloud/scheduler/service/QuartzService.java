@@ -108,7 +108,7 @@ public class QuartzService {
 
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName, jobGroupName);
+            this.runAJobNow(jobName, jobGroupName, trigger.getJobDataMap());
         }
     }
 
@@ -146,7 +146,7 @@ public class QuartzService {
         scheduler.scheduleJob(jobDetail, cronTrigger);
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName, jobGroupName);
+            this.runAJobNow(jobName, jobGroupName, trigger.getJobDataMap());
         }
     }
 
@@ -264,10 +264,11 @@ public class QuartzService {
      * @param jobGroupName
      */
 
-    public void runAJobNow(String jobName, String jobGroupName) throws Exception {
+    public void runAJobNow(String jobName, String jobGroupName, Map jobData) throws Exception {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
-        scheduler.triggerJob(jobKey,trigger.getJobDataMap());
+        trigger.getJobDataMap().putAll(jobData);  // 将直接运行的参数传入进去
+        scheduler.triggerJob(jobKey, trigger.getJobDataMap());
     }
 
     /**
@@ -345,4 +346,11 @@ public class QuartzService {
         return description == null ? "" : description.toString();
     }
 
+    private JobDataMap getJobData(Map jobData) {
+        JobDataMap jobDataMap = new JobDataMap();
+        if (jobData != null) {
+            jobDataMap.putAll(jobData);
+        }
+        return jobDataMap;
+    }
 }
