@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import org.cloud.scheduler.controller.QuartzController;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.quartz.spi.MutableTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +108,7 @@ public class QuartzService {
 
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName, jobGroupName);
+            this.runAJobNow(jobName, jobGroupName, trigger.getJobDataMap());
         }
     }
 
@@ -147,7 +146,7 @@ public class QuartzService {
         scheduler.scheduleJob(jobDetail, cronTrigger);
         // 是否增加时就启动
         if (isStartNow) {
-            this.runAJobNow(jobName, jobGroupName);
+            this.runAJobNow(jobName, jobGroupName, trigger.getJobDataMap());
         }
     }
 
@@ -265,10 +264,12 @@ public class QuartzService {
      * @param jobGroupName
      */
 
-    public void runAJobNow(String jobName, String jobGroupName) throws Exception {
+    public void runAJobNow(String jobName, String jobGroupName, Map jobData) throws Exception {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
-        scheduler.triggerJob(jobKey,trigger.getJobDataMap());
+        if (jobData != null)
+            trigger.getJobDataMap().putAll(jobData);  // 将直接运行的参数传入进去
+        scheduler.triggerJob(jobKey, trigger.getJobDataMap());
     }
 
     /**
@@ -326,13 +327,13 @@ public class QuartzService {
             CronTrigger cronTrigger = (CronTrigger) trigger;
             String cronExpression = cronTrigger.getCronExpression();
             map.put(QuartzController.JobFieldName.JOBTIME.value(), cronExpression);
+            map.put("timeZone", cronTrigger.getTimeZone());
         } else if (trigger instanceof SimpleTrigger) {
             SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
             map.put("timesTriggered", simpleTrigger.getTimesTriggered());
             map.put("repeatCount", simpleTrigger.getRepeatCount());
             map.put("repeatInterval", simpleTrigger.getRepeatInterval());
         }
-
         map.put(QuartzController.JobFieldName.JOBDATA.value(), trigger.getJobDataMap());
         map.put("nextFireTime", trigger.getNextFireTime());
         map.put("previousFireTime", trigger.getPreviousFireTime());
@@ -341,8 +342,10 @@ public class QuartzService {
     }
 
     private String getDescription(Map datas) {
+        if (datas == null) {
+            return "";
+        }
         Object description = datas.get(QuartzController.JobFieldName.DESCRIPTION.value());
         return description == null ? "" : description.toString();
     }
-
 }

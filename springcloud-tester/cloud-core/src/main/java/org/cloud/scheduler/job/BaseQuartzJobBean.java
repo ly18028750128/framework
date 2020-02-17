@@ -12,8 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class BaseQuartzJobBean extends QuartzJobBean {
-    protected final Map<String, Object> jobData = new LinkedHashMap<String, Object>();
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Map<String, Object> jobData = new LinkedHashMap<String, Object>();
     protected String jobName = getClass().getSimpleName();
     protected String groupName = getClass().getPackage().getName();
     @NotNull
@@ -48,7 +48,4 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
             logger.error(e.getMessage(), e);
         }
     }
-
-    ;
-
 }

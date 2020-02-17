@@ -1,6 +1,8 @@
 package org.cloud.scheduler.controller;
 
 
+import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant;
 import org.cloud.scheduler.service.QuartzService;
 import org.cloud.vo.ResponseResult;
 import org.quartz.JobKey;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/quartz/job/")
+@SystemResource(path = "定时任务/quartz")
 public class QuartzController {
 
     @Autowired
@@ -60,6 +63,7 @@ public class QuartzController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/createOrUpdate")
+    @SystemResource(value = "createOrUpdate", description = "创建或更新定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult updateJob(@RequestBody Map<String, Object> params) throws Exception {
         this.deleteJob(params);
         this.addJob(params);
@@ -67,6 +71,7 @@ public class QuartzController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
+    @SystemResource(value = "deleteJob", description = "删除定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult deleteJob(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
@@ -78,6 +83,7 @@ public class QuartzController {
 
     // 暂停一个任务定义
     @RequestMapping(method = RequestMethod.POST, value = "/pause")
+    @SystemResource(value = "pauseTrigger", description = "暂停定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult pauseTrigger(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
@@ -85,23 +91,7 @@ public class QuartzController {
         return ResponseResult.createSuccessResult();
     }
 
-    // 暂停一个任务执行的job
-    @RequestMapping(method = RequestMethod.POST, value = "/pauseJob")
-    public ResponseResult pauseJob(@RequestBody Map<String, Object> params) throws Exception {
-        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
-        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
-        quartzService.pauseJob(jobName, jobGroupName);
-        return ResponseResult.createSuccessResult();
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/resumeJob")
-    public ResponseResult resumeJob(@RequestBody Map<String, Object> params) throws Exception {
-        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
-        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
-        quartzService.resumeJob(jobName, jobGroupName);
-        return ResponseResult.createSuccessResult();
-    }
-
+    @SystemResource(value = "resumeTrigger", description = "恢复定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/resume")
     public ResponseResult resumeTrigger(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
@@ -110,17 +100,37 @@ public class QuartzController {
         return ResponseResult.createSuccessResult();
     }
 
+    // 暂停一个任务执行的job
+    @RequestMapping(method = RequestMethod.POST, value = "/pauseJob")
+    @SystemResource(value = "pauseJob", description = "暂停定时任务的JOB", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    public ResponseResult pauseJob(@RequestBody Map<String, Object> params) throws Exception {
+        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
+        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
+        quartzService.pauseJob(jobName, jobGroupName);
+        return ResponseResult.createSuccessResult();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/resumeJob")
+    @SystemResource(value = "resumeJob", description = "恢复定时任务的JOB", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    public ResponseResult resumeJob(@RequestBody Map<String, Object> params) throws Exception {
+        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
+        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
+        quartzService.resumeJob(jobName, jobGroupName);
+        return ResponseResult.createSuccessResult();
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/runNow")
+    @SystemResource(value = "runAJobNow", description = "手动运行定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult runAJobNow(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
-        quartzService.runAJobNow(jobName, jobGroupName);
+        Map jobData = (Map) params.get(JobFieldName.JOBDATA.value());
+        quartzService.runAJobNow(jobName, jobGroupName, jobData);
         return ResponseResult.createSuccessResult();
     }
 
 
-    private void addJob(@RequestBody Map<String, Object> params) throws Exception {
+    private void addJob(Map<String, Object> params) throws Exception {
 
         Class<? extends QuartzJobBean> jobClass = null;
         String clsName = params.get(JobFieldName.CLASSNAME.value()).toString();
