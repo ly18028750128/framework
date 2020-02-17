@@ -267,7 +267,8 @@ public class QuartzService {
     public void runAJobNow(String jobName, String jobGroupName, Map jobData) throws Exception {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
-        trigger.getJobDataMap().putAll(jobData);  // 将直接运行的参数传入进去
+        if (jobData != null)
+            trigger.getJobDataMap().putAll(jobData);  // 将直接运行的参数传入进去
         scheduler.triggerJob(jobKey, trigger.getJobDataMap());
     }
 
@@ -342,15 +343,11 @@ public class QuartzService {
     }
 
     private String getDescription(Map datas) {
+        if (datas == null) {
+            return "";
+        }
+
         Object description = datas.get(QuartzController.JobFieldName.DESCRIPTION.value());
         return description == null ? "" : description.toString();
-    }
-
-    private JobDataMap getJobData(Map jobData) {
-        JobDataMap jobDataMap = new JobDataMap();
-        if (jobData != null) {
-            jobDataMap.putAll(jobData);
-        }
-        return jobDataMap;
     }
 }
