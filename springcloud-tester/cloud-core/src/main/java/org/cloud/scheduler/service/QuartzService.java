@@ -334,7 +334,6 @@ public class QuartzService {
             map.put("repeatCount", simpleTrigger.getRepeatCount());
             map.put("repeatInterval", simpleTrigger.getRepeatInterval());
         }
-
         map.put(QuartzController.JobFieldName.JOBDATA.value(), trigger.getJobDataMap());
         map.put("nextFireTime", trigger.getNextFireTime());
         map.put("previousFireTime", trigger.getPreviousFireTime());
@@ -346,7 +345,6 @@ public class QuartzService {
         if (datas == null) {
             return "";
         }
-
         Object description = datas.get(QuartzController.JobFieldName.DESCRIPTION.value());
         return description == null ? "" : description.toString();
     }
