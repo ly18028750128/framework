@@ -25,6 +25,13 @@ public class TestJob extends BaseQuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         logger.info(new Date() + "::" + context.getJobDetail().getKey().getName() + ":" + context.getJobDetail().getJobClass() + " 开始执行！");
+
+        try {
+            Thread.sleep(10 * 1000);  // 方便测试查询运行时的定时任务
+        } catch (Exception e) {
+
+        }
+
         logger.info("context.getTrigger().getJobDataMap()=" + JSON.toJSONString(context.getTrigger().getJobDataMap()));  // 运行时的参数
         logger.info("context.getJobDetail().getJobDataMap()=" + JSON.toJSONString(context.getJobDetail().getJobDataMap())); // 注册时的参数
         logger.info(new Date() + "::" + context.getJobDetail().getKey().getGroup() + ":" + context.getJobDetail().getJobClass() + " 结束执行！");
