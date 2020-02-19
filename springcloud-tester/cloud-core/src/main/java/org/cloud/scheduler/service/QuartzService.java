@@ -332,7 +332,7 @@ public class QuartzService {
             SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
             map.put("timesTriggered", simpleTrigger.getTimesTriggered());
             map.put("repeatCount", simpleTrigger.getRepeatCount());
-            map.put("repeatInterval", simpleTrigger.getRepeatInterval());
+            map.put(QuartzController.JobFieldName.JOBTIME.value(), simpleTrigger.getRepeatInterval() / 1000);
         }
         map.put(QuartzController.JobFieldName.JOBDATA.value(), trigger.getJobDataMap());
         map.put("nextFireTime", trigger.getNextFireTime());
