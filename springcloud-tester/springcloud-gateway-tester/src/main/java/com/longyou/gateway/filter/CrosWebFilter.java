@@ -13,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -37,19 +36,8 @@ public class CrosWebFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {
         serverWebExchangeThreadLocal.set(swe);
         ServerHttpRequest request = swe.getRequest();
-        if (CorsUtils.isCorsRequest(request)) {
-            ServerHttpResponse response = swe.getResponse();
-            HttpHeaders headers = response.getHeaders();
-            headers.add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
-            headers.add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
-            headers.add("Access-Control-Max-Age", "3600");
-            headers.add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
-            if (request.getMethod() == HttpMethod.OPTIONS) {
-                response.setStatusCode(HttpStatus.OK);
-                return Mono.empty();
-            }
-        }
         String uri = request.getURI().getPath();
+
         if (uri.endsWith("/")) {
             ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri + "index.html").build();
             return wfc.filter(swe.mutate().request(newRequest).build());
@@ -57,6 +45,18 @@ public class CrosWebFilter implements WebFilter {
         if (uri.startsWith("//")) {
             ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri.replaceFirst("//", "/")).build();
             return wfc.filter(swe.mutate().request(newRequest).build());
+        }
+
+        if (CorsUtils.isCorsRequest(request) && !uri.contains("SPRING-GATEWAY")) {
+            swe.getResponse().getHeaders().clear();
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
+            swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
+            if (request.getMethod() == HttpMethod.OPTIONS) {
+                swe.getResponse().setStatusCode(HttpStatus.OK);
+                return Mono.empty();
+            }
         }
 
         List<String> services = discoveryClient.getServices();
