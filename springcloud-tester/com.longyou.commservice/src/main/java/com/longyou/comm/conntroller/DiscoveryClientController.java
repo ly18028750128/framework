@@ -49,7 +49,7 @@ public class DiscoveryClientController {
                 }
             });
         }
-        ProcessUtil.single().runCablles(callables);
+        ProcessUtil.single().runCablles(callables, 10, 60L);
         successResult.setData(quartzJobs);
         return successResult;
     }

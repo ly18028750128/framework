@@ -23,6 +23,10 @@ import javax.sql.DataSource;
                 "org.cloud.scheduler",
                 "org.cloud.aop"
         }
+        //        ,
+//        exclude = {
+//                MongoAutoConfiguration.class,
+//                MongoDataAutoConfiguration.class}
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession

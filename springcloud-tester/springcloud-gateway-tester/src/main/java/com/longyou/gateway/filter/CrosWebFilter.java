@@ -7,6 +7,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,16 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CrosWebFilter implements WebFilter {
 
     @Autowired
     private CorsConfigVO corsConfigVO;
+
+    @Autowired
+    DiscoveryClient discoveryClient;
 
     public static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
 
@@ -42,7 +49,7 @@ public class CrosWebFilter implements WebFilter {
                 return Mono.empty();
             }
         }
-        String uri = swe.getRequest().getURI().getPath();
+        String uri = request.getURI().getPath();
         if (uri.endsWith("/")) {
             ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri + "index.html").build();
             return wfc.filter(swe.mutate().request(newRequest).build());
@@ -52,7 +59,16 @@ public class CrosWebFilter implements WebFilter {
             return wfc.filter(swe.mutate().request(newRequest).build());
         }
 
-        if (request.getURI().toString().endsWith("/user/info/authentication")) {
+        List<String> services = discoveryClient.getServices();
+
+        List<String> filterList = new ArrayList<>();
+
+        for (String service : services) {
+            filterList.add("/" + service.toUpperCase() + "/**");
+        }
+        filterList.add("/user/info/authentication");
+
+        if (CommonUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
 
