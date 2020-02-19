@@ -21,7 +21,8 @@ import javax.sql.DataSource;
                 "org.cloud.core.redis",
                 "org.cloud.controller",
                 "org.cloud.scheduler",
-                "org.cloud.aop",}
+                "org.cloud.aop"
+        }
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession
