@@ -4,7 +4,6 @@ import org.cloud.utils.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -37,7 +36,7 @@ public final class ProcessUtil {
                 for (Future<E> future : futureResuts) {
                     try {
                         listResult.add(future.get());
-                    } catch (ExecutionException e) {
+                    } catch (Exception e) {
                         listResult.add(null);
                         logger.error(e.getMessage(), e);
                     }
