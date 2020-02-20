@@ -7,12 +7,14 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -30,6 +32,9 @@ public class CrosWebFilter implements WebFilter {
     @Autowired
     DiscoveryClient discoveryClient;
 
+    @Value("${spring.application.name}")
+    String applicationName;
+
     public static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
 
     @Override
@@ -37,37 +42,35 @@ public class CrosWebFilter implements WebFilter {
         serverWebExchangeThreadLocal.set(swe);
         ServerHttpRequest request = swe.getRequest();
         String uri = request.getURI().getPath();
-
-        if (uri.endsWith("/")) {
-            ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri + "index.html").build();
-            return wfc.filter(swe.mutate().request(newRequest).build());
-        }
         if (uri.startsWith("//")) {
             ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri.replaceFirst("//", "/")).build();
             return wfc.filter(swe.mutate().request(newRequest).build());
         }
+        // 如果自己转发给自己那么直接返回
+        if (CommonUtil.single().pathMatch(uri, CollectionUtils.arrayToList(new String[]{"/" + applicationName.toUpperCase() + "/**"}))) {
+            return wfc.filter(swe);
+        }
 
-        if (CorsUtils.isCorsRequest(request) && !uri.contains("SPRING-GATEWAY")) {
-            swe.getResponse().getHeaders().clear();
+        // 增加跨域处理
+        if (CorsUtils.isCorsRequest(request)) {
             swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
             swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
             swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
             swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
-            if (request.getMethod() == HttpMethod.OPTIONS) {
-                swe.getResponse().setStatusCode(HttpStatus.OK);
-                return Mono.empty();
-            }
         }
 
+        if (request.getMethod() == HttpMethod.OPTIONS) {
+            swe.getResponse().setStatusCode(HttpStatus.OK);
+            return Mono.empty();
+        }
+
+        // 需要排除的服务
         List<String> services = discoveryClient.getServices();
-
         List<String> filterList = new ArrayList<>();
-
         for (String service : services) {
             filterList.add("/" + service.toUpperCase() + "/**");
         }
         filterList.add("/user/info/authentication");
-
         if (CommonUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
