@@ -42,6 +42,13 @@ public class CrosWebFilter implements WebFilter {
         serverWebExchangeThreadLocal.set(swe);
         ServerHttpRequest request = swe.getRequest();
         String uri = request.getURI().getPath();
+
+        if (request.getMethod() == HttpMethod.OPTIONS) {
+            this.setCorsHeader(swe);
+            swe.getResponse().setStatusCode(HttpStatus.OK);
+            return Mono.empty();
+        }
+
         if (uri.startsWith("//")) {
             ServerHttpRequest newRequest = swe.getRequest().mutate().path(uri.replaceFirst("//", "/")).build();
             return wfc.filter(swe.mutate().request(newRequest).build());
@@ -53,15 +60,7 @@ public class CrosWebFilter implements WebFilter {
 
         // 增加跨域处理
         if (CorsUtils.isCorsRequest(request)) {
-            swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
-            swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
-            swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
-            swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
-        }
-
-        if (request.getMethod() == HttpMethod.OPTIONS) {
-            swe.getResponse().setStatusCode(HttpStatus.OK);
-            return Mono.empty();
+            this.setCorsHeader(swe);
         }
 
         // 需要排除的服务
@@ -95,4 +94,13 @@ public class CrosWebFilter implements WebFilter {
         }
         return wfc.filter(swe);
     }
+
+    private void setCorsHeader(ServerWebExchange swe) {
+        swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
+        swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
+        swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
+        swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
+
+    }
+
 }
