@@ -51,7 +51,7 @@ public class QuartzClientController {
                 }
             });
         }
-        ProcessUtil.single().runCablles(callables, 10, 120L);
+        ProcessUtil.single().runCablles(callables, 10, 180L);
         successResult.setData(quartzJobs);
         return successResult;
     }

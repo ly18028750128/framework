@@ -7,11 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
-import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 
@@ -22,7 +20,8 @@ import javax.sql.DataSource;
                 "org.cloud.controller",
                 "org.cloud.scheduler",
                 "org.cloud.aop",
-                "org.cloud.mongo"
+                "org.cloud.mongo",
+                "org.cloud.config.rest"
         }
         //        ,
 //        exclude = {
@@ -36,11 +35,16 @@ public class GatewayApplication {
         SpringApplication.run(GatewayApplication.class, args);
     }
 
-    @Bean
-    @LoadBalanced
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+//    @Bean
+//    @LoadBalanced
+//    public RestTemplate restTemplate() {
+//        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+//        httpRequestFactory.setConnectionRequestTimeout(3000);
+//        httpRequestFactory.setConnectTimeout(3000);
+//        httpRequestFactory.setReadTimeout(3000);
+//        return new RestTemplate(httpRequestFactory);
+//    }
+
 
     @Bean
     public SpringContextUtil springContextUtil() {
