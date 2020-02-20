@@ -6,6 +6,8 @@ import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CrosWebFilter implements WebFilter {
+
+    Logger logger = LoggerFactory.getLogger(CrosWebFilter.class);
 
     @Autowired
     private CorsConfigVO corsConfigVO;
@@ -70,6 +74,9 @@ public class CrosWebFilter implements WebFilter {
             filterList.add("/" + service.toUpperCase() + "/**");
         }
         filterList.add("/user/info/authentication");
+        filterList.add("/auth/login");
+        filterList.add("/auth/logout");
+        filterList.add("/monitor/**");
         if (CommonUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
@@ -85,12 +92,17 @@ public class CrosWebFilter implements WebFilter {
         }
         RequestContextManager.single().setRequestContext(requestContext);
         if (headers.size() > 0) {
-            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, swe.getRequest().getHeaders(), LoginUserDetails.class);
-            LoginUserDetails user = responseEntity.getBody();
-            if (user != null) {
-                requestContext.setUser(user);
+            try {
+                ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, swe.getRequest().getHeaders(), LoginUserDetails.class);
+                LoginUserDetails user = responseEntity.getBody();
+                if (user != null) {
+                    requestContext.setUser(user);
+                }
+                RequestContextManager.single().setRequestContext(requestContext);
+            } catch (Exception e) {
+                logger.error("获取用户信息出错，" + e.getMessage());
             }
-            RequestContextManager.single().setRequestContext(requestContext);
+
         }
         return wfc.filter(swe);
     }
