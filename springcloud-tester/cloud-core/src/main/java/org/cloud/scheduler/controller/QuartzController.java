@@ -4,7 +4,9 @@ package org.cloud.scheduler.controller;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.scheduler.service.QuartzService;
+import org.cloud.utils.SystemStringUtil;
 import org.cloud.vo.ResponseResult;
+import org.quartz.CronExpression;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,7 @@ public class QuartzController {
     @RequestMapping(method = RequestMethod.POST, value = "/createOrUpdate")
     @SystemResource(value = "createOrUpdate", description = "创建或更新定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult updateJob(@RequestBody Map<String, Object> params) throws Exception {
+        checkParams(params);
         this.deleteJob(params);
         this.addJob(params);
         return ResponseResult.createSuccessResult();
@@ -75,7 +78,7 @@ public class QuartzController {
     public ResponseResult deleteJob(@RequestBody Map<String, Object> params) throws Exception {
         String jobName = (String) params.get(JobFieldName.JOBNAME.value());
         String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
-        if(scheduler.checkExists(JobKey.jobKey(jobName,jobGroupName))){
+        if (scheduler.checkExists(JobKey.jobKey(jobName, jobGroupName))) {
             quartzService.deleteJob(jobName, jobGroupName);
         }
         return ResponseResult.createSuccessResult();
@@ -154,6 +157,26 @@ public class QuartzController {
                 jobTimes = Integer.parseInt(params.get(JobFieldName.JOBTIMES.value()).toString());
             }
             quartzService.addJob(jobClass, jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData, isStarNow);
+        }
+    }
+
+    private void checkParams(Map<String, Object> params) throws Exception {
+        Object jobTime = params.get(JobFieldName.JOBTIME.value());
+
+        Boolean result = true;
+
+        if ((jobTime instanceof String) && !CronExpression.isValidExpression((String) jobTime)) {
+            throw new Exception("非法的cron表达式");
+        }
+        String jobName = (String) params.get(JobFieldName.JOBNAME.value());
+
+        if (SystemStringUtil.single().isEmpty(jobName)) {
+            throw new Exception("jobName不能为空");
+        }
+
+        String jobGroupName = (String) params.get(JobFieldName.JOBGROUPNAME.value());
+        if (SystemStringUtil.single().isEmpty(jobGroupName)) {
+            throw new Exception("jobGroupName不能为空");
         }
     }
 }
