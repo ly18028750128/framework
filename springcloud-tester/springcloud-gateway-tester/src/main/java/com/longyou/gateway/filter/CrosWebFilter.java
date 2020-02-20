@@ -70,6 +70,7 @@ public class CrosWebFilter implements WebFilter {
             filterList.add("/" + service.toUpperCase() + "/**");
         }
         filterList.add("/user/info/authentication");
+        filterList.add("/auth/login");
         if (CommonUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
