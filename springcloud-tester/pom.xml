@@ -188,6 +188,11 @@
                 <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
                 <version>1.2.9</version>
             </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>2.1.5</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -200,6 +205,7 @@
         <!--        <module>jdk8.tester</module>-->
         <module>springcloud-gateway-tester</module>
         <module>com.longyou.commservice</module>
+        <module>spring-admin-server</module>
     </modules>
     <distributionManagement>
         <!-- 两个ID必须与 setting.xml中的<server><id>nexus-releases</id></server>保持一致-->

@@ -1,0 +1,16 @@
+spring:
+  application:
+    #group: 'LONGYOU' #这里写在启动参数里
+    noGroupName: admin-service
+    name: ${spring.application.group:}${spring.application.noGroupName:}
+  cloud:
+    config:
+      label: master
+      name: ${spring.application.noGroupName:}
+      profile: ${spring.profiles.active:dev}
+      uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://172.16.4.22:19999/eureka,http://172.16.4.22:20000/eureka
