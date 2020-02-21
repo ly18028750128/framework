@@ -1,6 +1,8 @@
 package com.longyou.comm.conntroller;
 
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
+import org.cloud.utils.SystemStringUtil;
 import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.ResponseResult;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/quartz/client")
@@ -52,7 +55,30 @@ public class QuartzClientController {
             });
         }
         ProcessUtil.single().runCablles(callables, 10, 180L);
-        successResult.setData(quartzJobs);
+
+        String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
+
+        Map<String, List<Map>> sortResults = quartzJobs.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey((v1, v2) -> {
+                    if (SystemStringUtil.single().isNotEmpty(applicationGroup)
+                            && (!v1.startsWith(applicationGroup))
+                            && v2.startsWith(applicationGroup)) {
+                        return 100;
+                    } else if (SystemStringUtil.single().isNotEmpty(applicationGroup)
+                            && v1.startsWith(applicationGroup)
+                            && (!v2.startsWith(applicationGroup))) {
+                        return -100;
+                    } else {
+                        return v1.compareTo(v2);
+                    }
+                }))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+        successResult.setData(sortResults);
         return successResult;
     }
 
