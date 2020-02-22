@@ -16,6 +16,15 @@ public class QueryParamVO {
         Integer pageSize = 10;
     }
 
+    public QueryParamVO() {
+
+    }
+
+    public QueryParamVO(int page, int pageSize) {
+        this.setPageNum(page);
+        this.setPageSize(pageSize);
+    }
+
     private PageQueryParam pageQueryParam = new PageQueryParam();
 
     public void setPageNum(Integer pageNum) {
