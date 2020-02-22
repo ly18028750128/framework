@@ -4,8 +4,5 @@
 /.classpath
 /.idea/*
 */.idea/*
-<<<<<<< HEAD
-=======
 *.log
 *.iml
->>>>>>> 43b4d80a2c3b6357175c0f6e6af00b6dfbb5e07c
