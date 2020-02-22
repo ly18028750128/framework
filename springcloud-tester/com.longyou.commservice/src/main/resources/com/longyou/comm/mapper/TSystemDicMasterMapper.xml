@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.TSystemDicMasterMapper">
+    <resultMap id="BaseResultMap" type="org.cloud.model.TSystemDicMaster">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        <id column="dic_master_id" jdbcType="BIGINT" property="dicMasterId"/>
+        <result column="dic_code" jdbcType="VARCHAR" property="dicCode"/>
+        <result column="dic_name" jdbcType="VARCHAR" property="dicName"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="belong_micro_service" jdbcType="VARCHAR" property="belongMicroService"/>
+        <result column="parent_master_id" jdbcType="BIGINT" property="parentMasterId"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        dic_master_id, dic_code, dic_name, remark, belong_micro_service, parent_master_id,
+        `status`, create_by, create_date, update_by, update_date
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        select
+        <include refid="Base_Column_List"/>
+        from t_system_dic_master
+        where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        delete from t_system_dic_master
+        where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="org.cloud.model.TSystemDicMaster">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        insert into t_system_dic_master (dic_master_id, dic_code, dic_name,
+        remark, belong_micro_service, parent_master_id,
+        `status`, create_by, create_date,
+        update_by, update_date)
+        values (#{dicMasterId,jdbcType=BIGINT}, #{dicCode,jdbcType=VARCHAR}, #{dicName,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR}, #{belongMicroService,jdbcType=VARCHAR}, #{parentMasterId,jdbcType=BIGINT},
+        #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP},
+        #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicMaster">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        insert into t_system_dic_master
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dicMasterId != null">
+                dic_master_id,
+            </if>
+            <if test="dicCode != null">
+                dic_code,
+            </if>
+            <if test="dicName != null">
+                dic_name,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="belongMicroService != null">
+                belong_micro_service,
+            </if>
+            <if test="parentMasterId != null">
+                parent_master_id,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dicMasterId != null">
+                #{dicMasterId,jdbcType=BIGINT},
+            </if>
+            <if test="dicCode != null">
+                #{dicCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dicName != null">
+                #{dicName,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="belongMicroService != null">
+                #{belongMicroService,jdbcType=VARCHAR},
+            </if>
+            <if test="parentMasterId != null">
+                #{parentMasterId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TSystemDicMaster">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        update t_system_dic_master
+        <set>
+            <if test="dicCode != null">
+                dic_code = #{dicCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dicName != null">
+                dic_name = #{dicName,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="belongMicroService != null">
+                belong_micro_service = #{belongMicroService,jdbcType=VARCHAR},
+            </if>
+            <if test="parentMasterId != null">
+                parent_master_id = #{parentMasterId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.cloud.model.TSystemDicMaster">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        update t_system_dic_master
+        set dic_code = #{dicCode,jdbcType=VARCHAR},
+        dic_name = #{dicName,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
+        belong_micro_service = #{belongMicroService,jdbcType=VARCHAR},
+        parent_master_id = #{parentMasterId,jdbcType=BIGINT},
+        `status` = #{status,jdbcType=INTEGER},
+        create_by = #{createBy,jdbcType=BIGINT},
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+        update_by = #{updateBy,jdbcType=BIGINT},
+        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+    </update>
+
+    <select id="listPage" parameterType="org.cloud.vo.QueryParamVO" resultMap="BaseResultMap">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        select
+        <include refid="Base_Column_List"/>
+        from t_system_dic_master
+        <where>
+          <if test="params.dicMasterId!=null">
+            dic_master_id = #{params.dicMasterId,jdbcType=BIGINT}
+          </if>
+          <if test="params.dicCode!=null">
+            and dic_Code like  CONCAT('%',#{params.dicCode,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="params.dicName!=null">
+            and dic_Name like  CONCAT('%',#{params.dicName,jdbcType=VARCHAR},'%')
+          </if>
+
+          <if test="params.dicItemCode!=null or params.dicItemName!=null or params.dicItemValue!=null" >
+            and exists(
+                select 1 from t_system_dic_item dic_item
+                <where>
+                    <if test="params.dicItemCode!=null">
+                        dic_item.dic_item_code like  CONCAT('%',#{params.dicItemCode,jdbcType=VARCHAR},'%')
+                    </if>
+                    <if test="params.dicItemName!=null">
+                       and dic_item.dic_item_name like  CONCAT('%',#{params.dicItemName,jdbcType=VARCHAR},'%')
+                    </if>
+                    <if test="params.dicItemValue!=null">
+                       and dic_item.dic_item_value like  CONCAT('%',#{params.dicItemValue,jdbcType=VARCHAR},'%')
+                    </if>
+                </where>
+            )
+          </if>
+        </where>
+    </select>
+
+</mapper>

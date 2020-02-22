@@ -1,0 +1,7 @@
+1: 导入【20-脚本】目录下的相关脚本
+2: 登录系统：http://localhost:20040/framework-webapp/static/view/auth/login/login.html  admin/123456
+3：post:http://localhost:20040/framework-webapp/services/util//data/execute/SQL_001
+   参数：
+   {"userName": "admin","userName1": "admin","list":["admin","admin2"],
+ "currPage":1,"pageSize":2   --如果无需页，请勿传这两个参数
+}

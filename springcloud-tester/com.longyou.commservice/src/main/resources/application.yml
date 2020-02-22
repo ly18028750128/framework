@@ -1,13 +1,23 @@
 #<!--myibatis log configure-->
 logging:
   level:
-    org.hibernate: ERROR
-    org.springframework.web: DEBUG
-    com.longyou.common: DEBUG
-    com.apache.ibatis: DEBUG
-    java.sql.Connection: DEBUG
-    java.sql.PreparedStatement: DEBUG
-    java.sql.Statement: DEBUG
+    com:
+      apache:
+        ibatis: DEBUG
+      github:
+        pagehelper: DEBUG
+      longyou:
+        common: DEBUG
+    java:
+      sql:
+        Connection: DEBUG
+        PreparedStatement: DEBUG
+        Statement: DEBUG
+    org:
+      cloud: DEBUG
+      hibernate: ERROR
+      springframework:
+        web: DEBUG
     root: INFO
 pagehelper:
   helper-dialect: mysql

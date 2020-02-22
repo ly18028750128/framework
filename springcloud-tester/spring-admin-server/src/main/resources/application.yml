@@ -4,4 +4,4 @@ logging:
     org.hibernate: ERROR
     org.springframework.web: DEBUG
     com.longyou.admin: DEBUG
-    root: DEBUG
+    root: INFO
