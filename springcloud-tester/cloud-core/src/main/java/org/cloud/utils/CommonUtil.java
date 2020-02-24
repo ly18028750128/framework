@@ -16,6 +16,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 public final class CommonUtil {
@@ -50,14 +52,15 @@ public final class CommonUtil {
 
     /**
      * 获取当前登录用户
+     *
      * @param request
      * @return
      */
     public LoginUserDetails getLoginUser(HttpServletRequest request) {
         try {
             final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
-            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request,new String[]{"authorization","cookie"});
-            if(headers.size()==0){
+            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request, new String[]{"authorization", "cookie"});
+            if (headers.size() == 0) {
                 return null;
             }
             ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
@@ -102,6 +105,18 @@ public final class CommonUtil {
             }
         }
         return false;
+    }
+
+    public String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        try {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        } finally {
+            pw.close();
+        }
     }
 
 }
