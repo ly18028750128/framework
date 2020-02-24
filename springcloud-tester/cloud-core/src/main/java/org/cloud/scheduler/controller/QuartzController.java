@@ -11,6 +11,8 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,7 +68,8 @@ public class QuartzController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/createOrUpdate")
     @SystemResource(value = "createOrUpdate", description = "创建或更新定时任务", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
-    public ResponseResult updateJob(@RequestBody Map<String, Object> params) throws Exception {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ResponseResult createOrUpdate(@RequestBody Map<String, Object> params) throws Exception {
         checkParams(params);
         this.deleteJob(params);
         this.addJob(params);
@@ -159,6 +162,7 @@ public class QuartzController {
             quartzService.addJob(jobClass, jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData, isStarNow);
         }
     }
+
 
     private void checkParams(Map<String, Object> params) throws Exception {
         Object jobTime = params.get(JobFieldName.JOBTIME.value());

@@ -2,23 +2,8 @@
 logging:
   level:
     com:
-      apache:
-        ibatis: DEBUG
-      github:
-        pagehelper: DEBUG
       longyou:
         common: DEBUG
-    java:
-      sql:
-        Connection: DEBUG
-        PreparedStatement: DEBUG
-        Statement: DEBUG
-    org:
-      cloud: DEBUG
-      hibernate: ERROR
-      springframework:
-        web: DEBUG
-    root: INFO
 pagehelper:
   helper-dialect: mysql
   reasonable: true
