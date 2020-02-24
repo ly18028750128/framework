@@ -38,22 +38,3 @@ spring:
       password: fwedsflja123u120318412jlwejf
   main:
     allow-bean-definition-overriding: true
-logging:
-  level:
-    org.springframework.cloud.gateway: TRACE
-    org.springframework.http.server.reactive: DEBUG
-    org.springframework.web.reactive: DEBUG
-    reactor.ipc.netty: DEBUG
-    reactor.netty: DEBUG
-    org:
-      springcloud:
-        eureka:
-          client:
-            tester: DEBUG
-      hibernate: ERROR
-      springframework:
-        web: DEBUG
-    com:
-      longyou:
-        springcloud: DEBUG
-    root: INFO

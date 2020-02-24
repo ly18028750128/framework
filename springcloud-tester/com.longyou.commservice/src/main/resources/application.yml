@@ -1,4 +1,3 @@
-#<!--myibatis log configure-->
 logging:
   level:
     com:
