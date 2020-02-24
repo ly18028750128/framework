@@ -1,7 +1,5 @@
-#<!--myibatis log configure-->
 logging:
   level:
-    org.hibernate: ERROR
-    org.springframework.web: DEBUG
-    com.longyou.admin: DEBUG
-    root: INFO
+    com:
+      longyou:
+        admin: DEBUG
