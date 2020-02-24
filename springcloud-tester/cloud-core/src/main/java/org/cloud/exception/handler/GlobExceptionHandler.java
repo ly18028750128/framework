@@ -1,6 +1,7 @@
 package org.cloud.exception.handler;
 
 import org.cloud.exception.BusinessException;
+import org.cloud.utils.CommonUtil;
 import org.cloud.vo.ResponseResult;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(e.getStatusCode().value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -36,7 +37,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -45,7 +46,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -54,7 +55,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -63,7 +64,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -72,7 +73,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(e.getMessage(),e);
+        logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 

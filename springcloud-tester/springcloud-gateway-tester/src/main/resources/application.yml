@@ -27,3 +27,11 @@ redis:
       max-idle: 8
       max-wait: -1ms
       min-idle: 1
+management:
+  endpoint:
+    gateway:
+      enabled: true # default value
+  endpoints:
+    web:
+      exposure:
+        include: gateway

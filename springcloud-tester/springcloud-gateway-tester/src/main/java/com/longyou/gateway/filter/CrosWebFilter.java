@@ -112,7 +112,5 @@ public class CrosWebFilter implements WebFilter {
         swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
         swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
         swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
-
     }
-
 }
