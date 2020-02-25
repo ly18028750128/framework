@@ -18,7 +18,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutinMilliseconds: l0000
+            timeoutinMilliseconds: 60000
 spring:
   cloud:
     loadbalancer:
