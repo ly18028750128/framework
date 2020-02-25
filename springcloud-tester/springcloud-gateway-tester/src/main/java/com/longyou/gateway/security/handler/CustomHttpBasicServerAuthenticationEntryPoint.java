@@ -19,13 +19,12 @@ import reactor.core.publisher.Mono;
 @Component
 @Transactional(propagation = Propagation.NEVER)
 public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServerAuthenticationEntryPoint /* implements ServerAuthenticationEntryPoint */{
-
-
     private static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     private static final String DEFAULT_REALM = "Realm";
     private static String WWW_AUTHENTICATE_FORMAT = "Basic realm=\"%s\"";
     private String headerValue = createHeaderValue("Realm");
     public CustomHttpBasicServerAuthenticationEntryPoint() {
+
     }
 
     public void setRealm(String realm) {

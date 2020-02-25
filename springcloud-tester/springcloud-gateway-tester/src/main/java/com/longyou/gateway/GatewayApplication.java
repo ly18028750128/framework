@@ -29,7 +29,7 @@ import javax.sql.DataSource;
 //                MongoDataAutoConfiguration.class}
 )
 @EnableDiscoveryClient
-@EnableRedisWebSession
+@EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600,redisNamespace = "system:spring:session")
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
