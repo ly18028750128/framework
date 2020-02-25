@@ -26,6 +26,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 
 
 @Component
+@Transactional(propagation = Propagation.NEVER)
 public class AuthenticationSuccessHandler extends WebFilterChainServerAuthenticationSuccessHandler {
 
     final Logger logger = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);

@@ -17,11 +17,14 @@ import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.logout.HttpStatusReturningServerLogoutSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
+@Transactional(propagation = Propagation.NEVER)
 public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerLogoutSuccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(CustomServerLogoutSuccessHandler.class);
