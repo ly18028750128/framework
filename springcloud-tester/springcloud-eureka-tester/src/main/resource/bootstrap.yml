@@ -7,18 +7,18 @@ eureka:
   instance:
     health-check-url-path: /monitor/health
 ribbon:
-  ConnectTimeout: 10000
+  ConnectTimeout: 60000
   MaxAutoRetries: 1
   MaxAutoRetriesNextServer: 2
   OkToRetryOnAllOperations: true
-  ReadTimeout: 10000
+  ReadTimeout: 60000
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutinMilliseconds: l0000
+            timeoutinMilliseconds: 60000
 spring:
   cloud:
     loadbalancer:
