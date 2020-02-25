@@ -28,8 +28,9 @@ public class UserController {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
         }
-        UserDetails user = (UserDetails) authentication.getPrincipal();
+        LoginUserDetails user = (LoginUserDetails) authentication.getPrincipal();
         if (user != null) {
+            user.setPassword("************************");
             return Mono.just(user);
         }
         return Mono.empty();
