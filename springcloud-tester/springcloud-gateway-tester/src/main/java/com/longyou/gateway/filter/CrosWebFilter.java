@@ -31,9 +31,6 @@ public class CrosWebFilter implements WebFilter {
     Logger logger = LoggerFactory.getLogger(CrosWebFilter.class);
 
     @Autowired
-    private CorsConfigVO corsConfigVO;
-
-    @Autowired
     DiscoveryClient discoveryClient;
 
     @Value("${spring.application.name}")
@@ -82,7 +79,6 @@ public class CrosWebFilter implements WebFilter {
         }
 
         RequestContext requestContext = new RequestContext();
-        final String userinfoUrl = CommonUtil.single().getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
         HttpHeaders headers = new HttpHeaders();
         if (swe.getRequest().getHeaders().getFirst("cookie") != null) {
             headers.add("cookie", swe.getRequest().getHeaders().getFirst("cookie"));
@@ -93,6 +89,7 @@ public class CrosWebFilter implements WebFilter {
         RequestContextManager.single().setRequestContext(requestContext);
         if (headers.size() > 0) {
             try {
+                final String userinfoUrl = CommonUtil.single().getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
                 ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, swe.getRequest().getHeaders(), LoginUserDetails.class);
                 LoginUserDetails user = responseEntity.getBody();
                 if (user != null) {
@@ -102,15 +99,19 @@ public class CrosWebFilter implements WebFilter {
             } catch (Exception e) {
                 logger.error("获取用户信息出错，" + e.getMessage());
             }
-
         }
         return wfc.filter(swe);
     }
 
+    @Autowired
+    private CorsConfigVO corsConfigVO;
+
     private void setCorsHeader(ServerWebExchange swe) {
-        swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
-        swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
-        swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
-        swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
+        if (CorsUtils.isCorsRequest(swe.getRequest())) {
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
+            swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
+        }
     }
 }
