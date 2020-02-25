@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @Transactional(propagation = Propagation.NEVER)
 public class UserController {
     @GetMapping("/authentication")
-    public Mono<UserDetails> getAuthentication(Authentication authentication,ServletServerHttpResponse response) {
+    public Mono<UserDetails> getAuthentication(Authentication authentication,ServerHttpResponse response) {
         if (authentication == null) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return Mono.empty();
