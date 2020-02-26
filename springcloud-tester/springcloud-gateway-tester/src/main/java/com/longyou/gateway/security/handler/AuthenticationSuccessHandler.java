@@ -78,7 +78,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 loginUserDetails.setToken(token);
                 // 缓存当前登录用户的登录信息
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic "+token), userDetails, 24 * 60 * 60L);
-                loginUserDetails.setPassword(null);
+                loginUserDetails.setPassword("***********");
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
             wsResponse.setResult(userDetails);

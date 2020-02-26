@@ -23,8 +23,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+import java.util.HashMap;
 
 @Component
 @Transactional(propagation = Propagation.NEVER)
@@ -33,8 +38,8 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         final LoginUserGetParamsDTO loginUserGetParamsDTO = new LoginUserGetParamsDTO();
-        UserDetails userDetails = null;
-        ServerHttpRequest request = CrosWebFilter.serverWebExchangeThreadLocal.get().getRequest();
+        final ServerWebExchange swe = CrosWebFilter.serverWebExchangeThreadLocal.get();
+        ServerHttpRequest request = swe.getRequest();
         final String microAppindex = request.getHeaders().getFirst(CoreConstant._MICRO_APPINDEX_KEY);
         final String userType = request.getHeaders().getFirst(CoreConstant._USER_TYPE_KEY);
 
@@ -43,27 +48,33 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         } else {
             loginUserGetParamsDTO.getParams().remove(CoreConstant._USER_TYPE_KEY);
         }
-
         // 小程序登录后会获取用户名，并进行校验！
         if (microAppindex != null) {
-            Mono<MultiValueMap<String, String>> formdata = CrosWebFilter.serverWebExchangeThreadLocal.get().getFormData();
-            final String weixinLoginCode = formdata.block().getFirst("password");
-            loginUserGetParamsDTO.setUserName(weixinLoginCode);
-            loginUserGetParamsDTO.getParams().put(CoreConstant._MICRO_LOGIN_CODE_KEY, weixinLoginCode);
-            loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
-            userDetails = getUserByName(loginUserGetParamsDTO);
-            username = userDetails.getUsername();
+            final MultiValueMap<String, String> formData = CollectionUtils.toMultiValueMap(new HashMap<>());
+            return swe.getFormData().doOnNext(
+                    multiValueMap -> {
+                        formData.putAll(multiValueMap);
+                    })
+                    .then(Mono.defer(
+                            () -> {
+                                final String weixinLoginCode = formData.getFirst("password");
+                                loginUserGetParamsDTO.setUserName(weixinLoginCode);
+                                loginUserGetParamsDTO.getParams().put(CoreConstant._MICRO_LOGIN_CODE_KEY, weixinLoginCode);
+                                loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
+                                final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+                                User.withUserDetails(userDetails).build();
+                                return Mono.just(userDetails);
+                            }
+                    ));
         } else {
             loginUserGetParamsDTO.setUserName(username);
-            userDetails = getUserByName(loginUserGetParamsDTO);
-        }
-
-        if (userDetails != null && StringUtils.equals(userDetails.getUsername(), username)) {
-            UserDetails user = User.withUserDetails(userDetails).build();
-            user = userDetails;
-            return Mono.just(user);
-        } else {
-            return Mono.error(new UsernameNotFoundException("User Not Found"));
+            final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+            if (userDetails != null && StringUtils.equals(userDetails.getUsername(), username)) {
+                User.withUserDetails(userDetails).build();
+                return Mono.just(userDetails);
+            } else {
+                return Mono.error(new UsernameNotFoundException("User Not Found"));
+            }
         }
     }
 
@@ -82,7 +93,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         }
         final String token = CrosWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         // 如果带了token那么从缓存中获取数据
-        if (token != null && !"0".equals(token) && token.length()>15) {
+        if (token != null && !"0".equals(token) && token.length() > 15) {
             return redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode(token));
         } else if (loginUserDetails == null) {
             HttpHeaders headers = new HttpHeaders();

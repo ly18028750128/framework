@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -24,6 +25,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CrosWebFilter implements WebFilter {
@@ -36,14 +38,14 @@ public class CrosWebFilter implements WebFilter {
     @Value("${spring.application.name}")
     String applicationName;
 
-    public static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
+    public final static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
 
     @Override
     public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {
         serverWebExchangeThreadLocal.set(swe);
+
         ServerHttpRequest request = swe.getRequest();
         String uri = request.getURI().getPath();
-
         if (request.getMethod() == HttpMethod.OPTIONS) {
             this.setCorsHeader(swe);
             swe.getResponse().setStatusCode(HttpStatus.OK);

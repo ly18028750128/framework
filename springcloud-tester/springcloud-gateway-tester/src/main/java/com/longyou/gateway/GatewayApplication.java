@@ -4,9 +4,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
+import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
+import org.springframework.cloud.gateway.discovery.DiscoveryLocatorProperties;
+import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
@@ -69,5 +75,14 @@ public class GatewayApplication {
         return new DruidDataSource();
     }
 
+    /**
+     * 如果使用了注册中心（如：Eureka），进行控制则需要增加如下配置
+     */
+    @Bean
+    @ConditionalOnBean(ReactiveDiscoveryClient.class)
+    @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
+    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
+        return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
+    }
 
 }
