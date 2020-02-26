@@ -30,7 +30,7 @@ public class UserController {
         }
         LoginUserDetails user = (LoginUserDetails) authentication.getPrincipal();
         if (user != null) {
-            user.setPassword("************************");
+            user.setPassword("***********");
             return Mono.just(user);
         }
         return Mono.empty();
