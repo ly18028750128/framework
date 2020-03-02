@@ -10,6 +10,9 @@ spring:
       profile: ${spring.profiles.active:dev}
       uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
     gateway:
+#       routes:
+#         - id: commmonService
+#           url: lb://${spring.application.group:}\
 #      routes:
 #        - id: framework
 #          uri: http://localhost:20040/framework,http://localhost:20050/framework
@@ -18,7 +21,6 @@ spring:
       discovery:
         locator:
           enabled: true   #直接从配置中心获取应用并转发
-      routes:
   management:
     security:
       enabled: false
