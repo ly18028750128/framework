@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value = "/user/info", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/user/info", produces = MediaType.APPLICATION_JSON_VALUE)
 @Transactional(propagation = Propagation.NEVER)
 public class UserController {
     @GetMapping("/authentication")
