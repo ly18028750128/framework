@@ -39,6 +39,7 @@ deploy_master:
   - cd ../springcloud-eureka-tester
   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_19999 "
+  -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_20000 "
   - cd ../springcloud-config-tester
   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
