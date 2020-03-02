@@ -44,7 +44,8 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseResult handlerBusinessException(@NotNull BusinessException e,@NotNull HttpServletResponse response){
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        responseResult.setData(e.getErrObject());
+        response.setStatus(e.getHttpStatus());
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
