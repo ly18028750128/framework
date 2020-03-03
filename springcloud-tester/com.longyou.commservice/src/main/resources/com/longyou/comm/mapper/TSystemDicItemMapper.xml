@@ -1,228 +1,236 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longyou.comm.mapper.TSystemDicItemMapper">
-  <resultMap id="BaseResultMap" type="org.cloud.model.TSystemDicItem">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    <id column="dic_item_id" jdbcType="BIGINT" property="dicItemId" />
-    <result column="dic_master_id" jdbcType="BIGINT" property="dicMasterId" />
-    <result column="dic_item_code" jdbcType="VARCHAR" property="dicItemCode" />
-    <result column="dic_item_name" jdbcType="VARCHAR" property="dicItemName" />
-    <result column="dic_item_value" jdbcType="VARCHAR" property="dicItemValue" />
-    <result column="ext_attribut1" jdbcType="VARCHAR" property="extAttribut1" />
-    <result column="ext_attribut3" jdbcType="VARCHAR" property="extAttribut3" />
-    <result column="ext_attribut2" jdbcType="VARCHAR" property="extAttribut2" />
-    <result column="ext_attribut4" jdbcType="VARCHAR" property="extAttribut4" />
-    <result column="ext_attribut5" jdbcType="VARCHAR" property="extAttribut5" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="create_by" jdbcType="BIGINT" property="createBy" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
-    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    dic_item_id, dic_master_id, dic_item_code, dic_item_name, dic_item_value, ext_attribut1, 
-    ext_attribut3, ext_attribut2, ext_attribut4, ext_attribut5, `status`, create_by, 
-    create_date, update_by, update_date
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    select 
-    <include refid="Base_Column_List" />
-    from t_system_dic_item
-    where dic_item_id = #{dicItemId,jdbcType=BIGINT}
-  </select>
-  <select id="selectByDicMasterId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    select
-    <include refid="Base_Column_List" />
-    from t_system_dic_item
-    where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    delete from t_system_dic_item
-    where dic_item_id = #{dicItemId,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id" keyProperty="dicItemId" useGeneratedKeys="true" >
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    insert into t_system_dic_item (dic_item_id, dic_master_id, dic_item_code, 
-      dic_item_name, dic_item_value, ext_attribut1, 
-      ext_attribut3, ext_attribut2, ext_attribut4, 
-      ext_attribut5, `status`, create_by, 
-      create_date, update_by, update_date
-      )
-    values (#{dicItemId,jdbcType=BIGINT}, #{dicMasterId,jdbcType=BIGINT}, #{dicItemCode,jdbcType=VARCHAR}, 
-      #{dicItemName,jdbcType=VARCHAR}, #{dicItemValue,jdbcType=VARCHAR}, #{extAttribut1,jdbcType=VARCHAR}, 
-      #{extAttribut3,jdbcType=VARCHAR}, #{extAttribut2,jdbcType=VARCHAR}, #{extAttribut4,jdbcType=VARCHAR}, 
-      #{extAttribut5,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    insert into t_system_dic_item
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="dicItemId != null">
-        dic_item_id,
-      </if>
-      <if test="dicMasterId != null">
-        dic_master_id,
-      </if>
-      <if test="dicItemCode != null">
-        dic_item_code,
-      </if>
-      <if test="dicItemName != null">
-        dic_item_name,
-      </if>
-      <if test="dicItemValue != null">
-        dic_item_value,
-      </if>
-      <if test="extAttribut1 != null">
-        ext_attribut1,
-      </if>
-      <if test="extAttribut3 != null">
-        ext_attribut3,
-      </if>
-      <if test="extAttribut2 != null">
-        ext_attribut2,
-      </if>
-      <if test="extAttribut4 != null">
-        ext_attribut4,
-      </if>
-      <if test="extAttribut5 != null">
-        ext_attribut5,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="createBy != null">
-        create_by,
-      </if>
-      <if test="createDate != null">
-        create_date,
-      </if>
-      <if test="updateBy != null">
-        update_by,
-      </if>
-      <if test="updateDate != null">
-        update_date,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="dicItemId != null">
-        #{dicItemId,jdbcType=BIGINT},
-      </if>
-      <if test="dicMasterId != null">
-        #{dicMasterId,jdbcType=BIGINT},
-      </if>
-      <if test="dicItemCode != null">
-        #{dicItemCode,jdbcType=VARCHAR},
-      </if>
-      <if test="dicItemName != null">
-        #{dicItemName,jdbcType=VARCHAR},
-      </if>
-      <if test="dicItemValue != null">
-        #{dicItemValue,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut1 != null">
-        #{extAttribut1,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut3 != null">
-        #{extAttribut3,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut2 != null">
-        #{extAttribut2,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut4 != null">
-        #{extAttribut4,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut5 != null">
-        #{extAttribut5,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createBy != null">
-        #{createBy,jdbcType=BIGINT},
-      </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
-      </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TSystemDicItem">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    update t_system_dic_item
-    <set>
-      <if test="dicMasterId != null">
-        dic_master_id = #{dicMasterId,jdbcType=BIGINT},
-      </if>
-      <if test="dicItemCode != null">
+    <resultMap id="BaseResultMap" type="org.cloud.model.TSystemDicItem">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        <id column="dic_item_id" jdbcType="BIGINT" property="dicItemId"/>
+        <result column="dic_master_id" jdbcType="BIGINT" property="dicMasterId"/>
+        <result column="dic_item_code" jdbcType="VARCHAR" property="dicItemCode"/>
+        <result column="dic_item_name" jdbcType="VARCHAR" property="dicItemName"/>
+        <result column="dic_item_value" jdbcType="VARCHAR" property="dicItemValue"/>
+        <result column="ext_attribut1" jdbcType="VARCHAR" property="extAttribut1"/>
+        <result column="ext_attribut3" jdbcType="VARCHAR" property="extAttribut3"/>
+        <result column="ext_attribut2" jdbcType="VARCHAR" property="extAttribut2"/>
+        <result column="ext_attribut4" jdbcType="VARCHAR" property="extAttribut4"/>
+        <result column="ext_attribut5" jdbcType="VARCHAR" property="extAttribut5"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_by" jdbcType="BIGINT" property="createBy"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        dic_item_id, dic_master_id, dic_item_code, dic_item_name, dic_item_value, ext_attribut1,
+        ext_attribut3, ext_attribut2, ext_attribut4, ext_attribut5, `status`, create_by,
+        create_date, update_by, update_date
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        select
+        <include refid="Base_Column_List"/>
+        from t_system_dic_item
+        where dic_item_id = #{dicItemId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByDicMasterId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        select
+        <include refid="Base_Column_List"/>
+        from t_system_dic_item
+        where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+    </select>
+    <select id="selectByDicCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        select
+        <include refid="Base_Column_List"/>
+        from t_system_dic_item
+        where EXISTS(SELECT 1 FROM T_SYSTEM_DIC_MASTER M WHERE m.dic_master_id = t_system_dic_item.dic_master_id and M.dic_code = #{dicCode,jdbcType=VARCHAR})
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        delete from t_system_dic_item
+        where dic_item_id = #{dicItemId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id" keyProperty="dicItemId"
+            useGeneratedKeys="true">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        insert into t_system_dic_item (dic_item_id, dic_master_id, dic_item_code,
+        dic_item_name, dic_item_value, ext_attribut1,
+        ext_attribut3, ext_attribut2, ext_attribut4,
+        ext_attribut5, `status`, create_by,
+        create_date, update_by, update_date
+        )
+        values (#{dicItemId,jdbcType=BIGINT}, #{dicMasterId,jdbcType=BIGINT}, #{dicItemCode,jdbcType=VARCHAR},
+        #{dicItemName,jdbcType=VARCHAR}, #{dicItemValue,jdbcType=VARCHAR}, #{extAttribut1,jdbcType=VARCHAR},
+        #{extAttribut3,jdbcType=VARCHAR}, #{extAttribut2,jdbcType=VARCHAR}, #{extAttribut4,jdbcType=VARCHAR},
+        #{extAttribut5,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT},
+        #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        insert into t_system_dic_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dicItemId != null">
+                dic_item_id,
+            </if>
+            <if test="dicMasterId != null">
+                dic_master_id,
+            </if>
+            <if test="dicItemCode != null">
+                dic_item_code,
+            </if>
+            <if test="dicItemName != null">
+                dic_item_name,
+            </if>
+            <if test="dicItemValue != null">
+                dic_item_value,
+            </if>
+            <if test="extAttribut1 != null">
+                ext_attribut1,
+            </if>
+            <if test="extAttribut3 != null">
+                ext_attribut3,
+            </if>
+            <if test="extAttribut2 != null">
+                ext_attribut2,
+            </if>
+            <if test="extAttribut4 != null">
+                ext_attribut4,
+            </if>
+            <if test="extAttribut5 != null">
+                ext_attribut5,
+            </if>
+            <if test="status != null">
+                `status`,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dicItemId != null">
+                #{dicItemId,jdbcType=BIGINT},
+            </if>
+            <if test="dicMasterId != null">
+                #{dicMasterId,jdbcType=BIGINT},
+            </if>
+            <if test="dicItemCode != null">
+                #{dicItemCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dicItemName != null">
+                #{dicItemName,jdbcType=VARCHAR},
+            </if>
+            <if test="dicItemValue != null">
+                #{dicItemValue,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut1 != null">
+                #{extAttribut1,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut3 != null">
+                #{extAttribut3,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut2 != null">
+                #{extAttribut2,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut4 != null">
+                #{extAttribut4,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut5 != null">
+                #{extAttribut5,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TSystemDicItem">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        update t_system_dic_item
+        <set>
+            <if test="dicMasterId != null">
+                dic_master_id = #{dicMasterId,jdbcType=BIGINT},
+            </if>
+            <if test="dicItemCode != null">
+                dic_item_code = #{dicItemCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dicItemName != null">
+                dic_item_name = #{dicItemName,jdbcType=VARCHAR},
+            </if>
+            <if test="dicItemValue != null">
+                dic_item_value = #{dicItemValue,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut1 != null">
+                ext_attribut1 = #{extAttribut1,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut3 != null">
+                ext_attribut3 = #{extAttribut3,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut2 != null">
+                ext_attribut2 = #{extAttribut2,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut4 != null">
+                ext_attribut4 = #{extAttribut4,jdbcType=VARCHAR},
+            </if>
+            <if test="extAttribut5 != null">
+                ext_attribut5 = #{extAttribut5,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where dic_item_id = #{dicItemId,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.cloud.model.TSystemDicItem">
+        <!-- @mbg.generated: generated automatically, do not modify! -->
+        update t_system_dic_item
+        set dic_master_id = #{dicMasterId,jdbcType=BIGINT},
         dic_item_code = #{dicItemCode,jdbcType=VARCHAR},
-      </if>
-      <if test="dicItemName != null">
         dic_item_name = #{dicItemName,jdbcType=VARCHAR},
-      </if>
-      <if test="dicItemValue != null">
         dic_item_value = #{dicItemValue,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut1 != null">
         ext_attribut1 = #{extAttribut1,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut3 != null">
         ext_attribut3 = #{extAttribut3,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut2 != null">
         ext_attribut2 = #{extAttribut2,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut4 != null">
         ext_attribut4 = #{extAttribut4,jdbcType=VARCHAR},
-      </if>
-      <if test="extAttribut5 != null">
         ext_attribut5 = #{extAttribut5,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
         `status` = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createBy != null">
         create_by = #{createBy,jdbcType=BIGINT},
-      </if>
-      <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
-      </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where dic_item_id = #{dicItemId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.cloud.model.TSystemDicItem">
-    <!-- @mbg.generated: generated automatically, do not modify! -->
-    update t_system_dic_item
-    set dic_master_id = #{dicMasterId,jdbcType=BIGINT},
-      dic_item_code = #{dicItemCode,jdbcType=VARCHAR},
-      dic_item_name = #{dicItemName,jdbcType=VARCHAR},
-      dic_item_value = #{dicItemValue,jdbcType=VARCHAR},
-      ext_attribut1 = #{extAttribut1,jdbcType=VARCHAR},
-      ext_attribut3 = #{extAttribut3,jdbcType=VARCHAR},
-      ext_attribut2 = #{extAttribut2,jdbcType=VARCHAR},
-      ext_attribut4 = #{extAttribut4,jdbcType=VARCHAR},
-      ext_attribut5 = #{extAttribut5,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
-    where dic_item_id = #{dicItemId,jdbcType=BIGINT}
-  </update>
+        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where dic_item_id = #{dicItemId,jdbcType=BIGINT}
+    </update>
 </mapper>

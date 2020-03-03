@@ -1,5 +1,6 @@
 package com.longyou.comm.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.cloud.model.TSystemDicItem;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ public interface TSystemDicItemMapper {
     /**
      * @mbg.generated generated automatically, do not modify!
      */
-    int deleteByPrimaryKey(Long dicItemId);
+    int deleteByPrimaryKey(@Param("dicItemId") Long dicItemId);
 
     /**
      * @mbg.generated generated automatically, do not modify!
@@ -26,9 +27,11 @@ public interface TSystemDicItemMapper {
     /**
      * @mbg.generated generated automatically, do not modify!
      */
-    TSystemDicItem selectByPrimaryKey(Long dicItemId);
+    TSystemDicItem selectByPrimaryKey(@Param("dicItemId") Long dicItemId);
 
-    List<TSystemDicItem> selectByDicMasterId(Long dicMasterId);
+    List<TSystemDicItem> selectByDicMasterId(@Param("dicMasterId") Long dicMasterId);
+
+    List<TSystemDicItem> selectByDicCode(@Param("dicCode") String dicCode);
 
     /**
      * @mbg.generated generated automatically, do not modify!

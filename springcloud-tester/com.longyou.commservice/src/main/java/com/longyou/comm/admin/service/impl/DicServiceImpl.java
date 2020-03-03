@@ -63,7 +63,12 @@ public class DicServiceImpl implements IDicService {
 
     @Override
     public List<TSystemDicItem> getDicItemsByMasterId(Long dicMasterId) throws Exception {
-        return null;
+        return systemDicItemMapper.selectByDicMasterId(dicMasterId);
+    }
+
+    @Override
+    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode) throws Exception {
+        return systemDicItemMapper.selectByDicCode(dicCode);
     }
 
     @Override
