@@ -60,7 +60,7 @@ public class DicController {
             responseResult.setMessage("全部成功");
         } else {
             responseResult.setMessage("部分成功");
-            responseResult.setData(CoreConstant.RestStatus.PARTSUCCESS);
+            responseResult.setStatus(CoreConstant.RestStatus.PARTSUCCESS);
             responseResult.setErrResultData(errorResultData); // 部分成功时，将提示信息显示给前台
         }
 //        responseResult.setData(systemDicMasterList);  // 返回数据重新覆盖掉页面的数据,页面还是重新查询一下吧

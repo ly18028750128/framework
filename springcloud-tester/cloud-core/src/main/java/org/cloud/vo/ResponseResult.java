@@ -71,8 +71,8 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
         put(_ERROR_RESULT_DATA_KEY, value);
     }
 
-    public void setStatus(int value) {
-        put(_STATUS_CODE_KEY, value);
+    public void setStatus(CoreConstant.RestStatus value) {
+        put(_STATUS_CODE_KEY, value.value());
     }
 
 }
