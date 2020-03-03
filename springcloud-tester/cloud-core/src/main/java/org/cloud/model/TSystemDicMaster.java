@@ -1,6 +1,8 @@
 package org.cloud.model;
 
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -73,4 +75,7 @@ public class TSystemDicMaster {
      * Remark: 更新日期
      */
     private Date updateDate;
+
+    List<TSystemDicItem> items;
+
 }

@@ -44,7 +44,7 @@
     delete from t_system_dic_item
     where dic_item_id = #{dicItemId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="org.cloud.model.TSystemDicItem">
+  <insert id="insert" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id" keyProperty="dicItemId" useGeneratedKeys="true" >
     <!-- @mbg.generated: generated automatically, do not modify! -->
     insert into t_system_dic_item (dic_item_id, dic_master_id, dic_item_code, 
       dic_item_name, dic_item_value, ext_attribut1, 

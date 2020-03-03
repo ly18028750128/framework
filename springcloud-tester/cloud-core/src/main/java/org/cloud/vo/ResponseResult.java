@@ -10,6 +10,7 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
 
     public final static String _STATUS_CODE_KEY = "status";
     public final static String _MESSAGE_KEY = "message";
+    public final static String _ERROR_RESULT_DATA_KEY = "errResultData";   //用来保存错误时的错误数据
     public final static String _DATA_KEY = "data";
 
 
@@ -65,4 +66,9 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
             setData(value);
         }
     }
+
+    public void setErrResultData(Object value){
+        put(_ERROR_RESULT_DATA_KEY,value);
+    }
+
 }
