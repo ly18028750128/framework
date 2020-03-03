@@ -32,7 +32,7 @@
         delete from t_system_dic_master
         where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
     </delete>
-    <insert id="insert" parameterType="org.cloud.model.TSystemDicMaster">
+    <insert id="insert" parameterType="org.cloud.model.TSystemDicMaster" keyColumn="dic_master_id" keyProperty="dicMasterId" useGeneratedKeys="true">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         insert into t_system_dic_master (dic_master_id, dic_code, dic_name,
         remark, belong_micro_service, parent_master_id,
