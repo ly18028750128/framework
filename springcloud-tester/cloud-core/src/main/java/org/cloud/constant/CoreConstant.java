@@ -32,7 +32,8 @@ public final class CoreConstant {
 
         SUCCESS(200,"成功","rest.status.200"),
         NOAUTH(401,"未授权","rest.status.401"),
-        FAIL(-100,"失败","rest.status.-100"),
+        PARTSUCCESS(100,"部分成功","rest.status.100"),
+        FAIL(-100,"失败","rest.status.-100")
         ;
 
         private int statusValue;     // 值

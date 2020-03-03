@@ -1,7 +1,10 @@
 package com.longyou.comm.admin.controller;
 
+import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.admin.service.IDicService;
+import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicMaster;
 import org.cloud.vo.QueryParamVO;
@@ -18,7 +21,8 @@ import java.util.Map;
  * 数据字典服务类
  */
 @RestController
-@RequestMapping(value = "/admin/dic", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/admin/dic", produces = MediaType.APPLICATION_JSON_VALUE)
+//@SystemResource(path="系统管理/数据字典")
 public class DicController {
 
     @Autowired
@@ -34,6 +38,7 @@ public class DicController {
     }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
+//    @SystemResource(value = "保存或者更新",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult saveOrUpdate(@RequestBody List<TSystemDicMaster> systemDicMasterList) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         List<String> errorResultData = new ArrayList<>();
@@ -55,9 +60,24 @@ public class DicController {
             responseResult.setMessage("全部成功");
         } else {
             responseResult.setMessage("部分成功");
-            responseResult.setErrResultData(errorResultData); // 部分成功时，将提示信息
+            responseResult.setData(CoreConstant.RestStatus.PARTSUCCESS);
+            responseResult.setErrResultData(errorResultData); // 部分成功时，将提示信息显示给前台
         }
 //        responseResult.setData(systemDicMasterList);  // 返回数据重新覆盖掉页面的数据,页面还是重新查询一下吧
+        return responseResult;
+    }
+
+    @RequestMapping(value = "/selectDicItemsByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
+    public ResponseResult selectDicItemsByDicMasterId(@PathVariable("dicMasterId") Long dicMasterId) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(dicService.getDicItemsByMasterId(dicMasterId));
+        return responseResult;
+    }
+
+    @RequestMapping(value = "/getDicItemsByDicCode", method = RequestMethod.GET)
+    public ResponseResult selectDicItemsByDicCode(@RequestParam("dicCode") String dicCode) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(dicService.getDicItemsByDicCode(dicCode));
         return responseResult;
     }
 

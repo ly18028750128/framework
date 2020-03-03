@@ -67,8 +67,12 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
         }
     }
 
-    public void setErrResultData(Object value){
-        put(_ERROR_RESULT_DATA_KEY,value);
+    public void setErrResultData(Object value) {
+        put(_ERROR_RESULT_DATA_KEY, value);
+    }
+
+    public void setStatus(int value) {
+        put(_STATUS_CODE_KEY, value);
     }
 
 }
