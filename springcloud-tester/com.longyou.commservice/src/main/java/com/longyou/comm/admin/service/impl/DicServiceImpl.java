@@ -5,6 +5,8 @@ import com.github.pagehelper.PageHelper;
 import com.longyou.comm.admin.service.IDicService;
 import com.longyou.comm.mapper.TSystemDicItemMapper;
 import com.longyou.comm.mapper.TSystemDicMasterMapper;
+import org.cloud.context.RequestContextManager;
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TSystemDicItem;
 import org.cloud.model.TSystemDicMaster;
 import org.cloud.vo.QueryParamVO;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +31,16 @@ public class DicServiceImpl implements IDicService {
     @Override
     @Transactional
     public int SaveOrUpdate(TSystemDicMaster systemDicMaster) throws Exception {
+
+        LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
+
         int updateCount = 0;
+        systemDicMaster.setUpdateDate(new Date());
+        systemDicMaster.setUpdateBy(user.getId());
         if (systemDicMaster.getDicMasterId() == null) {
-            updateCount = systemDicMasterMapper.insert(systemDicMaster);
+            systemDicMaster.setCreateDate(new Date());
+            systemDicMaster.setCreateBy(user.getId());
+            updateCount = systemDicMasterMapper.insertSelective(systemDicMaster);
         } else {
             updateCount = systemDicMasterMapper.updateByPrimaryKeySelective(systemDicMaster);
         }
@@ -40,9 +50,15 @@ public class DicServiceImpl implements IDicService {
         }
 
         for (TSystemDicItem item : systemDicMaster.getItems()) {
-            item.setDicMasterId(systemDicMaster.getDicMasterId());
+            if(item.getDicMasterId()==null){
+                item.setDicMasterId(systemDicMaster.getDicMasterId());
+            }
+            item.setUpdateBy(user.getId());
+            item.setUpdateDate(new Date());
             if (item.getDicItemId() == null) {
-                systemDicItemMapper.insert(item);
+                item.setCreateDate(new Date());
+                item.setCreateBy(user.getId());
+                systemDicItemMapper.insertSelective(item);
             } else {
                 systemDicItemMapper.updateByPrimaryKeySelective(item);
             }
@@ -53,12 +69,16 @@ public class DicServiceImpl implements IDicService {
 
     @Override
     public TSystemDicMaster getDicMasterById(Long dicMasterId) throws Exception {
-        return null;
+        TSystemDicMaster systemDicMaster = systemDicMasterMapper.selectByPrimaryKey(dicMasterId);
+        if (systemDicMaster != null) {
+            systemDicMaster.setItems(systemDicItemMapper.selectByDicMasterId(dicMasterId));
+        }
+        return systemDicMaster;
     }
 
     @Override
     public TSystemDicItem getDicItemById(Long dicMasterId) throws Exception {
-        return null;
+        return systemDicItemMapper.selectByPrimaryKey(dicMasterId);
     }
 
     @Override
@@ -67,8 +87,8 @@ public class DicServiceImpl implements IDicService {
     }
 
     @Override
-    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode) throws Exception {
-        return systemDicItemMapper.selectByDicCode(dicCode);
+    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode, String belongMicroService, String language) throws Exception {
+        return systemDicItemMapper.selectByDicCode(dicCode, belongMicroService, language);
     }
 
     @Override

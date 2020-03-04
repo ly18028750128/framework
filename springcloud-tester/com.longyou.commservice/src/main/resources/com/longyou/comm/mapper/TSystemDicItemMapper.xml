@@ -14,6 +14,8 @@
         <result column="ext_attribut4" jdbcType="VARCHAR" property="extAttribut4"/>
         <result column="ext_attribut5" jdbcType="VARCHAR" property="extAttribut5"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="seq" jdbcType="INTEGER" property="seq"/>
+        <result column="language" jdbcType="VARCHAR" property="language"/>
         <result column="create_by" jdbcType="BIGINT" property="createBy"/>
         <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
         <result column="update_by" jdbcType="BIGINT" property="updateBy"/>
@@ -21,7 +23,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         <!-- @mbg.generated: generated automatically, do not modify! -->
-        dic_item_id, dic_master_id, dic_item_code, dic_item_name, dic_item_value, ext_attribut1,
+        dic_item_id, dic_master_id, dic_item_code, dic_item_name, dic_item_value,seq,`language`, ext_attribut1,
         ext_attribut3, ext_attribut2, ext_attribut4, ext_attribut5, `status`, create_by,
         create_date, update_by, update_date
     </sql>
@@ -38,13 +40,25 @@
         <include refid="Base_Column_List"/>
         from t_system_dic_item
         where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
+        order by seq;
     </select>
     <select id="selectByDicCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         select
         <include refid="Base_Column_List"/>
         from t_system_dic_item
-        where EXISTS(SELECT 1 FROM T_SYSTEM_DIC_MASTER M WHERE m.dic_master_id = t_system_dic_item.dic_master_id and M.dic_code = #{dicCode,jdbcType=VARCHAR})
+        where EXISTS(
+        SELECT 1 FROM T_SYSTEM_DIC_MASTER M
+        WHERE m.dic_master_id = t_system_dic_item.dic_master_id
+        and M.dic_code = #{dicCode,jdbcType=VARCHAR}
+        <if test="belongMicroService!=null and belongMicroService!=''">
+            and m.belong_micro_service = #{belongMicroService,jdbcType=VARCHAR}
+        </if>
+        )
+        <if test="language!=null and language!=''">
+            and t_system_dic_item.`language` = #{language,jdbcType=VARCHAR}
+        </if>
+        order by seq;
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         <!-- @mbg.generated: generated automatically, do not modify! -->
@@ -58,16 +72,18 @@
         dic_item_name, dic_item_value, ext_attribut1,
         ext_attribut3, ext_attribut2, ext_attribut4,
         ext_attribut5, `status`, create_by,
-        create_date, update_by, update_date
+        create_date, update_by, update_date,seq,`language`
         )
         values (#{dicItemId,jdbcType=BIGINT}, #{dicMasterId,jdbcType=BIGINT}, #{dicItemCode,jdbcType=VARCHAR},
         #{dicItemName,jdbcType=VARCHAR}, #{dicItemValue,jdbcType=VARCHAR}, #{extAttribut1,jdbcType=VARCHAR},
         #{extAttribut3,jdbcType=VARCHAR}, #{extAttribut2,jdbcType=VARCHAR}, #{extAttribut4,jdbcType=VARCHAR},
         #{extAttribut5,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT},
-        #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}
+        #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP},
+        #{seq,jdbcType=INTEGER}, #{language,jdbcType=VARCHAR}
         )
     </insert>
-    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem">
+    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id" keyProperty="dicItemId"
+            useGeneratedKeys="true">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         insert into t_system_dic_item
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -116,6 +132,12 @@
             <if test="updateDate != null">
                 update_date,
             </if>
+            <if test="seq != null">
+                seq,
+            </if>
+            <if test="language != null">
+                `language`,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="dicItemId != null">
@@ -162,6 +184,12 @@
             </if>
             <if test="updateDate != null">
                 #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="seq != null">
+                #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="language != null">
+                #{language,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -211,6 +239,12 @@
             <if test="updateDate != null">
                 update_date = #{updateDate,jdbcType=TIMESTAMP},
             </if>
+            <if test="seq != null">
+                seq = #{seq,jdbcType=INTEGER},
+            </if>
+            <if test="language != null">
+                `language` = #{language,jdbcType=VARCHAR},
+            </if>
         </set>
         where dic_item_id = #{dicItemId,jdbcType=BIGINT}
     </update>
@@ -230,7 +264,9 @@
         create_by = #{createBy,jdbcType=BIGINT},
         create_date = #{createDate,jdbcType=TIMESTAMP},
         update_by = #{updateBy,jdbcType=BIGINT},
-        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+        seq = #{seq,jdbcType=INTEGER},
+        `language` = #{language,jdbcType=VARCHAR}
         where dic_item_id = #{dicItemId,jdbcType=BIGINT}
     </update>
 </mapper>

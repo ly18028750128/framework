@@ -44,7 +44,8 @@
         #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP},
         #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicMaster">
+    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicMaster" keyColumn="dic_master_id"
+            keyProperty="dicMasterId" useGeneratedKeys="true">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         insert into t_system_dic_master
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -186,21 +187,22 @@
             <if test="params.dicName!=null">
                 and dic_Name like CONCAT('%',#{params.dicName,jdbcType=VARCHAR},'%')
             </if>
-
+            <if test="params.status!=null and params.status!=''">
+                and t_system_dic_master.`status` = #{params.status,jdbcType=INTEGER}
+            </if>
             <if test="params.dicItemCode!=null or params.dicItemName!=null or params.dicItemValue!=null">
                 and exists(
                 select 1 from t_system_dic_item dic_item
-                <where>
-                    <if test="params.dicItemCode!=null">
-                        dic_item.dic_item_code like CONCAT('%',#{params.dicItemCode,jdbcType=VARCHAR},'%')
-                    </if>
-                    <if test="params.dicItemName!=null">
-                        and dic_item.dic_item_name like CONCAT('%',#{params.dicItemName,jdbcType=VARCHAR},'%')
-                    </if>
-                    <if test="params.dicItemValue!=null">
-                        and dic_item.dic_item_value like CONCAT('%',#{params.dicItemValue,jdbcType=VARCHAR},'%')
-                    </if>
-                </where>
+                where dic_item.dic_master_id = t_system_dic_master.dic_master_id
+                <if test="params.dicItemCode!=null">
+                   and dic_item.dic_item_code like CONCAT('%',#{params.dicItemCode,jdbcType=VARCHAR},'%')
+                </if>
+                <if test="params.dicItemName!=null">
+                    and dic_item.dic_item_name like CONCAT('%',#{params.dicItemName,jdbcType=VARCHAR},'%')
+                </if>
+                <if test="params.dicItemValue!=null">
+                    and dic_item.dic_item_value like CONCAT('%',#{params.dicItemValue,jdbcType=VARCHAR},'%')
+                </if>
                 )
             </if>
         </where>

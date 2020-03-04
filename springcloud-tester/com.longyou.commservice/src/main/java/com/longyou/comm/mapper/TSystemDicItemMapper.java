@@ -31,7 +31,7 @@ public interface TSystemDicItemMapper {
 
     List<TSystemDicItem> selectByDicMasterId(@Param("dicMasterId") Long dicMasterId);
 
-    List<TSystemDicItem> selectByDicCode(@Param("dicCode") String dicCode);
+    List<TSystemDicItem> selectByDicCode(@Param("dicCode") String dicCode,@Param("belongMicroService") String belongMicroService,@Param("language") String language);
 
     /**
      * @mbg.generated generated automatically, do not modify!

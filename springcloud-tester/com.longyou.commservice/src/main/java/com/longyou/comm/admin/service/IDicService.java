@@ -17,7 +17,7 @@ public interface IDicService {
 
     public List<TSystemDicItem> getDicItemsByMasterId(Long dicMasterId) throws Exception;
 
-    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode) throws Exception;
+    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode,String belongMicroService,String language) throws Exception;
 
     public Page<TSystemDicMaster> listPage(QueryParamVO queryParams) throws Exception;
 

@@ -67,6 +67,13 @@ public class DicController {
         return responseResult;
     }
 
+    @RequestMapping(value = "/selectDicByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
+    public ResponseResult selectDicByDicMasterId(@PathVariable("dicMasterId") Long dicMasterId) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(dicService.getDicMasterById(dicMasterId));
+        return responseResult;
+    }
+
     @RequestMapping(value = "/selectDicItemsByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
     public ResponseResult selectDicItemsByDicMasterId(@PathVariable("dicMasterId") Long dicMasterId) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
@@ -74,10 +81,13 @@ public class DicController {
         return responseResult;
     }
 
-    @RequestMapping(value = "/getDicItemsByDicCode", method = RequestMethod.GET)
-    public ResponseResult selectDicItemsByDicCode(@RequestParam("dicCode") String dicCode) throws Exception {
+    @RequestMapping(value = "/selectDicItemsByDicCode", method = RequestMethod.GET)
+    public ResponseResult selectDicItemsByDicCode(@RequestParam("dicCode") String dicCode,
+                                                  @RequestParam(name = "belongMicroService", required = false) String belongMicroService,
+                                                  @RequestParam(name = "language", required = false) String language)
+            throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        responseResult.setData(dicService.getDicItemsByDicCode(dicCode));
+        responseResult.setData(dicService.getDicItemsByDicCode(dicCode, belongMicroService, language));
         return responseResult;
     }
 
