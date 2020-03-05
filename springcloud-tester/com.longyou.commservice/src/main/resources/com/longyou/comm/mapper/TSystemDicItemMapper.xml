@@ -34,15 +34,17 @@
         from t_system_dic_item
         where dic_item_id = #{dicItemId,jdbcType=BIGINT}
     </select>
+    <!--这里只是编辑的时候用，如果要用更多的条件进行查询，那么请用selectByDicCode-->
     <select id="selectByDicMasterId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         select
         <include refid="Base_Column_List"/>
         from t_system_dic_item
         where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
-        order by seq;
+        order by status desc,seq;
     </select>
-    <select id="selectByDicCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+    <select id="selectByDicCode" parameterType="java.util.Map" resultMap="BaseResultMap">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         select
         <include refid="Base_Column_List"/>
@@ -58,7 +60,19 @@
         <if test="language!=null and language!=''">
             and t_system_dic_item.`language` = #{language,jdbcType=VARCHAR}
         </if>
-        order by seq;
+        <if test="status!=null">
+            and t_system_dic_item.status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="dicItemCode!=null">
+            and t_system_dic_item.dic_item_code = #{dicItemCode,jdbcType=VARCHAR}
+        </if>
+        <if test="dicItemName!=null">
+            and t_system_dic_item.dic_item_name = #{dicItemName,jdbcType=VARCHAR}
+        </if>
+        <if test="dicItemValue!=null">
+            and t_system_dic_item.dic_item_value = #{dicItemValue,jdbcType=VARCHAR}
+        </if>
+        order by status desc,seq;
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         <!-- @mbg.generated: generated automatically, do not modify! -->
@@ -82,7 +96,8 @@
         #{seq,jdbcType=INTEGER}, #{language,jdbcType=VARCHAR}
         )
     </insert>
-    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id" keyProperty="dicItemId"
+    <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id"
+            keyProperty="dicItemId"
             useGeneratedKeys="true">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         insert into t_system_dic_item

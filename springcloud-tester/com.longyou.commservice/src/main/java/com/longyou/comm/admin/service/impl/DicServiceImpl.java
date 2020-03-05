@@ -87,13 +87,13 @@ public class DicServiceImpl implements IDicService {
     }
 
     @Override
-    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode, String belongMicroService, String language) throws Exception {
-        return systemDicItemMapper.selectByDicCode(dicCode, belongMicroService, language);
+    public List<TSystemDicItem> getDicItemsByDicCode(Map<String,Object> params) throws Exception {
+        return systemDicItemMapper.selectByDicCode(params);
     }
 
     @Override
     public Page<TSystemDicMaster> listPage(QueryParamVO queryParams) throws Exception {
-        PageHelper.startPage(queryParams.getPageNum(), queryParams.getPageSize(), "dic_code asc,dic_name asc");
+        PageHelper.startPage(queryParams.getPageNum(), queryParams.getPageSize(), "status desc,dic_code asc,dic_name asc");
         return systemDicMasterMapper.listPage(queryParams);
     }
 }

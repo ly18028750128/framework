@@ -5,6 +5,7 @@ import org.cloud.model.TSystemDicItem;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TSystemDicItemMapper {
@@ -31,7 +32,7 @@ public interface TSystemDicItemMapper {
 
     List<TSystemDicItem> selectByDicMasterId(@Param("dicMasterId") Long dicMasterId);
 
-    List<TSystemDicItem> selectByDicCode(@Param("dicCode") String dicCode,@Param("belongMicroService") String belongMicroService,@Param("language") String language);
+    List<TSystemDicItem> selectByDicCode(Map<String,Object> params);
 
     /**
      * @mbg.generated generated automatically, do not modify!

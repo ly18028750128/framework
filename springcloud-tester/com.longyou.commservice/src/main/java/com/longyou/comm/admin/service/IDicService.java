@@ -6,6 +6,7 @@ import org.cloud.model.TSystemDicMaster;
 import org.cloud.vo.QueryParamVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDicService {
 
@@ -17,7 +18,7 @@ public interface IDicService {
 
     public List<TSystemDicItem> getDicItemsByMasterId(Long dicMasterId) throws Exception;
 
-    public List<TSystemDicItem> getDicItemsByDicCode(String dicCode,String belongMicroService,String language) throws Exception;
+    public List<TSystemDicItem> getDicItemsByDicCode(Map<String,Object> params) throws Exception;
 
     public Page<TSystemDicMaster> listPage(QueryParamVO queryParams) throws Exception;
 

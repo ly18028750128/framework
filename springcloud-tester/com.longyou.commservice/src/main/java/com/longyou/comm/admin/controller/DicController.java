@@ -11,6 +11,7 @@ import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -81,13 +82,18 @@ public class DicController {
         return responseResult;
     }
 
+    /**
+     * 按diccode查询出数据字典项的列表
+     * @param params 其它参数
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/selectDicItemsByDicCode", method = RequestMethod.GET)
-    public ResponseResult selectDicItemsByDicCode(@RequestParam("dicCode") String dicCode,
-                                                  @RequestParam(name = "belongMicroService", required = false) String belongMicroService,
-                                                  @RequestParam(name = "language", required = false) String language)
+    public ResponseResult selectDicItemsByDicCode( @RequestParam Map<String,Object> params)
             throws Exception {
+        Assert.notNull(params.get("dicCode"),"字典编码不能为空！");
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        responseResult.setData(dicService.getDicItemsByDicCode(dicCode, belongMicroService, language));
+        responseResult.setData(dicService.getDicItemsByDicCode(params));
         return responseResult;
     }
 
