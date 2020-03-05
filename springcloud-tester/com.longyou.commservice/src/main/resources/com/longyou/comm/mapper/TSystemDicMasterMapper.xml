@@ -190,6 +190,10 @@
             <if test="params.status!=null and params.status!=''">
                 and t_system_dic_master.`status` = #{params.status,jdbcType=INTEGER}
             </if>
+            <if test="params.belongMicroService!=null and params.belongMicroService!=''">
+                and t_system_dic_master.belong_micro_service = #{params.belongMicroService,jdbcType=INTEGER}
+            </if>
+
             <if test="params.dicItemCode!=null or params.dicItemName!=null or params.dicItemValue!=null">
                 and exists(
                 select 1 from t_system_dic_item dic_item
