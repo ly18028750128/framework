@@ -9,18 +9,23 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 // 定时删除日志，每天23点59分执行 0 59 23 * * ?
 @Component
 public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
-
     Logger logger = LoggerFactory.getLogger(MongoDbLogJobCleaner.class);
+
+    @Autowired(required = false)
+    MongoTemplate mongoTemplate;
 
     @Override
     protected void init() {
@@ -29,7 +34,6 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         if (mongoTemplate != null) {
             Long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.mongodb.expire.days", "30"));  //默认保留30天的数据
             final String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();
@@ -38,6 +42,4 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
             logger.info("清除[" + microServiceName + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value() + "]日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
         }
     }
-
-
 }

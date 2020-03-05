@@ -97,4 +97,9 @@ public class TSystemDicItem {
      * Remark: 更新日期
      */
     private Date updateDate;
+
+    private Integer seq;
+
+    private String language;
+
 }
