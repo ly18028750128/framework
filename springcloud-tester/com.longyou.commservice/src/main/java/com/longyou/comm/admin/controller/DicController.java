@@ -91,7 +91,7 @@ public class DicController {
     @RequestMapping(value = "/selectDicItemsByDicCode", method = RequestMethod.GET)
     public ResponseResult selectDicItemsByDicCode( @RequestParam Map<String,Object> params)
             throws Exception {
-        Assert.notNull(params.get("dicCode"),"字典编码不能为空！");
+
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dicService.getDicItemsByDicCode(params));
         return responseResult;

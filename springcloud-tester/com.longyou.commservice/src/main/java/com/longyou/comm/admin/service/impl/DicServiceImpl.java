@@ -13,6 +13,7 @@ import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -88,6 +89,7 @@ public class DicServiceImpl implements IDicService {
 
     @Override
     public List<TSystemDicItem> getDicItemsByDicCode(Map<String,Object> params) throws Exception {
+        Assert.notNull(params.get("dicCode"),"字典编码不能为空！");
         return systemDicItemMapper.selectByDicCode(params);
     }
 
