@@ -103,21 +103,27 @@ public class RedisUtil {
     public boolean set(final String key, Object value, Long expireTime) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
         redisTemplate.opsForValue().set(key, value);
-        redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        if(expireTime>0){
+            redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        }
         return true;
     }
 
     public boolean hashSet(final String key, Map<String, Object> value, Long expireTime) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         operations.putAll(cacheName + key, value);
-        redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        if(expireTime>0){
+            redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        }
         return true;
     }
 
     public boolean hashSet(final String key, String field, Object value, Long expireTime) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         operations.put(cacheName + key, field, value);
-        redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        if(expireTime>0){
+            redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        }
         return true;
     }
 

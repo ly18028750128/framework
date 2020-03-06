@@ -61,7 +61,7 @@ public final class ProcessUtil {
     /**
      *
      */
-    public void submitCablles(List<Runnable> runables) {
+    public void submitRunnable(List<Runnable> runables) {
         for (Runnable runnable : runables) {
             ExecutorService executor = Executors.newSingleThreadExecutor();
             try {
@@ -72,7 +72,7 @@ public final class ProcessUtil {
         }
     }
 
-    public void submitCablle(Runnable runable) {
+    public void submitRunnable(Runnable runable) {
         List<Runnable> runables = new ArrayList<>();
         runables.add(runable);
     }

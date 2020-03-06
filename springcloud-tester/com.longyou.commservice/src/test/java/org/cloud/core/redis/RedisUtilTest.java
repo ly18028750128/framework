@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CommonServiceApplication.class}, properties = "classpath:testYml.yml")
@@ -103,7 +104,7 @@ public class RedisUtilTest {
         });
 
         // 这两个线程只会弹出一个数据，因为同时执行时会报错。
-        ProcessUtil.single().submitCablles(callables);
+        ProcessUtil.single().submitRunnable(callables);
 
     }
 
@@ -165,6 +166,9 @@ public class RedisUtilTest {
                 Set<Object> rangeSet = zSetOperations.range(key, 1L, 2L);
                 logger.info(JSON.toJSONString(rangeSet));
                 Assert.assertEquals(rangeSet.contains(5), true);
+
+                redisTemplate.expire(key,100, TimeUnit.SECONDS);
+
                 return null;
             }
         });
@@ -199,7 +203,7 @@ public class RedisUtilTest {
                         }
                     });
                 }
-                ProcessUtil.single().submitCablles(runnables);
+                ProcessUtil.single().submitRunnable(runnables);
                 return 1L;
             }
         });

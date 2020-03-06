@@ -7,6 +7,7 @@ import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicMaster;
+import org.cloud.utils.SystemDicUtil;
 import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,18 +85,53 @@ public class DicController {
 
     /**
      * 按diccode查询出数据字典项的列表
+     *
      * @param params 其它参数
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/selectDicItemsByDicCode", method = RequestMethod.GET)
-    public ResponseResult selectDicItemsByDicCode( @RequestParam Map<String,Object> params)
+    public ResponseResult selectDicItemsByDicCode(@RequestParam Map<String, Object> params)
             throws Exception {
-
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dicService.getDicItemsByDicCode(params));
         return responseResult;
     }
 
+    /**
+     * 刷新缓存
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/refreshCache", method = RequestMethod.GET)
+    public ResponseResult refreshCache()
+            throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        dicService.refreshCache();
+        return responseResult;
+    }
+
+    @RequestMapping(value = "/selectDicItemsByDicCodeFromCache", method = RequestMethod.GET)
+    public ResponseResult selectDicItemsByDicCodeFromCache(@RequestParam("microServiceName") String microServiceName,
+                                                           @RequestParam("dicCode") String dicCode,
+                                                           @RequestParam(name = "language", required = false) String language
+    ) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        language = (language == null ? CoreConstant.SystemSupportLanguage.ZH_CN.value() : language);
+        responseResult.setData(SystemDicUtil.single().getDicItemList(microServiceName, dicCode, language));
+        return responseResult;
+    }
+
+    @RequestMapping(value = "/getDicItem", method = RequestMethod.GET)
+    public ResponseResult getDicItem(@RequestParam("microServiceName") String microServiceName,
+                                     @RequestParam("dicCode") String dicCode,
+                                     @RequestParam(name = "language", required = false) String language
+    ) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        language = (language == null ? CoreConstant.SystemSupportLanguage.ZH_CN.value() : language);
+        responseResult.setData(SystemDicUtil.single().getDicItemList(microServiceName, dicCode, language));
+        return responseResult;
+    }
 
 }

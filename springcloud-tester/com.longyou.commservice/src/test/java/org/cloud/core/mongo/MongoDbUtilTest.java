@@ -3,6 +3,8 @@ package org.cloud.core.mongo;
 import com.longyou.comm.starter.CommonServiceApplication;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.gridfs.GridFSFindIterable;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.cloud.mongo.AppLogger;
@@ -19,8 +21,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -84,6 +88,24 @@ public class MongoDbUtilTest {
         Query query = new Query(Criteria.where("className").regex(pattern));
         List<AppLogger> findList = mongoTemplate.find(query, AppLogger.class, "appLoggerCollection");
         Assert.assertEquals(findList.size() > 0, true);
+    }
+
+    @Autowired
+    GridFsTemplate gridFsTemplate;
+    @Test
+    public void saveFile() throws Exception{
+
+//
+
+        ObjectId objectId = gridFsTemplate.store(new FileInputStream("D:\\messages.xml"),"messageName");
+
+        GridFSFile gridFile = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(objectId)));
+
+
+        gridFile = gridFsTemplate.findOne(Query.query(Criteria.where("filename").is("messageName")));
+
+
+        gridFile = null;
     }
 
 }

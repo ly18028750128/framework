@@ -7,6 +7,9 @@ import org.cloud.model.TSystemDicMaster;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface TSystemDicMasterMapper {
 
@@ -40,5 +43,9 @@ public interface TSystemDicMasterMapper {
      */
     int updateByPrimaryKey(TSystemDicMaster record);
 
+    List<TSystemDicMaster> listWithOutPaged(@Param("params") Map<String,Object> params);
+
     Page<TSystemDicMaster> listPage(QueryParamVO queryParamVO);
+
+
 }

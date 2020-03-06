@@ -22,4 +22,6 @@ public interface IDicService {
 
     public Page<TSystemDicMaster> listPage(QueryParamVO queryParams) throws Exception;
 
+    public void refreshCache() throws Exception;
+
 }

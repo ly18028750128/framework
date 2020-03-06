@@ -172,7 +172,7 @@
         where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
     </update>
 
-    <select id="listPage" parameterType="org.cloud.vo.QueryParamVO" resultMap="BaseResultMap">
+    <sql id = "queryDicItems">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         select
         <include refid="Base_Column_List"/>
@@ -199,7 +199,7 @@
                 select 1 from t_system_dic_item dic_item
                 where dic_item.dic_master_id = t_system_dic_master.dic_master_id
                 <if test="params.dicItemCode!=null">
-                   and dic_item.dic_item_code like CONCAT('%',#{params.dicItemCode,jdbcType=VARCHAR},'%')
+                    and dic_item.dic_item_code like CONCAT('%',#{params.dicItemCode,jdbcType=VARCHAR},'%')
                 </if>
                 <if test="params.dicItemName!=null">
                     and dic_item.dic_item_name like CONCAT('%',#{params.dicItemName,jdbcType=VARCHAR},'%')
@@ -210,6 +210,15 @@
                 )
             </if>
         </where>
+    </sql>
+
+    <select id="listPage" parameterType="org.cloud.vo.QueryParamVO" resultMap="BaseResultMap">
+        <include refid="queryDicItems"></include>
     </select>
+
+    <select id="listWithOutPaged" parameterType="org.cloud.vo.QueryParamVO" resultMap="BaseResultMap">
+        <include refid="queryDicItems"></include>
+    </select>
+
 
 </mapper>
