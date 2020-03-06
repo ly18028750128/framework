@@ -8,7 +8,7 @@ public final class CoreConstant {
     }
 
     public static enum DateTimeFormat {
-        FULLDATE("yyyy-MM-dd"),FULLDATETIME("yyyy-MM-dd hh:mm:ss"),MonthAndDay("MM-dd");
+        FULLDATE("yyyy-MM-dd"), FULLDATETIME("yyyy-MM-dd hh:mm:ss"), MonthAndDay("MM-dd"),ISODATE("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         DateTimeFormat(String value) {
             this.value = value;
@@ -28,13 +28,12 @@ public final class CoreConstant {
     }
 
     // rest服务返回值处理，可以继续增加
-    public static enum RestStatus implements BasicEnum{
+    public static enum RestStatus implements BasicEnum {
 
-        SUCCESS(200,"成功","rest.status.200"),
-        NOAUTH(401,"未授权","rest.status.401"),
-        PARTSUCCESS(100,"部分成功","rest.status.100"),
-        FAIL(-100,"失败","rest.status.-100")
-        ;
+        SUCCESS(200, "成功", "rest.status.200"),
+        NOAUTH(401, "未授权", "rest.status.401"),
+        PARTSUCCESS(100, "部分成功", "rest.status.100"),
+        FAIL(-100, "失败", "rest.status.-100");
 
         private int statusValue;     // 值
         private String statusName;  // 名称和描述
@@ -57,7 +56,7 @@ public final class CoreConstant {
         }
 
         @Override
-        public String description(){
+        public String description() {
             return this.statusName;
         }
     }
@@ -75,14 +74,14 @@ public final class CoreConstant {
     public final static String USER_LOGIN_SUCCESS_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:";
 
     // rest服务返回值处理，可以继续增加
-    public static enum UserCacheKey implements BasicEnum{
+    public static enum UserCacheKey implements BasicEnum {
 
-        DATA("data","数据权限",""),
-        FUNCTION("function","功能权限",""),
-        MENU("menu","菜单权限",""),
-        DATA_INTERFACE("dataInterface","数据接口权限",""),
-        ROLE("role","角色",""),
-        ROLE_NAME("roleName","角色名列表",""),
+        DATA("data", "数据权限", ""),
+        FUNCTION("function", "功能权限", ""),
+        MENU("menu", "菜单权限", ""),
+        DATA_INTERFACE("dataInterface", "数据接口权限", ""),
+        ROLE("role", "角色", ""),
+        ROLE_NAME("roleName", "角色名列表", ""),
         ;
 
         private String key;     // 值
@@ -106,7 +105,7 @@ public final class CoreConstant {
         }
 
         @Override
-        public String description(){
+        public String description() {
             return this.statusName;
         }
     }
@@ -115,15 +114,14 @@ public final class CoreConstant {
     public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
 
 
-
     /**
      * 用户权限验证方式
      */
-    public static enum AuthMethod implements BasicEnum{
+    public static enum AuthMethod implements BasicEnum {
 
-        ALLSYSTEMUSER("ALLSYSTEMUSER","所有登录用户","rest.AuthMethod.ALLSYSTEMUSER"),
-        BYUSERPERMISSION("BYUSERPERMISSION","通过用户所属权限验证","rest.AuthMethod.BYUSERPERMISSION"),
-        NOAUTH("NOAUTH","不用授权","rest.AuthMethod.NOAUTH"),
+        ALLSYSTEMUSER("ALLSYSTEMUSER", "所有登录用户", "rest.AuthMethod.ALLSYSTEMUSER"),
+        BYUSERPERMISSION("BYUSERPERMISSION", "通过用户所属权限验证", "rest.AuthMethod.BYUSERPERMISSION"),
+        NOAUTH("NOAUTH", "不用授权", "rest.AuthMethod.NOAUTH"),
         ;
 
         private String value;     // 值
@@ -147,7 +145,7 @@ public final class CoreConstant {
         }
 
         @Override
-        public String description(){
+        public String description() {
             return this.name;
         }
     }
@@ -155,10 +153,10 @@ public final class CoreConstant {
     /**
      * 数据范围类型
      */
-    public static enum DataAutoType implements BasicEnum{
+    public static enum DataAutoType implements BasicEnum {
 
-        MICROSERVICE("micro","微服务",""),
-        ORGANIZATION("org","组织机构（部门）",""),
+        MICROSERVICE("micro", "微服务", ""),
+        ORGANIZATION("org", "组织机构（部门）", ""),
         ;
 
         private String value;     // 值
@@ -182,31 +180,64 @@ public final class CoreConstant {
         }
 
         @Override
-        public String description(){
+        public String description() {
             return this.name;
         }
     }
 
-    public final static String _FUNCTION_SPLIT_STR="::";
+    public final static String _FUNCTION_SPLIT_STR = "::";
 
-    public static enum MongoDbLogConfig{
-        MONGODB_LOG_SUFFIX("_logbackLogCollection","日志存储collection后缀"),
-        CREATE_DATE_FIELD("createDate","创建日期字段")
-        ;
+    public static enum MongoDbLogConfig {
+        MONGODB_LOG_SUFFIX("_logbackLogCollection", "日志存储collection后缀"),
+        CREATE_DATE_FIELD("createDate", "创建日期字段");
         private String value;
         private String desc;
 
-        MongoDbLogConfig(String value,String desc){
+        MongoDbLogConfig(String value, String desc) {
             this.value = value;
             this.desc = desc;
         }
 
-        public String value(){
+        public String value() {
             return value;
         }
-
     }
 
-//    public final static String MONGODB_LOG_SUFFIX = "_logbackLogCollection";
 
+    public final static String _SYSTEM_DIC_CACHE_KEY = "system:admin:dic:";
+
+    public final static String _SYSTEM_DIC_ITEMS_CACHE_KEY = "dicItems";
+    public final static String _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT = "." + _SYSTEM_DIC_ITEMS_CACHE_KEY;
+
+    public final static String _GENERAL_SYSDIC_NAME = "General";  // 系统通用的数据字典的key值
+
+
+    public static enum SystemSupportLanguage implements BasicEnum {
+
+        ZH_CN("zh_CN", "中文"),
+        EN_US("en_US", "English");
+
+        private String code;
+        private String name;
+
+        SystemSupportLanguage(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+
+        @Override
+        public String value() {
+            return this.code;
+        }
+
+        @Override
+        public String i18nValue() {
+            return this.name;
+        }
+
+        @Override
+        public String description() {
+            return this.name;
+        }
+    }
 }

@@ -6,9 +6,13 @@ import com.longyou.comm.admin.service.IDicService;
 import com.longyou.comm.mapper.TSystemDicItemMapper;
 import com.longyou.comm.mapper.TSystemDicMasterMapper;
 import org.cloud.context.RequestContextManager;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TSystemDicItem;
 import org.cloud.model.TSystemDicMaster;
+import org.cloud.utils.process.ProcessCallable;
+import org.cloud.utils.process.ProcessRunnable;
+import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
+
+import static org.cloud.constant.CoreConstant.*;
 
 @Service
 public class DicServiceImpl implements IDicService {
@@ -51,7 +57,7 @@ public class DicServiceImpl implements IDicService {
         }
 
         for (TSystemDicItem item : systemDicMaster.getItems()) {
-            if(item.getDicMasterId()==null){
+            if (item.getDicMasterId() == null) {
                 item.setDicMasterId(systemDicMaster.getDicMasterId());
             }
             item.setUpdateBy(user.getId());
@@ -88,8 +94,8 @@ public class DicServiceImpl implements IDicService {
     }
 
     @Override
-    public List<TSystemDicItem> getDicItemsByDicCode(Map<String,Object> params) throws Exception {
-        Assert.notNull(params.get("dicCode"),"字典编码不能为空！");
+    public List<TSystemDicItem> getDicItemsByDicCode(Map<String, Object> params) throws Exception {
+        Assert.notNull(params.get("dicCode"), "字典编码不能为空！");
         return systemDicItemMapper.selectByDicCode(params);
     }
 
@@ -98,4 +104,35 @@ public class DicServiceImpl implements IDicService {
         PageHelper.startPage(queryParams.getPageNum(), queryParams.getPageSize(), "status desc,dic_code asc,dic_name asc");
         return systemDicMasterMapper.listPage(queryParams);
     }
+
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Override
+    @Transactional
+    public void refreshCache() throws Exception {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("status", 1);
+        List<TSystemDicMaster> dicList = systemDicMasterMapper.listWithOutPaged(params);
+        List<Callable<Object>> runnables = new ArrayList<>();
+        redisUtil.removePattern(_SYSTEM_DIC_CACHE_KEY + "*");
+        for (final TSystemDicMaster dicMaster : dicList) {
+            final String hashCacheKey = _SYSTEM_DIC_CACHE_KEY + dicMaster.getBelongMicroService();
+            final Map<String, Object> itemParams = new HashMap<>();
+            itemParams.put("dicCode", dicMaster.getDicCode());
+            itemParams.put("status", 1);
+            runnables.add(new ProcessCallable<Object>() {
+                @Override
+                public Object process() {
+                    final List<TSystemDicItem> dicItems = systemDicItemMapper.selectByDicCode(itemParams);
+                    Map<String, List<TSystemDicItem>> dicItemsMapByLanguage = dicItems.stream().collect(Collectors.groupingBy(TSystemDicItem::getLanguage));
+                    redisUtil.hashSet(hashCacheKey, dicMaster.getDicCode() + _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT, dicItemsMapByLanguage, -1L);  //缓存字典项永久缓存，不过期
+                    redisUtil.hashSet(hashCacheKey, dicMaster.getDicCode(), dicMaster, -1L);  //缓存字典永久缓存，不过期
+                    return null;
+                }
+            });
+        }
+        ProcessUtil.single().runCablles(runnables, 20, 240L);
+    }
+
 }
