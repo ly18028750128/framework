@@ -1,16 +1,22 @@
 package org.cloud.utils;
 
 import com.alibaba.fastjson.JSON;
+import org.bson.types.ObjectId;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.AssertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 public class CollectionUtilTest {
+
+    private Logger logger = LoggerFactory.getLogger(CollectionUtilTest.class);
 
     @Test
     public void spitList() {
@@ -29,5 +35,12 @@ public class CollectionUtilTest {
 //        List<List<String>> resultStringList = CollectionUtil.single().spitList(listString, maxLength);
 //        System.out.println(JSON.toJSONString(resultStringList));
 //        assertEquals(resultStringList.size(), Double.valueOf(Math.ceil(listString.size() / (maxLength * 1.00))).intValue());
+    }
+
+    @Test
+    public void converListToOtherType(){
+        List<String> ids = Arrays.asList("5e61f1631fb2f2184ac32d18","5e61f22e1fb2f2184ac32d32","5e620ae3fdaee45eb33f6b19");
+        List<ObjectId> objectIds = ids.stream().map(ObjectId::new).collect(Collectors.toList());
+        logger.info(JSON.toJSONString(objectIds));
     }
 }

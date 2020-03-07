@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/admin/dic", produces = MediaType.APPLICATION_JSON_VALUE)
-//@SystemResource(path="系统管理/数据字典")
+@SystemResource(path="系统管理/数据字典")
 public class DicController {
 
     @Autowired
@@ -40,11 +40,10 @@ public class DicController {
     }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-//    @SystemResource(value = "保存或者更新",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "保存或者更新",description = "保存或者更新数据字典",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult saveOrUpdate(@RequestBody List<TSystemDicMaster> systemDicMasterList) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         List<String> errorResultData = new ArrayList<>();
-
         for (TSystemDicMaster systemDicMaster : systemDicMasterList) {
             try {
                 int count = dicService.SaveOrUpdate(systemDicMaster);
@@ -105,6 +104,7 @@ public class DicController {
      * @throws Exception
      */
     @RequestMapping(value = "/refreshCache", method = RequestMethod.GET)
+    @SystemResource(value = "刷新缓存",description = "刷新缓存，需授权",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult refreshCache()
             throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
