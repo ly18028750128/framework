@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/personal/mongo/gridfs", produces = MediaType.APPLICATION_JSON_VALUE)
 @SystemResource(path = "/personal/mongo")
-public class MogodbGridFsPersonalController {
+public class MongodbGridFsPersonalController {
 
     @Autowired
     GridFsTemplate gridFsTemplate;
@@ -64,7 +64,10 @@ public class MogodbGridFsPersonalController {
         } else {
             doc.append(MongoDBEnum.metadataOwnerKey.value(), MongoDBEnum.defaultFileOwnerId.getLong());  //游客
         }
-
+        final int suffixIndex = file.getOriginalFilename().lastIndexOf(".");
+        if (suffixIndex > -1) {
+            doc.append(MongoDBEnum.metadataFilesSuffixFieldName.value(), file.getOriginalFilename().substring(suffixIndex));
+        }
         if (params != null) {
             params.forEach((key, value) -> {
                 if (!(key.equals(MongoDBEnum.metadataOwnerKey.value()) || key.equals(MongoDBEnum.metadataOwnerNameKey.value()) ||
@@ -74,9 +77,9 @@ public class MogodbGridFsPersonalController {
                 }
             });
         }
-
-        gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), doc);
-        return ResponseResult.createSuccessResult();
+        ResponseResult result = ResponseResult.createSuccessResult();
+        result.setData(gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), doc).toString());
+        return result;
     }
 
     /**

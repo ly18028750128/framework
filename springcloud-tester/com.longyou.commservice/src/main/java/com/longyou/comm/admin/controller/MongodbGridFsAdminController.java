@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/admin/mongo/gridfs", produces = MediaType.APPLICATION_JSON_VALUE)
 @SystemResource(path="/admin/mongo")
-public class MogodbGridFsAdminController {
+public class MongodbGridFsAdminController {
 
     @Autowired
     GridFsTemplate gridFsTemplate;
