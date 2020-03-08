@@ -74,9 +74,9 @@ public final class MongoDBUtil {
      * 分布搜索文件
      */
     public PageInfo listPage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
-        Query query = new Query();
+        final Query query = new Query();
         if (!StringUtils.isEmpty(params.get("filename"))) {
-            query.addCriteria(Criteria.where("filename").regex("^.*" + params.get("filename") + ".*$"));
+            query.addCriteria(Criteria.where("filename").regex("(?i)("+params.get("filename")+")"));
         }
         Criteria lengthWhere = null;
         if (!StringUtils.isEmpty(params.get("minSize"))) {
@@ -102,19 +102,22 @@ public final class MongoDBUtil {
         if (!StringUtils.isEmpty(params.get("_id"))) {
             query.addCriteria(Criteria.where("_id").is(new ObjectId(params.get("_id").toString())));
         }
-        if (!StringUtils.isEmpty(params.get(MongoDBEnum.metadataContentTypeKey.value()))) {
-            query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + MongoDBEnum.metadataContentTypeKey.value())
-                    .regex("^.*" + params.get(MongoDBEnum.metadataContentTypeKey.value()) + ".*$"));
-        }
-
         if (!StringUtils.isEmpty(params.get(MongoDBEnum.metadataOwnerKey.value()))) {
             query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + MongoDBEnum.metadataOwnerKey.value())
                     .is(params.get(MongoDBEnum.metadataOwnerKey.value())));
         }
 
-        query = query.skip((page - 1) * pageSize).limit(pageSize);
-        List<MongoDbGridFsVO> listData = mongoTemplate.find(query, MongoDbGridFsVO.class, "fs.files");
-
+        //处理metadata参数
+        if ((params.get(MongoDBEnum.metadataKey.value()) != null) && (params.get(MongoDBEnum.metadataKey.value()) instanceof Map)) {
+            Map metaDataQuery = (Map) params.get(MongoDBEnum.metadataKey.value());
+            metaDataQuery.forEach((key, value) -> {
+                if (!StringUtils.isEmpty(value)) {
+                    query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + key)
+                            .regex(value.toString()));
+                }
+            });
+        }
+        List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
         PageInfo pageInfo = new PageInfo(listData);
         pageInfo.setPageNum(page);
         pageInfo.setPageSize(pageSize);
@@ -147,6 +150,18 @@ public final class MongoDBUtil {
             IOUtils.close(inputStream);
             IOUtils.close(outputStream);
         }
+    }
+
+    /**
+     * 判断文件类型是否为个人文件，文件的权限范围为null或者为personal的情况下，认为是个人文件
+     *
+     * @param gridFSFile
+     * @return
+     */
+    public boolean isPersonalFile(GridFSFile gridFSFile) {
+        return gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()) == null ||
+                MongoDBEnum.metadataFileAuthRangePersonal.equals(gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()))
+                ;
     }
 
 }
