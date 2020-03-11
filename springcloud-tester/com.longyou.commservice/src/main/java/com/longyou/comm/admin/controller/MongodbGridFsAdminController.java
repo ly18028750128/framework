@@ -46,7 +46,7 @@ public class MongodbGridFsAdminController {
     @PostMapping("/list/{page}/{pageSize}")
     public ResponseResult list(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize, @RequestBody Map<String, Object> params) throws Exception {
         ResponseResult result = ResponseResult.createSuccessResult();
-        result.setData(MongoDBUtil.single().listPage(page, pageSize, params));
+        result.setData(MongoDBUtil.single().listFilePage(page, pageSize, params));
         return result;
     }
 

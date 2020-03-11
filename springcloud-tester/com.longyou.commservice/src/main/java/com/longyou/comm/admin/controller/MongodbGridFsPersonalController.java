@@ -47,7 +47,7 @@ public class MongodbGridFsPersonalController {
     public ResponseResult list(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize, @RequestBody Map<String, Object> params) throws Exception {
         ResponseResult result = ResponseResult.createSuccessResult();
         params.put(MongoDBEnum.metadataOwnerKey.value(), RequestContextManager.single().getRequestContext().getUser().getId());
-        result.setData(MongoDBUtil.single().listPage(page, pageSize, params));
+        result.setData(MongoDBUtil.single().listFilePage(page, pageSize, params));
         return result;
     }
 

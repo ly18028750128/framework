@@ -72,6 +72,9 @@ public class UserInfoService implements IUserInfoService {
         // 获取数据权限和操作权限
         for (TFrameRole frameRole : loginUserDetails.getRoles()) {
             for (TFrameRoleResource frameRoleResource : frameRole.getFrameRoleResourceList()) {
+                if (frameRoleResource.getFrameworkResource() == null){
+                    continue;
+                }
                 final String functionSetStr = frameRoleResource.getFrameworkResource().getBelongMicroservice() + CoreConstant._FUNCTION_SPLIT_STR +
                         frameRoleResource.getFrameworkResource().getResourcePath() + CoreConstant._FUNCTION_SPLIT_STR +
                         frameRoleResource.getFrameworkResource().getResourceCode();
