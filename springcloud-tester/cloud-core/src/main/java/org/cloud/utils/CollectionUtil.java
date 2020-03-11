@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +45,30 @@ public final class CollectionUtil {
 
     public <E> List<List<E>> spitList(List<E> originalList) {
         return this.spitList(originalList, _MAX_LIST_LENGTH);
+    }
+
+    public boolean isEmpty(Object obj) {
+        if (obj == null) {
+            return true;
+        } else if (obj instanceof CharSequence) {
+            return "".equals(obj.toString());
+        } else if (obj instanceof Object[]) {
+            return ((Object[]) obj).length < 1;
+        } else if (obj instanceof Collection) {
+            return ((Collection) obj).size() < 1;
+        }
+        return false;
+    }
+
+    public Object[] toArray(Object obj) {
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof Collection) {
+            return ((Collection) obj).toArray(new Object[]{});
+        } else if (obj instanceof Object[]) {
+            return (Object[]) obj;
+        }
+        return new Object[]{obj};
     }
 
 }
