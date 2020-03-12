@@ -69,7 +69,6 @@ public class UserInfoService implements IUserInfoService {
         Set<String> userFunctions = new HashSet<>();
         Map<String, Set<String>> userDatas = new HashMap<>();
         Set<String> dataInterfaces = new HashSet<>();
-
         Set<UserRole> userRoles = new HashSet<>();
         // 获取数据权限和操作权限
         for (TFrameRole frameRole : loginUserDetails.getRoles()) {
