@@ -16,7 +16,7 @@ public class TFrameRoleDataInterface implements Serializable {
      */
     private Integer roleId;
 
-    private Long dataInterfaceId;
+    private String dataInterfaceId;
 
     private static final long serialVersionUID = -900000518015051162L;
 }

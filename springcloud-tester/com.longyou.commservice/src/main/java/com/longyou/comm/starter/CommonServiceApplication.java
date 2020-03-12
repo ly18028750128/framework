@@ -1,9 +1,14 @@
 package com.longyou.comm.starter;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.PageHelper;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.cloud.mybatis.dynamic.DynamicSqlMapper;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.annotation.MapperScans;
+import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
@@ -19,7 +24,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 @EnableDiscoveryClient
 @ComponentScan({"org.cloud.*","com.longyou.comm.*"})
-@MapperScan("com.longyou.comm.mapper")
+@MapperScan({"com.longyou.comm.mapper","org.cloud.mybatis.dynamic"})
 @ServletComponentScan({"org.cloud.filter"})
 @SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
@@ -81,4 +86,5 @@ public class CommonServiceApplication {
     public DataSource quartzDataSource(){
         return new DruidDataSource();
     }
+
 }

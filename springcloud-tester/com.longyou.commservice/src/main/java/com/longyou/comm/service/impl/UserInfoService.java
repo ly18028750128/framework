@@ -68,6 +68,8 @@ public class UserInfoService implements IUserInfoService {
 
         Set<String> userFunctions = new HashSet<>();
         Map<String, Set<String>> userDatas = new HashMap<>();
+        Set<String> dataInterfaces = new HashSet<>();
+
         Set<UserRole> userRoles = new HashSet<>();
         // 获取数据权限和操作权限
         for (TFrameRole frameRole : loginUserDetails.getRoles()) {
@@ -86,6 +88,10 @@ public class UserInfoService implements IUserInfoService {
                     userDatas.put(frameRoleResource.getDataDimension(), new HashSet<String>());
                 }
                 userDatas.get(frameRoleResource.getDataDimension()).add(frameRoleResource.getDataDimensionValue());
+            }
+
+            for (TFrameRoleDataInterface frameRoleDataInterface : frameRole.getFrameRoleDataInterfaceList()) {
+                dataInterfaces.add(frameRoleDataInterface.getDataInterfaceId());
             }
 
             UserRole userRole = new UserRole();
@@ -109,6 +115,10 @@ public class UserInfoService implements IUserInfoService {
         redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
                 CoreConstant.UserCacheKey.FUNCTION.value(), userFunctions, 24 * 60 * 60L);
 
+        // 缓存接口权限
+        redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                CoreConstant.UserCacheKey.DATA_INTERFACE.value(), dataInterfaces, 24 * 60 * 60L);
+
         // 缓存角色名称
         redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
                 CoreConstant.UserCacheKey.ROLE_NAME.value(), userRoles, 24 * 60 * 60L);
@@ -116,6 +126,9 @@ public class UserInfoService implements IUserInfoService {
         //缓存菜单
         redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
                 CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(), 24 * 60 * 60L);
+
+
+
 
         // 缓存登录用户信息
         loginUserDetails.setRoles(new ArrayList<>());
