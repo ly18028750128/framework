@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.cloud.constant.CoreConstant;
+import org.cloud.utils.MD5Encoder;
 
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -27,13 +28,28 @@ public class DataInterFaceVO {
     private Date createdOrUpdateTime;    //和CoreConstant.AuthMethod保持一致
     private Long createdOrUpdateBy;
     private String createdOrUpdateUserName;
+    private String md5;
     private int status = 1;  //状态，0失效，1有效
-
     public void addParam(String fieldName, MongoEnumVO.DataType fieldType, String description) {
         params.add(new DataInterFaceParamVO(fieldName, fieldType, description, 1));
     }
 
     public void addParam(String fieldName, MongoEnumVO.DataType fieldType, String description, int status) {
         params.add(new DataInterFaceParamVO(fieldName, fieldType, description, status));
+    }
+
+    public String getMd5(){
+        if(this.md5==null){
+            this.md5 = MD5Encoder.encode(interfaceName);
+        }
+        return md5;
+    }
+
+    public void setMd5(String md5){
+        if(md5==null){
+            this.md5 = MD5Encoder.encode(interfaceName);
+        }else{
+            this.md5 = md5;
+        }
     }
 }

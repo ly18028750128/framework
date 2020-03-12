@@ -34,25 +34,25 @@ public final class AuthCheckUtils {
         return instance;
     }
 
-    public DataInterFaceVO checkDataInterface(final String ObjectId) throws Exception {
+    public DataInterFaceVO checkDataInterface(final String md5) throws Exception {
         // 如果是不校验，那么全部用户均可以通过
         Query query = new Query();
-        query.addCriteria(Criteria.where("_id").is(new ObjectId(ObjectId)));
+        query.addCriteria(Criteria.where("md5").is(md5));
         query.addCriteria(Criteria.where("status").is(1));
         query.addCriteria(Criteria.where("interfaceType").is("sql"));
         DataInterFaceVO dataInterFaceVO = mongoTemplate.findOne(query, DataInterFaceVO.class);
         if (dataInterFaceVO == null) {
-            throw new BusinessException("不存在的动态接口定义，请检查", ObjectId);
+            throw new BusinessException("不存在的动态接口定义，请检查", md5);
         }
         if (CoreConstant.AuthMethod.ALLSYSTEMUSER.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
-                throw new BusinessException("请先登录！", ObjectId, HttpStatus.UNAUTHORIZED.value());
+                throw new BusinessException("请先登录！", md5, HttpStatus.UNAUTHORIZED.value());
             }
         } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
             LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
             Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
-            if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(ObjectId)) {
-                logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + ObjectId);
+            if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
+                logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
                 throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有此接口权限，请联系管理员授权！", null, null, Charset.forName("utf8"));
             }
         }
