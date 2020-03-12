@@ -16,27 +16,27 @@ import java.util.Map;
 @RestController
 @RequestMapping("/common/dynamic/sql")
 public class DataInterfaceExecController {
-    @PostMapping("/paged/{objectId}/{pageNum}/{pageSize}")
-    public ResponseResult paged(@PathVariable("objectId") String objectId,
+    @PostMapping("/paged/{md5}/{pageNum}/{pageSize}")
+    public ResponseResult paged(@PathVariable("md5") String md5,
                                 @PathVariable("pageNum") int pageNum,
                                 @PathVariable("pageSize") int pageSize,
                                 @RequestBody DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO
     ) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        final DataInterFaceVO dataInterFaceVO = AuthCheckUtils.single().checkDataInterface(objectId);
+        final DataInterFaceVO dataInterFaceVO = AuthCheckUtils.single().checkDataInterface(md5);
         addCurrentUserId(dataInterFaceVO,dynamicSqlQueryParamsVO.getParams());
-        responseResult.setData(DynamicSqlUtil.single().pagedData(objectId, pageNum, pageSize, dynamicSqlQueryParamsVO));
+        responseResult.setData(DynamicSqlUtil.single().pagedData(md5, pageNum, pageSize, dynamicSqlQueryParamsVO));
         return responseResult;
     }
 
-    @PostMapping("/list/{objectId}")
-    public ResponseResult paged(@PathVariable("objectId") String objectId,
+    @PostMapping("/list/{md5}")
+    public ResponseResult paged(@PathVariable("md5") String md5,
                                 @RequestBody DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO
     ) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        final DataInterFaceVO dataInterFaceVO = AuthCheckUtils.single().checkDataInterface(objectId);
+        final DataInterFaceVO dataInterFaceVO = AuthCheckUtils.single().checkDataInterface(md5);
         addCurrentUserId(dataInterFaceVO,dynamicSqlQueryParamsVO.getParams());
-        responseResult.setData(DynamicSqlUtil.single().listData(objectId,dynamicSqlQueryParamsVO));
+        responseResult.setData(DynamicSqlUtil.single().listData(md5,dynamicSqlQueryParamsVO));
         return responseResult;
     }
 
