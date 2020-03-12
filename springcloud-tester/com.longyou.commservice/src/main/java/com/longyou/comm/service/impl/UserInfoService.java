@@ -126,13 +126,9 @@ public class UserInfoService implements IUserInfoService {
         redisUtil.hashSet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
                 CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(), 24 * 60 * 60L);
 
-
-
-
         // 缓存登录用户信息
         loginUserDetails.setRoles(new ArrayList<>());
         loginUserDetails.setFrameMenuList(new ArrayList<>());
-
         return loginUserDetails;
     }
 }
