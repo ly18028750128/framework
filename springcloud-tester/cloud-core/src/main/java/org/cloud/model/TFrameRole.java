@@ -58,6 +58,8 @@ public class TFrameRole implements Serializable {
 
     private List<TFrameRoleMenu> frameRoleMenuList;
 
+    private List<TFrameRoleDataInterface> frameRoleDataInterfaceList;
+
     private static final long serialVersionUID = 8044423583553999672L;
 
 
