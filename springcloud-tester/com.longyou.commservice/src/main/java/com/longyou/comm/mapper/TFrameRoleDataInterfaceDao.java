@@ -1,5 +1,6 @@
 package com.longyou.comm.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.cloud.model.TFrameRoleDataInterface;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public interface TFrameRoleDataInterfaceDao {
 
     List<TFrameRoleDataInterface> selectByRoleId(Long id);
 
+    int deleteByRoleId(@Param("roleId") int roleId);
 
     int updateByPrimaryKeySelective(TFrameRoleDataInterface record);
 

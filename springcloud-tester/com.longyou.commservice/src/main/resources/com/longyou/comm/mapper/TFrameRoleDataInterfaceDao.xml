@@ -5,9 +5,12 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="role_id" jdbcType="INTEGER" property="roleId"/>
         <result column="data_interface_id" jdbcType="VARCHAR" property="dataInterfaceId"/>
+        <result column="belong_microservice" jdbcType="VARCHAR" property="belongMicroservice"/>
+        <result column="data_interface_name" jdbcType="VARCHAR" property="dataInterfaceName"/>
+
     </resultMap>
     <sql id="Base_Column_List">
-        id, role_id, data_interface_id
+        id, role_id, data_interface_id,belong_microservice,data_interface_name
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -23,6 +26,11 @@
         where role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
+    <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+        delete
+        from t_frame_role_data_interface
+        where role_id = #{roleId,jdbcType=INTEGER}
+    </delete>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
@@ -31,8 +39,9 @@
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="org.cloud.model.TFrameRoleDataInterface"
             useGeneratedKeys="true">
-        insert into t_frame_role_data_interface (role_id, data_interface_id)
-        values (#{roleId,jdbcType=INTEGER}, #{dataInterfaceId,jdbcType=BIGINT})
+        insert into t_frame_role_data_interface (role_id, data_interface_id, belong_microservice, data_interface_name)
+        values (#{roleId,jdbcType=INTEGER}, #{dataInterfaceId,jdbcType=VARCHAR}, #{belongMicroservice,jdbcType=VARCHAR},
+                #{dataInterfaceName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.cloud.model.TFrameRoleDataInterface"
             useGeneratedKeys="true">
@@ -44,13 +53,25 @@
             <if test="dataInterfaceId != null">
                 data_interface_id,
             </if>
+            <if test="belongMicroservice != null">
+                belong_Microservice,
+            </if>
+            <if test="dataInterfaceName != null">
+                data_Interface_Name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="roleId != null">
                 #{roleId,jdbcType=INTEGER},
             </if>
             <if test="dataInterfaceId != null">
-                #{dataInterfaceId,jdbcType=BIGINT},
+                #{dataInterfaceId,jdbcType=VARCHAR},
+            </if>
+            <if test="belongMicroservice != null">
+                #{belongMicroservice,jdbcType=VARCHAR},
+            </if>
+            <if test="dataInterfaceName != null">
+                #{dataInterfaceName,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -61,15 +82,23 @@
                 role_id = #{roleId,jdbcType=INTEGER},
             </if>
             <if test="dataInterfaceId != null">
-                data_interface_id = #{dataInterfaceId,jdbcType=BIGINT},
+                data_interface_id = #{dataInterfaceId,jdbcType=VARCHAR},
+            </if>
+            <if test="belongMicroservice != null">
+                belong_Microservice = #{belongMicroservice,jdbcType=VARCHAR},
+            </if>
+            <if test="dataInterfaceName != null">
+                data_Interface_Name= #{dataInterfaceName,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameRoleDataInterface">
         update t_frame_role_data_interface
-        set role_id           = #{roleId,jdbcType=INTEGER},
-            data_interface_id = #{dataInterfaceId,jdbcType=BIGINT}
+        set role_id             = #{roleId,jdbcType=INTEGER},
+            data_interface_id   = #{dataInterfaceId,jdbcType=BIGINT},
+            belong_Microservice = #{belongMicroservice,jdbcType=VARCHAR},
+            data_Interface_Name= #{dataInterfaceName,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 </mapper>

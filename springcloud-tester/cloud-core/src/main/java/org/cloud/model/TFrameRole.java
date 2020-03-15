@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -47,16 +48,24 @@ public class TFrameRole implements Serializable {
      */
     private String updateBy;
 
+    private Integer status=1;
+
     /**
      * 更新日期
      */
     private Date updateDate;
+
+//    @JsonIgnore
+    Boolean frameRoleResourceUpdateFlag = false;
 
     private List<TFrameRoleResource> frameRoleResourceList;
 
     private List<TFrameRoleData> frameRoleDataList;
 
     private List<TFrameRoleMenu> frameRoleMenuList;
+
+//    @JsonIgnore
+    Boolean frameRoleDataInterfaceUpdateFlag = false;
 
     private List<TFrameRoleDataInterface> frameRoleDataInterfaceList;
 

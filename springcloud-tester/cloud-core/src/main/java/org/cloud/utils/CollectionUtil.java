@@ -4,6 +4,7 @@ package org.cloud.utils;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,9 +56,15 @@ public final class CollectionUtil {
         } else if (obj instanceof Object[]) {
             return ((Object[]) obj).length < 1;
         } else if (obj instanceof Collection) {
-            return ((Collection) obj).size() < 1;
+            return ((Collection) obj).isEmpty();
+        } else if (obj instanceof Map) {
+            return ((Map) obj).isEmpty();
         }
         return false;
+    }
+
+    public boolean isNotEmpty(Object obj) {
+        return !isEmpty(obj);
     }
 
     public Object[] toArray(Object obj) {
