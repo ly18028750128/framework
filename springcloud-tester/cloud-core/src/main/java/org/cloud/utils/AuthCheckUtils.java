@@ -44,16 +44,16 @@ public final class AuthCheckUtils {
         if (dataInterFaceVO == null) {
             throw new BusinessException("不存在的动态接口定义，请检查", md5);
         }
-        if (CoreConstant.AuthMethod.ALLSYSTEMUSER.equals(dataInterFaceVO.getAuthMethod())) {
+        if (!CoreConstant.AuthMethod.NOAUTH.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
                 throw new BusinessException("请先登录！", md5, HttpStatus.UNAUTHORIZED.value());
-            }
-        } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
-            LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-            Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
-            if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
-                logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
-                throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有此接口权限，请联系管理员授权！", null, null, Charset.forName("utf8"));
+            } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
+                LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+                Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
+                if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
+                    logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
+                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有此接口权限，请联系管理员授权！", null, null, Charset.forName("utf8"));
+                }
             }
         }
         return dataInterFaceVO;

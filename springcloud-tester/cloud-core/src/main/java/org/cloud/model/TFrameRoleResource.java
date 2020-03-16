@@ -23,5 +23,7 @@ public class TFrameRoleResource implements Serializable {
 
     private TFrameworkResource frameworkResource;
 
+    private Boolean deleted = false;
+
     private static final long serialVersionUID = -7839174763276951281L;
 }

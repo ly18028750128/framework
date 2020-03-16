@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -168,7 +169,7 @@ public final class MongoDBUtil {
                 ;
     }
 
-    public Query buildQuery(final List<MongoQueryParam> paramsVOS) throws Exception {
+    public Query buildQuery(final List<MongoQueryParam> paramsVOS, Map<String, Boolean> fields) throws Exception {
         Query query = new Query();
         Criteria criteriaAll = new Criteria();
         List<Criteria> andCriteria = new ArrayList<>();
@@ -187,27 +188,34 @@ public final class MongoDBUtil {
                     norCriteria.add(buildCriteria(param));
             }
         }
-        // 优先级 or>and>nor ,正常情况下都是and，如果查询很复杂还是要自己编写脚本，这里只是解决一部分问题
-        if (!orCriteria.isEmpty()) {
-            // 如果有or条件，先将nor条件接到and条件里，再拼到or里
-            if (!norCriteria.isEmpty()) {
-                andCriteria.add(new Criteria().norOperator(norCriteria.toArray(new Criteria[]{})));
+        // 优先级 and>or>nor ,正常情况下都是and，如果查询很复杂还是要自己编写脚本，这里只是解决一部分问题
+        if (!andCriteria.isEmpty()) {
+            // 如果有and条件，那么将nor,or条件拼装到and条件中,暂时按这个规则处理。如果有特殊的情况，需写代码实现，这里只实现一些通用的查询
+            if (!orCriteria.isEmpty()) {
+                andCriteria.add(new Criteria().orOperator(orCriteria.toArray(new Criteria[]{})));
             }
-            if (!andCriteria.isEmpty()) {
-                orCriteria.add(new Criteria().andOperator(andCriteria.toArray(new Criteria[]{})));
-            }
-            criteriaAll.orOperator(orCriteria.toArray(new Criteria[]{}));
-        } else if (!andCriteria.isEmpty()) {
-            // 如果有and条件，那么将nor条件拼装到and条件中,暂时按这个规则处理。如果有特殊的情况，需写代码实现，这里只实现一些通用的查询
             if (!norCriteria.isEmpty()) {
                 andCriteria.add(new Criteria().norOperator(norCriteria.toArray(new Criteria[]{})));
             }
             criteriaAll.andOperator(andCriteria.toArray(new Criteria[]{}));
+        } else if (!orCriteria.isEmpty()) {
+            // 如果有or条件，先将nor条件接到or条件里
+            if (!norCriteria.isEmpty()) {
+                orCriteria.add(new Criteria().andOperator(norCriteria.toArray(new Criteria[]{})));
+            }
+            criteriaAll.orOperator(orCriteria.toArray(new Criteria[]{}));
         } else if (!norCriteria.isEmpty()) {
             criteriaAll.norOperator(norCriteria.toArray(new Criteria[]{}));
         }
         query.addCriteria(criteriaAll);
+
+        if (!CollectionUtil.single().isEmpty(fields)) {
+            org.bson.Document fieldsObj = new org.bson.Document();
+            fieldsObj.putAll(fields);
+            return new BasicQuery(query.getQueryObject(), fieldsObj);
+        }
         return query;
+
     }
 
     private Criteria buildCriteria(MongoQueryParam param) throws Exception {
@@ -262,7 +270,7 @@ public final class MongoDBUtil {
     }
 
     public <T> PageInfo<T> paged(Long pageNum, Long pageSize, MongoQueryParamsDTO queryParamsDTO, Class cls, String collectionName) throws Exception {
-        Query query = MongoDBUtil.single().buildQuery(queryParamsDTO.getParams());
+        Query query = MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
         PageInfo<T> pageInfo = new PageInfo<>();
         Long count = 0L;
         if (collectionName == null) {
@@ -275,6 +283,7 @@ public final class MongoDBUtil {
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));
         }
+
         if (collectionName == null) {
             pageInfo.setList(mongoTemplate.find(query, cls));
         } else {
@@ -290,7 +299,7 @@ public final class MongoDBUtil {
     public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class cls, String collectionName) throws Exception {
         Query query = new Query();
         if (!queryParamsDTO.getParams().isEmpty()) {
-            MongoDBUtil.single().buildQuery(queryParamsDTO.getParams());
+            MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
         }
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));

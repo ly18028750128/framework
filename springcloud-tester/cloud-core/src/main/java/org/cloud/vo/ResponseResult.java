@@ -32,7 +32,9 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
     }
 
     public final static ResponseResult createSuccessResult() {
-        return new ResponseResult(CoreConstant.RestStatus.SUCCESS.value());
+        ResponseResult responseResult = new ResponseResult(CoreConstant.RestStatus.SUCCESS.value());
+        responseResult.setMessage("rest.success.running");
+        return responseResult;
     }
 
     public void setData(Object value) {
