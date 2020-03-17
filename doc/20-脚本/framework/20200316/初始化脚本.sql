@@ -18,3 +18,6 @@ INSERT INTO `framework`.`t_frame_role_data_interface`( `role_id`, `data_interfac
 INSERT INTO `framework`.`t_frame_role_data_interface`( `role_id`, `data_interface_id`, `belong_microservice`, `data_interface_name`) VALUES ( 1, '5e6c509e7ad92a77cfad8de2', 'COMMONSERVICE', '查询当前角色操作权限列表');
 
 INSERT INTO `framework`.`t_frame_role_data_interface`( `role_id`, `data_interface_id`, `belong_microservice`, `data_interface_name`) VALUES ( 1, '5e6d666dc6af767df8096e37', 'COMMONSERVICE', '查询需要授权的接口清单');
+INSERT INTO `framework`.`t_frame_role_data_interface`( `role_id`, `data_interface_id`, `belong_microservice`, `data_interface_name`) VALUES ( 1, 'fca0c2236325f81017b12e4da4d32990', 'COMMONSERVICE', '查询系统角色列表');
+INSERT INTO `framework`.`t_frame_role_data_interface`( `role_id`, `data_interface_id`, `belong_microservice`, `data_interface_name`) VALUES ( 1, '3efa00c2c4b06b73758fac9e95e9b6a9', 'COMMONSERVICE', '查询所有用户的接口');
+

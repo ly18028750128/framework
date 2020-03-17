@@ -30,7 +30,7 @@ public class DataInterfaceExecController {
     }
 
     @PostMapping("/list/{md5}")
-    public ResponseResult paged(@PathVariable("md5") String md5,
+    public ResponseResult list(@PathVariable("md5") String md5,
                                 @RequestBody DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO
     ) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
