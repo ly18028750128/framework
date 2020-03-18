@@ -77,7 +77,6 @@ public class RoleAdminService implements IRoleAdminService {
     TFrameRoleDataInterfaceDao frameRoleDataInterfaceDao;
 
     private void saveOrUpdateFrameRoleDataInterfaceList(final Integer roleId, List<TFrameRoleDataInterface> frameRoleDataInterfaceList) throws Exception {
-        Map<Boolean, List<TFrameRoleDataInterface>> frameRoleDataInterfaceListMap = frameRoleDataInterfaceList.stream().collect(Collectors.groupingBy(TFrameRoleDataInterface::getDeleted));
         // 增加和更新需要去重
         List<TFrameRoleDataInterface> updateList = new ArrayList<>();
         if (!CollectionUtil.single().isEmpty(frameRoleDataInterfaceList)) {

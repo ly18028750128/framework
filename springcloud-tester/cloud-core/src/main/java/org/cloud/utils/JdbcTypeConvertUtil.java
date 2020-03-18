@@ -64,6 +64,6 @@ public final class JdbcTypeConvertUtil {
     }
 
     public String dateToString(Date date) {
-        return CoreConstant.DateTimeFormat.FULLDATETIME.getDateFormat().format(new java.util.Date(date.getTime()));
+        return CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format(new java.util.Date(date.getTime()));
     }
 }

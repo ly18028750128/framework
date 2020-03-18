@@ -2,14 +2,15 @@ package org.cloud.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
-import org.cloud.deserializer.CustomJsonDateDeserializer;
+import org.cloud.deserializer.IsoDateJsonDateDeserializer;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * t_frame_user_role
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameUserRole implements Serializable {
@@ -28,8 +29,8 @@ public class TFrameUserRole implements Serializable {
     /**
      * 有效开始时间
      */
-    private Date validatorStart;
 
+    private Date validatorStart;
     /**
      * 有效结束时间
      */
@@ -43,7 +44,7 @@ public class TFrameUserRole implements Serializable {
     /**
      * 创建日期
      */
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class )
+    @JsonDeserialize(using = IsoDateJsonDateDeserializer.class)
     private Date createDate;
 
     /**
@@ -54,7 +55,7 @@ public class TFrameUserRole implements Serializable {
     /**
      * 更新日期
      */
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class )
+    @JsonDeserialize(using = IsoDateJsonDateDeserializer.class)
     private Date updateDate;
 
     private TFrameRole frameRole;

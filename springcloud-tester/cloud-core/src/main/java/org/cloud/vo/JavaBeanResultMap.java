@@ -1,5 +1,6 @@
 package org.cloud.vo;
 
+import org.cloud.constant.CoreConstant;
 import org.cloud.utils.JdbcTypeConvertUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.slf4j.Logger;
@@ -32,6 +33,10 @@ public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {
 
         if (value instanceof  java.sql.Date){
             return super.put(key, (V)JdbcTypeConvertUtil.signle().dateToString((java.sql.Date)value));
+        }
+
+        if (value instanceof  java.util.Date){
+          return super.put(key, (V) CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format((java.util.Date)value));
         }
 
         return super.put(key, value);
