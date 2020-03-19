@@ -22,12 +22,13 @@ public class LoginUserDetails implements UserDetails {
     private String password;
     @JsonIgnore
     private Collection<TFrameRole> roles = new ArrayList<>();
-    @Setter @Getter
+    @Setter
+    @Getter
     private Set<UserRole> userRoles = new HashSet<>();
     // 菜单列表
     @JsonIgnore
     private Collection<TFrameMenu> frameMenuList = new ArrayList<>();
-    private Collection<GrantedAuthority> authorities ;
+    private Collection<GrantedAuthority> authorities;
     private String token;
     public String userType;
     private String defaultRole;
@@ -66,7 +67,7 @@ public class LoginUserDetails implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<GrantedAuthority> getAuthorities() {
-        if(authorities!=null){
+        if (authorities != null) {
             return authorities;
         }
         List<String> roleList = new ArrayList<>();
@@ -173,6 +174,17 @@ public class LoginUserDetails implements UserDetails {
     public void setFrameMenuList(Collection<TFrameMenu> frameMenuList) {
         this.frameMenuList = frameMenuList;
     }
+
+    @Setter
+    @Getter
+    private String mobilePhone;
+    @Setter
+    @Getter
+    private Integer status;
+    @Setter
+    @Getter
+    private String avatar;
+
 
     private static final long serialVersionUID = -6997588753870506318L;
 }

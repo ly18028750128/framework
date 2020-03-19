@@ -15,7 +15,7 @@ VALUES (-1001, 'saveOrUpdateUser', '用户角色授权', '/admin/user', 'BYUSERP
 
 -- 4：增加用户角色
 INSERT INTO `framework`.`t_frame_user_role`(`user_role_id`, `user_id`, `role_id`, `validator_start`, `validator_end`, `create_by`, `create_date`, `update_by`, `update_date`)
-VALUES (1, 1, 1, '2020-01-16 11:25:12', '2020-01-31 11:25:16', 'admin', '2020-01-16 11:25:27', 'admin', '2020-01-16 11:25:33');
+VALUES (1, 1, 1, '2020-01-16 11:25:12', '2099-12-31 11:25:16', 'admin', '2020-01-16 11:25:27', 'admin', '2020-01-16 11:25:33');
 -- 5：增加角色操作权限
 INSERT INTO `framework`.`t_frame_role_resource`( `role_id`, `resource_id`) VALUES ( 1, -1000);
 INSERT INTO `framework`.`t_frame_role_resource`( `role_id`, `resource_id`) VALUES ( 1, -1001);

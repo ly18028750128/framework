@@ -60,5 +60,7 @@ public class TFrameUserRole implements Serializable {
 
     private TFrameRole frameRole;
 
+
+
     private static final long serialVersionUID = -5944841549418566952L;
 }

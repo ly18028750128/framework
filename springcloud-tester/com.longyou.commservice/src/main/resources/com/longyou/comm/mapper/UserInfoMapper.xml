@@ -14,27 +14,38 @@
         <result column="full_name" jdbcType="VARCHAR" property="fullName"/>
         <result column="user_regist_source" jdbcType="VARCHAR" property="userRegistSource"/>
         <result column="user_Type" jdbcType="VARCHAR" property="userType"/>
+        <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+
     </resultMap>
 
     <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
-        select id,user_name,password,default_Role,user_regist_source,user_type
+        select id,user_name,password,default_Role,user_regist_source,user_type,mobile_phone,`status`,avatar
         from t_frame_user
-        where status = 1
+        where status in (1,2,3)
         <if test="userName!=null and userName!=''">
             and user_name = #{userName,jdbcType=VARCHAR}
         </if>
         <if test="userId!=null">
             and id = #{userId,jdbcType=INTEGER}
         </if>
-        <if test="params.userType!=null and params.userType!=''">
+        <if test="params.userType!=null and params.userType!=''"> <!---->
             and user_Type = #{params.userType,jdbcType=VARCHAR}
         </if>
     </select>
 
     <insert id="insertIntoUserInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
-        insert into t_frame_user(user_name,password,email,full_name,sex,create_by,create_date,update_by,update_date,status,default_role,user_type,user_regist_source,session_Key)
-        values (#{userName},#{password},#{email},#{fullName},#{sex},#{createBy},CURRENT_TIMESTAMP,#{updateBy},CURRENT_TIMESTAMP,#{status},#{defaultRole},#{userType},#{userRegistSource},#{sessionKey})
+        insert into t_frame_user(user_name, password, email, full_name, sex, create_by, create_date, update_by,
+                                 update_date, status, default_role, user_type, user_regist_source, session_Key,
+                                 mobile_phone)
+        values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+                #{fullName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, CURRENT_TIMESTAMP,
+                #{updateBy,jdbcType=VARCHAR},
+                CURRENT_TIMESTAMP, #{status,jdbcType=INTEGER}, #{defaultRole,jdbcType=VARCHAR},
+                #{userType,jdbcType=VARCHAR},
+                #{userRegistSource,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR})
     </insert>
 
     <update id="updateLoginUserById" parameterType="org.cloud.entity.LoginUserDetails">
@@ -58,10 +69,15 @@
             <if test="sessionKey != null and sessionKey!= ''">
                 session_Key = #{sessionKey,jdbcType=VARCHAR},
             </if>
-
+            <if test="mobilePhone != null and mobilePhone!= ''">
+                mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null and status!= ''">
+                `status` = #{status,jdbcType=INTEGER},
+            </if>
             update_date = CURRENT_TIMESTAMP
         </set>
-        WHERE id = #{id,jdbcType=INTEGER}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
 
 

@@ -18,6 +18,12 @@ public class BusinessException extends Exception {
         this.httpStatus = 400;
     }
 
+    public BusinessException(String message) {
+        this.message = message;
+        this.errObject = null;
+        this.httpStatus = 400;
+    }
+
     public BusinessException(String message, Object errObject,int httpStatus) {
         this.message = message;
         this.errObject = errObject;

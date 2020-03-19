@@ -6,12 +6,17 @@ import com.longyou.comm.mapper.TFrameUserRoleDao;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
 import org.cloud.constant.CoreConstant;
+import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.exception.BusinessException;
 import org.cloud.model.*;
+import org.cloud.utils.CommonUtil;
+import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +37,8 @@ public class UserInfoService implements IUserInfoService {
 
     @Autowired
     TFrameRoleDao frameRoleDao;
-
     @Autowired
     RedisUtil redisUtil;
-
-
     @Override
     @Transactional(readOnly = true)
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
@@ -73,7 +75,7 @@ public class UserInfoService implements IUserInfoService {
         // 获取数据权限和操作权限
         for (TFrameRole frameRole : loginUserDetails.getRoles()) {
             for (TFrameRoleResource frameRoleResource : frameRole.getFrameRoleResourceList()) {
-                if (frameRoleResource.getFrameworkResource() == null){
+                if (frameRoleResource.getFrameworkResource() == null) {
                     continue;
                 }
                 final String functionSetStr = frameRoleResource.getFrameworkResource().getBelongMicroservice() + CoreConstant._FUNCTION_SPLIT_STR +
@@ -131,4 +133,21 @@ public class UserInfoService implements IUserInfoService {
         loginUserDetails.setFrameMenuList(new ArrayList<>());
         return loginUserDetails;
     }
+
+    @Override
+    public int updatePassword(String oldPassword, String newPassword) throws Exception {
+        LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+        LoginUserGetParamsDTO getParamsDTO = new LoginUserGetParamsDTO();
+        getParamsDTO.setUserId(loginUserDetails.getId());
+        LoginUserDetails user = userInfoMapper.getUserByNameForAuth(getParamsDTO);
+        final String salt = CommonUtil.single().getEnv("spring.security.password_salt", "");
+        if (MD5Encoder.encode(oldPassword, salt).equals(user.getPassword())) {
+            user.setPassword(MD5Encoder.encode(newPassword, salt));
+            userInfoMapper.updateLoginUserById(user);
+        } else {
+            throw new BusinessException("原密码错误，请重新输入!");
+        }
+        return 1;
+    }
+
 }
