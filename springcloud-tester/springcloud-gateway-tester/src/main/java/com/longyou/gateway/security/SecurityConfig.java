@@ -46,10 +46,10 @@ public class SecurityConfig {
 
     @Bean
     SecurityWebFilterChain webFluxSecurityFilterChain(ServerHttpSecurity http) throws Exception {
-        List<String> services = discoveryClient.getServices();
-        services.forEach((value)->{
-            excludedAuthPages.add("/"+value.toUpperCase()+"/**");
-        });
+//        List<String> services = discoveryClient.getServices();
+//        services.forEach((value)->{
+//            excludedAuthPages.add("/"+value.toUpperCase()+"/**");
+//        });
         http
                 .authorizeExchange()
                 .pathMatchers(new String[]{"/**"}).permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验

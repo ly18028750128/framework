@@ -5,6 +5,7 @@ import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.utils.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
     public Mono<Void> onLogoutSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         try {
             // 退出时将生成的随机加密值给清空，token直接失效（自动失效时间为24小时），如果想token有效，请不要调用登出接口
-            redisUtil.remove(webFilterExchange.getExchange().getLogPrefix());
+            redisUtil.remove(MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix()));
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
