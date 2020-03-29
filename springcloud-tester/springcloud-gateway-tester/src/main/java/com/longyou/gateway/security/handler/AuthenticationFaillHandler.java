@@ -4,6 +4,7 @@ package com.longyou.gateway.security.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Transactional(propagation = Propagation.NEVER)
+@Slf4j
 public class AuthenticationFaillHandler  implements ServerAuthenticationFailureHandler {
 
     @Override
@@ -38,7 +40,7 @@ public class AuthenticationFaillHandler  implements ServerAuthenticationFailureH
             dataBytes=mapper.writeValueAsBytes(wsResponse);
         }
         catch (Exception ex){
-            ex.printStackTrace();
+            log.error("{}",e);
         }
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));
