@@ -75,5 +75,6 @@ public final class ProcessUtil {
     public void submitRunnable(Runnable runable) {
         List<Runnable> runables = new ArrayList<>();
         runables.add(runable);
+        this.submitRunnable(runables);
     }
 }

@@ -68,7 +68,7 @@ public class DicController {
         return responseResult;
     }
 
-    @RequestMapping(value = "/selectDicByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
+        @RequestMapping(value = "/selectDicByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
     public ResponseResult selectDicByDicMasterId(@PathVariable("dicMasterId") Long dicMasterId) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dicService.getDicMasterById(dicMasterId));

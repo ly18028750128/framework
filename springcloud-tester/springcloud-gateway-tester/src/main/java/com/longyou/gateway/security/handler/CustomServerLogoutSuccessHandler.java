@@ -30,8 +30,8 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerLogoutSuccessHandler {
 
-//    private final Logger logger = LoggerFactory.getLogger(CustomServerLogoutSuccessHandler.class);
-    private final HttpStatus httpStatusToReturn=HttpStatus.OK;
+    //    private final Logger logger = LoggerFactory.getLogger(CustomServerLogoutSuccessHandler.class);
+    private final HttpStatus httpStatusToReturn = HttpStatus.OK;
     @Autowired
     RedisUtil redisUtil;
 
@@ -40,9 +40,11 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
         try {
             // 退出时将生成的随机加密值给清空，token直接失效（自动失效时间为24小时），如果想token有效，请不要调用登出接口
             redisUtil.remove(MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix()));
+            final String authStr = webFilterExchange.getExchange().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            redisUtil.remove(MD5Encoder.encode(authStr));
         } catch (Exception ex) {
-            log.error("{}",ex);
+            log.error("{}", ex);
         }
-        return super.onLogoutSuccess(webFilterExchange,authentication);
+        return super.onLogoutSuccess(webFilterExchange, authentication);
     }
 }
