@@ -8,7 +8,7 @@ public final class CoreConstant {
     }
 
     public static enum DateTimeFormat {
-        FULLDATE("yyyy-MM-dd"), FULLDATETIME("yyyy-MM-dd hh:mm:ss"), MonthAndDay("MM-dd"),ISODATE("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        FULLDATE("yyyy-MM-dd"), FULLDATETIME("yyyy-MM-dd HH:mm:ss"), MonthAndDay("MM-dd"),ISODATE("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         DateTimeFormat(String value) {
             this.value = value;
