@@ -49,7 +49,18 @@ public final class DynamicSqlUtil {
     }
 
     public Page<?> listData(String md5, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
-        createDynamicSql(md5, dynamicSqlQueryParamsVO.getParams());
+        return listDataBySqlContext(this.getListSql(md5),dynamicSqlQueryParamsVO);
+    }
+
+    /**
+     * 根据SQL内容查询列表
+     * @param sqlContext
+     * @param dynamicSqlQueryParamsVO
+     * @return
+     * @throws Exception
+     */
+    public Page<?> listDataBySqlContext(String sqlContext, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+        createDynamicSqlBySqlContext(sqlContext, dynamicSqlQueryParamsVO.getParams());
         if (!StringUtils.isEmpty(dynamicSqlQueryParamsVO.getSorts())) {
             PageHelper.orderBy(dynamicSqlQueryParamsVO.getSorts());
         }
@@ -57,7 +68,11 @@ public final class DynamicSqlUtil {
     }
 
     public PageInfo<?> pagedData(String md5, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
-        createDynamicSql(md5, dynamicSqlQueryParamsVO.getParams());
+        return pagedDataBySqlContext(this.getListSql(md5),pageNum,pageSize,dynamicSqlQueryParamsVO);
+    }
+
+    public PageInfo<?> pagedDataBySqlContext(String sqlContext, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+        createDynamicSqlBySqlContext(sqlContext, dynamicSqlQueryParamsVO.getParams());
         if (StringUtils.isEmpty(dynamicSqlQueryParamsVO.getSorts())) {
             PageHelper.startPage(pageNum, pageSize);
         } else {
@@ -67,10 +82,19 @@ public final class DynamicSqlUtil {
         return new PageInfo<>(listPage);
     }
 
-
     public void createDynamicSql(String md5, final Map<String, Object> params) throws Exception {
+        createDynamicSqlBySqlContext(getListSql(md5),params);
+    }
+
+    /**
+     * 按SQL内容查询数据，这里不能开放API使用，仅内部谨慎使用
+     * @param sqlContext sql脚本，mysql格式
+     * @param params 参数
+     * @throws Exception
+     */
+    public void createDynamicSqlBySqlContext(String sqlContext, final Map<String, Object> params) throws Exception {
         XMLScriptBuilderService xmlScriptBuilderService = SpringContextUtil.getBean(XMLScriptBuilderService.class);
-        String sqlContext = "<script>" + getListSql(md5) + "</script>";
+        sqlContext = "<script>" + sqlContext + "</script>";
         XMLScriptBuilder xmlScriptBuilder = xmlScriptBuilderService.getXMLScriptBuilder(sqlContext, "//script", params.getClass());
         BoundSql boundSql = xmlScriptBuilder.parseScriptNode().getBoundSql(params);
         String sql = boundSql.getSql();
