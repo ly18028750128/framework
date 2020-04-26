@@ -11,6 +11,7 @@ import org.cloud.exception.BusinessException;
 import org.cloud.mongo.DataInterFaceVO;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.DynamicSqlQueryParamsVO;
+import org.cloud.vo.JavaBeanResultMap;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -59,7 +60,7 @@ public final class DynamicSqlUtil {
      * @return
      * @throws Exception
      */
-    public Page<?> listDataBySqlContext(String sqlContext, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+    public Page<JavaBeanResultMap<Object>> listDataBySqlContext(String sqlContext, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
         createDynamicSqlBySqlContext(sqlContext, dynamicSqlQueryParamsVO.getParams());
         if (!StringUtils.isEmpty(dynamicSqlQueryParamsVO.getSorts())) {
             PageHelper.orderBy(dynamicSqlQueryParamsVO.getSorts());
@@ -71,15 +72,15 @@ public final class DynamicSqlUtil {
         return pagedDataBySqlContext(this.getListSql(md5),pageNum,pageSize,dynamicSqlQueryParamsVO);
     }
 
-    public PageInfo<?> pagedDataBySqlContext(String sqlContext, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+    public PageInfo<JavaBeanResultMap<Object>> pagedDataBySqlContext(String sqlContext, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
         createDynamicSqlBySqlContext(sqlContext, dynamicSqlQueryParamsVO.getParams());
         if (StringUtils.isEmpty(dynamicSqlQueryParamsVO.getSorts())) {
             PageHelper.startPage(pageNum, pageSize);
         } else {
             PageHelper.startPage(pageNum, pageSize, dynamicSqlQueryParamsVO.getSorts());
         }
-        Page<?> listPage = dynamicSqlMapper.paged(localSql.get(), dynamicSqlQueryParamsVO.getParams());
-        return new PageInfo<>(listPage);
+        Page<JavaBeanResultMap<Object>> listPage = dynamicSqlMapper.paged(localSql.get(), dynamicSqlQueryParamsVO.getParams());
+        return new PageInfo<JavaBeanResultMap<Object>>(listPage);
     }
 
     public void createDynamicSql(String md5, final Map<String, Object> params) throws Exception {

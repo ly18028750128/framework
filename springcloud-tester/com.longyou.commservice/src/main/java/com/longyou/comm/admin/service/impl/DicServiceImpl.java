@@ -121,6 +121,7 @@ public class DicServiceImpl implements IDicService {
             final Map<String, Object> itemParams = new HashMap<>();
             itemParams.put("dicCode", dicMaster.getDicCode());
             itemParams.put("status", 1);
+            itemParams.put("belongMicroService", dicMaster.getBelongMicroService());
             runnables.add(new ProcessCallable<Object>() {
                 @Override
                 public Object process() {
