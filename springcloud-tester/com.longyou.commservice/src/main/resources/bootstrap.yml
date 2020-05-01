@@ -2,6 +2,7 @@ spring:
   application:
     #group: 'LONGYOU' #这里写在启动参数里
     noGroupName: common-service
+    upperCaseName: ${spring.application.group:}COMMON-SERVICE  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
     config:
@@ -9,6 +10,10 @@ spring:
       name: ${spring.application.noGroupName:}
       profile: ${spring.profiles.active:dev}
       uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
+    consul:
+      enabled: true
+      config:
+        enabled: false # 一定要这里关闭consul的配置中心
   security:
     password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
@@ -18,6 +23,10 @@ spring:
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+#  config:
+#    consul:
+#      host: 120.24.28.180
+#      port: 10050
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: framework

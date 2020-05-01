@@ -2,6 +2,7 @@ spring:
   application:
    # group: ''  #写在启动参数中，请用大写
     noGroupName: spring-gateway
+    upperCaseName: ${spring.application.group:}SPRING-GATEWAY  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
     config:
@@ -9,6 +10,10 @@ spring:
       name: ${spring.application.noGroupName:}
       profile: ${spring.profiles.active:dev}
       uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
+    consul:
+      enabled: true
+      config:
+        enabled: false # 一定要这里关闭consul的配置中心
     gateway:
 #       routes:
 #         - id: commmonService

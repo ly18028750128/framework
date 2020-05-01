@@ -100,14 +100,21 @@ public class GatewayApplication {
         final String group = CommonUtil.single().getEnv("spring.application.group", "");
         RouteLocatorBuilder.Builder routeBuilder = builder.routes();
         if (!"".equalsIgnoreCase(group)) {
+
+            routeBuilder.route(group + "SPRING-GATEWAY_route", r -> r.order(Integer.MIN_VALUE).path("/SPRING-GATEWAY/**")
+                    .filters(f -> f.rewritePath("/SPRING-GATEWAY/(?<remaining>.*)", "/${remaining}"))
+                    .uri("lb://" + group + "SPRING-GATEWAY"));
+
             for (String serverNameLowercase : servers) {
                 final String serverName = serverNameLowercase.toUpperCase();
-                final String serverNameNoGroupName = serverName.substring(group.length());
                 if (serverName.startsWith(group)) {
+                    final String serverNameNoGroupName = serverName.substring(group.length());
                     routeBuilder.route(serverName + "_route", r -> r.order(Integer.MIN_VALUE).path("/" + serverNameNoGroupName + "/**")
                             .filters(f -> f.rewritePath("/" + serverNameNoGroupName + "/(?<remaining>.*)", "/${remaining}"))
                             .uri("lb://" + serverName));
                 }
+
+
             }
         }
         return routeBuilder.build();
