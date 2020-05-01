@@ -1,8 +1,10 @@
 package org.cloud.utils;
 
 
+import feign.FeignException;
 import org.apache.catalina.util.RequestUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.feign.service.IGatewayFeignClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -21,8 +23,8 @@ import java.io.StringWriter;
 import java.util.List;
 
 public final class CommonUtil {
-
     Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+    IGatewayFeignClient gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
 
     private CommonUtil() {
     }
@@ -53,18 +55,18 @@ public final class CommonUtil {
     /**
      * 获取当前登录用户
      *
-     * @param request
      * @return
      */
-    public LoginUserDetails getLoginUser(HttpServletRequest request) {
+    public LoginUserDetails getLoginUser() {
         try {
-            final String userinfoUrl = this.getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
-            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request, new String[]{"authorization", "cookie"});
-            if (headers.size() == 0) {
-                return null;
+            if (gatewayFeignClient == null) {
+                gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
             }
-            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, headers, LoginUserDetails.class);
-            return responseEntity.getBody();
+            return gatewayFeignClient.getAuthentication();
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.info("rest请求无权限");
+        } catch (FeignException.Unauthorized e) {
+            logger.info("feign请求无权限");
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
                 logger.error(e.getMessage(), e);
@@ -73,10 +75,6 @@ public final class CommonUtil {
             logger.error(e.getMessage(), e);
         }
         return null;
-    }
-
-    public LoginUserDetails getLoginUser() {
-        return getLoginUser(HttpServletUtil.signle().getHttpServlet());
     }
 
     private long timeSaltPre = System.currentTimeMillis(); //上一个时间盐的值

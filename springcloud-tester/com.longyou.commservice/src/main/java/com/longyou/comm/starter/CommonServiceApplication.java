@@ -3,8 +3,13 @@ package com.longyou.comm.starter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.PageHelper;
+import feign.Feign;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.cloud.mybatis.dynamic.DynamicSqlMapper;
+import org.cloud.utils.CommonUtil;
+import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.annotation.MapperScans;
@@ -15,21 +20,35 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-@EnableDiscoveryClient
-@ComponentScan({"org.cloud.*","com.longyou.comm.*"})
-@MapperScan({"com.longyou.comm.mapper","org.cloud.mybatis.dynamic"})
+
+@ComponentScan({"org.cloud.*", "com.longyou.comm.*"})
+@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic"})
 @ServletComponentScan({"org.cloud.filter"})
-@SpringBootApplication(exclude={ HibernateJpaAutoConfiguration.class})
+@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign","org.cloud.feign.service"})
+@EnableDiscoveryClient
+@EnableCircuitBreaker
+@EnableHystrix
+@SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CommonServiceApplication.class,args);
+        SpringApplication.run(CommonServiceApplication.class, args);
     }
 
     @Bean
@@ -83,8 +102,22 @@ public class CommonServiceApplication {
     @Bean
     @QuartzDataSource
     @ConfigurationProperties(prefix = "spring.datasource.quartz")
-    public DataSource quartzDataSource(){
+    public DataSource quartzDataSource() {
         return new DruidDataSource();
     }
+
+//    @Bean
+//    public Feign.Builder feignBuilder() {
+//        return Feign.builder().requestInterceptor(new RequestInterceptor() {
+//            @Override
+//            public void apply(RequestTemplate requestTemplate) {
+//                ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//                HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(attrs.getRequest(), new String[]{"authorization", "cookie"});
+//                Map<String, Collection<String>> headersMap = new HashMap<>();
+//                headersMap.putAll(headers);
+//                requestTemplate.headers(headersMap);
+//            }
+//        });
+//    }
 
 }

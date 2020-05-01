@@ -30,9 +30,9 @@ import java.util.List;
 @WebFilter(urlPatterns = {"/*"}, filterName = "SecurityFilter", description = "权限安全过滤器，用于获取用户等")
 public class SecurityFilter extends OncePerRequestFilter {
 
-//    //security的鉴权排除列表
-//    @Value("${spring.security.excludedAuthPages:}")
-//    private List<String> excludedAuthPages;
+    //    //security的鉴权排除列表
+    @Value("${spring.security.excludedAuthPages:}")
+    private List<String> excludedAuthPages;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -40,11 +40,28 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-        LoginUserDetails user = CommonUtil.single().getLoginUser(httpServletRequest);
+        RequestContextManager.single().setRequestContext(requestContext);
+
+        boolean isExcludeUri = false;
+        if (excludedAuthPages != null && excludedAuthPages.size() != 0) {
+            for (String exclude : excludedAuthPages) {
+                final PathMatcher pathMathcer = new AntPathMatcher();
+                if (pathMathcer.match(exclude, httpServletRequest.getRequestURI())) {
+                    isExcludeUri = true;
+                    break;
+                }
+            }
+        }
+
+        if (isExcludeUri) {
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            return;
+        }
+
+        LoginUserDetails user = CommonUtil.single().getLoginUser();
         if (user != null) {
             requestContext.setUser(user);
         }
-        RequestContextManager.single().setRequestContext(requestContext);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }

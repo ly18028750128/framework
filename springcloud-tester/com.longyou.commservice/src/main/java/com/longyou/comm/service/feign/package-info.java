@@ -1,0 +1,1 @@
+package com.longyou.comm.service.feign;
