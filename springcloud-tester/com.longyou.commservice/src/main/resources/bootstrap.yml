@@ -5,17 +5,26 @@ spring:
     upperCaseName: ${spring.application.group:}COMMON-SERVICE  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
-    config:
-      label: master
-      name: ${spring.application.noGroupName:}
-      profile: ${spring.profiles.active:dev}
-      uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
+#    config:
+#      label: master
+#      name: ${spring.application.noGroupName:}
+#      profile: ${spring.profiles.active:dev}
+#      uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
     consul:
-      enabled: true
+      enabled: ${system.config.consul.enabled:true}
+      host: ${system.config.consul.host:127.0.0.1}  # 开发环境可以覆盖consul
+      port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
       config:
-        enabled: false # 一定要这里关闭consul的配置中心
+        enabled: true
+        name: ${spring.application.noGroupName:}
+        format: yaml
+        data-key: data
+        watch:
+          enabled: true
+          delay: 1000
+          wait-time: 30
   security:
-    password_salt: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
+    #salt-password: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
     excludedAuthPages: ${sys.setting.default.exclude-url:},/userinfo/getUserByName,/system/resource/**
   profiles:
@@ -39,3 +48,7 @@ eureka:
       enabled: true
   instance:
     health-check-url-path: /monitor/health
+# 配置加解密根秘钥
+jasypt:
+  encryptor:
+    password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！

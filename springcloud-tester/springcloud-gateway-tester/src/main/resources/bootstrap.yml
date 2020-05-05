@@ -3,26 +3,35 @@ spring:
    # group: ''  #写在启动参数中，请用大写
     noGroupName: spring-gateway
     upperCaseName: ${spring.application.group:}SPRING-GATEWAY  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
-    name: ${spring.application.group:}${spring.application.noGroupName:}
+    name: ${spring.application.group:}${spring.application.noGroupName:}  #不区分大小写
   cloud:
-    config:
-      label: master
-      name: ${spring.application.noGroupName:}
-      profile: ${spring.profiles.active:dev}
-      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
+#    config:
+#      label: master
+#      name: ${spring.application.noGroupName:}
+#      profile: ${spring.profiles.active:dev}
+#      uri: ${sys.configcenter_url:http://172.16.1.51:8040/} #启动时应该加上sys.configcenter_url参数
     consul:
       enabled: true
+      host: ${system.config.consul.host:127.0.0.1}  # 开发环境可以覆盖consul
+      port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
       config:
-        enabled: false # 一定要这里关闭consul的配置中心
+        enabled: true
+        name: ${spring.application.noGroupName:}
+        format: yaml
+        data-key: data
+        watch:
+          enabled: true
+          delay: 1000
+          wait-time: 30
     gateway:
 #       routes:
 #         - id: commmonService
 #           url: lb://${spring.application.group:}\
-#      routes:
-#        - id: framework
-#          uri: http://localhost:20040/framework,http://localhost:20050/framework
-#          predicates:
-#            - Path=/framework/**
+      routes:
+        - id: framework
+          uri: http://localhost:20040/framework,http://localhost:20050/framework
+          predicates:
+            - Path=/framework/**
       discovery:
         locator:
           enabled: true   #直接从配置中心获取应用并转发
@@ -39,3 +48,7 @@ spring:
       password: fwedsflja123u120318412jlwejf
   main:
     allow-bean-definition-overriding: true
+# 配置加解密根秘钥
+jasypt:
+  encryptor:
+    password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！

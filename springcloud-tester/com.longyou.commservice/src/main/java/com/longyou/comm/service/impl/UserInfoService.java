@@ -140,7 +140,7 @@ public class UserInfoService implements IUserInfoService {
         LoginUserGetParamsDTO getParamsDTO = new LoginUserGetParamsDTO();
         getParamsDTO.setUserId(loginUserDetails.getId());
         LoginUserDetails user = userInfoMapper.getUserByNameForAuth(getParamsDTO);
-        final String salt = CommonUtil.single().getEnv("spring.security.password_salt", "");
+        final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
         if (MD5Encoder.encode(oldPassword, salt).equals(user.getPassword())) {
             user.setPassword(MD5Encoder.encode(newPassword, salt));
             userInfoMapper.updateLoginUserById(user);

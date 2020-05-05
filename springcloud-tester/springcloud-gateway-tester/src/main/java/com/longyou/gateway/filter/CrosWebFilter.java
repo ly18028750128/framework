@@ -4,6 +4,7 @@ import com.longyou.gateway.config.vo.CorsConfigVO;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.slf4j.Logger;
@@ -39,6 +40,9 @@ public class CrosWebFilter implements WebFilter {
     String applicationName;
 
     public final static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
+
+    @Autowired
+    IGatewayFeignClient gatewayFeignClient;
 
     @Override
     public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {

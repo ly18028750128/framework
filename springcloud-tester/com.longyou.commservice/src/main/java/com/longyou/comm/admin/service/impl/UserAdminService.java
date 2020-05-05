@@ -41,7 +41,7 @@ public class UserAdminService implements IUserAdminService {
         if (StringUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
-            final String salt= CommonUtil.single().getEnv("spring.security.password_salt","");
+            final String salt= CommonUtil.single().getEnv("spring.security.salt-password","");
             frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(),salt));
             result = frameUserDao.insertSelective(frameUser);
         } else {

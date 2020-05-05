@@ -28,7 +28,7 @@ import java.util.Map;
 @Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "weixin")
 public class WeixinLoginUserGetService implements LoginUserGetInterface {
 
-    @Value("${spring.security.password_salt:}")
+    @Value("${spring.security.salt-password:}")
     String salt;
 
     @Autowired

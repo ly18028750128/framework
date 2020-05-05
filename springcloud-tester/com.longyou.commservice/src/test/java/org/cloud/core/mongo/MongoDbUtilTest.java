@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CommonServiceApplication.class}, properties = "classpath:testYml.yml")
+@SpringBootTest(classes = {CommonServiceApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 //@ActiveProfiles(value = "dev")
 public class MongoDbUtilTest {
 

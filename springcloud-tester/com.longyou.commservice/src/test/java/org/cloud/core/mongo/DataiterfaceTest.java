@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {CommonServiceApplication.class}, properties = "classpath:testYml.yml")
+@SpringBootTest(classes = {CommonServiceApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class DataiterfaceTest {
 
     Logger logger = LoggerFactory.getLogger(DataiterfaceTest.class);

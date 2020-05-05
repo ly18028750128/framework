@@ -31,7 +31,7 @@ public class SpringContextUtil implements ApplicationContextAware {
         try {
             return (T) getApplicationContext().getBean(name);
         } catch (Throwable e) {
-            logger.info(name+"获取BEAN失败，"+e.getMessage());
+            logger.debug(name+","+name+"{}{}","获取BEAN失败，",e.getMessage());
             return null;
         }
     }
@@ -41,7 +41,7 @@ public class SpringContextUtil implements ApplicationContextAware {
         try {
             return getApplicationContext().getBean(clazz);
         } catch (Throwable e) {
-            logger.info(clazz.getName()+"获取BEAN失败，"+e.getMessage());
+            logger.debug(clazz.getName()+"{}{}","获取BEAN失败，",e.getMessage());
             return null;
         }
     }
@@ -51,7 +51,7 @@ public class SpringContextUtil implements ApplicationContextAware {
         try {
             return getApplicationContext().getBean(name, clazz);
         } catch (Throwable e) {
-            logger.info(name+","+clazz.getName()+"获取BEAN失败，"+e.getMessage());
+            logger.debug(name+","+clazz.getName()+"{}{}","获取BEAN失败，",e.getMessage());
             return null;
         }
     }

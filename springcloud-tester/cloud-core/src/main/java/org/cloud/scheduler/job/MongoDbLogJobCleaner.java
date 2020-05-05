@@ -24,9 +24,6 @@ import java.util.Date;
 public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
     Logger logger = LoggerFactory.getLogger(MongoDbLogJobCleaner.class);
 
-    @Autowired(required = false)
-    MongoTemplate mongoTemplate;
-
     @Override
     protected void init() {
         this.jobTime = "0 59 23 * * ? ";
@@ -34,6 +31,7 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        final MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         if (mongoTemplate != null) {
             Long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.mongodb.expire.days", "30"));  //默认保留30天的数据
             final String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();

@@ -2,37 +2,34 @@ package org.cloud.utils;
 
 
 import feign.FeignException;
-import org.apache.catalina.util.RequestUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.PostConstruct;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
 public final class CommonUtil {
     Logger logger = LoggerFactory.getLogger(CommonUtil.class);
-    IGatewayFeignClient gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
+    IGatewayFeignClient gatewayFeignClient;
+    Environment env;
 
     private CommonUtil() {
+        env = SpringContextUtil.getBean(Environment.class);
+        gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
     }
 
     private static class Holder {
         private Holder() {
         }
-
         private static CommonUtil instance = new CommonUtil();
     }
 
@@ -48,7 +45,9 @@ public final class CommonUtil {
      * @return
      */
     public String getEnv(String key, String defaultValue) {
-        Environment env = SpringContextUtil.getBean(Environment.class);
+        if (env == null) {
+            env = SpringContextUtil.getBean(Environment.class);
+        }
         return env.getProperty(key, defaultValue);
     }
 
@@ -64,9 +63,9 @@ public final class CommonUtil {
             }
             return gatewayFeignClient.getAuthentication();
         } catch (HttpClientErrorException.Unauthorized e) {
-            logger.info("rest请求无权限");
+            logger.debug("rest请求无权限");
         } catch (FeignException.Unauthorized e) {
-            logger.info("feign请求无权限");
+            logger.debug("feign请求无权限");
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
                 logger.error(e.getMessage(), e);

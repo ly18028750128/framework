@@ -15,7 +15,7 @@ public class MD5PasswordEncoder implements PasswordEncoder {
         return MD5Encoder.encode((String) charSequence);
     }
 
-    @Value("${spring.security.password_salt:}")
+    @Value("${spring.security.salt-password:}")
     String salt;
 
     @Autowired

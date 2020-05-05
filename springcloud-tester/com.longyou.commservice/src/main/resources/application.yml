@@ -11,3 +11,5 @@ pagehelper:
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+  config:
+    excludedAuthPages: /userinfo/getUserByName
