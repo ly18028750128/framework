@@ -267,8 +267,9 @@ public class QuartzService {
     public void runAJobNow(String jobName, String jobGroupName, Map jobData) throws Exception {
         JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
-        if (jobData != null)
+        if (jobData != null) {
             trigger.getJobDataMap().putAll(jobData);  // 将直接运行的参数传入进去
+        }
         scheduler.triggerJob(jobKey, trigger.getJobDataMap());
     }
 

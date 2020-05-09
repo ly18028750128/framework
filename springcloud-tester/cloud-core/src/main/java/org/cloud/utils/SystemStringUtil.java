@@ -1,5 +1,8 @@
 package org.cloud.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * 处理字符的方法
  */
@@ -82,6 +85,10 @@ public final class SystemStringUtil {
         return result.toString();
     }
 
+    public boolean isCamel(String value){
+       return !value.contains("_") && value.matches("^\\S+[A-Z]+\\S+$");  //不包含下划线并且包含最少一个大写字母
+    }
+
     public boolean isEmpty(String value){
         return value==null||"".equals(value);
     }
@@ -89,6 +96,43 @@ public final class SystemStringUtil {
 
     public boolean isNotEmpty(String value){
         return !isEmpty(value);
+    }
+
+
+    /**
+     * @Title: unicodeEncode
+     * @Description: unicode编码
+     * @param string
+     * @return
+     */
+    public static String unicodeEncode(String string) {
+        char[] utfBytes = string.toCharArray();
+        String unicodeBytes = "";
+        for (int i = 0; i < utfBytes.length; i++) {
+            String hexB = Integer.toHexString(utfBytes[i]);
+            if (hexB.length() <= 2) {
+                hexB = "00" + hexB;
+            }
+            unicodeBytes = unicodeBytes + "\\u" + hexB;
+        }
+        return unicodeBytes;
+    }
+
+    /**
+     * @Title: unicodeDecode
+     * @Description: unicode解码
+     * @param str
+     * @return
+     */
+    public String unicodeDecode(String str) {
+        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+        Matcher matcher = pattern.matcher(str);
+        char ch;
+        while (matcher.find()) {
+            ch = (char) Integer.parseInt(matcher.group(2), 16);
+            str = str.replace(matcher.group(1), ch + "");
+        }
+        return str;
     }
 
 }

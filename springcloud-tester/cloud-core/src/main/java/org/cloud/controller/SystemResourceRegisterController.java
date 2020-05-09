@@ -1,6 +1,7 @@
 package org.cloud.controller;
 
 import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
@@ -36,8 +37,8 @@ public class SystemResourceRegisterController {
     String appGroup;
 
     @RequestMapping("/register/all")
+    @SystemResource(path = "/system/resource",value = "/register/all",authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult register() throws Exception {
-
         if (!SystemStringUtil.single().isEmpty(microName)) {
             TMicroserviceRegister microserviceRegister = new TMicroserviceRegister();
             microserviceRegister.setMicroserviceName(microName);

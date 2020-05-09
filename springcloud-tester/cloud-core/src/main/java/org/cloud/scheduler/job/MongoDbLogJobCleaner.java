@@ -26,6 +26,8 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
 
     @Override
     protected void init() {
+        this.jobName = "定时清除mongodb中的系统日志";
+        jobData.put("description", "定时清除mongodb中的系统日志,默认每晚23:59分执行");
         this.jobTime = "0 59 23 * * ? ";
     }
 

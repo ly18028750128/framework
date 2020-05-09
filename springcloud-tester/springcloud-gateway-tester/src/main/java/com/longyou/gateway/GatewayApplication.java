@@ -1,6 +1,7 @@
 package com.longyou.gateway;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.cloud.aop.SystemResourceAspect;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
@@ -39,15 +40,16 @@ import java.util.List;
                 "org.cloud.core.redis",
                 "org.cloud.controller",
                 "org.cloud.scheduler",
-                "org.cloud.aop",
+//                "org.cloud.aop",    // 网关没有权限控制，权限控制都在各应用中处理
                 "org.cloud.mongo",
                 "org.cloud.config.rest"
         }
-//        ,
-//        exclude = {
+        ,
+        exclude = {
 //                MongoAutoConfiguration.class,
 //                GatewayAutoConfiguration.class,
-//                MongoDataAutoConfiguration.class}
+//                MongoDataAutoConfiguration.class,
+        }
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")

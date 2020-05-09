@@ -25,18 +25,23 @@ public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {
 
     @Override
     public V put(String key, V value) {
+        //
+        if (!key.contains("_") && key.matches("^\\S+[A-Z]+\\S+$")) {
+            return super.put(key, value);
+        }
+
         key = SystemStringUtil.single().camelName(key.toLowerCase());
 
         if (value instanceof Clob) {
             return super.put(key, (V) JdbcTypeConvertUtil.signle().ClobToString((Clob) value));
         }
 
-        if (value instanceof  java.sql.Date){
-            return super.put(key, (V)JdbcTypeConvertUtil.signle().dateToString((java.sql.Date)value));
+        if (value instanceof java.sql.Date) {
+            return super.put(key, (V) JdbcTypeConvertUtil.signle().dateToString((java.sql.Date) value));
         }
 
-        if (value instanceof  java.util.Date){
-          return super.put(key, (V) CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format((java.util.Date)value));
+        if (value instanceof java.util.Date) {
+            return super.put(key, (V) CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format((java.util.Date) value));
         }
 
         return super.put(key, value);
@@ -45,7 +50,5 @@ public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {
     public V putNoCamel(String key, V value) {
         return super.put(key, value);
     }
-
-
 
 }
