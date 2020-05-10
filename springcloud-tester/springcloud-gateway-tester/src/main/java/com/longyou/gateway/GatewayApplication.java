@@ -1,37 +1,36 @@
 package com.longyou.gateway;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.cloud.aop.SystemResourceAspect;
-import org.cloud.utils.CommonUtil;
+import feign.codec.Decoder;
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
 import org.cloud.utils.SpringContextUtil;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.convert.ApplicationConversionService;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.discovery.ReactiveDiscoveryClient;
-import org.springframework.cloud.gateway.config.GatewayAutoConfiguration;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
 import org.springframework.cloud.gateway.discovery.DiscoveryLocatorProperties;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
+import org.springframework.cloud.openfeign.support.SpringDecoder;
+import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.http.codec.support.DefaultServerCodecConfigurer;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication(

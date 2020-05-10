@@ -1,5 +1,6 @@
 package org.cloud.aop;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -25,12 +26,10 @@ import java.util.Set;
 
 @Aspect
 @Component
+@Slf4j
 public class SystemResourceAspect {
-    private Logger logger = LoggerFactory.getLogger(SystemResourceAspect.class);
-
     @Value("${spring.application.noGroupName:}")
     private String microName;
-
     @Autowired
     RedisUtil redisUtil;
 
@@ -62,9 +61,9 @@ public class SystemResourceAspect {
             // 校验功能权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
                 Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
-                final String functionSetStr = microName+CoreConstant._FUNCTION_SPLIT_STR+classResourceAnnotation.path()+CoreConstant._FUNCTION_SPLIT_STR+systemResource.value();
-                if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)){
-                    logger.error(loginUserDetails.getUsername() + ",正在非法的请求：" + functionSetStr);
+                final String functionSetStr = microName + CoreConstant._FUNCTION_SPLIT_STR + classResourceAnnotation.path() + CoreConstant._FUNCTION_SPLIT_STR + systemResource.value();
+                if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)) {
+                    log.error(loginUserDetails.getUsername() + ",正在非法的请求：" + functionSetStr);
                     throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
                 }
             }

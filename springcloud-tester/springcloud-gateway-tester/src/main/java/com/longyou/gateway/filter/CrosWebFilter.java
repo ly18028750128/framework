@@ -1,14 +1,14 @@
 package com.longyou.gateway.filter;
 
 import com.longyou.gateway.config.vo.CorsConfigVO;
+import lombok.extern.slf4j.Slf4j;
+import org.cloud.aop.SystemResourceAspect;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -17,21 +17,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
+import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+@Slf4j
 public class CrosWebFilter implements WebFilter {
-
-    Logger logger = LoggerFactory.getLogger(CrosWebFilter.class);
 
     @Autowired
     DiscoveryClient discoveryClient;
@@ -80,33 +81,27 @@ public class CrosWebFilter implements WebFilter {
         filterList.add("/auth/login");
         filterList.add("/auth/logout");
         filterList.add("/monitor/**");
+        filterList.add("/resource/register/all");
+        filterList.add("/quartz/job/all");
+
         if (CommonUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
-
-        RequestContext requestContext = new RequestContext();
-        HttpHeaders headers = new HttpHeaders();
-        if (swe.getRequest().getHeaders().getFirst("cookie") != null) {
-            headers.add("cookie", swe.getRequest().getHeaders().getFirst("cookie"));
-        }
-        if (swe.getRequest().getHeaders().getFirst("authorization") != null) {
-            headers.add("authorization", swe.getRequest().getHeaders().getFirst("authorization"));
-        }
-        RequestContextManager.single().setRequestContext(requestContext);
-        if (headers.size() > 0) {
-            try {
-                final String userinfoUrl = CommonUtil.single().getEnv("system.userinfo.get_url", "http://SPRING-GATEWAY/user/info/authentication");
-                ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userinfoUrl, HttpMethod.GET, swe.getRequest().getHeaders(), LoginUserDetails.class);
-                LoginUserDetails user = responseEntity.getBody();
-                if (user != null) {
-                    requestContext.setUser(user);
-                }
-                RequestContextManager.single().setRequestContext(requestContext);
-            } catch (Exception e) {
-                logger.error("获取用户信息出错，" + e.getMessage());
+        final RequestContext requestContext = new RequestContext();
+        final AtomicReference<LoginUserDetails> user = new AtomicReference<>();
+        return swe.getSession().doOnNext(webSession -> {
+            try{
+                SecurityContextImpl securityContext = webSession.getAttribute("SPRING_SECURITY_CONTEXT");
+                user.set((LoginUserDetails) securityContext.getAuthentication().getPrincipal());
+            }catch (Exception e){
+             log.error("{}",e);
             }
-        }
-        return wfc.filter(swe);
+        }).then(Mono.defer(() -> {
+            requestContext.setUser(user.get());
+            RequestContextManager.single().setRequestContext(requestContext);
+            serverWebExchangeThreadLocal.set(swe);
+            return wfc.filter(swe);
+        }));
     }
 
     @Autowired

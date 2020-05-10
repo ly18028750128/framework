@@ -30,7 +30,7 @@ public class UserInfoController {
     MicroAppConfigList microAppConfigList;
 
     @RequestMapping(value = "/getUserByName", method = RequestMethod.POST)
-    public LoginUserDetails getUserByName(HttpServletRequest request, @RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
+    public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = null;
         if (loginUserGetParamsDTO.getMicroAppIndex() == null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理
             Map<String, Object> userQueryParams = new HashMap<>();

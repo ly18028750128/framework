@@ -34,7 +34,6 @@ public final class HttpServletUtil {
         if (request == null) {
             request = RequestContextManager.single().getRequestContext().getHttpServletRequest();
         }
-
         return request;
     }
 

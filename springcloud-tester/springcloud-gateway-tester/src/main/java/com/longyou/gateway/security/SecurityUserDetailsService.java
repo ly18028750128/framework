@@ -2,6 +2,7 @@ package com.longyou.gateway.security;
 
 import com.alibaba.fastjson.JSON;
 import com.longyou.gateway.filter.CrosWebFilter;
+import com.longyou.gateway.service.feign.IGetUserInfoFeignClient;
 import org.apache.commons.lang.StringUtils;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
@@ -81,8 +82,8 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     @Autowired
     RedisUtil redisUtil;
 
-    @Value("${system.userinfo.query_user_url:http://COMMON-SERVICE/userinfo/getUserByName}")
-    private String userInfoUrl;
+    @Autowired
+    IGetUserInfoFeignClient getUserInfoFeignClient;
 
     private LoginUserDetails getUserByName(LoginUserGetParamsDTO loginUserGetParamsDTO) {
         LoginUserDetails loginUserDetails = null;
@@ -96,10 +97,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         if (token != null && !"0".equals(token) && token.length() > 15) {
             return redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode(token));
         } else if (loginUserDetails == null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-            ResponseEntity<LoginUserDetails> responseEntity = RestTemplateUtil.single().getResponse(userInfoUrl, HttpMethod.POST, JSON.toJSONString(loginUserGetParamsDTO), headers, LoginUserDetails.class);
-            return responseEntity.getBody();
+            return getUserInfoFeignClient.getUserInfo(loginUserGetParamsDTO);
         }
         return null;
     }
