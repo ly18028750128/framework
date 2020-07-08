@@ -12,7 +12,7 @@ spring:
 #      uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
     consul:
       enabled: ${system.config.consul.enabled:true}
-      host: ${system.config.consul.host:127.0.0.1}  # 开发环境可以覆盖consul
+      host: ${system.config.consul.host:192.168.74.128}  # 开发环境可以覆盖consul
       port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
       config:
         enabled: true

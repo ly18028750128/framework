@@ -1,10 +1,11 @@
 package org.cloud.utils;
 
+
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.model.TSystemDicItem;
 import org.cloud.model.TSystemDicMaster;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

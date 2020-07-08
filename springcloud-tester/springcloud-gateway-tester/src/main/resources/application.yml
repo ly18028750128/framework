@@ -46,3 +46,7 @@ spring:
       discovery:
         locator:
           enabled: true
+  data:
+    mongodb:
+      option:
+        server-selection-timeout: 10000

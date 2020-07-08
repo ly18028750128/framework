@@ -9,6 +9,7 @@ import org.cloud.mongo.*;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.MongoDbGridFsVO;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +25,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;

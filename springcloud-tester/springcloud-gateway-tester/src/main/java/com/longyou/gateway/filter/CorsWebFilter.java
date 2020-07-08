@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-public class CrosWebFilter implements WebFilter {
+public class CorsWebFilter implements WebFilter {
 
     @Autowired
     DiscoveryClient discoveryClient;

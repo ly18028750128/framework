@@ -76,17 +76,10 @@ public class CommonServiceApplication {
         return pageHelper;
     }
 
-//    @Bean
-//    @LoadBalanced
-//    public RestTemplate restTemplate() {
-//        return new RestTemplate();
-//    }
-
     @Bean
     public SpringContextUtil springContextUtil() {
         return new SpringContextUtil();
     }
-
 
     @Primary
     @Bean
@@ -94,7 +87,6 @@ public class CommonServiceApplication {
     public DruidDataSource druidDataSource() {
         return new DruidDataSource();
     }
-
 
     /**
      * 配置Quartz独立数据源的配置
@@ -105,19 +97,5 @@ public class CommonServiceApplication {
     public DataSource quartzDataSource() {
         return new DruidDataSource();
     }
-
-//    @Bean
-//    public Feign.Builder feignBuilder() {
-//        return Feign.builder().requestInterceptor(new RequestInterceptor() {
-//            @Override
-//            public void apply(RequestTemplate requestTemplate) {
-//                ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//                HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(attrs.getRequest(), new String[]{"authorization", "cookie"});
-//                Map<String, Collection<String>> headersMap = new HashMap<>();
-//                headersMap.putAll(headers);
-//                requestTemplate.headers(headersMap);
-//            }
-//        });
-//    }
 
 }

@@ -240,4 +240,6 @@ public final class CoreConstant {
             return this.name;
         }
     }
+
+    public final static String _VALIDATE_CODE_CACHE_KEY_PREFIX="validate:code:values:";
 }

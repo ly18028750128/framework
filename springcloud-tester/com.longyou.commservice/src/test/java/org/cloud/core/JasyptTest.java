@@ -31,6 +31,11 @@ public class JasyptTest {
                 , "heyichenshijuecePostgis@)20", "heyichenshijueceGeoserver@)20", "想暴力破解没门",
                 "admin", "root", "postgres", "2f7b0f31bf2d9017e78a2ab78604cb0e"
         };
+
+//        String[] yuanWenArr = {"1qaz@WSX",
+//                "admin", "root", "postgres", "2f7b0f31bf2d9017e78a2ab78604cb0e"
+//        };
+
         for (String yuanWen : yuanWenArr) {
             String encryptStr = stringEncryptor.encrypt(yuanWen);
             log.info("{}={}", yuanWen, encryptStr);

@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
+
 import java.io.IOException;
 
 public class XmlUtil {
