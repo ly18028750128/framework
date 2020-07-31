@@ -1,11 +1,13 @@
 package org.cloud.model;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * t_frame_role_menu
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameRoleMenu implements Serializable {
@@ -23,7 +25,7 @@ public class TFrameRoleMenu implements Serializable {
 
     private String roleCode;
 
-    private TFrameMenu frameMenu ;
+    private TFrameMenu frameMenu;
 
     private static final long serialVersionUID = -4232949552934901485L;
 }

@@ -203,9 +203,9 @@ public final class ClusterSettings {
          * Sets the local threshold.
          *
          * @param localThreshold the acceptable latency difference, in milliseconds, which must be &gt;= 0
-         * @param timeUnit the time unit
-         * @throws IllegalArgumentException if {@code localThreshold < 0}
+         * @param timeUnit       the time unit
          * @return this
+         * @throws IllegalArgumentException if {@code localThreshold < 0}
          * @since 3.7
          */
         public Builder localThreshold(final long localThreshold, final TimeUnit timeUnit) {
@@ -234,7 +234,7 @@ public final class ClusterSettings {
          * indefinitely.</p>
          *
          * @param serverSelectionTimeout the timeout
-         * @param timeUnit the time unit
+         * @param timeUnit               the time unit
          * @return this
          */
         public Builder serverSelectionTimeout(final long serverSelectionTimeout, final TimeUnit timeUnit) {
@@ -265,8 +265,7 @@ public final class ClusterSettings {
             if (connectionString.isSrvProtocol()) {
                 mode(ClusterConnectionMode.MULTIPLE);
                 srvHost(connectionString.getHosts().get(0));
-            }
-            else if (connectionString.getHosts().size() == 1 && connectionString.getRequiredReplicaSetName() == null) {
+            } else if (connectionString.getHosts().size() == 1 && connectionString.getRequiredReplicaSetName() == null) {
                 mode(ClusterConnectionMode.SINGLE)
                         .hosts(singletonList(createServerAddress(connectionString.getHosts().get(0))));
             } else {
@@ -320,6 +319,7 @@ public final class ClusterSettings {
 
     /**
      * Gets the host name from which to lookup SRV record for the seed list
+     *
      * @return the SRV host, or null if none specified
      * @since 3.10
      */
@@ -421,8 +421,8 @@ public final class ClusterSettings {
      *
      * @param timeUnit the time unit
      * @return the local threshold in the given timeunit.
-     * @since 3.7
      * @mongodb.driver.manual reference/program/mongos/#cmdoption--localThreshold Local Threshold
+     * @since 3.7
      */
     public long getLocalThreshold(final TimeUnit timeUnit) {
         return timeUnit.convert(localThresholdMS, MILLISECONDS);

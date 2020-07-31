@@ -11,14 +11,8 @@ import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/userinfo")
@@ -32,16 +26,19 @@ public class UserInfoController {
     @RequestMapping(value = "/getUserByName", method = RequestMethod.POST)
     public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = null;
-        if (loginUserGetParamsDTO.getMicroAppIndex() == null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理
-            Map<String, Object> userQueryParams = new HashMap<>();
+        LoginUserGetInterface loginUserGetInterface = null;
+        if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理
+            MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
+            loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + microAppConfig.getType(), LoginUserGetInterface.class);
+            loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
+        } else if (loginUserGetParamsDTO.getLoginType() != null) {
+            loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + loginUserGetParamsDTO.getLoginType(), LoginUserGetInterface.class);
+            loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
+        } else {
             loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
             if (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty()) {
                 loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
             }
-        } else {
-            MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
-            LoginUserGetInterface loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + microAppConfig.getType(), LoginUserGetInterface.class);
-            loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
         }
         return loginUserDetails;
     }
@@ -53,6 +50,5 @@ public class UserInfoController {
         responseResult.setData(userInfoService.updatePassword(oldPassword, newPassword));
         return responseResult;
     }
-
 
 }

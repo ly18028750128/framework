@@ -6,14 +6,12 @@ import com.longyou.comm.mapper.TFrameUserRoleDao;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.model.TFrameRoleDataInterface;
 import org.cloud.model.TFrameUser;
 import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -41,8 +39,8 @@ public class UserAdminService implements IUserAdminService {
         if (StringUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
-            final String salt= CommonUtil.single().getEnv("spring.security.salt-password","");
-            frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(),salt));
+            final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+            frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(), salt));
             result = frameUserDao.insertSelective(frameUser);
         } else {
             result = frameUserDao.updateByPrimaryKeySelective(frameUser);

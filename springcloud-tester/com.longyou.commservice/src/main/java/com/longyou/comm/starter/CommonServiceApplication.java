@@ -1,19 +1,9 @@
 package com.longyou.comm.starter;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.PageHelper;
-import feign.Feign;
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.cloud.mybatis.dynamic.DynamicSqlMapper;
-import org.cloud.utils.CommonUtil;
-import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.annotation.MapperScans;
-import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
@@ -27,21 +17,14 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 @ComponentScan({"org.cloud.*", "com.longyou.comm.*"})
 @MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign","org.cloud.feign.service"})
+@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix

@@ -27,7 +27,7 @@ public class RequestContext {
 
     private HttpServletResponse httpServletResponse;
 
-    private Map<String,Object> properties=new ConcurrentHashMap<>();
+    private Map<String, Object> properties = new ConcurrentHashMap<>();
 
     private List<Role> roles;
 
@@ -55,12 +55,12 @@ public class RequestContext {
         this.httpServletResponse = httpServletResponse;
     }
 
-    public Map<String,Object> getProperties() {
+    public Map<String, Object> getProperties() {
         return this.properties;
     }
 
-    public void setProperty(String key,Object value) {
-        this.properties.put(key,value);
+    public void setProperty(String key, Object value) {
+        this.properties.put(key, value);
     }
 
     public List<Role> getRoles() {

@@ -1,8 +1,6 @@
 package org.cloud.core.mongo;
 
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.starter.CommonServiceApplication;
 import org.cloud.mybatis.dynamic.DynamicSqlUtil;
@@ -53,33 +51,31 @@ public class DataiterfaceTest {
         PageInfo<?> result = null;
         Map<String, Object> params = new HashMap<>();
         dynamicSqlQueryParamsVO.setParams(params);
-        logger.info("1:"+ JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 2, 2, dynamicSqlQueryParamsVO)));
-        logger.info("1:listData:"+ JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
-        logger.info("1:"+JSON.toJSONString(dynamicSqlQueryParamsVO));
-        logger.info("1:"+DynamicSqlUtil.single().localSql.get());
+        logger.info("1:" + JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 2, 2, dynamicSqlQueryParamsVO)));
+        logger.info("1:listData:" + JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
+        logger.info("1:" + JSON.toJSONString(dynamicSqlQueryParamsVO));
+        logger.info("1:" + DynamicSqlUtil.single().localSql.get());
 
-        params.put("userName","admin");
+        params.put("userName", "admin");
         dynamicSqlQueryParamsVO.setParams(params);
         dynamicSqlQueryParamsVO.setParams(params);
-        logger.info("2:"+ JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
-        logger.info("2:listData:"+ JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
-        logger.info("2:"+JSON.toJSONString(dynamicSqlQueryParamsVO));
-        logger.info("2:"+DynamicSqlUtil.single().localSql.get());
+        logger.info("2:" + JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
+        logger.info("2:listData:" + JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
+        logger.info("2:" + JSON.toJSONString(dynamicSqlQueryParamsVO));
+        logger.info("2:" + DynamicSqlUtil.single().localSql.get());
 
-        params.put("password","3e2345598780429e4758006e801f4b88");
-        logger.info("3:"+ JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
-        logger.info("3:listData:"+ JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
-        logger.info("3:"+JSON.toJSONString(dynamicSqlQueryParamsVO));
-        logger.info("3:"+DynamicSqlUtil.single().localSql.get());
-
-
-        params.put("sexList",new String[]{"F","M"});
-        logger.info("5:"+ JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
-        logger.info("5:listData:"+ JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
-        logger.info("5:"+JSON.toJSONString(dynamicSqlQueryParamsVO));
-        logger.info("5:"+DynamicSqlUtil.single().localSql.get());
+        params.put("password", "3e2345598780429e4758006e801f4b88");
+        logger.info("3:" + JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
+        logger.info("3:listData:" + JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
+        logger.info("3:" + JSON.toJSONString(dynamicSqlQueryParamsVO));
+        logger.info("3:" + DynamicSqlUtil.single().localSql.get());
 
 
+        params.put("sexList", new String[]{"F", "M"});
+        logger.info("5:" + JSON.toJSONString(DynamicSqlUtil.single().pagedData("5e697fe30eccd006879fab6b", 1, 2, dynamicSqlQueryParamsVO)));
+        logger.info("5:listData:" + JSON.toJSONString(DynamicSqlUtil.single().listData("5e697fe30eccd006879fab6b", dynamicSqlQueryParamsVO)));
+        logger.info("5:" + JSON.toJSONString(dynamicSqlQueryParamsVO));
+        logger.info("5:" + DynamicSqlUtil.single().localSql.get());
 
 
     }

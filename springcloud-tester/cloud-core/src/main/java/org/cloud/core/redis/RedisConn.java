@@ -5,114 +5,95 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "spring.redis") // prefix+参数名 对应于配置文件config.properties中的spring.redis.*信息
-public class RedisConn
-{
+public class RedisConn {
     private String host;
-    
+
     private int port;
-    
+
     private int timeout;
-    
+
     private int database;
-    
+
     private String password;
-    
+
     private int maxActive;
-    
+
     private int maxWait;
-    
+
     private int maxIdle;
-    
+
     private int minIdle;
-    
-    public String getHost()
-    {
+
+    public String getHost() {
         return host;
     }
-    
-    public void setHost(String host)
-    {
+
+    public void setHost(String host) {
         this.host = host;
     }
-    
-    public int getPort()
-    {
+
+    public int getPort() {
         return port;
     }
-    
-    public void setPort(int port)
-    {
+
+    public void setPort(int port) {
         this.port = port;
     }
-    
-    public int getTimeout()
-    {
+
+    public int getTimeout() {
         return timeout;
     }
-    
-    public void setTimeout(int timeout)
-    {
+
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
-    
-    public int getDatabase()
-    {
+
+    public int getDatabase() {
         return database;
     }
-    
-    public void setDatabase(int database)
-    {
+
+    public void setDatabase(int database) {
         this.database = database;
     }
-    
-    public String getPassword()
-    {
+
+    public String getPassword() {
         return password;
     }
-    
-    public void setPassword(String password)
-    {
+
+    public void setPassword(String password) {
         this.password = password;
     }
-    
-    public int getMaxActive()
-    {
+
+    public int getMaxActive() {
         return maxActive;
     }
-    
-    public void setMaxActive(int maxActive)
-    {
+
+    public void setMaxActive(int maxActive) {
         this.maxActive = maxActive;
     }
-    
-    public int getMaxWait()
-    {
+
+    public int getMaxWait() {
         return maxWait;
     }
-    
-    public void setMaxWait(int maxWait)
-    {
+
+    public void setMaxWait(int maxWait) {
         this.maxWait = maxWait;
     }
-    
-    public int getMaxIdle()
-    {
+
+    public int getMaxIdle() {
         return maxIdle;
     }
-    
-    public void setMaxIdle(int maxIdle)
-    {
+
+    public void setMaxIdle(int maxIdle) {
         this.maxIdle = maxIdle;
     }
-    
-    public int getMinIdle()
-    {
+
+    public int getMinIdle() {
         return minIdle;
     }
-    
-    public void setMinIdle(int minIdle)
-    {
+
+    public void setMinIdle(int minIdle) {
         this.minIdle = minIdle;
     }
-    
+
 }

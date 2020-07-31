@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.cloud.model.TFrameRole;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -6,11 +6,7 @@ import org.cloud.utils.SystemStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.sql.Clob;
-import java.sql.SQLException;
 import java.util.LinkedHashMap;
 
 public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 
 public class SpringContextUtil implements ApplicationContextAware {
@@ -31,7 +30,7 @@ public class SpringContextUtil implements ApplicationContextAware {
         try {
             return (T) getApplicationContext().getBean(name);
         } catch (Throwable e) {
-            logger.debug(name+","+name+"{}{}","获取BEAN失败，",e.getMessage());
+            logger.debug(name + "," + name + "{}{}", "获取BEAN失败，", e.getMessage());
             return null;
         }
     }
@@ -43,15 +42,16 @@ public class SpringContextUtil implements ApplicationContextAware {
         try {
             return getApplicationContext().getBean(clazz);
         } catch (Throwable e) {
-            logger.debug(clazz.getName()+"{}{}","获取BEAN失败，",e.getMessage());
+            logger.debug(clazz.getName() + "{}{}", "获取BEAN失败，", e.getMessage());
             return null;
         }
     }
+
     public static <T> T getBean(String name, Class<T> clazz) {
         try {
             return getApplicationContext().getBean(name, clazz);
         } catch (Throwable e) {
-            logger.debug(name+","+clazz.getName()+"{}{}","获取BEAN失败，",e.getMessage());
+            logger.debug(name + "," + clazz.getName() + "{}{}", "获取BEAN失败，", e.getMessage());
             return null;
         }
     }

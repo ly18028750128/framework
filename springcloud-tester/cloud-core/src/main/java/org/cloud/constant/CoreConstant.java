@@ -3,12 +3,13 @@ package org.cloud.constant;
 import java.text.SimpleDateFormat;
 
 public final class CoreConstant {
+    public final static String RSA_KEYS_REDIS_KEY = "SYSTEM:CONFIG:RSA_KEYS";
 
     private CoreConstant() {
     }
 
     public static enum DateTimeFormat {
-        FULLDATE("yyyy-MM-dd"), FULLDATETIME("yyyy-MM-dd HH:mm:ss"), MonthAndDay("MM-dd"),ISODATE("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        FULLDATE("yyyy-MM-dd"), FULLDATETIME("yyyy-MM-dd HH:mm:ss"), MonthAndDay("MM-dd"), ISODATE("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         DateTimeFormat(String value) {
             this.value = value;
@@ -241,5 +242,5 @@ public final class CoreConstant {
         }
     }
 
-    public final static String _VALIDATE_CODE_CACHE_KEY_PREFIX="validate:code:values:";
+    public final static String _VALIDATE_CODE_CACHE_KEY_PREFIX = "validate:code:values:";
 }

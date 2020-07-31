@@ -1,13 +1,10 @@
 package org.cloud.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.cloud.deserializer.GrantedAuthorityDeserializer;
-import org.cloud.deserializer.GrantedFrameRoleDeserializer;
-import org.cloud.model.*;
+import org.cloud.model.TFrameMenu;
+import org.cloud.model.TFrameRole;
 import org.cloud.vo.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

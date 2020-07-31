@@ -7,6 +7,7 @@ import org.cloud.utils.http.HttpRequestParams;
  */
 public interface IOuterApiHandler {
 
-    public <T> T doBefore(final String url,final HttpRequestParams params,Object... otherParms) throws Exception;
-    public <T> T doAfter(final String url,final HttpRequestParams params,Object... result) throws Exception;
+    public <T> T doBefore(final String url, final HttpRequestParams params, Object... otherParms) throws Exception;
+
+    public <T> T doAfter(final String url, final HttpRequestParams params, Object... result) throws Exception;
 }

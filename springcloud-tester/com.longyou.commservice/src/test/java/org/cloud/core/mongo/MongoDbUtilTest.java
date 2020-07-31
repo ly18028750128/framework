@@ -1,19 +1,14 @@
 package org.cloud.core.mongo;
 
 import com.longyou.comm.starter.CommonServiceApplication;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import org.bson.BasicBSONObject;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.cloud.constant.CoreConstant;
 import org.cloud.mongo.AppLogger;
 import org.cloud.mongo.DataInterFaceVO;
 import org.cloud.mongo.MongoEnumVO;
-import org.cloud.mongo.MongoQueryParam;
-import org.cloud.utils.mongo.MongoDBUtil;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -85,7 +77,7 @@ public class MongoDbUtilTest {
         Query query = new Query(Criteria.where("_id").is(new ObjectId("5e42898437a34810e4a8c971")));
         Update update = new Update();
         update.set("updateDate", new Date());
-        mongoTemplate.updateMulti(query, update,  "LONGYOUSPRING-GATEWAY_logbackLogCollection");
+        mongoTemplate.updateMulti(query, update, "LONGYOUSPRING-GATEWAY_logbackLogCollection");
     }
 
     @Test
@@ -98,41 +90,42 @@ public class MongoDbUtilTest {
 
     @Autowired
     GridFsTemplate gridFsTemplate;
+
     @Test
-    public void saveFile() throws Exception{
-        ObjectId objectId = gridFsTemplate.store(new FileInputStream("D:\\messages.xml"),"messageName");
+    public void saveFile() throws Exception {
+        ObjectId objectId = gridFsTemplate.store(new FileInputStream("D:\\messages.xml"), "messageName");
         GridFSFile gridFile = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(objectId)));
         gridFile = gridFsTemplate.findOne(Query.query(Criteria.where("filename").is("messageName")));
         gridFile = null;
     }
 
     @Test
-    public void saveInterfaceVO() throws Exception{
+    public void saveInterfaceVO() throws Exception {
         List<DataInterFaceVO> dataInterFaceVOS = new ArrayList<>();
-        for(int i=0;i<126;i++){
+        for (int i = 0; i < 126; i++) {
             DataInterFaceVO dataInterFaceVO = new DataInterFaceVO();
-            Long value = Double.valueOf(Math.random()*1000000000).longValue();
-            if(value%3 == 0){
+            Long value = Double.valueOf(Math.random() * 1000000000).longValue();
+            if (value % 3 == 0) {
                 dataInterFaceVO.setInterfaceType("rest");
                 dataInterFaceVO.setAuthMethod(CoreConstant.AuthMethod.NOAUTH);
                 dataInterFaceVO.setMicroServiceName("XGSIXTEEN");
-            }else if(value%3 == 1){
+            } else if (value % 3 == 1) {
                 dataInterFaceVO.setInterfaceType("sql");
                 dataInterFaceVO.setAuthMethod(CoreConstant.AuthMethod.ALLSYSTEMUSER);
                 dataInterFaceVO.setMicroServiceName("General");
-            }else if(value%3 == 2){
+            } else if (value % 3 == 2) {
                 dataInterFaceVO.setInterfaceType("sql");
                 dataInterFaceVO.setAuthMethod(CoreConstant.AuthMethod.BYUSERPERMISSION);
                 dataInterFaceVO.setMicroServiceName("HTCLOUD-PAYCENTER");
             }
 
-            dataInterFaceVO.setInterfaceName("数据接口"+value);
-            dataInterFaceVO.setUrlOrSqlContent("select * from table_"+i);
-            dataInterFaceVO.addParam("col1",MongoEnumVO.DataType.String,"参数1");
-            dataInterFaceVO.addParam("col2",MongoEnumVO.DataType.Long,"参数2");
-            dataInterFaceVO.addParam("col6",MongoEnumVO.DataType.Double,"参数3");
-            dataInterFaceVO.addParam("col6",MongoEnumVO.DataType.Date,"日期");
-            dataInterFaceVO.addParam("col7",MongoEnumVO.DataType.Date,"日期");
+            dataInterFaceVO.setInterfaceName("数据接口" + value);
+            dataInterFaceVO.setUrlOrSqlContent("select * from table_" + i);
+            dataInterFaceVO.addParam("col1", MongoEnumVO.DataType.String, "参数1");
+            dataInterFaceVO.addParam("col2", MongoEnumVO.DataType.Long, "参数2");
+            dataInterFaceVO.addParam("col6", MongoEnumVO.DataType.Double, "参数3");
+            dataInterFaceVO.addParam("col6", MongoEnumVO.DataType.Date, "日期");
+            dataInterFaceVO.addParam("col7", MongoEnumVO.DataType.Date, "日期");
             dataInterFaceVO.setCreatedOrUpdateTime(new Date());
             dataInterFaceVO.setCreatedOrUpdateBy(1L);
             dataInterFaceVO.setCreatedOrUpdateUserName("admin");

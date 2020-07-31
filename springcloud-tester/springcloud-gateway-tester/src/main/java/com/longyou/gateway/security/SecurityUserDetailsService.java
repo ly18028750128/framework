@@ -1,20 +1,22 @@
 package com.longyou.gateway.security;
 
 import com.longyou.gateway.contants.LoginFormField;
+import com.longyou.gateway.exception.ValidateCodeAuthFailException;
 import com.longyou.gateway.filter.CorsWebFilter;
 import com.longyou.gateway.service.feign.IGetUserInfoFeignClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.exception.BusinessException;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,8 +39,11 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     @Autowired
     RedisUtil redisUtil;
 
+    @Value("${system.validate.check:true}")  // 校验码开关，开发环境时可以关闭
+            Boolean isValidateCode;
+
     @Override
-    public Mono<UserDetails> findByUsername(String username) {
+    public Mono<UserDetails> findByUsername(final String username) {
         final LoginUserGetParamsDTO loginUserGetParamsDTO = new LoginUserGetParamsDTO();
         final ServerWebExchange swe = CorsWebFilter.serverWebExchangeThreadLocal.get();
         ServerHttpRequest request = swe.getRequest();
@@ -46,50 +51,79 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         final String userType = request.getHeaders().getFirst(CoreConstant._USER_TYPE_KEY);
 
         if (userType != null) {
-            loginUserGetParamsDTO.getParams().put(CoreConstant._USER_TYPE_KEY, userType);
+            loginUserGetParamsDTO.getParamMap().put(CoreConstant._USER_TYPE_KEY, userType);
         } else {
-            loginUserGetParamsDTO.getParams().remove(CoreConstant._USER_TYPE_KEY);
+            loginUserGetParamsDTO.getParamMap().remove(CoreConstant._USER_TYPE_KEY);
         }
         // 小程序登录后会获取用户名，并进行校验！
 
         final MultiValueMap<String, String> formData = CollectionUtils.toMultiValueMap(new HashMap<>());
-        return swe.getFormData().doOnNext(
-                multiValueMap -> {
-                    formData.putAll(multiValueMap);
-                })
-                .then(Mono.defer(
-                        () -> {
-                            final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field());
-                            if (CollectionUtil.single().isNotEmpty(validateRedisKey)) {
-                                final String validateCode = redisUtil.get(validateRedisKey);
-                                final String userValidateCode = formData.getFirst(LoginFormField.VALIDATE_CODE.field());
-                                if (CollectionUtil.single().isEmpty(validateCode)) {
-                                    return Mono.error(new BusinessException("验证码错误"));
-                                } else if (!validateCode.equalsIgnoreCase(userValidateCode)) {
-                                    return Mono.error(new BusinessException("验证码错误"));
-                                }
-                            }
 
-                            if (microAppindex != null) {
-                                final String weixinLoginCode = formData.getFirst(LoginFormField.PASSWORD.field());
-                                loginUserGetParamsDTO.setUserName(weixinLoginCode);
-                                loginUserGetParamsDTO.getParams().put(CoreConstant._MICRO_LOGIN_CODE_KEY, weixinLoginCode);
-                                loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
-                                final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
-                                User.withUserDetails(userDetails).build();
-                                return Mono.just(userDetails);
-                            } else {
-                                loginUserGetParamsDTO.setUserName(username);
-                                final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
-                                if (userDetails != null && StringUtils.equals(userDetails.getUsername(), username)) {
+        if (swe.getRequest().getURI().toString().endsWith("/auth/login")) {
+            return swe.getFormData().doOnNext(
+                    multiValueMap -> {
+                        formData.putAll(multiValueMap);
+                    })
+                    .then(Mono.defer(
+                            () -> {
+                                if (CollectionUtil.single().isEmpty(formData.getFirst("microServiceName"))) {
+                                    throw new AuthenticationServiceException("microServiceName不能为空！");
+                                }
+                                if (CollectionUtil.single().isEmpty(formData.getFirst(LoginFormField.PASSWORD.field()))) {
+                                    throw new AuthenticationServiceException(LoginFormField.PASSWORD.field() + "不能为空！");
+                                }
+                                loginUserGetParamsDTO.setMicroServiceName(formData.getFirst("microServiceName"));
+                                loginUserGetParamsDTO.setPassword(formData.getFirst(LoginFormField.PASSWORD.field()));
+                                if (microAppindex != null) {
+                                    final String weixinLoginCode = formData.getFirst(LoginFormField.PASSWORD.field());
+                                    loginUserGetParamsDTO.setUserName(weixinLoginCode);
+                                    loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
+                                    final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
                                     User.withUserDetails(userDetails).build();
                                     return Mono.just(userDetails);
                                 } else {
-                                    return Mono.error(new UsernameNotFoundException("User Not Found"));
+                                    if (formData.getFirst("loginType") != null) {
+                                        loginUserGetParamsDTO.setLoginType(formData.getFirst("loginType"));
+                                    } else {
+                                        // 未定义登录方式，默认为后台页面登录
+                                        if (isValidateCode && (!checkValidateCode(swe, formData))) {
+                                            return Mono.error(new ValidateCodeAuthFailException("验证码错误"));
+                                        }
+                                    }
+                                    loginUserGetParamsDTO.setUserName(username);
+                                    final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+                                    if (userDetails != null) { // && StringUtils.equals(userDetails.getUsername(), username)
+                                        User.withUserDetails(userDetails).build();
+                                        return Mono.just(userDetails);
+                                    } else {
+                                        return Mono.error(new UsernameNotFoundException("User Not Found"));
+                                    }
                                 }
                             }
-                        }
-                ));
+                    ));
+        } else {
+            loginUserGetParamsDTO.setUserName(username);
+            final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+            return Mono.just(userDetails);
+        }
+
+
+    }
+
+    private boolean checkValidateCode(ServerWebExchange swe, MultiValueMap<String, String> formData) {
+        final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field());
+        final String validateCode = redisUtil.get(validateRedisKey);
+        final String userValidateCode = formData.getFirst(LoginFormField.VALIDATE_CODE.field());
+        if (CollectionUtil.single().isEmpty(validateCode)) {
+            swe.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+            // @todo 这里需要自定义异常，继承AuthenticationException
+            return false;
+        } else if (!validateCode.equalsIgnoreCase(userValidateCode)) {
+            swe.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+            return false;
+        }
+        redisUtil.remove(validateRedisKey);
+        return true;
     }
 
     @Autowired

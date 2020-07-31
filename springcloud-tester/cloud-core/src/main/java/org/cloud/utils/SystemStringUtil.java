@@ -85,25 +85,25 @@ public final class SystemStringUtil {
         return result.toString();
     }
 
-    public boolean isCamel(String value){
-       return !value.contains("_") && value.matches("^\\S+[A-Z]+\\S+$");  //不包含下划线并且包含最少一个大写字母
+    public boolean isCamel(String value) {
+        return !value.contains("_") && value.matches("^\\S+[A-Z]+\\S+$");  //不包含下划线并且包含最少一个大写字母
     }
 
-    public boolean isEmpty(String value){
-        return value==null||"".equals(value);
+    public boolean isEmpty(String value) {
+        return value == null || "".equals(value);
     }
 
 
-    public boolean isNotEmpty(String value){
+    public boolean isNotEmpty(String value) {
         return !isEmpty(value);
     }
 
 
     /**
-     * @Title: unicodeEncode
-     * @Description: unicode编码
      * @param string
      * @return
+     * @Title: unicodeEncode
+     * @Description: unicode编码
      */
     public static String unicodeEncode(String string) {
         char[] utfBytes = string.toCharArray();
@@ -119,10 +119,10 @@ public final class SystemStringUtil {
     }
 
     /**
-     * @Title: unicodeDecode
-     * @Description: unicode解码
      * @param str
      * @return
+     * @Title: unicodeDecode
+     * @Description: unicode解码
      */
     public String unicodeDecode(String str) {
         Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");

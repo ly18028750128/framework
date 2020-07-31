@@ -1,9 +1,9 @@
 package org.cloud.model;
 
+import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
 
 /**
  * Table: t_system_dic_master

@@ -2,11 +2,7 @@ package org.cloud.utils.process;
 
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
-import org.cloud.utils.HttpServletUtil;
-import org.springframework.http.HttpRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.Callable;
 
 public abstract class ProcessCallable<V> implements Callable, Runnable {

@@ -30,7 +30,7 @@ public class MD5PasswordEncoder implements PasswordEncoder {
             return encodedPassword.equals(MD5Encoder.encode(sRawPassword, salt));
         } else if (values.length == 2) {
             final String userBasic64RandomKey = values[1];
-            String salt = (String)redisUtil.get(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX+userBasic64RandomKey);
+            String salt = (String) redisUtil.get(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey);
             final String password = values[0];
             return password.equals(MD5Encoder.encode(encodedPassword, salt));
         }

@@ -16,7 +16,6 @@ import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +38,7 @@ public class UserInfoService implements IUserInfoService {
     TFrameRoleDao frameRoleDao;
     @Autowired
     RedisUtil redisUtil;
+
     @Override
     @Transactional(readOnly = true)
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {

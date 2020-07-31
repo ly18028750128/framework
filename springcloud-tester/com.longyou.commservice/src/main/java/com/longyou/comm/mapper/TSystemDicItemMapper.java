@@ -32,7 +32,7 @@ public interface TSystemDicItemMapper {
 
     List<TSystemDicItem> selectByDicMasterId(@Param("dicMasterId") Long dicMasterId);
 
-    List<TSystemDicItem> selectByDicCode(Map<String,Object> params);
+    List<TSystemDicItem> selectByDicCode(Map<String, Object> params);
 
     /**
      * @mbg.generated generated automatically, do not modify!

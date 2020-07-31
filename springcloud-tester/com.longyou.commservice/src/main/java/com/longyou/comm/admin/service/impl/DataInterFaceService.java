@@ -6,11 +6,8 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.mongo.DataInterFaceParamVO;
 import org.cloud.mongo.DataInterFaceVO;
-import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.mongo.MongoDBUtil;
-import org.cloud.vo.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,9 +16,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service("mongoDataInterFaceService")
 public class DataInterFaceService implements IDataInterFaceService {
@@ -43,7 +40,7 @@ public class DataInterFaceService implements IDataInterFaceService {
                 Query query = new Query();
                 query.addCriteria(Criteria.where("_id").is(new ObjectId(interFaceVO.get_id())));
                 Update update = MongoDBUtil.single().buildUpdateByObject(interFaceVO);
-                mongoTemplate.updateFirst(query,update,DataInterFaceVO.class);
+                mongoTemplate.updateFirst(query, update, DataInterFaceVO.class);
             }
         }
         return result;

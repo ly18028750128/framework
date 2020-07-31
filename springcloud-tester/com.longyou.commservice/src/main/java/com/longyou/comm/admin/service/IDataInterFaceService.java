@@ -3,7 +3,6 @@ package com.longyou.comm.admin.service;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.cloud.mongo.DataInterFaceVO;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

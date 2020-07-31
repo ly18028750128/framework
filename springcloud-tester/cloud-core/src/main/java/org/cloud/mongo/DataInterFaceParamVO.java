@@ -2,7 +2,6 @@ package org.cloud.mongo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.cloud.utils.mongo.MongoDBEnum;
 
 import java.util.Objects;
 
@@ -15,7 +14,7 @@ public class DataInterFaceParamVO {
     private String description; // 描述
     private int status; //状态，0失效，1有效
 
-    public DataInterFaceParamVO(String fieldName, MongoEnumVO.DataType fieldType, String description,int status) {
+    public DataInterFaceParamVO(String fieldName, MongoEnumVO.DataType fieldType, String description, int status) {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
         this.description = description;

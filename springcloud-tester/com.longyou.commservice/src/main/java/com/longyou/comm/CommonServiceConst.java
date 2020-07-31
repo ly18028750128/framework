@@ -10,10 +10,10 @@ public final class CommonServiceConst {
 
     public static enum userStatus implements BasicEnum {
 
-        Active(1,"生效","active"),
-        Inactive(-1,"失效","active"),
-        New(2,"新建","active"),
-        Reset(3,"重置","active"),
+        Active(1, "生效", "active"),
+        Inactive(-1, "失效", "active"),
+        New(2, "新建", "active"),
+        Reset(3, "重置", "active"),
         ;
 
         userStatus(Integer value, String description, String i18nValue) {

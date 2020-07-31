@@ -12,10 +12,12 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.annotation.PostConstruct;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 public final class CommonUtil {
     Logger logger = LoggerFactory.getLogger(CommonUtil.class);
@@ -30,6 +32,7 @@ public final class CommonUtil {
     private static class Holder {
         private Holder() {
         }
+
         private static CommonUtil instance = new CommonUtil();
     }
 
@@ -114,6 +117,25 @@ public final class CommonUtil {
         } finally {
             pw.close();
         }
+    }
+
+    /**
+     * 将map转换成查询参数
+     *
+     * @param paramMap
+     * @return
+     */
+    public String convertMapToQueryParams(Map<String, String> paramMap) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String key : paramMap.keySet()) {
+            try {
+                stringBuffer.append(key + "=" + URLEncoder.encode(paramMap.get(key), "utf8"));
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        return stringBuffer.toString();
+
     }
 
 }

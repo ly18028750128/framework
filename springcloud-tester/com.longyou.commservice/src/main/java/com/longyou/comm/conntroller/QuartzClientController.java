@@ -39,7 +39,7 @@ public class QuartzClientController {
         List<String> services = discoveryClient.getServices();
         for (String serviceId : services) {
 
-            if(!"".equals(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)){
+            if (!"".equals(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)) {
                 continue;
             }
 

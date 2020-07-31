@@ -8,7 +8,6 @@ import org.junit.runners.MethodSorters;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
@@ -103,12 +102,9 @@ public class NioTest {
     public void noiChannelTest() throws IOException {
 
 
-
-
-
 //        RandomAccessFile accessFile = new RandomAccessFile("E:\\backup\\软件\\idea2020\\jetbrains-agent\\ChangeLogs.txt","rw");
-        int bufferSize=1024;
-        ByteBuffer byteBuffer=ByteBuffer.allocate(bufferSize);
+        int bufferSize = 1024;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bufferSize);
         int length = -1;
         FileInputStream fileInputStream = new FileInputStream("E:\\backup\\软件\\idea2020\\jetbrains-agent\\ChangeLogs.txt");
         FileChannel fileInChannel = fileInputStream.getChannel();
@@ -116,11 +112,11 @@ public class NioTest {
         FileOutputStream fileOutputStream = new FileOutputStream("E:\\backup\\软件\\idea2020\\jetbrains-agent\\ChangeLogs1.txt");
         FileChannel fileOutChannel = fileOutputStream.getChannel();
 
-        while((length=fileInChannel.read(byteBuffer))!=-1){
+        while ((length = fileInChannel.read(byteBuffer)) != -1) {
             byteBuffer.flip();
             int outLength = 0;
-            while ((outLength=fileOutChannel.write(byteBuffer))!=0){
-                log.info("写入【{}】个字节",outLength);
+            while ((outLength = fileOutChannel.write(byteBuffer)) != 0) {
+                log.info("写入【{}】个字节", outLength);
             }
 //            log.info(new String(byteBuffer.array()));
             byteBuffer.clear();

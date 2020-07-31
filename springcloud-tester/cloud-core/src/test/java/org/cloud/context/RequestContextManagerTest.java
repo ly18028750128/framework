@@ -25,8 +25,8 @@ public class RequestContextManagerTest {
         callables.add(new ProcessCallable(true) {
             @Override
             public Object process() {
-                RequestContextManager.single().getRequestContext().setProperty("threadName","1");
-                RequestContextManager.single().getRequestContext().setProperty("threadNameValue","1");
+                RequestContextManager.single().getRequestContext().setProperty("threadName", "1");
+                RequestContextManager.single().getRequestContext().setProperty("threadNameValue", "1");
                 logger.info(JSON.toJSONString(RequestContextManager.single().getRequestContext().getProperties()));
                 return null;
             }
@@ -35,8 +35,8 @@ public class RequestContextManagerTest {
         callables.add(new ProcessCallable(true) {
             @Override
             public Object process() {
-                RequestContextManager.single().getRequestContext().setProperty("threadName","2");
-                RequestContextManager.single().getRequestContext().setProperty("threadNameValue","2");
+                RequestContextManager.single().getRequestContext().setProperty("threadName", "2");
+                RequestContextManager.single().getRequestContext().setProperty("threadNameValue", "2");
                 logger.info(JSON.toJSONString(RequestContextManager.single().getRequestContext().getProperties()));
                 return null;
             }

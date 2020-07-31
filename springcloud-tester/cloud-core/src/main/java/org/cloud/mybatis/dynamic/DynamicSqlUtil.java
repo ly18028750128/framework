@@ -27,6 +27,7 @@ public final class DynamicSqlUtil {
     private static class Instance {
         private Instance() {
         }
+
         private static DynamicSqlUtil instance = new DynamicSqlUtil();
     }
 
@@ -50,11 +51,12 @@ public final class DynamicSqlUtil {
     }
 
     public Page<?> listData(String md5, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
-        return listDataBySqlContext(this.getListSql(md5),dynamicSqlQueryParamsVO);
+        return listDataBySqlContext(this.getListSql(md5), dynamicSqlQueryParamsVO);
     }
 
     /**
      * 根据SQL内容查询列表
+     *
      * @param sqlContext
      * @param dynamicSqlQueryParamsVO
      * @return
@@ -69,7 +71,7 @@ public final class DynamicSqlUtil {
     }
 
     public PageInfo<?> pagedData(String md5, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
-        return pagedDataBySqlContext(this.getListSql(md5),pageNum,pageSize,dynamicSqlQueryParamsVO);
+        return pagedDataBySqlContext(this.getListSql(md5), pageNum, pageSize, dynamicSqlQueryParamsVO);
     }
 
     public PageInfo<JavaBeanResultMap<Object>> pagedDataBySqlContext(String sqlContext, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
@@ -84,13 +86,14 @@ public final class DynamicSqlUtil {
     }
 
     public void createDynamicSql(String md5, final Map<String, Object> params) throws Exception {
-        createDynamicSqlBySqlContext(getListSql(md5),params);
+        createDynamicSqlBySqlContext(getListSql(md5), params);
     }
 
     /**
      * 按SQL内容查询数据，这里不能开放API使用，仅内部谨慎使用
+     *
      * @param sqlContext sql脚本，mysql格式
-     * @param params 参数
+     * @param params     参数
      * @throws Exception
      */
     public void createDynamicSqlBySqlContext(String sqlContext, final Map<String, Object> params) throws Exception {

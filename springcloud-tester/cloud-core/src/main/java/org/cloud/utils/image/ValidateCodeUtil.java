@@ -1,15 +1,14 @@
 package org.cloud.utils.image;
 
 import com.baomidou.dynamic.datasource.toolkit.Base64;
-import lombok.Data;
 import org.cloud.utils.math.RandomUtils;
+import org.cloud.vo.ValidateCodeVO;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Random;
 
 public final class ValidateCodeUtil {
@@ -169,18 +168,5 @@ public final class ValidateCodeUtil {
         return getRandomCode(defaultWidth, defaultHeight, defaultLineSize, defaultStringNum);
     }
 
-    /**
-     * @author chenhx
-     * @ClassName: Validate
-     * @Description: 验证码类
-     * @date 2017年11月14日 上午11:35:34
-     */
-    @Data
-    public class ValidateCodeVO implements Serializable {
-        private static final long serialVersionUID = -8847813271787345354L;
-        private String redisKey;
-        private String base64ImageUrl;        //Base64 值
-        private String value;            //验证码值
-    }
 
 }

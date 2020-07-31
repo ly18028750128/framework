@@ -167,7 +167,7 @@ public class RedisUtilTest {
                 logger.info(JSON.toJSONString(rangeSet));
                 Assert.assertEquals(rangeSet.contains(5), true);
 
-                redisTemplate.expire(key,100, TimeUnit.SECONDS);
+                redisTemplate.expire(key, 100, TimeUnit.SECONDS);
 
                 return null;
             }
@@ -195,8 +195,8 @@ public class RedisUtilTest {
                         public Boolean process() {
                             Long total = hashOperations.increment(key, "牛肉礼包", 1);
                             if (total > max) {
-                                logger.error("thread " + j + ":超出"+max+"个了，不能进行抢购了！");
-                            }else{
+                                logger.error("thread " + j + ":超出" + max + "个了，不能进行抢购了！");
+                            } else {
                                 logger.error("thread " + j + ":抢购成功！");
                             }
                             return null;

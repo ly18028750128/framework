@@ -12,13 +12,13 @@ public interface IDicService {
 
     public int SaveOrUpdate(TSystemDicMaster systemDicMaster) throws Exception;
 
-    public TSystemDicMaster getDicMasterById( Long dicMasterId) throws Exception;
+    public TSystemDicMaster getDicMasterById(Long dicMasterId) throws Exception;
 
     public TSystemDicItem getDicItemById(Long dicMasterId) throws Exception;
 
     public List<TSystemDicItem> getDicItemsByMasterId(Long dicMasterId) throws Exception;
 
-    public List<TSystemDicItem> getDicItemsByDicCode(Map<String,Object> params) throws Exception;
+    public List<TSystemDicItem> getDicItemsByDicCode(Map<String, Object> params) throws Exception;
 
     public Page<TSystemDicMaster> listPage(QueryParamVO queryParams) throws Exception;
 

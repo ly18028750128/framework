@@ -23,15 +23,15 @@
     <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
         select id,user_name,password,default_Role,user_regist_source,user_type,mobile_phone,`status`,avatar
         from t_frame_user
-        where status in (1,2,3)
+        where status in (1,2,3) and user_regist_source = #{microServiceName,jdbcType=INTEGER}
         <if test="userName!=null and userName!=''">
             and user_name = #{userName,jdbcType=VARCHAR}
         </if>
         <if test="userId!=null">
             and id = #{userId,jdbcType=INTEGER}
         </if>
-        <if test="params.userType!=null and params.userType!=''"> <!---->
-            and user_Type = #{params.userType,jdbcType=VARCHAR}
+        <if test="paramMap.userType!=null and paramMap.userType!=''"> <!---->
+            and user_Type = #{paramMap.userType,jdbcType=VARCHAR}
         </if>
     </select>
 

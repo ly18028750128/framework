@@ -20,10 +20,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
 
-    final  Logger logger = LoggerFactory.getLogger(GlobExceptionHandler.class);
+    final Logger logger = LoggerFactory.getLogger(GlobExceptionHandler.class);
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseResult handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response){
+    public ResponseResult handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(e.getStatusCode().value());
@@ -32,7 +32,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseResult handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response){
+    public ResponseResult handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -41,7 +41,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseResult handlerBusinessException(@NotNull BusinessException e,@NotNull HttpServletResponse response){
+    public ResponseResult handlerBusinessException(@NotNull BusinessException e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         responseResult.setData(e.getErrObject());
@@ -51,7 +51,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ServletException.class)
-    public Map<String,Object> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response){
+    public Map<String, Object> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -60,7 +60,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(IOException.class)
-    public Map<String,Object> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response){
+    public Map<String, Object> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -69,7 +69,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public Map<String,Object> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response){
+    public Map<String, Object> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         response.setStatus(HttpStatus.BAD_REQUEST.value());

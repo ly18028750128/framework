@@ -1,6 +1,5 @@
 package com.longyou.gateway.config;
 
-import org.cloud.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.DiscoveryClient;

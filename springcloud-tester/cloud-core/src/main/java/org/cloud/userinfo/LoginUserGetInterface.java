@@ -1,7 +1,6 @@
 package org.cloud.userinfo;
 
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.vo.LoginUser;
 import org.cloud.vo.LoginUserGetParamsDTO;
 
 public interface LoginUserGetInterface {

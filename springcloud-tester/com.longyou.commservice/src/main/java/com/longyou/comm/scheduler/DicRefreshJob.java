@@ -5,11 +5,7 @@ import org.cloud.scheduler.job.BaseQuartzJobBean;
 import org.cloud.utils.SpringContextUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class DicRefreshJob extends BaseQuartzJobBean {

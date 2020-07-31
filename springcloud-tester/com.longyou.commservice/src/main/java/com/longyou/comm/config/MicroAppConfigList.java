@@ -10,7 +10,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "sys.config.micro-app")
 public class MicroAppConfigList {
 
-    private List<MicroAppConfig> appList=new ArrayList<>();
+    private List<MicroAppConfig> appList = new ArrayList<>();
 
     public List<MicroAppConfig> getAppList() {
         return appList;

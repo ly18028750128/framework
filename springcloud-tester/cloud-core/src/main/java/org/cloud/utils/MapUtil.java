@@ -7,25 +7,25 @@ import java.util.Map;
 
 public final class MapUtil {
 
-    private MapUtil(){
+    private MapUtil() {
 
     }
 
     private final static MapUtil instance = new MapUtil();
 
-    public static MapUtil single(){
+    public static MapUtil single() {
         return instance;
     }
 
-    public Map<String,String> toStringMap(Map<String,?> mapValue){
-        Map<String,String> result=new HashMap<>();
-        for(String key:mapValue.keySet()){
+    public Map<String, String> toStringMap(Map<String, ?> mapValue) {
+        Map<String, String> result = new HashMap<>();
+        for (String key : mapValue.keySet()) {
             Object value = mapValue.get(key);
-            if(value==null) continue;
+            if (value == null) continue;
 
-            if(value instanceof String){
-                result.put(key, (String)value);
-            }else{
+            if (value instanceof String) {
+                result.put(key, (String) value);
+            } else {
                 result.put(key, JSON.toJSONString(value));
             }
         }

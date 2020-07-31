@@ -6,6 +6,7 @@ import org.cloud.vo.QueryParamVO;
 public interface DataInterfaceService {
     /**
      * 分页查询
+     *
      * @param queryParamVO
      * @return
      */

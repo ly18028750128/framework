@@ -19,7 +19,7 @@ public class WordTableCellVO {
     private String value;  // 数据值
     private String type = "String";   // 数据类型,根据不同的类型需要做下转换
     private String color = "FFFFFF"; // 列的底色
-    private WordParagraphStyleVO styleVO=new WordParagraphStyleVO();  //内容的样式默认为空，就直接设置字符
+    private WordParagraphStyleVO styleVO = new WordParagraphStyleVO();  //内容的样式默认为空，就直接设置字符
 
     public WordTableCellVO(String value) {
         this.value = value;

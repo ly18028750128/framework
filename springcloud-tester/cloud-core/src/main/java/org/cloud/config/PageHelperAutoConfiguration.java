@@ -1,22 +1,6 @@
 package org.cloud.config;
 
 
-import com.github.pagehelper.PageInterceptor;
-import com.github.pagehelper.autoconfigure.PageHelperProperties;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Properties;
-
 ///**
 // * 自定注入分页插件
 // *

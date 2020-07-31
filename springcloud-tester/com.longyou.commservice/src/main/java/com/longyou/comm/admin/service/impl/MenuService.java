@@ -1,6 +1,5 @@
 package com.longyou.comm.admin.service.impl;
 
-import com.github.pagehelper.Page;
 import com.longyou.comm.admin.service.IMenuService;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.mybatis.dynamic.DynamicSqlUtil;
@@ -10,7 +9,6 @@ import org.cloud.vo.JavaBeanResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

@@ -1,30 +1,19 @@
 package com.longyou.comm.admin.controller;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import org.bson.types.ObjectId;
 import org.cloud.annotation.SystemResource;
-import org.cloud.constant.CoreConstant;
-import org.cloud.context.RequestContextManager;
-import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
-import org.cloud.utils.mongo.MongoDBEnum;
 import org.cloud.utils.mongo.MongoDBUtil;
-import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletResponse;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/file/mongo", produces = MediaType.APPLICATION_JSON_VALUE)

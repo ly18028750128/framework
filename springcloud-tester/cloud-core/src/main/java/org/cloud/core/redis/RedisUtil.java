@@ -103,7 +103,7 @@ public class RedisUtil {
     public boolean set(final String key, Object value, Long expireTime) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
         redisTemplate.opsForValue().set(key, value);
-        if(expireTime>0){
+        if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return true;
@@ -112,7 +112,7 @@ public class RedisUtil {
     public boolean hashSet(final String key, Map<String, Object> value, Long expireTime) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         operations.putAll(cacheName + key, value);
-        if(expireTime>0){
+        if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return true;
@@ -121,7 +121,7 @@ public class RedisUtil {
     public boolean hashSet(final String key, String field, Object value, Long expireTime) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         operations.put(cacheName + key, field, value);
-        if(expireTime>0){
+        if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return true;
@@ -144,7 +144,7 @@ public class RedisUtil {
 
     public Long listRightPushAll(final String key, Collection<Object> values, Long expireTime) {
         ListOperations<String, Object> operations = redisTemplate.opsForList();
-        if(expireTime>0){
+        if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return operations.rightPushAll(key, values);
@@ -152,7 +152,7 @@ public class RedisUtil {
 
     public Long listLeftPushAll(final String key, Collection<Object> values, Long expireTime) {
         ListOperations<String, Object> operations = redisTemplate.opsForList();
-        if(expireTime>0){
+        if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return operations.leftPushAll(key, values);
@@ -170,9 +170,8 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
-     * @param timeout  获取数据的根据超时时间
+     * @param timeout 获取数据的根据超时时间
      * @param <V>
      * @return
      */
@@ -180,10 +179,10 @@ public class RedisUtil {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         return operations.rightPop(key, timeout, TimeUnit.MILLISECONDS);
     }
+
     /**
-     *
      * @param key
-     * @param timeout  获取数据的根据超时时间
+     * @param timeout 获取数据的根据超时时间
      * @param <V>
      * @return
      */
@@ -191,7 +190,6 @@ public class RedisUtil {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         return operations.leftPop(key, timeout, TimeUnit.MILLISECONDS);
     }
-
 
 
 }

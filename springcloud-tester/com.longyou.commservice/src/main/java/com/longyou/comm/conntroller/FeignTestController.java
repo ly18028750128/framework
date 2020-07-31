@@ -1,7 +1,6 @@
 package com.longyou.comm.conntroller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.SystemResource;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,9 @@ public class FeignTestController {
     private String test;
 
     @GetMapping("/gateway/user/info/authentication")
-    public Object getAuthentication(){
+    public Object getAuthentication() {
         LoginUserDetails userDetails = gatewayFeignClient.getAuthentication();
-        log.info("system.test.value={}",test);
+        log.info("system.test.value={}", test);
         return userDetails;
     }
 

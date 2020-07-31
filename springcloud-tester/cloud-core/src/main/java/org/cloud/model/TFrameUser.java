@@ -1,15 +1,16 @@
 package org.cloud.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
-
 /**
  * t_frame_user
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameUser implements Serializable {
@@ -72,9 +73,9 @@ public class TFrameUser implements Serializable {
 
     private String mobilePhone;
 
-    private List<TFrameUserRole> frameUserRoleList=new ArrayList<>();
+    private List<TFrameUserRole> frameUserRoleList = new ArrayList<>();
 
-    private boolean updated=false;
+    private boolean updated = false;
 
     private static final long serialVersionUID = 1L;
 }

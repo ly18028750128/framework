@@ -79,7 +79,7 @@ public final class DESUtil {
     }
 
     public static String encrypt(String data) {
-        return encrypt(_COMMON_DES_PASSWORD,data);
+        return encrypt(_COMMON_DES_PASSWORD, data);
     }
 
     /**
@@ -106,8 +106,9 @@ public final class DESUtil {
             return data;
         }
     }
+
     public static String decrypt(String data) {
-        return decrypt(_COMMON_DES_PASSWORD,data);
+        return decrypt(_COMMON_DES_PASSWORD, data);
     }
 
     /**

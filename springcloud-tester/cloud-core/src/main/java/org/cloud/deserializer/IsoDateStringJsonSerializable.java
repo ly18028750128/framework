@@ -1,14 +1,12 @@
 package org.cloud.deserializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.DateTimeSerializerBase;
 import org.cloud.constant.CoreConstant;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Date;
 
 public class IsoDateStringJsonSerializable extends DateTimeSerializerBase<String> {
 

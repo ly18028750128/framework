@@ -37,7 +37,7 @@ public class SystemResourceRegisterController {
     String appGroup;
 
     @RequestMapping("/register/all")
-    @SystemResource(path = "/system/resource",value = "/register/all",authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
+    @SystemResource(path = "/system/resource", value = "/register/all", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult register() throws Exception {
         if (!SystemStringUtil.single().isEmpty(microName)) {
             TMicroserviceRegister microserviceRegister = new TMicroserviceRegister();
@@ -61,9 +61,9 @@ public class SystemResourceRegisterController {
             logger.info("beanResourceAnnotation:{}", beanResourceAnnotation);
             // todo 这里处理菜单创建的逻辑
 
-            if(!SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())){
+            if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())) {
                 TFrameMenu parentMenu = null;
-                if(!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())){
+                if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())) {
                     parentMenu = new TFrameMenu();
                     parentMenu.setMenuCode(beanResourceAnnotation.parentMenuCode());
                     parentMenu.setMenuName(beanResourceAnnotation.parentMenuName());
@@ -83,7 +83,7 @@ public class SystemResourceRegisterController {
 
                 }
                 TFrameMenu menu = new TFrameMenu();
-                if(parentMenu!=null){
+                if (parentMenu != null) {
                     menu.setParentMenuId(parentMenu.getMenuId());
                 }
                 menu.setMenuCode(beanResourceAnnotation.menuCode());

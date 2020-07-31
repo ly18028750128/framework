@@ -1,13 +1,10 @@
 package com.longyou.comm.scheduler;
 
-import com.longyou.comm.admin.service.IDicService;
 import com.longyou.comm.admin.service.IMenuService;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
 import org.cloud.utils.SpringContextUtil;
-import org.cloud.utils.SystemStringUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +21,7 @@ public class SystemMenuRefreshJob extends BaseQuartzJobBean {
         try {
             final IMenuService iMenuService = SpringContextUtil.getBean(IMenuService.class);
             if (iMenuService != null) {
-                iMenuService.listAllTreeMenu(null,5);   //查询并刷新缓存
+                iMenuService.listAllTreeMenu(null, 5);   //查询并刷新缓存
             }
         } catch (Exception e) {
             new JobExecutionException(e);

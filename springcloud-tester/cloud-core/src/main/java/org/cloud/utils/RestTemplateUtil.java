@@ -1,7 +1,5 @@
 package org.cloud.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,7 +10,6 @@ import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.ParameterizedType;
 import java.util.Enumeration;
 
 public class RestTemplateUtil {
@@ -39,7 +36,7 @@ public class RestTemplateUtil {
         if (StringUtils.isEmpty(requestBody)) {
             httpEntity = new HttpEntity<String>("", headers);
         } else {
-            httpEntity = new HttpEntity<String>(requestBody,headers);
+            httpEntity = new HttpEntity<String>(requestBody, headers);
         }
         RequestCallback requestCallback = restTemplate.httpEntityCallback(httpEntity, responseType);
         ResponseExtractor<ResponseEntity<String>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
@@ -70,13 +67,13 @@ public class RestTemplateUtil {
         return headers;
     }
 
-    public HttpHeaders getHttpHeadersFromHttpRequest(HttpServletRequest request,String[] headerNameContains) {
+    public HttpHeaders getHttpHeadersFromHttpRequest(HttpServletRequest request, String[] headerNameContains) {
         HttpHeaders headers = new HttpHeaders();
-        for(String containName:headerNameContains){
+        for (String containName : headerNameContains) {
             Enumeration<String> headerNames = request.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String key = (String) headerNames.nextElement();
-                if(key.equals(containName)){
+                if (key.equals(containName)) {
                     String value = request.getHeader(key);
                     headers.add(key, value);
                     break;

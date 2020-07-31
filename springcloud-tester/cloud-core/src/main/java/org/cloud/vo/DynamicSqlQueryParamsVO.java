@@ -8,7 +8,7 @@ import java.util.Map;
 @Data
 public class DynamicSqlQueryParamsVO {
 
-    private Map<String,Object> params = new LinkedHashMap<>();   // 参数
+    private Map<String, Object> params = new LinkedHashMap<>();   // 参数
     private String sorts;  // 排序字段
 
 }

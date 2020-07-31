@@ -6,12 +6,12 @@ public enum MongoDBEnum {
     metadataOwnerKey("owner", "文件拥有者ID"),
     metadataOwnerNameKey("ownerName", "文件拥有者账号"),
     metadataOwnerFullNameKey("ownerFullName", "文件拥有者全称"),
-    metadataFileAuthRangeFieldName("fileAuthRange","metadata保存文件权限的字段名称"),
-    metadataFileAuthRangeResource("resource","资源文件，保存在metadata的fileType里"),
-    metadataFileAuthRangePersonal("personal","个人文件，保存在metadata的fileType里"),
-    metadataFileAuthRangePublic("public","公共文件，保存在metadata的fileType里"),
-    metadataFilesSuffixFieldName("suffix","metadata保存文件文件后缀字段"),
-    defaultFileOwnerId("-999999999999999","默认的上传文件人，当未登录的时候用到");
+    metadataFileAuthRangeFieldName("fileAuthRange", "metadata保存文件权限的字段名称"),
+    metadataFileAuthRangeResource("resource", "资源文件，保存在metadata的fileType里"),
+    metadataFileAuthRangePersonal("personal", "个人文件，保存在metadata的fileType里"),
+    metadataFileAuthRangePublic("public", "公共文件，保存在metadata的fileType里"),
+    metadataFilesSuffixFieldName("suffix", "metadata保存文件文件后缀字段"),
+    defaultFileOwnerId("-999999999999999", "默认的上传文件人，当未登录的时候用到");
 
     private String key;
     private String name;
@@ -25,7 +25,7 @@ public enum MongoDBEnum {
         return this.key;
     }
 
-    public Long getLong(){
+    public Long getLong() {
         return Long.valueOf(this.key);
     }
 }

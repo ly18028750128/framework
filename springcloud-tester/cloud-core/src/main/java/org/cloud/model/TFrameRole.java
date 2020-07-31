@@ -1,15 +1,15 @@
 package org.cloud.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-
 /**
  * t_frame_role
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameRole implements Serializable {
@@ -48,14 +48,14 @@ public class TFrameRole implements Serializable {
      */
     private String updateBy;
 
-    private Integer status=1;
+    private Integer status = 1;
 
     /**
      * 更新日期
      */
     private Date updateDate;
 
-//    @JsonIgnore
+    //    @JsonIgnore
     Boolean frameRoleResourceUpdateFlag = false;
 
     private List<TFrameRoleResource> frameRoleResourceList;
@@ -64,7 +64,7 @@ public class TFrameRole implements Serializable {
 
     private List<TFrameRoleMenu> frameRoleMenuList;
 
-//    @JsonIgnore
+    //    @JsonIgnore
     Boolean frameRoleDataInterfaceUpdateFlag = false;
 
     private List<TFrameRoleDataInterface> frameRoleDataInterfaceList;

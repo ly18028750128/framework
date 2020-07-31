@@ -14,9 +14,9 @@ import java.util.List;
 @Data
 @ToString
 public class WordTableVO {
-    private List<WordTableHeaderVO> headerList=new ArrayList<>();  // 表格头
-    private List<List<WordTableCellVO>> dataList=new ArrayList<>();    // 表格行数据
+    private List<WordTableHeaderVO> headerList = new ArrayList<>();  // 表格头
+    private List<List<WordTableCellVO>> dataList = new ArrayList<>();    // 表格行数据
 
-    private Integer rowHeight=20;
+    private Integer rowHeight = 20;
     private Integer headerHeight = 30;
 }

@@ -1,12 +1,14 @@
 package org.cloud.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * t_frame_menu
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameMenu implements Serializable {

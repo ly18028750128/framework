@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 @Component
 @Transactional(propagation = Propagation.NEVER)
 @Slf4j
-public class AuthenticationFaillHandler  implements ServerAuthenticationFailureHandler {
+public class AuthenticationFaillHandler implements ServerAuthenticationFailureHandler {
 
     @Override
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException e) {
@@ -33,14 +33,13 @@ public class AuthenticationFaillHandler  implements ServerAuthenticationFailureH
         httpHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         //设置body
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
-        WsResponse<String> wsResponse = WsResponse.failure(MessageCode.COMMON_AUTHORIZED_FAILURE);
-        byte[]   dataBytes={};
+        WsResponse<String> wsResponse = WsResponse.failure(MessageCode.COMMON_AUTHORIZED_FAILURE, e.getMessage());
+        byte[] dataBytes = {};
         try {
             ObjectMapper mapper = new ObjectMapper();
-            dataBytes=mapper.writeValueAsBytes(wsResponse);
-        }
-        catch (Exception ex){
-            log.error("{}",e);
+            dataBytes = mapper.writeValueAsBytes(wsResponse);
+        } catch (Exception ex) {
+            log.error("{}", e);
         }
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));

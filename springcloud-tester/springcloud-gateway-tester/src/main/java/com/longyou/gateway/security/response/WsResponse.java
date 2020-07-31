@@ -67,8 +67,8 @@ public class WsResponse<T> {
     public static WsResponse failure(MessageCode messageCode, String message) {
         WsResponse resp = new WsResponse();
         resp.status = messageCode;
-        if(StringUtils.isNotBlank(messageCode.getMsg())){
-        	resp.getMessages().add(messageCode.getMsg());
+        if (StringUtils.isNotBlank(messageCode.getMsg())) {
+            resp.getMessages().add(messageCode.getMsg());
         }
         if (StringUtils.isNotBlank(message)) {
             resp.getMessages().add(message);

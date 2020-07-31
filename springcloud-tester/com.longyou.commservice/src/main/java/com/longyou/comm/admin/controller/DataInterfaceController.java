@@ -27,7 +27,7 @@ public class DataInterfaceController {
     IDataInterFaceService dataInterFaceService;
 
     @PostMapping("/list/{page}/{pageSize}")
-    @SystemResource(value = "查询数据接口",description = "查询数据接口",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "查询数据接口", description = "查询数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult paged(@PathVariable("page") Long pageNum, @PathVariable("pageSize") Long pageSize, @RequestBody MongoQueryParamsDTO queryParamsDTO) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(MongoDBUtil.single().paged(pageNum, pageSize, queryParamsDTO, DataInterFaceVO.class));
@@ -35,7 +35,7 @@ public class DataInterfaceController {
     }
 
     @PostMapping("/saveOrUpdate")
-    @SystemResource(value = "更新数据接口",description = "更新数据接口",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "更新数据接口", description = "更新数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult updateByIds(@RequestBody List<DataInterFaceVO> dataInterFaceVOS) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dataInterFaceService.saveOrUpdateByIds(dataInterFaceVOS));
@@ -43,7 +43,7 @@ public class DataInterfaceController {
     }
 
     @PostMapping("/inactiveByIds")
-    @SystemResource(value = "生效或者失效数据接口",description = "生效或者失效数据接口",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "生效或者失效数据接口", description = "生效或者失效数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult inactiveByIds(@RequestBody List<String> ObjectIds) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dataInterFaceService.inactiveByIds(ObjectIds));
@@ -51,7 +51,7 @@ public class DataInterfaceController {
     }
 
     @PostMapping("/activeByIds")
-    @SystemResource(value = "生效或者失效数据接口",description = "生效或者失效数据接口",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "生效或者失效数据接口", description = "生效或者失效数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult activeByIds(@RequestBody List<String> ObjectIds) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dataInterFaceService.activeByIds(ObjectIds));

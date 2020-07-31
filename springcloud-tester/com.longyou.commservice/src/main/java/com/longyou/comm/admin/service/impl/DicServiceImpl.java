@@ -11,7 +11,6 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TSystemDicItem;
 import org.cloud.model.TSystemDicMaster;
 import org.cloud.utils.process.ProcessCallable;
-import org.cloud.utils.process.ProcessRunnable;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,8 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static org.cloud.constant.CoreConstant.*;
+import static org.cloud.constant.CoreConstant._SYSTEM_DIC_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT;
 
 @Service
 public class DicServiceImpl implements IDicService {

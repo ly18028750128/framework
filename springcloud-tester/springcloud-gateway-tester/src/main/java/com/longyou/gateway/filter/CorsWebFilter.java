@@ -2,29 +2,23 @@ package com.longyou.gateway.filter;
 
 import com.longyou.gateway.config.vo.CorsConfigVO;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.aop.SystemResourceAspect;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.CommonUtil;
-import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -90,11 +84,11 @@ public class CorsWebFilter implements WebFilter {
         final RequestContext requestContext = new RequestContext();
         final AtomicReference<LoginUserDetails> user = new AtomicReference<>();
         return swe.getSession().doOnNext(webSession -> {
-            try{
+            try {
                 SecurityContextImpl securityContext = webSession.getAttribute("SPRING_SECURITY_CONTEXT");
                 user.set((LoginUserDetails) securityContext.getAuthentication().getPrincipal());
-            }catch (Exception e){
-             log.error("{}",e);
+            } catch (Exception e) {
+                log.error("{}", e);
             }
         }).then(Mono.defer(() -> {
             requestContext.setUser(user.get());

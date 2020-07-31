@@ -1,6 +1,5 @@
 package org.cloud.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mongodb.BasicDBObject;
 import lombok.Data;
 import org.bson.types.ObjectId;

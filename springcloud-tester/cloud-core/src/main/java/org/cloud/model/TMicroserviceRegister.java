@@ -1,12 +1,14 @@
 package org.cloud.model;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * t_microservice_register
- * @author 
+ *
+ * @author
  */
 @Data
 public class TMicroserviceRegister implements Serializable {

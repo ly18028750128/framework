@@ -5,13 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
-import com.longyou.gateway.util.MD5PasswordEncoder;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.model.TFrameRole;
-import org.cloud.model.TFrameRoleData;
-import org.cloud.model.TFrameRoleResource;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
 import org.slf4j.Logger;
@@ -31,8 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Base64;
 
 
 @Component
@@ -60,10 +55,10 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             // 生成token加盐值和key
-            final String userBasic64Random =  MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(),"天下无双");
+            final String userBasic64Random = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(), "天下无双");
             final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
-            final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(24 * 60 * 60L)));
+            final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
             // 获取解密分隔符的处理
             final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
             // 将token加盐的值放到redis缓存中
@@ -77,7 +72,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
                 loginUserDetails.setToken(token);
                 // 缓存当前登录用户的登录信息
-                redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic "+token), userDetails, 24 * 60 * 60L);
+                redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic " + token), userDetails, 24 * 60 * 60L);
                 loginUserDetails.setPassword("***********");
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);

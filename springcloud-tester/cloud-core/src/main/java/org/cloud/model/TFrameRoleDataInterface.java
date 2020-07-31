@@ -1,11 +1,13 @@
 package org.cloud.model;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * t_frame_role_data_interface
- * @author 
+ *
+ * @author
  */
 @Data
 public class TFrameRoleDataInterface implements Serializable {

@@ -1,6 +1,5 @@
 package com.longyou.comm.admin.controller;
 
-import com.github.pagehelper.Constant;
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.admin.service.IDicService;
 import org.cloud.annotation.SystemResource;
@@ -12,7 +11,6 @@ import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/admin/dic", produces = MediaType.APPLICATION_JSON_VALUE)
-@SystemResource(path="系统管理/数据字典")
+@SystemResource(path = "系统管理/数据字典")
 public class DicController {
 
     @Autowired
@@ -40,7 +38,7 @@ public class DicController {
     }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    @SystemResource(value = "保存或者更新",description = "保存或者更新数据字典",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "保存或者更新", description = "保存或者更新数据字典", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult saveOrUpdate(@RequestBody List<TSystemDicMaster> systemDicMasterList) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         List<String> errorResultData = new ArrayList<>();
@@ -68,7 +66,7 @@ public class DicController {
         return responseResult;
     }
 
-        @RequestMapping(value = "/selectDicByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/selectDicByDicMasterId/{dicMasterId}", method = RequestMethod.GET)
     public ResponseResult selectDicByDicMasterId(@PathVariable("dicMasterId") Long dicMasterId) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dicService.getDicMasterById(dicMasterId));
@@ -104,7 +102,7 @@ public class DicController {
      * @throws Exception
      */
     @RequestMapping(value = "/refreshCache", method = RequestMethod.GET)
-    @SystemResource(value = "刷新缓存",description = "刷新缓存，需授权",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "刷新缓存", description = "刷新缓存，需授权", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult refreshCache()
             throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();

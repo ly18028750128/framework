@@ -28,7 +28,7 @@ public class UserMenuService implements IUserMenuService {
 
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
 
-        if(loginUserDetails==null){
+        if (loginUserDetails == null) {
             return new ArrayList<>();
         }
         List<JavaBeanResultMap<Object>> allMenu = menuService.getAllSystemMenuFromCache();

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * 数据接口定义，
  */
 @Data
-@JsonInclude(value= JsonInclude.Include.NON_NULL)
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class DataInterFaceVO {
     private String _id;           // objectId
     private String interfaceName; //接口名称

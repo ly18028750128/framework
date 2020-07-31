@@ -1,8 +1,6 @@
 package org.cloud.mongo;
 
-import com.mongodb.BasicDBObject;
-import lombok.*;
-import org.springframework.data.domain.Sort;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,6 +15,6 @@ public class MongoQueryParamsDTO {
 
     private List<MongoQueryParam> params = new ArrayList<>();
     private List<MongoQueryOrder> orders = new ArrayList<>();
-    private Map<String,Boolean> fields = new LinkedHashMap<>();   //显示的字段
+    private Map<String, Boolean> fields = new LinkedHashMap<>();   //显示的字段
 
 }

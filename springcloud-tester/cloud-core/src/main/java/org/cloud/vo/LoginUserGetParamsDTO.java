@@ -1,49 +1,25 @@
 package org.cloud.vo;
 
-import java.util.HashMap;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
 import java.util.Map;
 
+@Data
 public class LoginUserGetParamsDTO {
 
     private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
     private String userName;
+    private String password;
+    private String microServiceName;  // 微服务名称
+    private String loginType; // 登录方式，默认（后台表单登录）,微信、支付宝、助记词
     private Integer microAppIndex;
+    private String params = "{}";  //参数，如小程序的参数有,app-name,appid,app-password参数
 
-    private Map<String, Object> params;
-
-    public String getUserName() {
-        return userName;
+    @JsonIgnore
+    public Map<String, Object> getParamMap() {
+        return JSON.parseObject(params);
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public Integer getMicroAppIndex() {
-        return microAppIndex;
-    }
-
-    public void setMicroAppIndex(Integer microAppIndex) {
-        this.microAppIndex = microAppIndex;
-    }
-
-    public Map<String, Object> getParams() {
-        if(params==null){
-            params = new HashMap<>();
-        }
-        return params;
-    }
-
-    public void setParams(Map<String, Object> params) {
-        this.params = params;
-    }
 }

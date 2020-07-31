@@ -1,7 +1,6 @@
 package org.cloud.utils;
 
 import org.cloud.context.RequestContextManager;
-import org.cloud.utils.process.ProcessCallable;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
