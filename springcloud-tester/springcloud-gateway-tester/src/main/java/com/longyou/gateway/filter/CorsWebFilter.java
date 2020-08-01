@@ -104,6 +104,7 @@ public class CorsWebFilter implements WebFilter {
             swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
             swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
             swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Credentials", "true");
         }
     }
 }
