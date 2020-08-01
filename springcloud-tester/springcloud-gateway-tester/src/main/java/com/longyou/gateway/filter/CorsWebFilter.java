@@ -61,9 +61,9 @@ public class CorsWebFilter implements WebFilter {
         }
 
         // 增加跨域处理
-        if (CorsUtils.isCorsRequest(request)) {
+//        if (CorsUtils.isCorsRequest(request)) {
             this.setCorsHeader(swe);
-        }
+//        }
 
         // 需要排除的服务
         List<String> services = discoveryClient.getServices();
