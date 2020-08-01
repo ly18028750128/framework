@@ -61,10 +61,7 @@ public class CorsWebFilter implements WebFilter {
         }
 
         // 增加跨域处理
-//        if (CorsUtils.isCorsRequest(request)) {
-            this.setCorsHeader(swe);
-//        }
-
+        this.setCorsHeader(swe);
         // 需要排除的服务
         List<String> services = discoveryClient.getServices();
         List<String> filterList = new ArrayList<>();
@@ -103,7 +100,7 @@ public class CorsWebFilter implements WebFilter {
 
     private void setCorsHeader(ServerWebExchange swe) {
         if (CorsUtils.isCorsRequest(swe.getRequest())) {
-            swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", corsConfigVO.getAllowOrgins());
+            swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", swe.getRequest().getHeaders().getOrigin());
             swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
             swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
             swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
