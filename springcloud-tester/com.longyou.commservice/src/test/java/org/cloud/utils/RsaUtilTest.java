@@ -3,18 +3,20 @@ package org.cloud.utils;
 import com.longyou.comm.starter.CommonServiceApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.feign.service.IGatewayFeignClient;
+import org.cloud.utils.process.ProcessUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -47,24 +49,26 @@ public class RsaUtilTest {
 //        gatewayFeignClient.login(params);
 
 
-        String url = "http://LONGYOUSPRING-GATEWAY/auth/login";
-////        RestTemplate client = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-//  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//  封装参数，千万不要替换为Map与HashMap，否则参数无法传递
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-////  也支持中文
-        params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount111"));
-        params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
-        params.add("microServiceName", "unknowaccount");
-//        params.add("password", "123456");
-        params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
+        List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
 
-        Map<String, Object> result = LoginUtil.single().login(params);
+        for (int i = 0; i < 100; i++) {
+            final int j = i;
+            callables.add(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+                    params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount"+j));
+                    params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
+                    params.add("microServiceName", "unknowaccount");
+                    params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
+                    Map<String, Object> result = LoginUtil.single().login(params);
+                    log.info("{}", result);
+                    return true;
+                }
+            });
+        }
 
-
-        log.info("{}", result);
+        ProcessUtil.single().runCablles(callables);
 
 
 //        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(params, headers);

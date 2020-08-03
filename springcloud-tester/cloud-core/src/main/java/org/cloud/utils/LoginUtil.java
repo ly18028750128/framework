@@ -1,12 +1,14 @@
 package org.cloud.utils;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
+@Slf4j
 public final class LoginUtil {
     private LoginUtil() {
     }
@@ -26,10 +28,17 @@ public final class LoginUtil {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(params, headers); //  封装参数，千万不要替换为Map与HashMap，否则参数无法传递
+        for (int i = 0; i < 5; i++) {  // 暂时增加5次重试，防止有时候报错
+            try {
+                ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);//  执行HTTP请求
+                return response.getBody();
+            } catch (Exception e) {
+                log.error("{}", e);
+                continue;
+            }
+        }
 
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);//  执行HTTP请求
-
-        return response.getBody();
+        return null;
     }
 
 
