@@ -42,6 +42,12 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     @Value("${system.validate.check:true}")  // 校验码开关，开发环境时可以关闭
             Boolean isValidateCode;
 
+    /**
+     * 通过用户名获取登录用户信息
+     *
+     * @param username 用户名
+     * @return
+     */
     @Override
     public Mono<UserDetails> findByUsername(final String username) {
         final LoginUserGetParamsDTO loginUserGetParamsDTO = new LoginUserGetParamsDTO();
@@ -110,6 +116,12 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
     }
 
+    /**
+     * 校验验证码
+     * @param swe
+     * @param formData
+     * @return
+     */
     private boolean checkValidateCode(ServerWebExchange swe, MultiValueMap<String, String> formData) {
         final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field());
         final String validateCode = redisUtil.get(validateRedisKey);
@@ -129,6 +141,11 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     @Autowired
     IGetUserInfoFeignClient getUserInfoFeignClient;
 
+    /**
+     * 获取用户名
+     * @param loginUserGetParamsDTO 登录用户获取参数
+     * @return
+     */
     private LoginUserDetails getUserByName(LoginUserGetParamsDTO loginUserGetParamsDTO) {
         LoginUserDetails loginUserDetails = null;
         if (CorsWebFilter.serverWebExchangeThreadLocal.get() == null

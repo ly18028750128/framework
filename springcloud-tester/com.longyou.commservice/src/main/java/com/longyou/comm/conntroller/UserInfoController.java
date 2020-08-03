@@ -1,30 +1,49 @@
 package com.longyou.comm.conntroller;
 
+import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.service.IUserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.exception.BusinessException;
+import org.cloud.feign.FeignTracerConfiguration;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/userinfo")
 @SystemResource(path = "/userinfo")
+@Slf4j
 public class UserInfoController {
     @Autowired
     IUserInfoService userInfoService;
     @Autowired
     MicroAppConfigList microAppConfigList;
 
+    @Autowired
+    Tracer tracer;
+
     @RequestMapping(value = "/getUserByName", method = RequestMethod.POST)
-    public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
+    public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO, HttpServletRequest request) throws Exception {
+
+        log.info("tracer.currentSpan().context().traceIdString().id={}", tracer.currentSpan().context().traceIdString());
+        log.info("request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID)={}", request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID));
+
+        if (!tracer.currentSpan().context().traceIdString().equals(request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID))) {
+            throw new BusinessException("非内部调用，拒绝请求", null, HttpStatus.FORBIDDEN.value());
+        }
+
         LoginUserDetails loginUserDetails = null;
         LoginUserGetInterface loginUserGetInterface = null;
         if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理

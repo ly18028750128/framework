@@ -162,7 +162,11 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <!--        <dependency>-->
 <!--            <groupId>io.github.openfeign.form</groupId>-->
 <!--            <artifactId>feign-form</artifactId>-->
 <!--        </dependency>-->
