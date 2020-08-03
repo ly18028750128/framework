@@ -94,6 +94,19 @@ public class RedisUtil {
     }
 
     /**
+     * 写入缓存（不存在就写入，存在不作操作）
+     * @param key
+     * @param value
+     * @param expireTime
+     * @return true成功 false已存在
+     */
+    @SuppressWarnings("unchecked")
+    public boolean setIfAbsent(final String key, Object value, Long expireTime) {
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        return operations.setIfAbsent(cacheName + key, value);
+    }
+
+    /**
      * 写入缓存
      *
      * @param key
