@@ -30,7 +30,7 @@ public final class HttpServletUtil {
             request = servletRequestAttributes.getRequest();
         }
 
-        if (request == null) {
+        if (request == null && RequestContextManager.single().getRequestContext() != null) {
             request = RequestContextManager.single().getRequestContext().getHttpServletRequest();
         }
         return request;
@@ -43,7 +43,7 @@ public final class HttpServletUtil {
             response = servletRequestAttributes.getResponse();
         }
 
-        if (response != null) {
+        if (response != null && RequestContextManager.single().getRequestContext() != null) {
             response = RequestContextManager.single().getRequestContext().getHttpServletResponse();
         }
 

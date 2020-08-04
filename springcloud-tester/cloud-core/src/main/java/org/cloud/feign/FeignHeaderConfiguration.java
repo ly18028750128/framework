@@ -1,7 +1,6 @@
 package org.cloud.feign;
 
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.HttpServletUtil;
 import org.cloud.utils.RestTemplateUtil;
@@ -9,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +31,11 @@ public class FeignHeaderConfiguration {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(HttpServletUtil.signle().getHttpServlet(), new String[]{"authorization", "cookie"});
+            HttpServletRequest request = HttpServletUtil.signle().getHttpServlet();
+            if (request == null) {
+                return;
+            }
+            HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request, new String[]{"authorization", "cookie"});
             Map<String, Collection<String>> headersMap = new HashMap<>();
             headersMap.putAll(headers);
             requestTemplate.headers(headersMap);
