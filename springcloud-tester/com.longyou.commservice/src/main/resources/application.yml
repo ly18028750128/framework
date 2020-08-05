@@ -13,3 +13,6 @@ system:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
   config:
     excludedAuthPages: /userinfo/getUserByName
+  api:
+    inner:
+      url-patterns: "/inner/*,/userinfo/getUserByName"

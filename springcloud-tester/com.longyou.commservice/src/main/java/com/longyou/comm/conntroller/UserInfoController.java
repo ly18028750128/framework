@@ -36,14 +36,6 @@ public class UserInfoController {
 
     @RequestMapping(value = "/getUserByName", method = RequestMethod.POST)
     public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO, HttpServletRequest request) throws Exception {
-
-        log.info("tracer.currentSpan().context().traceIdString().id={}", tracer.currentSpan().context().traceIdString());
-        log.info("request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID)={}", request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID));
-
-        if (!tracer.currentSpan().context().traceIdString().equals(request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID))) {
-            throw new BusinessException("非内部调用，拒绝请求", null, HttpStatus.FORBIDDEN.value());
-        }
-
         LoginUserDetails loginUserDetails = null;
         LoginUserGetInterface loginUserGetInterface = null;
         if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理

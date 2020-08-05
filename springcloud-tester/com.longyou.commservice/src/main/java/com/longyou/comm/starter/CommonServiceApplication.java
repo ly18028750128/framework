@@ -2,13 +2,17 @@ package com.longyou.comm.starter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageHelper;
+import org.cloud.filter.InnerApiFilter;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -80,5 +84,19 @@ public class CommonServiceApplication {
     public DataSource quartzDataSource() {
         return new DruidDataSource();
     }
+
+
+//    @Value("#{'${system.api.inner.url-patterns:/inner/*}'.split(',')}")
+//    String[] innerApis;
+//
+//
+//    @Bean
+//    public FilterRegistrationBean registerFilter() {
+//        FilterRegistrationBean registration = new FilterRegistrationBean();
+//        registration.setFilter(new InnerApiFilter());
+//        registration.addUrlPatterns(innerApis);
+//        registration.setName("InnerApiFilter");
+//        return registration;
+//    }
 
 }

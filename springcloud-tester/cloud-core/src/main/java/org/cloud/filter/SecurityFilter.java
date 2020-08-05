@@ -21,7 +21,7 @@ import java.util.List;
  * 安全过滤器，获取当前用户的信息，存储在上下文中。缓存到redis缓存中，通过网关登录后获取信息，这个过滤器只做基础的用户信息的上下文的过滤。
  * 及Url是否需要登录的校验，其它的权限过滤将下发到各个应用中去做处理。因为不同的模块的权限管控是不同的。
  */
-@WebFilter(urlPatterns = {"/*"}, filterName = "SecurityFilter", description = "权限安全过滤器，用于获取用户等")
+@WebFilter(urlPatterns = {"/*"}, filterName = "SecurityFilter", description = "权限安全过滤器，用于获取用户等，如果是netty等非阻塞框架那么不能引用此过滤器")
 public class SecurityFilter extends OncePerRequestFilter {
 
     //    //security的鉴权排除列表
