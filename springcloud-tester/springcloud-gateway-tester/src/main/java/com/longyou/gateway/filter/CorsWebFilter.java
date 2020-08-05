@@ -83,7 +83,9 @@ public class CorsWebFilter implements WebFilter {
         return swe.getSession().doOnNext(webSession -> {
             try {
                 SecurityContextImpl securityContext = webSession.getAttribute("SPRING_SECURITY_CONTEXT");
-                user.set((LoginUserDetails) securityContext.getAuthentication().getPrincipal());
+                if (user != null && securityContext != null){
+                    user.set((LoginUserDetails) securityContext.getAuthentication().getPrincipal());
+                }
             } catch (Exception e) {
                 log.error("{}", e);
             }
