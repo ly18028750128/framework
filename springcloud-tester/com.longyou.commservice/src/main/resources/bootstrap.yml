@@ -29,6 +29,11 @@ spring:
     excludedAuthPages: ${sys.setting.default.exclude-url:},/userinfo/getUserByName,/system/resource/**
   profiles:
     active: ${sys.curr_profile:dev}
+  zipkin:
+    base-url: http://192.168.74.128:10060
+  sleuth:
+    sampler:
+      probability: 1.0
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
