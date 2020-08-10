@@ -14,6 +14,21 @@ spring:
       enabled: true
       host: ${system.config.consul.host:127.0.0.1}  # 开发环境可以覆盖consul
       port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
+      discovery:
+        #是否需要注册
+        register: true
+        #注册的实例ID (唯一标志)
+        instance-id: ${spring.application.upperCaseName}-${spring.cloud.consul.discovery.ip-address}:${spring.cloud.consul.discovery.port}
+        #服务的名称
+        service-name: ${spring.application.upperCaseName}
+        #指定开启ip地址注册
+        prefer-ip-address: true
+        #当前服务的请求ip
+        #ip-address: ${spring.cloud.client.ip-address}
+        ip-address: ${system_config_consul_instance_ip:${spring.cloud.client.ip-address}}
+        #服务的请求端口
+        port: ${system_config_consul_instance_port:${server.port}}
+        health-check-path: /monitor/health
       config:
         enabled: true
         name: ${spring.application.noGroupName:}

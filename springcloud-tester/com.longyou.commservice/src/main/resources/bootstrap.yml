@@ -5,15 +5,25 @@ spring:
     upperCaseName: ${spring.application.group:}COMMON-SERVICE  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
     name: ${spring.application.group:}${spring.application.noGroupName:}
   cloud:
-#    config:
-#      label: master
-#      name: ${spring.application.noGroupName:}
-#      profile: ${spring.profiles.active:dev}
-#      uri: ${sys.configcenter_url:http://administrator:admin2020pasword1qaz3edc@localhost:8040/} #启动时应该加上sys.configcenter_url参数
     consul:
       enabled: ${system.config.consul.enabled:true}
       host: ${system.config.consul.host:192.168.74.128}  # 开发环境可以覆盖consul
       port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
+      discovery:
+        #是否需要注册
+        register: true
+        #注册的实例ID (唯一标志)
+        instance-id: ${spring.application.upperCaseName}-${spring.cloud.consul.discovery.ip-address}:${spring.cloud.consul.discovery.port}
+        #服务的名称
+        service-name: ${spring.application.upperCaseName}
+        #指定开启ip地址注册
+        prefer-ip-address: true
+        #当前服务的请求ip
+        #ip-address: ${spring.cloud.client.ip-address}
+        ip-address: ${system_config_consul_instance_ip:${spring.cloud.client.ip-address}}
+        #服务的请求端口
+        port: ${system_config_consul_instance_port:${server.port}}
+        health-check-path: /monitor/health
       config:
         enabled: true
         name: ${spring.application.noGroupName:}
