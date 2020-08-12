@@ -103,7 +103,7 @@ public class RedisUtil {
     @SuppressWarnings("unchecked")
     public boolean setIfAbsent(final String key, Object value, Long expireTime) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-        return operations.setIfAbsent(cacheName + key, value);
+        return operations.setIfAbsent(cacheName + key, value, expireTime, TimeUnit.SECONDS);
     }
 
     /**
