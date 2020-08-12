@@ -67,3 +67,10 @@ spring:
 jasypt:
   encryptor:
     password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！
+system:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: rcm3pro
+#    password: isI17^2jM11oP*a2#1qq
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://rm-j6cetf168arj31g20io.mysql.rds.aliyuncs.com:3306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT

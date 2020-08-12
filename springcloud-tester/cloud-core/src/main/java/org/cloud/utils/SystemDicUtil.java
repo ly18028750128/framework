@@ -12,6 +12,9 @@ import java.util.Map;
 
 import static org.cloud.constant.CoreConstant.*;
 
+/**
+ * 从缓存中获取数据字典
+ */
 public final class SystemDicUtil {
 
     private SystemDicUtil() {

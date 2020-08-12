@@ -23,7 +23,10 @@
     <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
         select id,user_name,password,default_Role,user_regist_source,user_type,mobile_phone,`status`,avatar
         from t_frame_user
-        where status in (1,2,3) and user_regist_source = #{microServiceName,jdbcType=INTEGER}
+        where status in (1,2,3)
+        <if test="userId==null"> <!--只有当userId为空时才增加这个条件-->
+          and user_regist_source = #{microServiceName,jdbcType=INTEGER}
+        </if>
         <if test="userName!=null and userName!=''">
             and user_name = #{userName,jdbcType=VARCHAR}
         </if>

@@ -47,16 +47,12 @@ spring:
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
-#  config:
-#    consul:
-#      host: 120.24.28.180
-#      port: 10050
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    username: framework
-#    password: 1qaz@WSX
+#    username: rcm3pro
+#    password: isI17^2jM11oP*a2#1qq
 #    type: com.alibaba.druid.pool.DruidDataSource
-#    url: jdbc:mysql://172.16.1.51:13306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+#    url: jdbc:mysql://rm-j6cetf168arj31g20io.mysql.rds.aliyuncs.com:3306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
 eureka:
   client:
     healthcheck:

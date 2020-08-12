@@ -2,6 +2,7 @@ package com.longyou.comm.service.impl;
 
 import com.longyou.comm.admin.service.IMenuService;
 import com.longyou.comm.service.IUserMenuService;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Slf4j
 public class UserMenuService implements IUserMenuService {
 
     @Autowired
@@ -32,8 +34,14 @@ public class UserMenuService implements IUserMenuService {
             return new ArrayList<>();
         }
         List<JavaBeanResultMap<Object>> allMenu = menuService.getAllSystemMenuFromCache();
+
+        log.info("allMenu=={}",allMenu);
+
         Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
         getCurrentUserMenu(allMenu, userFunctions);
+
+        log.info("userFunctions=={}",userFunctions);
+
         return allMenu;
     }
 
@@ -51,6 +59,7 @@ public class UserMenuService implements IUserMenuService {
                 }
             }
         }
+        log.info("noAuthMenuList=={}",noAuthMenuList);
         menuItems.removeAll(noAuthMenuList);
     }
 }
