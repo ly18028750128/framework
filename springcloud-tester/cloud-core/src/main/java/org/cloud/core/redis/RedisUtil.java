@@ -69,6 +69,16 @@ public class RedisUtil {
     }
 
     /**
+     * 自增长
+     * @param key
+     * @param data
+     * @return
+     */
+    public Long increment(final String key, int data){
+        return redisTemplate.opsForValue().increment(cacheName + key, data);
+    }
+
+    /**
      * 读取缓存
      *
      * @param key
@@ -94,7 +104,7 @@ public class RedisUtil {
     }
 
     /**
-     * 写入缓存（不存在就写入，存在不作操作）
+     * 写入缓存并设置过期时间（不存在就写入，存在不作操作）
      * @param key
      * @param value
      * @param expireTime
@@ -104,6 +114,17 @@ public class RedisUtil {
     public boolean setIfAbsent(final String key, Object value, Long expireTime) {
         ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
         return operations.setIfAbsent(cacheName + key, value, expireTime, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 写入缓存（不存在就写入，存在不作操作）
+     * @param key
+     * @param value
+     * @return
+     */
+    public boolean setIfAbsent(final String key, Object value) {
+        ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+        return operations.setIfAbsent(cacheName + key, value);
     }
 
     /**
