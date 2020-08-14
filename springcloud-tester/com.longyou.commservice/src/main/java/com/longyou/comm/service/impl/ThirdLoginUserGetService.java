@@ -63,7 +63,7 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
             userMap.put("updateBy", realUserName);
             userMap.put("status", 1);
             userMap.put("defaultRole", "User");
-            userMap.put("userType", appName);
+            userMap.put("userType", loginUserGetParamsDTO.getLoginType());
             userMap.put("userRegistSource", appName);
             userMap.put("sessionKey", "");
             userInfoMapper.insertIntoUserInfo(userMap);

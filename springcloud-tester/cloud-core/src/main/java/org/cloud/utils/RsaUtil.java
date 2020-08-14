@@ -97,16 +97,21 @@ public final class RsaUtil {
     }
 
     public String encryptByRedisRsaKey(String str) throws Exception {
-        RedisUtil redisUtil = SpringContextUtil.getBean(RedisUtil.class);
-        List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
-        return this.encrypt(str, rsaKeys.get(0));
+        return this.encrypt(str, getRsaKeys().get(0));
 
     }
 
     public String decryptByRedisRsaKey(String str) throws Exception {
+        return this.decrypt(str, getRsaKeys().get(1));
+    }
+
+    public List<String> getRsaKeys() throws Exception {
         RedisUtil redisUtil = SpringContextUtil.getBean(RedisUtil.class);
         List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
-        return this.decrypt(str, rsaKeys.get(1));
+        if (rsaKeys == null) {
+            redisUtil.set(RSA_KEYS_REDIS_KEY, this.getRsaKey(1024));
+        }
+        return redisUtil.get(RSA_KEYS_REDIS_KEY);
     }
 
 

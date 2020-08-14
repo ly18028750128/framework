@@ -1,6 +1,7 @@
 package org.cloud.core.redis;
 
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
@@ -70,11 +71,12 @@ public class RedisUtil {
 
     /**
      * 自增长
+     *
      * @param key
      * @param data
      * @return
      */
-    public Long increment(final String key, int data){
+    public Long increment(final String key, int data) {
         return redisTemplate.opsForValue().increment(cacheName + key, data);
     }
 
@@ -105,6 +107,7 @@ public class RedisUtil {
 
     /**
      * 写入缓存并设置过期时间（不存在就写入，存在不作操作）
+     *
      * @param key
      * @param value
      * @param expireTime
@@ -118,6 +121,7 @@ public class RedisUtil {
 
     /**
      * 写入缓存（不存在就写入，存在不作操作）
+     *
      * @param key
      * @param value
      * @return
@@ -169,6 +173,28 @@ public class RedisUtil {
     public <T> T hashGet(final String key, String field) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         return (T) operations.get(key, field);
+    }
+
+    public <T> Set<T> hashKeys(final String key) {
+        HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
+        return (Set<T>) operations.keys(key);
+    }
+
+    public <K, V> Map<K, V> hashGetEntries(final String key) {
+        HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
+        return (Map<K, V>) operations.entries(key);
+    }
+
+    public <K, V> Map.Entry<K, V> hashGetLastEntry(final String key) {
+        HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
+        Map<K, V> entries = (Map<K, V>) operations.entries(key);
+        return (Map.Entry<K, V>)entries.entrySet().stream().toArray()[entries.entrySet().size()-1];
+    }
+
+    public <K, V> Map.Entry<K, V> hashGetFirstEntry(final String key) {
+        HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
+        Map<K, V> entries = (Map<K, V>) operations.entries(key);
+        return (Map.Entry<K, V>)entries.entrySet().stream().toArray()[0];
     }
 
     public <V> List<V> hashGet(final String key, Collection<String> fields) {

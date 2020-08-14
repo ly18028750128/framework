@@ -38,7 +38,8 @@ public class UserInfoController {
     public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO, HttpServletRequest request) throws Exception {
         LoginUserDetails loginUserDetails = null;
         LoginUserGetInterface loginUserGetInterface = null;
-        if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理
+        //@TODO 这里要进行从数据库获取小程序或者公众号的配置，决定通过什么方式获取用户名，如，公众号，微信小程序，支付宝小程序等，目前只支持微信小程序，且配置文件配置在配置中心需更改到数据库
+        if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理，
             MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
             loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + microAppConfig.getType(), LoginUserGetInterface.class);
             loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);

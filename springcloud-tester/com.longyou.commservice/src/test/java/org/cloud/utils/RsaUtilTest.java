@@ -51,7 +51,7 @@ public class RsaUtilTest {
 
         List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5; i++) {
             final int j = i;
             callables.add(new Callable<Boolean>() {
                 @Override
