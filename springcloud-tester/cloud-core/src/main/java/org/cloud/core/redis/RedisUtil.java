@@ -215,6 +215,17 @@ public class RedisUtil {
     }
 
     // list将用于一些队列的场景，这里可以不用进行一些操作，这里不用缓存超时时间的设置
+    public Long listRightPush(final String key, Object value) {
+        ListOperations<String, Object> operations = redisTemplate.opsForList();
+        return operations.rightPush(key, value);
+    }
+
+    public Long listLeftPush(final String key, Object value) {
+        ListOperations<String, Object> operations = redisTemplate.opsForList();
+        return operations.leftPush(key, value);
+    }
+
+    // list将用于一些队列的场景，这里可以不用进行一些操作，这里不用缓存超时时间的设置
     public <V> V listRightPop(final String key) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         return operations.rightPop(key);
@@ -223,18 +234,21 @@ public class RedisUtil {
     public <V> List<V> listRightPopAll(final String key, Long size) {
         List<V> result = new ArrayList<>();
         final String lockKey = key + "_lock";
-        boolean isLock = this.getLock(lockKey, 1000);
-        if (!isLock) {
-            return result;
-        }
-        for (int i = 0; i < size; i++) {
-            V value = this.listRightPop(key);
-            if(value==null){
-                continue;
+        final boolean isLock = this.getLock(lockKey, 1000);
+        try {
+            if (!isLock) {
+                return result;
             }
-            result.add(value);
+            for (int i = 0; i < size; i++) {
+                V value = this.listRightPop(key);
+                if (value == null) {
+                    continue;
+                }
+                result.add(value);
+            }
+        } finally {
+            if(isLock) this.releaseLock(lockKey);
         }
-        this.releaseLock(lockKey);
         return result;
     }
 
