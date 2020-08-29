@@ -223,7 +223,7 @@ public class RedisUtil {
     public <V> List<V> listRightPopAll(final String key, Long size) {
         List<V> result = new ArrayList<>();
         final String lockKey = key + "_lock";
-        boolean isLock = this.getLock(key + "_lock", 1000);
+        boolean isLock = this.getLock(lockKey, 1000);
         if (!isLock) {
             return result;
         }
