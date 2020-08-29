@@ -25,7 +25,8 @@ public class QuartzService {
     @PostConstruct
     public void startScheduler() {
         try {
-            scheduler.start();
+            scheduler.startDelayed(10);
+//            scheduler.start();
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
         }
