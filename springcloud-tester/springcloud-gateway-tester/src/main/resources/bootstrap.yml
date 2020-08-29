@@ -27,7 +27,7 @@ spring:
         #ip-address: ${spring.cloud.client.ip-address}
         ip-address: ${system_config_consul_instance_ip:${spring.cloud.client.ip-address}}
         #服务的请求端口
-        port: ${system_config_consul_instance_port:${server.port}}
+        port: ${system_config_consul_instance_port:${server.port}} #ssl的时候这个一定system_config_consul_instance_port要配置！
         health-check-path: /monitor/health
       config:
         enabled: true
@@ -67,6 +67,13 @@ spring:
 jasypt:
   encryptor:
     password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！
+server:
+  ssl:
+    enabled: ${system.ssl.enabled:false}
+    key-store-password: ENC(URpieK0FYMtvbTompqehWlu1wpyni8G3arBS8+nF5fQbDMmwar+5hsGuBUvqDRbr)             # 腾讯云申请生成证书时填写的密码，如果申请时没有填写，name下载的证书文件家中会包括一个keystorePass.txt文件，里面就是密码
+    key-store: "classpath:4367958_rcm3.coinr.pro.pfx"     # 我自己进行了文件重命名
+    key-store-type: PKCS12
+#    key-alias: netty
 system:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver

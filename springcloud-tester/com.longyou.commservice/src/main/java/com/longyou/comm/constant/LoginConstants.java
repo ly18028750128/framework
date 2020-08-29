@@ -12,7 +12,7 @@ public final class LoginConstants {
      * 登录方式配置，数据字典的key对应此值
      */
     public static enum LoginType implements BasicEnum {
-
+        BACKGROUND("background", "后台登录", "后台登录"),
         WEIXIN_MICROAPP("LOGIN-BY-WEIXIN-MICROAPP", "微信小程序登录", "微信小程序登录"),
         WEIXIN_SCANN_CODE("LOGIN-BY-WEIXIN-SCANN-CODE", "微信扫码登录", "微信扫码登录"),
         THIRD_LOGIN("LOGIN-BY-THIRD-LOGIN", "第三方登录校验，仅生成用户和返回token，校验过程在第三方实现", "第三方登录校验，仅生成用户和返回token，校验过程在第三方实现"),

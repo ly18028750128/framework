@@ -40,7 +40,7 @@ public class JasyptTest {
         passwordMap.put("root", "root");
         passwordMap.put("rcm3pro", "rcm3pro");
         passwordMap.put("admin", "admin");
-
+        passwordMap.put("9PRKmKQo", "9PRKmKQo");
 
         for (String key : passwordMap.keySet()) {
             String encryptStr = stringEncryptor.encrypt(passwordMap.get(key));

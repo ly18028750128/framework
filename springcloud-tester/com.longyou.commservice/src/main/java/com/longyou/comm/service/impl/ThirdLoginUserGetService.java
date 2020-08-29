@@ -4,6 +4,7 @@ package com.longyou.comm.service.impl;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -24,6 +25,7 @@ import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
 
 
 @Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "LOGIN-BY-THIRD-LOGIN")
+@Slf4j
 public class ThirdLoginUserGetService implements LoginUserGetInterface {
 
     @Value("${spring.security.salt-password:}")
@@ -45,7 +47,12 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
     @Transactional
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
-        final String realUserName = RsaUtil.single().decrypt(loginUserGetParamsDTO.getUserName(), rsaKeys.get(1));
+        String realUserName = loginUserGetParamsDTO.getUserName();
+        try{
+            realUserName = RsaUtil.single().decrypt(realUserName, rsaKeys.get(1));
+        }catch (Exception e){
+            log.error("解密失败，按明文用户处理！");
+        }
         final String password = MD5Encoder.encode(loginUserGetParamsDTO.getPassword(), salt);  // 先用用户名做校验
         final String appName = loginUserGetParamsDTO.getMicroServiceName();
         loginUserGetParamsDTO.setUserName(realUserName);
