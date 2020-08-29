@@ -10,10 +10,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -187,13 +184,13 @@ public class RedisUtil {
     public <K, V> Map.Entry<K, V> hashGetLastEntry(final String key) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         Map<K, V> entries = (Map<K, V>) operations.entries(key);
-        return (Map.Entry<K, V>)entries.entrySet().stream().toArray()[entries.entrySet().size()-1];
+        return (Map.Entry<K, V>) entries.entrySet().stream().toArray()[entries.entrySet().size() - 1];
     }
 
     public <K, V> Map.Entry<K, V> hashGetFirstEntry(final String key) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         Map<K, V> entries = (Map<K, V>) operations.entries(key);
-        return (Map.Entry<K, V>)entries.entrySet().stream().toArray()[0];
+        return (Map.Entry<K, V>) entries.entrySet().stream().toArray()[0];
     }
 
     public <V> List<V> hashGet(final String key, Collection<String> fields) {
@@ -201,7 +198,7 @@ public class RedisUtil {
         return operations.multiGet(key, fields);
     }
 
-    public Long listRightPushAll(final String key, Collection<Object> values, Long expireTime) {
+    public <V> Long listRightPushAll(final String key, Collection<V> values, Long expireTime) {
         ListOperations<String, Object> operations = redisTemplate.opsForList();
         if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
@@ -209,8 +206,8 @@ public class RedisUtil {
         return operations.rightPushAll(key, values);
     }
 
-    public Long listLeftPushAll(final String key, Collection<Object> values, Long expireTime) {
-        ListOperations<String, Object> operations = redisTemplate.opsForList();
+    public <V> Long listLeftPushAll(final String key, Collection<V> values, Long expireTime) {
+        ListOperations<String, V> operations = redisTemplate.opsForList();
         if (expireTime > 0) {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
@@ -221,6 +218,29 @@ public class RedisUtil {
     public <V> V listRightPop(final String key) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         return operations.rightPop(key);
+    }
+
+    public <V> List<V> listRightPopAll(final String key, Long size) {
+        List<V> result = new ArrayList<>();
+        final String lockKey = key + "_lock";
+        boolean isLock = this.getLock(key + "_lock", 1000);
+        if (!isLock) {
+            return result;
+        }
+        for (int i = 0; i < size; i++) {
+            V value = this.listRightPop(key);
+            if(value==null){
+                continue;
+            }
+            result.add(value);
+        }
+        this.releaseLock(lockKey);
+        return result;
+    }
+
+    public Long listSize(final String key) {
+        ListOperations<String, Object> operations = redisTemplate.opsForList();
+        return operations.size(key);
     }
 
     public <V> V listLeftPop(final String key) {
@@ -250,5 +270,23 @@ public class RedisUtil {
         return operations.leftPop(key, timeout, TimeUnit.MILLISECONDS);
     }
 
+    private final String locker_prefix_name = "system:locker:";
+
+    /**
+     * 获得锁
+     */
+    public boolean getLock(String lockId, long millisecond) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(locker_prefix_name + lockId, "lock", millisecond, TimeUnit.MILLISECONDS);
+        return success != null && success;
+    }
+
+    /**
+     * 释放锁
+     *
+     * @param lockId
+     */
+    public void releaseLock(String lockId) {
+        redisTemplate.delete(locker_prefix_name + lockId);
+    }
 
 }

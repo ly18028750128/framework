@@ -34,8 +34,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-        RequestContextManager.single().setRequestContext(requestContext);
-
         boolean isExcludeUri = false;
         if (excludedAuthPages != null && excludedAuthPages.size() != 0) {
             for (String exclude : excludedAuthPages) {
@@ -46,16 +44,18 @@ public class SecurityFilter extends OncePerRequestFilter {
                 }
             }
         }
-
         if (isExcludeUri) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
+            RequestContextManager.single().setRequestContext(requestContext);
             return;
         }
-
-        LoginUserDetails user = CommonUtil.single().getLoginUser();
+        // 增加上下文的user的处理
+        final LoginUserDetails user = CommonUtil.single().getLoginUser();
         if (user != null) {
             requestContext.setUser(user);
         }
+        RequestContextManager.single().setRequestContext(requestContext);
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
