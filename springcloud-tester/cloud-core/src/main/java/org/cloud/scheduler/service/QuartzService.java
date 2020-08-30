@@ -25,7 +25,7 @@ public class QuartzService {
     @PostConstruct
     public void startScheduler() {
         try {
-            scheduler.startDelayed(10);
+            scheduler.startDelayed(30);
 //            scheduler.start();
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
@@ -42,8 +42,7 @@ public class QuartzService {
      * @param jobTimes     运行的次数 （<0:表示不限次数）
      * @param jobData      参数
      */
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime,
-                       int jobTimes, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
 
         // 任务名称和组构成任务key
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
@@ -56,8 +55,7 @@ public class QuartzService {
             scheduleBuilder.withRepeatCount(jobTimes);
         }
 
-        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
-                .withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
+        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName).withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
         trigger = triggerBuilder.build();
 
@@ -83,9 +81,7 @@ public class QuartzService {
      * @param jobTime      时间表达式 （如：0/5 * * * * ? ）
      * @param jobData      参数
      */
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName,
-                       String jobGroupName, String jobTime, Map<String, ?> jobData,
-                       Boolean isStartNow) throws Exception {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
 
         // 创建jobDetail实例，绑定Job实现类
         // 指明job的名称，所在组的名称，以及绑定job类
@@ -94,9 +90,7 @@ public class QuartzService {
         // 定义调度触发规则
         // 使用cornTrigger规则
         // 触发器key
-        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
-                .withDescription(getDescription(jobData)).startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
-                .withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
+        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName).withDescription(getDescription(jobData)).startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
 
         Trigger trigger = triggerBuilder.build();
 
@@ -122,8 +116,7 @@ public class QuartzService {
      * @param jobGroupName
      * @param jobTime
      */
-    public void updateJob(String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData,
-                          Boolean isStartNow) throws Exception {
+    public void updateJob(String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
 
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(triggerKey);
@@ -162,8 +155,7 @@ public class QuartzService {
      * @param jobTimes
      * @throws Exception
      */
-    public void updateJob(String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData,
-                          Boolean isStartNow) throws Exception {
+    public void updateJob(String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(triggerKey);
         if (!(trigger instanceof SimpleTrigger)) {
