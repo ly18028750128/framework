@@ -23,6 +23,9 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
         if (mongoTemplate == null) {
             mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         } else {
+            if ("DEBUG".equals(eventObject.getLevel().toString())) {
+                return;
+            }
             String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();
             final BasicDBObject doc = new BasicDBObject();
             doc.append("level", eventObject.getLevel().toString());
