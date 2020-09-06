@@ -70,10 +70,10 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             String token = Base64.getEncoder().encodeToString(authValue.toString().getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
-                loginUserDetails.setToken(token);
                 // 缓存当前登录用户的登录信息
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic " + token), userDetails, timeSaltChangeInterval);
                 loginUserDetails.setPassword("***********");
+                loginUserDetails.setToken(token);
             }
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
             wsResponse.setResult(userDetails);
