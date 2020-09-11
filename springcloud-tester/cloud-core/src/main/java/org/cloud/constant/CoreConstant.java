@@ -72,7 +72,7 @@ public final class CoreConstant {
     public final static String _USER_TYPE_DEFAULT_VALUE = "admin";
     public final static String _REDIS_USER_SUCCESS_TOKEN_PREFIX = "USER:LOGIN:SUCCESS:CACHE:NANCE:";
     public final static String _BASIC64_TOKEN_USER_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:USER:"; // 登录成功后的用户信息
-    public final static String USER_LOGIN_SUCCESS_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:USERINFO:"; // 用户的详细信息按id缓存,包含用户权限点等信息。
+    public final static String USER_LOGIN_SUCCESS_CACHE_KEY = "USER:LOGIN:SUCCESS:CACHE:"; // 用户的详细信息按id缓存,包含用户权限点等信息。
 
     // rest服务返回值处理，可以继续增加
     public static enum UserCacheKey implements BasicEnum {
