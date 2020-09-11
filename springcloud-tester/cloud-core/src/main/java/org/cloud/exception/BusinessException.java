@@ -22,10 +22,16 @@ public class BusinessException extends Exception {
         this.httpStatus = 400;
     }
 
+    public BusinessException(String message, Throwable cause, int httpStatus) {
+        super(message, cause);
+        this.httpStatus = httpStatus;
+    }
+
     public BusinessException(String message, Object errObject, int httpStatus) {
         this.message = message;
         this.errObject = errObject;
         this.httpStatus = httpStatus;
     }
+
 
 }
