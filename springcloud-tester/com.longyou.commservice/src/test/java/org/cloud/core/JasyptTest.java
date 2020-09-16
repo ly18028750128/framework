@@ -33,18 +33,17 @@ public class JasyptTest {
 
 
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("mysql", "isI17^2jM11oP*a2#1qq");
-        passwordMap.put("mongodb", "chuangkekongjian309Mongodb@)20");
-        passwordMap.put("Redis", "chuangkekongjian309Redis@)20");
-        passwordMap.put("consul", "chuangkekongjian309Consul@)20");
-        passwordMap.put("root", "root");
-        passwordMap.put("rcm3pro", "rcm3pro");
-        passwordMap.put("admin", "admin");
-        passwordMap.put("9PRKmKQo", "9PRKmKQo");
+        passwordMap.put("kuangji-mongodb用户", "admin");
+        passwordMap.put("kuangji-mongodb密码", "");
+        passwordMap.put("kuangji-mysql用户", "root");
+        passwordMap.put("kuangji-mysql密码", "");
+        passwordMap.put("kuangji-Redis密码", "");
+
+
 
         for (String key : passwordMap.keySet()) {
             String encryptStr = stringEncryptor.encrypt(passwordMap.get(key));
-            log.info("{},{}={}", key, passwordMap.get(key), encryptStr);
+            log.info("{}\t{}\t{}", key, passwordMap.get(key), encryptStr);
 
             Assert.assertEquals(passwordMap.get(key), stringEncryptor.decrypt(encryptStr));
 
