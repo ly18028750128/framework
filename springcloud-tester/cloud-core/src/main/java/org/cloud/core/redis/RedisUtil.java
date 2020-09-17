@@ -281,11 +281,25 @@ public class RedisUtil {
      */
     public <V> V listLeftPop(final String key, Long timeout) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
+
         return operations.leftPop(key, timeout, TimeUnit.MILLISECONDS);
     }
 
-    private final String locker_prefix_name = "system:locker:";
+    /**
+     * 根据列表起始结束为止获取数据
+     * @param key
+     * @param start
+     * @param end
+     * @param <V>
+     * @return
+     */
+    public <V> List<V> listLRange(final String key, int start, int end){
+        ListOperations<String, V> operations = redisTemplate.opsForList();
+        List<V> list = operations.range(key, start, end);
+        return list;
+    }
 
+    private final String locker_prefix_name = "system:locker:";
     /**
      * 获得锁
      */
