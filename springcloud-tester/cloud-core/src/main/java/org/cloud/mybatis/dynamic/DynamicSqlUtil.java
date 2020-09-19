@@ -1,6 +1,7 @@
 package org.cloud.mybatis.dynamic;
 
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -9,6 +10,7 @@ import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.scripting.xmltags.XMLScriptBuilder;
 import org.cloud.exception.BusinessException;
 import org.cloud.mongo.DataInterFaceVO;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.DynamicSqlQueryParamsVO;
 import org.cloud.vo.JavaBeanResultMap;
@@ -50,12 +52,21 @@ public final class DynamicSqlUtil {
         return dataInterFaceVO.getUrlOrSqlContent();
     }
 
-    public Page<?> listData(String md5, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+    /**
+     * 根据后台的数据接口定义查询数据，不分页
+     *
+     * @param md5
+     * @param dynamicSqlQueryParamsVO
+     * @return
+     * @throws Exception
+     */
+    public Page<JavaBeanResultMap<Object>> listData(String md5, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
         return listDataBySqlContext(this.getListSql(md5), dynamicSqlQueryParamsVO);
     }
 
+
     /**
-     * 根据SQL内容查询列表
+     * 根据SQL内容查询列表，不分页
      *
      * @param sqlContext
      * @param dynamicSqlQueryParamsVO
@@ -70,10 +81,40 @@ public final class DynamicSqlUtil {
         return dynamicSqlMapper.list(localSql.get(), dynamicSqlQueryParamsVO.getParams());
     }
 
-    public PageInfo<?> pagedData(String md5, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
+    public <T> T getSingleDataVO(String sqlContext, final DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO, Class<T> cls) throws Exception {
+        Page<JavaBeanResultMap<Object>> resultMaps = this.listDataBySqlContext(sqlContext, dynamicSqlQueryParamsVO);
+
+        if (CollectionUtil.single().isEmpty(resultMaps)) {
+            return null;
+        }
+        return JSON.parseObject(JSON.toJSONString(resultMaps.get(0)), cls);
+
+    }
+
+    /**
+     * 根据dataInterfacevo的查询配置列表，分页
+     *
+     * @param md5
+     * @param pageNum
+     * @param pageSize
+     * @param dynamicSqlQueryParamsVO
+     * @return
+     * @throws Exception
+     */
+    public PageInfo<JavaBeanResultMap<Object>> pagedData(String md5, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
         return pagedDataBySqlContext(this.getListSql(md5), pageNum, pageSize, dynamicSqlQueryParamsVO);
     }
 
+    /**
+     * 根据sql内容查询配置，分页
+     *
+     * @param sqlContext
+     * @param pageNum
+     * @param pageSize
+     * @param dynamicSqlQueryParamsVO
+     * @return
+     * @throws Exception
+     */
     public PageInfo<JavaBeanResultMap<Object>> pagedDataBySqlContext(String sqlContext, int pageNum, int pageSize, DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO) throws Exception {
         createDynamicSqlBySqlContext(sqlContext, dynamicSqlQueryParamsVO.getParams());
         if (StringUtils.isEmpty(dynamicSqlQueryParamsVO.getSorts())) {

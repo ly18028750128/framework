@@ -111,6 +111,42 @@ public final class CoreConstant {
         }
     }
 
+    public final static String _MFA_HEADER_NAME = "x-header-mfa-value"; // mfa参数头名称
+    public final static String _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME"; // 谷歌密钥存储在user_ref表里的属性名称
+
+    // 双因子校验方式，默认为GOOGLE，验证，
+    public static enum mfaAutoType implements BasicEnum {
+
+        GOOGLE("GOOGLE", "谷歌验证码", ""),
+        SMS("SMS", "短信验证码", "")
+        ;
+
+        private String key;     // 值
+        private String statusName;  // 名称和描述
+        private String i18nValue;  // 国际化
+
+        mfaAutoType(String key, String statusName, String i18nValue) {
+            this.key = key;
+            this.statusName = statusName;
+            this.i18nValue = i18nValue;
+        }
+
+        @Override
+        public String value() {
+            return this.key;
+        }
+
+        @Override
+        public String i18nValue() {
+            return i18nValue;
+        }
+
+        @Override
+        public String description() {
+            return this.statusName;
+        }
+    }
+
     // 改动后所有的basic64验证将全部失效！！！！,也可以通过system.auth_basic64_split配置覆盖这个值
     public final static String _USER_BASIC64_SPLIT_STR = "%a1b2c0k3d4y8%";
 
