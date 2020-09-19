@@ -40,7 +40,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     RedisUtil redisUtil;
 
     @Value("${system.validate.check:true}")  // 校验码开关，开发环境时可以关闭
-            Boolean isValidateCode;
+    Boolean isValidateCode;
 
     /**
      * 通过用户名获取登录用户信息
@@ -110,14 +110,16 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         } else {
             loginUserGetParamsDTO.setUserName(username);
             final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+            if (userDetails == null) {
+                return Mono.empty();
+            }
             return Mono.just(userDetails);
         }
-
-
     }
 
     /**
      * 校验验证码
+     *
      * @param swe
      * @param formData
      * @return
@@ -143,6 +145,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
     /**
      * 获取用户名
+     *
      * @param loginUserGetParamsDTO 登录用户获取参数
      * @return
      */

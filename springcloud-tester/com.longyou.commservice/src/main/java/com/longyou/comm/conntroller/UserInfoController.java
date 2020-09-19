@@ -8,14 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.exception.BusinessException;
-import org.cloud.feign.FeignTracerConfiguration;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
