@@ -110,6 +110,9 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         } else {
             loginUserGetParamsDTO.setUserName(username);
             final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+            if(userDetails==null){
+                return Mono.empty();
+            }
             return Mono.just(userDetails);
         }
 

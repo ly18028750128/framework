@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.LoginConstants;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
@@ -58,11 +59,10 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             final String userBasic64Random = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(), "天下无双");
             final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
-            final long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
+            long timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
             // 获取解密分隔符的处理
             final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
-            // 将token加盐的值放到redis缓存中
-            redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);
+
             // 分隔userName, 备注用户名和密码不能包含 ：
             final StringBuffer authValue = new StringBuffer(userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random));
             // 将token加盐的key增加到尾部
@@ -70,11 +70,17 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             String token = Base64.getEncoder().encodeToString(authValue.toString().getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
+                // 如果是后台管理用户，那么超时时间为60分钟
+                if (LoginConstants.REGIST_SOURCE_BACKGROUND.equals(loginUserDetails.getUserRegistSource())) {
+                    timeSaltChangeInterval = 60 * 60L;
+                }
                 // 缓存当前登录用户的登录信息
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic " + token), userDetails, timeSaltChangeInterval);
                 loginUserDetails.setPassword("***********");
                 loginUserDetails.setToken(token);
             }
+            // 将token加盐的值放到redis缓存中
+            redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
             wsResponse.setResult(userDetails);
             dataBytes = mapper.writeValueAsBytes(wsResponse);
