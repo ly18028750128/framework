@@ -73,6 +73,11 @@ public class TFrameUser implements Serializable {
 
     private String mobilePhone;
 
+    /**
+     * 头像
+     */
+    private String avatar;
+
     private List<TFrameUserRole> frameUserRoleList = new ArrayList<>();
 
     private boolean updated = false;
