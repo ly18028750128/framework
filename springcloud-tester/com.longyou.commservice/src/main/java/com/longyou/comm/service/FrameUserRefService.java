@@ -1,12 +1,13 @@
 package com.longyou.comm.service;
 
+import com.github.pagehelper.Page;
 import com.longyou.comm.model.TFrameUserRef;
 import com.longyou.comm.vo.FrameUserRefVO;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TFrameUser;
+import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 
-import java.util.List;
 
 public interface FrameUserRefService {
 
@@ -18,9 +19,9 @@ public interface FrameUserRefService {
 
     ResponseResult userUpdate(FrameUserRefVO vo) throws BusinessException;
 
-    TFrameUser selectUserList(Long userId);
+    TFrameUserRef selectUserList(String userId);
 
     int delete(Long id);
 
-    TFrameUserRef select(Long userId);
+    Page<?> select(QueryParamVO queryParamVO);
 }

@@ -1,15 +1,16 @@
 package com.longyou.comm.mapper;
 
+import com.github.pagehelper.Page;
 import com.longyou.comm.model.TFrameUserRef;
 import org.cloud.model.TFrameUser;
-
+import org.cloud.vo.QueryParamVO;
 
 
 public interface TFrameUserRefMapper {
 
     int create(TFrameUserRef userRef);
 
-    TFrameUserRef select(Long userId);
+    Page<TFrameUserRef> select(QueryParamVO queryParamVO);
 
     int nameCount(String name);
 
@@ -17,5 +18,5 @@ public interface TFrameUserRefMapper {
 
     int delete(Long id);
 
-    TFrameUser selectUserRefList(Long userId);
+    TFrameUserRef selectUserRefList(String userId);
 }

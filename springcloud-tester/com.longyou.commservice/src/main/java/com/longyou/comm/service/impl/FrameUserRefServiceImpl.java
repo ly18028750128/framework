@@ -1,5 +1,7 @@
 package com.longyou.comm.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.longyou.comm.mapper.TFrameUserRefMapper;
 import com.longyou.comm.model.TFrameUserRef;
 import com.longyou.comm.service.FrameUserRefService;
@@ -8,6 +10,7 @@ import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TFrameUser;
+import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +33,9 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      */
     @Override
     public ResponseResult create(FrameUserRefVO vo) throws BusinessException {
-        if (vo.getAttributeName() == null) {
-            throw new BusinessException("属性名不能为空");
+        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
+        if (vo.getAttributeName() == null || count >= 1) {
+            throw new BusinessException("属性名重复或为空");
         }
         if (vo.getUserId() == null) {
             throw new BusinessException("用户id不能为空");
@@ -63,10 +67,12 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      */
     @Override
     public ResponseResult userCreate(FrameUserRefVO vo) throws BusinessException {
-        if (vo.getAttributeName() == null) {
-            throw new BusinessException("属性名不能为空");
-        }
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
+        System.out.println(count);
+        if (vo.getAttributeName() == null || count >= 1) {
+            throw new BusinessException("属性名重复或为空");
+        }
         if (loginUserDetails.getId() == null) {
             throw new BusinessException("用户id不能为空");
         }
@@ -99,20 +105,17 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      */
     @Override
     public ResponseResult update(FrameUserRefVO vo) throws BusinessException {
-        if(vo.getId() == null){
-            throw new BusinessException("id不能为空");
-        }
-        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.select(vo.getId());
+        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(vo.getUserId());
         if (tFrameUserRef == null) {
             throw new BusinessException("要修改的id不存在");
         }
         int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
-        System.out.println(count);
         if (count >= 1){
             throw new BusinessException("属性名不能重复");
         }
         TFrameUserRef userRef = new TFrameUserRef();
         userRef.setId(vo.getId());
+        userRef.setUserId(vo.getUserId());
         userRef.setAttributeName(vo.getAttributeName());
         userRef.setAttributeValue(vo.getAttributeValue());
         userRef.setCreateBy(vo.getCreateBy());
@@ -132,7 +135,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
         if(loginUserDetails.getId() == null){
             throw new BusinessException("id不能为空");
         }
-        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.select(loginUserDetails.getId());
+        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(loginUserDetails.getId().toString());
         if (tFrameUserRef == null) {
             throw new BusinessException("要修改的id不存在");
         }
@@ -157,7 +160,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
     }
 
     @Override
-    public TFrameUser selectUserList(Long userId) {
+    public TFrameUserRef selectUserList(String userId) {
         return tFrameUserRefMapper.selectUserRefList(userId);
     }
 
@@ -167,7 +170,8 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
     }
 
     @Override
-    public TFrameUserRef select(Long userId) {
-        return tFrameUserRefMapper.select(userId);
+    public Page<TFrameUserRef> select(QueryParamVO queryParamVO) {
+        PageHelper.startPage(queryParamVO.getPageNum(), queryParamVO.getPageSize());
+        return tFrameUserRefMapper.select(queryParamVO);
     }
 }
