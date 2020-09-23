@@ -1,10 +1,7 @@
 package org.cloud.utils;
 
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +73,24 @@ public final class CollectionUtil {
             return (Object[]) obj;
         }
         return new Object[]{obj};
+    }
+
+    public <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+
+        map.entrySet().stream()
+                .sorted(Map.Entry.<K, V>comparingByValue()
+                        .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+
+    public <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+
+        map.entrySet().stream()
+                .sorted(Map.Entry.<K, V>comparingByKey()
+                        .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
     }
 
 }
