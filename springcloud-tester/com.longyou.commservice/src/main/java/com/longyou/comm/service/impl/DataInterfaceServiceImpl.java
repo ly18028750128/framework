@@ -20,7 +20,6 @@ public class DataInterfaceServiceImpl implements DataInterfaceService {
     @Autowired
     TFrameDataInterfaceParamsMapper tFrameDataInterfaceParamsMapper;
 
-
     @Override
     @Transactional(readOnly = true)
     public Page<TFrameDataInterface> selectPageList(QueryParamVO queryParamVO) {

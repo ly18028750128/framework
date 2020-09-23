@@ -205,8 +205,6 @@
                 and data_name like concat('%',#{params.dataName,jdbcType=VARCHAR},'%')
             </if>
         </where>
-
-
     </select>
 
 
