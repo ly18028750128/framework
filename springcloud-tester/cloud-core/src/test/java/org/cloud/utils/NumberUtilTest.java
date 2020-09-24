@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.stax2.ri.typed.NumberUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
@@ -17,7 +18,7 @@ class NumberUtilTest {
             for (int start = 0; start < 5; start++) {
                 final int startFinal = start;
                 for (int i = 0; i < 1000; i++) {
-                    Set<Integer> result = NumberUtil.single().randomNumberByWeight(randomSize, startFinal, 9);
+                    Set<Integer> result = NumericUtil.single().randomNumberByWeight(randomSize, startFinal, 9);
                     Assert.isTrue(result.size() == randomSize, "随机数的数量不对");
                     result.forEach((value) -> {
                         Assert.isTrue(value >= startFinal && value <= 9, "范围不对");
@@ -53,7 +54,7 @@ class NumberUtilTest {
                 Map<Integer, Integer> totalMap = new LinkedHashMap<>();
                 final int startFinal = start;
                 for (int i = 0; i < execTimes; i++) {
-                    Set<Integer> result = NumberUtil.single().randomNumberByWeight(randomSize, startFinal, end, weightMap, defaultWeight);
+                    Set<Integer> result = NumericUtil.single().randomNumberByWeight(randomSize, startFinal, end, weightMap, defaultWeight);
                     Assert.isTrue(result.size() == randomSize, "随机数的数量不对");
                     result.forEach((value) -> {
                         Assert.isTrue(value >= startFinal && value <= end, "范围不对");
