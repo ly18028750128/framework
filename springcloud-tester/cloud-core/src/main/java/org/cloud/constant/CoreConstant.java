@@ -1,5 +1,8 @@
 package org.cloud.constant;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.text.SimpleDateFormat;
 
 public final class CoreConstant {
@@ -226,6 +229,7 @@ public final class CoreConstant {
 
     public static enum MongoDbLogConfig {
         MONGODB_LOG_SUFFIX("_logbackLogCollection", "日志存储collection后缀"),
+        MONGODB_OPERATE_LOG_SUFFIX("_logbackOperateLogCollection", "操作日志存储collection后缀"),
         CREATE_DATE_FIELD("createDate", "创建日期字段");
         private String value;
         private String desc;
@@ -275,6 +279,38 @@ public final class CoreConstant {
         @Override
         public String description() {
             return this.name;
+        }
+    }
+
+    /**
+     * 操作日志类型
+     */
+    @Getter
+    @AllArgsConstructor
+    public enum OperateLogType implements BasicEnum {
+
+        LOG_TYPE_FRONTEND(1, "前端操作"),
+
+        LOG_TYPE_BACKEND(2, "后台管理操作"),
+        ;
+
+        private int logType;
+
+        private String logTypeDesc;
+
+        @Override
+        public Object value() {
+            return logType;
+        }
+
+        @Override
+        public String description() {
+            return logTypeDesc;
+        }
+
+        @Override
+        public String i18nValue() {
+            return logTypeDesc;
         }
     }
 
