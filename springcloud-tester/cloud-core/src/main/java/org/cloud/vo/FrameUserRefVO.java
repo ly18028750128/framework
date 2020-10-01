@@ -1,4 +1,4 @@
-package com.longyou.comm.vo;
+package org.cloud.vo;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class FrameUserRefVO implements Serializable {
     private static final long serialVersionUID = -4527913620064052583L;
     private Long id;
 
-    private String userId;
+    private Long userId;
 
     private String attributeName;
 

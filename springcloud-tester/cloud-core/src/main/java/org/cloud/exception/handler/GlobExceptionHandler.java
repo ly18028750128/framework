@@ -24,20 +24,32 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseResult handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response) {
-        ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage(e.getMessage());
-        response.setStatus(e.getStatusCode().value());
-        logger.error(CommonUtil.single().getStackTrace(e));
-        return responseResult;
+        return getStringObjectMap(e, response, e.getStatusCode().value());
+    }
+
+    @ExceptionHandler(ServletException.class)
+    public Map<String, Object> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public Map<String, Object> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseResult handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response) {
-        ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage(e.getMessage());
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(CommonUtil.single().getStackTrace(e));
-        return responseResult;
+        return getStringObjectMap(e, response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseResult handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response);
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseResult handlerException(@NotNull Throwable e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -50,31 +62,18 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         return responseResult;
     }
 
-    @ExceptionHandler(ServletException.class)
-    public Map<String, Object> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
+    private ResponseResult getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response, int httpStatus) {
+        if (e.getCause() != null && e.getCause() instanceof BusinessException) {
+            return this.handlerBusinessException((BusinessException) e.getCause(), response);
+        }
         ResponseResult responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        response.setStatus(httpStatus);
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
 
-    @ExceptionHandler(IOException.class)
-    public Map<String, Object> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response) {
-        ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage(e.getMessage());
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(CommonUtil.single().getStackTrace(e));
-        return responseResult;
+    private ResponseResult getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response, HttpStatus.BAD_REQUEST.value());
     }
-
-    @ExceptionHandler(Exception.class)
-    public Map<String, Object> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
-        ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage(e.getMessage());
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        logger.error(CommonUtil.single().getStackTrace(e));
-        return responseResult;
-    }
-
 }

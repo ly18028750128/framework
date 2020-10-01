@@ -5,11 +5,10 @@ import com.github.pagehelper.PageHelper;
 import com.longyou.comm.mapper.TFrameUserRefMapper;
 import com.longyou.comm.model.TFrameUserRef;
 import com.longyou.comm.service.FrameUserRefService;
-import com.longyou.comm.vo.FrameUserRefVO;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
-import org.cloud.model.TFrameUser;
+import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.QueryParamVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class FrameUserRefServiceImpl implements FrameUserRefService {
@@ -27,16 +25,14 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
 
     /**
      * 添加
+     *
      * @param vo
      * @return
      * @throws BusinessException
      */
     @Override
-    public ResponseResult create(FrameUserRefVO vo) throws BusinessException {
-        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
-        if (vo.getAttributeName() == null || count >= 1) {
-            throw new BusinessException("属性名重复或为空");
-        }
+    public Integer create(FrameUserRefVO vo) throws BusinessException {
+
         if (vo.getUserId() == null) {
             throw new BusinessException("用户id不能为空");
         }
@@ -50,17 +46,15 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
             throw new BusinessException("更新通过不能为空");
         }
         TFrameUserRef userRef = new TFrameUserRef();
-        BeanUtils.copyProperties(vo,userRef);
+        BeanUtils.copyProperties(vo, userRef);
         Date date = new Date();
         userRef.setUpdateDate(date);
-        if (tFrameUserRefMapper.create(userRef) > 0) {
-            return new ResponseResult();
-        }
-        throw new BusinessException("创建失败");
+        return tFrameUserRefMapper.create(userRef);
     }
 
     /**
-     *根据当前登陆用户添加
+     * 根据当前登陆用户添加
+     *
      * @param vo
      * @return
      * @throws BusinessException
@@ -68,11 +62,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
     @Override
     public ResponseResult userCreate(FrameUserRefVO vo) throws BusinessException {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
-        System.out.println(count);
-        if (vo.getAttributeName() == null || count >= 1) {
-            throw new BusinessException("属性名重复或为空");
-        }
+
         if (loginUserDetails.getId() == null) {
             throw new BusinessException("用户id不能为空");
         }
@@ -86,8 +76,8 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
             throw new BusinessException("更新通过不能为空");
         }
         TFrameUserRef userRef = new TFrameUserRef();
-        BeanUtils.copyProperties(vo,userRef);
-        userRef.setUserId(loginUserDetails.getId().toString());
+        BeanUtils.copyProperties(vo, userRef);
+        userRef.setUserId(loginUserDetails.getId());
         Date date = new Date();
         userRef.setUpdateDate(date);
         if (tFrameUserRefMapper.create(userRef) > 0) {
@@ -99,6 +89,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
 
     /**
      * 修改
+     *
      * @param vo
      * @return
      * @throws BusinessException
@@ -109,10 +100,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
         if (tFrameUserRef == null) {
             throw new BusinessException("要修改的id不存在");
         }
-        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
-        if (count >= 1){
-            throw new BusinessException("属性名不能重复");
-        }
+
         TFrameUserRef userRef = new TFrameUserRef();
         userRef.setId(vo.getId());
         userRef.setUserId(vo.getUserId());
@@ -132,20 +120,16 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
     @Override
     public ResponseResult userUpdate(FrameUserRefVO vo) throws BusinessException {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        if(loginUserDetails.getId() == null){
+        if (loginUserDetails.getId() == null) {
             throw new BusinessException("id不能为空");
         }
-        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(loginUserDetails.getId().toString());
+        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(loginUserDetails.getId());
         if (tFrameUserRef == null) {
             throw new BusinessException("要修改的id不存在");
         }
-        int count = tFrameUserRefMapper.nameCount(vo.getAttributeName());
-        System.out.println(count);
-        if (count >= 1){
-            throw new BusinessException("属性名不能重复");
-        }
+
         TFrameUserRef userRef = new TFrameUserRef();
-        userRef.setUserId(loginUserDetails.getId().toString());
+        userRef.setUserId(loginUserDetails.getId());
         userRef.setAttributeName(vo.getAttributeName());
         userRef.setAttributeValue(vo.getAttributeValue());
         userRef.setCreateBy(vo.getCreateBy());
@@ -160,7 +144,7 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
     }
 
     @Override
-    public TFrameUserRef selectUserList(String userId) {
+    public TFrameUserRef selectUserList(Long userId) {
         return tFrameUserRefMapper.selectUserRefList(userId);
     }
 

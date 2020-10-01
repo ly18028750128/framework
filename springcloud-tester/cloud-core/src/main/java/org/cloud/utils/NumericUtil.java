@@ -63,18 +63,22 @@ public class NumericUtil {
         }
 
         if (CollectionUtil.single().isNotEmpty(weightMap)) {
-            checkWeightMap(randomSize, weightMap);
             Map<Integer, int[]> mapWeightRange = new LinkedHashMap<>();  // 权重分布
             int weightAccumulate = 0; // 累加所有权重
+            int weightLargerZero = 0;  // 统计大于零的权重数量，如果小于randomSize抛出异常
             for (int startLoop = start; startLoop <= end; startLoop++) {
                 final Integer weight = (weightMap.get(startLoop) == null ? defaultWeight : weightMap.get(startLoop));
                 if (weight > 0) {
                     mapWeightRange.put(startLoop, new int[]{weightAccumulate, weightAccumulate + weight - 1});
                     weightAccumulate += weight;
+                    weightLargerZero++;
+                } else if (weight < 0) {
+                    throw new BusinessException("权重不能小于零！");
                 }
             }
-//            log.info("{}", JSON.toJSONString(mapWeightRange));
-//            log.info("{}", weightAccumulate);
+            if (randomSize > weightLargerZero) {
+                throw new BusinessException("权重设置有问题，导致取数数量大于数据范围，请检查参数！");
+            }
             while (result.size() != randomSize) {
                 int weightRandom = random.nextInt(weightAccumulate);
                 for (Integer key : mapWeightRange.keySet()) {
@@ -93,22 +97,6 @@ public class NumericUtil {
             }
         }
         return result;
-    }
-
-    @SneakyThrows
-    private void checkWeightMap(int randomSize, Map<Integer, Integer> weightMap) {
-        int weightLargerZero = 0;  // 统计大于零的权重数量，如果小于randomSize抛出异常
-        for (Integer iValue : weightMap.values()) {
-            if (iValue < 0) {
-                throw new BusinessException("权重不能小于零！");
-            }
-            if (iValue > 0) {
-                weightLargerZero++;
-            }
-        }
-        if (randomSize > weightLargerZero) {
-            throw new BusinessException("权重设置有问题，导致取数数量大于数据范围，请检查参数！");
-        }
     }
 
     public Set<Integer> randomNumberByWeight(int randomSize, int start, int end, Map<Integer, Integer> weightMap) {

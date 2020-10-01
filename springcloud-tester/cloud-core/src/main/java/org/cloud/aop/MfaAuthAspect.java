@@ -9,26 +9,42 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.cloud.annotation.MfaAuth;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.exception.BusinessException;
+import org.cloud.feign.service.ICommonServiceFeignClient;
 import org.cloud.mybatis.dynamic.DynamicSqlUtil;
+import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.vo.DynamicSqlQueryParamsVO;
+import org.cloud.vo.FrameUserRefVO;
+import org.cloud.vo.JavaBeanResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.List;
+
+import static org.cloud.constant.CoreConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME;
 
 @Aspect
 @Component
 @Slf4j
+@Order(10)
 public class MfaAuthAspect {
     @Value("${spring.application.noGroupName:}")
     private String microName;
     @Autowired
     RedisUtil redisUtil;
+
+    @Autowired
+    ICommonServiceFeignClient commonServiceFeignClient;
 
     @Pointcut("@annotation(org.cloud.annotation.MfaAuth)")
     public void mfaAuth() {
@@ -54,6 +70,7 @@ public class MfaAuthAspect {
         return joinPoint.proceed();
     }
 
+
     /**
      * 校验当前用户的谷歌验证码是否正确
      */
@@ -63,9 +80,29 @@ public class MfaAuthAspect {
         DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO = new DynamicSqlQueryParamsVO();
 
         dynamicSqlQueryParamsVO.getParams().put("userId", user.getId());
-        dynamicSqlQueryParamsVO.getParams().put("userId", user.getId());
+        dynamicSqlQueryParamsVO.getParams().put("attributeName", _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
 
-        DynamicSqlUtil.single().listDataBySqlContext("select * t_frame_user_ref where attribute_name = and  user_id = #{userId,jdbcType=VARCHAR}", dynamicSqlQueryParamsVO);
+        final String sqlForQueryUserGoogleKey = "select * from t_frame_user_ref where attribute_name = #{attributeName,jdbcType=VARCHAR} " +
+                "and  user_id = #{userId,jdbcType=VARCHAR}";
+
+        List<JavaBeanResultMap<Object>> resultMaps = DynamicSqlUtil.single().listDataBySqlContext(sqlForQueryUserGoogleKey, dynamicSqlQueryParamsVO);
+
+        if (CollectionUtil.single().isEmpty(resultMaps)) {
+            // todo 插入谷歌验证属性
+            final String googleKey = GoogleAuthenticatorUtil.single().generateSecretKey();
+            FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
+            frameUserRefVO.setAttributeName(_GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
+            frameUserRefVO.setUserId(user.getId());
+            frameUserRefVO.setAttributeValue(googleKey);
+            frameUserRefVO.setCreateBy("admin");
+            frameUserRefVO.setUpdateBy("admin");
+            frameUserRefVO.setRemark("谷歌验证码");
+            commonServiceFeignClient.addUserRef(frameUserRefVO);
+            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), googleKey, HttpStatus.UNAUTHORIZED.value()); //
+            // 谷歌key
+        }
+
+
     }
 
 }

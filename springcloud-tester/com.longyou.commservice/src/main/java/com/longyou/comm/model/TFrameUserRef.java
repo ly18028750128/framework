@@ -10,7 +10,7 @@ import java.util.Date;
 public class TFrameUserRef implements Serializable {
     private Long id;
 
-    private String userId;
+    private Long userId;
 
     private String attributeName;
 
