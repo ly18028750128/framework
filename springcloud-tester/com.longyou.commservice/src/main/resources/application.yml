@@ -16,3 +16,5 @@ system:
   api:
     inner:
       url-patterns: "/inner/*,/userinfo/getUserByName" #仅内部调用的api接口
+  test:
+    value: 测试值1111
