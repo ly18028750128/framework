@@ -18,7 +18,9 @@ import org.cloud.exception.BusinessException;
 import org.cloud.feign.service.ICommonServiceFeignClient;
 import org.cloud.mybatis.dynamic.DynamicSqlUtil;
 import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.GoogleAuthenticatorUtil;
+import org.cloud.utils.HttpServletUtil;
 import org.cloud.vo.DynamicSqlQueryParamsVO;
 import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.JavaBeanResultMap;
@@ -27,6 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -38,6 +42,7 @@ import static org.cloud.constant.CoreConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_N
 @Slf4j
 @Order(10)
 public class MfaAuthAspect {
+
     @Value("${spring.application.noGroupName:}")
     private String microName;
     @Autowired
@@ -101,6 +106,10 @@ public class MfaAuthAspect {
             throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), googleKey, HttpStatus.UNAUTHORIZED.value()); //
             // 谷歌key
         }
+
+        final String mfaValue = HttpServletUtil.signle().getHttpServlet().getHeader(MfaConstant.MFA_HEADER_NAME.value());
+
+        throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), HttpStatus.UNAUTHORIZED.value());
 
 
     }

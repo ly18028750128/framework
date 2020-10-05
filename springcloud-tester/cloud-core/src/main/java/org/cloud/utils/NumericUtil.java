@@ -1,10 +1,13 @@
 package org.cloud.utils;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.exception.BusinessException;
 
+import java.security.SecureRandom;
 import java.util.*;
 
+@Slf4j
 public class NumericUtil {
 
     private NumericUtil() {
@@ -37,7 +40,7 @@ public class NumericUtil {
      */
     @SneakyThrows
     public Set<Integer> randomNumberByWeight(int randomSize, int start, int end, Map<Integer, Integer> weightMap, int defaultWeight) {
-        Random random = new Random();
+        Random random = new SecureRandom();
         Set<Integer> result = new HashSet<>();
 
         if (randomSize < 1) {
@@ -79,6 +82,7 @@ public class NumericUtil {
             if (randomSize > weightLargerZero) {
                 throw new BusinessException("权重设置有问题，导致取数数量大于数据范围，请检查参数！");
             }
+//            log.info("weightAccumulate={},mapWeightRange={}", weightAccumulate, JSON.toJSONString(mapWeightRange));
             while (result.size() != randomSize) {
                 int weightRandom = random.nextInt(weightAccumulate);
                 for (Integer key : mapWeightRange.keySet()) {
