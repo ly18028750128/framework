@@ -28,6 +28,23 @@ public class NumericUtil {
         return Double.valueOf(Math.ceil((size * 1.00) / (stepSize * 1.00))).intValue();
     }
 
+    public boolean isInteger(String intStr) {
+        try {
+            Integer.parseInt(intStr);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    public boolean isLong(String intStr) {
+        try {
+            Long.parseLong(intStr);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
      * 根据权重取随机值
      *
@@ -118,4 +135,5 @@ public class NumericUtil {
     public Set<Integer> randomNumberByWeight(int randomSize, int end) {
         return this.randomNumberByWeight(randomSize, 0, end);
     }
+
 }

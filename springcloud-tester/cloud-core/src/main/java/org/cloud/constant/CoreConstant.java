@@ -113,7 +113,7 @@ public final class CoreConstant {
             return this.statusName;
         }
     }
-    public final static String _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME"; // 谷歌密钥存储在user_ref表里的属性名称
+
 
     // 双因子校验方式，默认为GOOGLE，验证，
     public static enum mfaAutoType implements BasicEnum {
