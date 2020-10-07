@@ -44,13 +44,13 @@ public class MfaAuthAspect {
         Method method = target.getClass().getMethod(msg.getName(), msg.getParameterTypes());
         final MfaAuth mfaAuthAnnotation = method.getAnnotation(MfaAuth.class);
 
-        // 如果不校验双因子验证那么直接不拦截
+        // 如果不校验双因子验证那么直接不拦截，此处为url强校验开关，每次都要校验。
         if ("false".equals(SystemDicUtil.single().getDicItem("systemConfig", "isMfaVerify"))) {
             return joinPoint.proceed();
         }
 
-        if (CoreConstant.mfaAutoType.GOOGLE.equals(mfaAuthAnnotation.mfaAutoType())) {
-            checkGoogleValidCode();
+        if (CoreConstant.MfaAuthType.GOOGLE.equals(mfaAuthAnnotation.mfaAuthType())) {
+                checkGoogleValidCode();
         } else {
             // todo 其它方式暂时不处理
         }

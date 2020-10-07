@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.feign.service.ICommonServiceFeignClient;
@@ -25,6 +26,8 @@ import java.security.SecureRandom;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
 
 /**
  * google身份验证器，java服务端实现
@@ -179,11 +182,25 @@ public final class GoogleAuthenticatorUtil {
         return commonServiceFeignClient;
     }
 
+    RedisUtil redisUtil;
+
+    private RedisUtil getRedisUtil() {
+        if (redisUtil == null) {
+            redisUtil = SpringContextUtil.getBean(RedisUtil.class);
+        }
+        return redisUtil;
+    }
+
     public String getCurrentUserVerifyKey() throws Exception {
         RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
         LoginUserDetails user = currentRequestContext.getUser();
-        DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO = new DynamicSqlQueryParamsVO();
+        String googleSecret = getRedisUtil().get(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId());
 
+        if (CollectionUtil.single().isNotEmpty(googleSecret)) {
+            return googleSecret;
+        }
+
+        DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO = new DynamicSqlQueryParamsVO();
         dynamicSqlQueryParamsVO.getParams().put("userId", user.getId());
         dynamicSqlQueryParamsVO.getParams().put("attributeName", MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
 
@@ -193,7 +210,7 @@ public final class GoogleAuthenticatorUtil {
         List<JavaBeanResultMap<Object>> resultMaps = DynamicSqlUtil.single().listDataBySqlContext(sqlForQueryUserGoogleKey, dynamicSqlQueryParamsVO);
         //  如果未绑定谷歌验证那么插入谷歌验证属性
         if (CollectionUtil.single().isEmpty(resultMaps)) {
-            final String googleSecret = GoogleAuthenticatorUtil.single().generateSecretKey();
+            googleSecret = GoogleAuthenticatorUtil.single().generateSecretKey();
             FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
             frameUserRefVO.setAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
             frameUserRefVO.setUserId(user.getId());
@@ -202,25 +219,21 @@ public final class GoogleAuthenticatorUtil {
             frameUserRefVO.setUpdateBy("admin");
             frameUserRefVO.setRemark("谷歌验证码");
             getCommonServiceFeignClient().addUserRef(frameUserRefVO);
-
             final Map<String, String> exceptionObject = new LinkedHashMap<>();
-
             exceptionObject.put("description", MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description());
             exceptionObject.put("secret", googleSecret);
             exceptionObject.put("secretQRBarcode", this.getQRBarcode(user.getUsername(), googleSecret));
             exceptionObject.put("secretQRBarcodeURL", this.getQRBarcodeURL(user.getUsername(), "", googleSecret));
-
+            getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), googleSecret, -1L);
             throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), exceptionObject, HttpStatus.BAD_REQUEST.value()); //
             // 谷歌key
         }
-        if (CollectionUtil.single().isEmpty(resultMaps)) {
-            return null;
-        }
-
-        return (String) resultMaps.get(0).get("attributeValue");
+        googleSecret = (String) resultMaps.get(0).get("attributeValue");
+        getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), googleSecret, -1L);
+        return googleSecret;
     }
 
-    public void checkGoogleVerifyCode(String googleSecret) throws BusinessException {
+    public Boolean checkGoogleVerifyCode(String googleSecret) throws BusinessException {
         final String mfaValue = HttpServletUtil.signle().getHttpServlet().getHeader(MfaConstant.MFA_HEADER_NAME.value());
         // 请输入谷歌验证码
         if (CollectionUtil.single().isEmpty(mfaValue)) {
@@ -240,6 +253,7 @@ public final class GoogleAuthenticatorUtil {
             throw new BusinessException(MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.value(),
                     MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.description(), HttpStatus.BAD_REQUEST.value());
         }
+        return true;
     }
 
 }
