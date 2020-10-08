@@ -1,6 +1,7 @@
 package org.cloud.core.redis;
 
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
@@ -16,11 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisUtil {
+    @Getter
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Value("${sys.setting.app.cacheName:}")
     private String cacheName;   //用来区分各个服务
+
 
     /**
      * 批量删除对应的value
@@ -293,11 +296,39 @@ public class RedisUtil {
      * @param <V>
      * @return
      */
-    public <V> List<V> listLRange(final String key, int start, int end){
+    public <V> List<V> listRange(final String key, int start, int end){
         ListOperations<String, V> operations = redisTemplate.opsForList();
         List<V> list = operations.range(key, start, end);
         return list;
     }
+
+    /**
+     *  根据索引获取集合中的元素
+     * @param key
+     * @param index
+     * @param <V>
+     * @return
+     */
+    public <V> V listIndex(final String key, int index){
+        ListOperations<String, V> operations = redisTemplate.opsForList();
+        V value = operations.index(key, index);
+        return value;
+    }
+
+
+    /**
+     *  向集合中指定索引下添加一个新元素，并覆盖当前集合中指定位置的值
+     * @param key
+     * @param index
+     * @param value
+     * @param <V>
+     */
+    public <V> void listSet(final String key, int index, V value){
+        ListOperations<String, V> operations = redisTemplate.opsForList();
+        operations.set(key, index, value);
+    }
+
+
 
     private final String locker_prefix_name = "system:locker:";
     /**
