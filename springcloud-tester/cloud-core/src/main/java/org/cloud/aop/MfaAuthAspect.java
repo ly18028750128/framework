@@ -36,7 +36,6 @@ public class MfaAuthAspect {
 
     @Around("mfaAuth()")
     public Object mfaAuthCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-
         //用的最多通知的签名
         Signature signature = joinPoint.getSignature();
         MethodSignature msg = (MethodSignature) signature;
@@ -50,7 +49,7 @@ public class MfaAuthAspect {
         }
 
         if (CoreConstant.MfaAuthType.GOOGLE.equals(mfaAuthAnnotation.mfaAuthType())) {
-                checkGoogleValidCode();
+            checkGoogleValidCode();
         } else {
             // todo 其它方式暂时不处理
         }

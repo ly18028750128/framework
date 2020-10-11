@@ -2,6 +2,7 @@ package com.longyou.comm.conntroller;
 
 import com.longyou.comm.service.FrameUserRefService;
 import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant;
 import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
@@ -10,6 +11,7 @@ import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +34,7 @@ public class UserMfaController {
      * @throws Exception
      */
     @GetMapping("/checkUserGoogleSecretBindStatus")
-    @SystemResource(value = "checkUserGoogleSecretBindStatus")
+    @SystemResource(value = "checkUserGoogleSecretBindStatus", description = "校验谷歌验证绑定状态")
     public ResponseResult checkUserGoogleSecretBindStatus() throws Exception {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         ResponseResult responseResult = ResponseResult.createSuccessResult();
@@ -62,13 +64,12 @@ public class UserMfaController {
      * @throws Exception
      */
     @GetMapping("/bindUserGoogleSecret")
-    @SystemResource(value = "bindUserGoogleSecret")
+    @SystemResource(value = "bindUserGoogleSecret", description = "绑定谷歌验证")
     public ResponseResult bindUserGoogleSecret() throws Exception {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         FrameUserRefVO frameUserRefVO = frameUserRefService.getUserRefByAttributeName(loginUserDetails.getId(),
                 MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
-        final Map<String, Object> returnData = new LinkedHashMap<>();
         if (frameUserRefVO == null) {
             frameUserRefVO = new FrameUserRefVO();
             frameUserRefVO.setUserId(loginUserDetails.getId());
@@ -85,4 +86,26 @@ public class UserMfaController {
         responseResult.setData(frameUserRefVO);
         return responseResult;
     }
+
+    /**
+     * 重置谷歌验证码绑定状态
+     *
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/resetBindUserGoogleSecretFlag/{userId}")
+    @SystemResource(value = "resetBindUserGoogleSecretFlag", description = "重置谷歌验证码状态", authMethod =
+            CoreConstant.AuthMethod.BYUSERPERMISSION)
+    public ResponseResult resetBindUserGoogleFlag(@PathVariable("userId") Long userId) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        FrameUserRefVO frameUserRefVO = frameUserRefService.getUserRefByAttributeName(userId,
+                MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
+        if (frameUserRefVO != null) {
+            frameUserRefVO.setAttributeValue("false");
+            frameUserRefService.update(frameUserRefVO);
+        }
+        responseResult.setData(frameUserRefVO);
+        return responseResult;
+    }
+
 }

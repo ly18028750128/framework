@@ -3,6 +3,7 @@ package org.cloud.config;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.LoginConstants;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
@@ -61,6 +62,13 @@ public class MfaFilterConfig {
 
             RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
             LoginUserDetails user = currentRequestContext.getUser();
+
+            // 只有需要登录鉴权的接口并且来源为后台注册的用户才需要校验双因子
+            if (user == null || (!LoginConstants.REGIST_SOURCE_BACKGROUND.equals(user.getUserRegistSource()))) {
+                filterChain.doFilter(httpServletRequest, httpServletResponse);
+                return;
+            }
+
             Boolean isValidatePass = redisUtil.get(__MFA_TOKEN_USER_CACHE_KEY + user.getId());
             // 如果规定时间内校验过并且未过期，那么不校验
             if (isValidatePass != null && isValidatePass) {

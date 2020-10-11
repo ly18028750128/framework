@@ -11,10 +11,7 @@ import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.feign.service.ICommonServiceFeignClient;
-import org.cloud.mybatis.dynamic.DynamicSqlUtil;
-import org.cloud.vo.DynamicSqlQueryParamsVO;
 import org.cloud.vo.FrameUserRefVO;
-import org.cloud.vo.JavaBeanResultMap;
 import org.springframework.http.HttpStatus;
 
 import javax.crypto.Mac;
@@ -24,7 +21,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
@@ -200,17 +196,19 @@ public final class GoogleAuthenticatorUtil {
             return googleSecret;
         }
 
-        DynamicSqlQueryParamsVO dynamicSqlQueryParamsVO = new DynamicSqlQueryParamsVO();
-        dynamicSqlQueryParamsVO.getParams().put("userId", user.getId());
-        dynamicSqlQueryParamsVO.getParams().put("attributeName", MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
+        FrameUserRefVO frameUserRefVO =
+                getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
 
-        final String sqlForQueryUserGoogleKey = "select * from t_frame_user_ref where attribute_name = #{attributeName,jdbcType=VARCHAR} " +
-                "and  user_id = #{userId,jdbcType=VARCHAR}";
+        if (frameUserRefVO == null || "false".equals(frameUserRefVO.getAttributeValue())) {
+            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description(),
+                    HttpStatus.BAD_REQUEST.value());
+        }
 
-        List<JavaBeanResultMap<Object>> resultMaps = DynamicSqlUtil.single().listDataBySqlContext(sqlForQueryUserGoogleKey, dynamicSqlQueryParamsVO);
+        frameUserRefVO =
+                getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
         //  如果未绑定谷歌验证那么插入谷歌验证属性
-        if (CollectionUtil.single().isEmpty(resultMaps)) {
-            FrameUserRefVO frameUserRefVO = this.createNewUserRefVO(user);
+        if (CollectionUtil.single().isEmpty(frameUserRefVO)) {
+            frameUserRefVO = this.createNewUserRefVO(user);
             getCommonServiceFeignClient().addUserRef(frameUserRefVO);
             final Map<String, String> exceptionObject = new LinkedHashMap<>();
             exceptionObject.put("description", MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description());
@@ -221,7 +219,7 @@ public final class GoogleAuthenticatorUtil {
             throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), exceptionObject, HttpStatus.BAD_REQUEST.value()); //
             // 谷歌key
         }
-        googleSecret = (String) resultMaps.get(0).get("attributeValue");
+        googleSecret = frameUserRefVO.getAttributeValue();
         getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), googleSecret, -1L);
         return googleSecret;
     }
@@ -252,13 +250,13 @@ public final class GoogleAuthenticatorUtil {
     public FrameUserRefVO createNewUserRefVO(LoginUserDetails loginUserDetails) {
         final String googleSecret = this.generateSecretKey();
         FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
-        frameUserRefVO.setAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
+        frameUserRefVO.setAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
         frameUserRefVO.setUserId(loginUserDetails.getId());
         frameUserRefVO.setAttributeValue(googleSecret);
+        frameUserRefVO.setRemark(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.description());
         frameUserRefVO.setCreateBy("admin");
         frameUserRefVO.setUpdateBy("admin");
         frameUserRefVO.setRemark("谷歌验证码");
-
         return frameUserRefVO;
     }
 
