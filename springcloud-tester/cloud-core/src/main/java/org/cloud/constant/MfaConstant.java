@@ -7,6 +7,7 @@ public enum MfaConstant implements BasicEnum<String> {
     CORRELATION_GOOGLE_VERIFY_CODE_ISNULL("system.mfa.google.code.isnull", "谷歌验证码为空，请输入谷歌验证码", "system.mfa.google.code.isnull"),
     CORRELATION_GOOGLE_VERIFY_CODE_NOT_NUMERIC("system.mfa.google.code.is.not.numeric", "谷歌验证码应该为数字，请输入正确谷歌验证码", "system.mfa.google.code.is.not.numeric"),
     CORRELATION_GOOGLE_VERIFY_FAILED("system.mfa.google.verify.failed", "谷歌验证失败，请输入正确谷歌验证码", "system.mfa.google.verify.failed"),
+    _GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME("GOOGLE_MFA_USER_SECRET_BIND_FLAG", "谷歌验证绑定标识", "system.mfa.google.secret.flag"),
     ;
 
 
@@ -35,5 +36,7 @@ public enum MfaConstant implements BasicEnum<String> {
         return i18nValue;
     }
 
-    public final static String _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME"; // 谷歌密钥存储在user_ref表里的属性名称
+    public final static String _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_KEY"; // 谷歌密钥存储在user_ref表里的属性名称
+//    public final static String _GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_KEY_FLAG"; // 谷歌密钥绑定标识
+
 }

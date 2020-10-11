@@ -210,21 +210,14 @@ public final class GoogleAuthenticatorUtil {
         List<JavaBeanResultMap<Object>> resultMaps = DynamicSqlUtil.single().listDataBySqlContext(sqlForQueryUserGoogleKey, dynamicSqlQueryParamsVO);
         //  如果未绑定谷歌验证那么插入谷歌验证属性
         if (CollectionUtil.single().isEmpty(resultMaps)) {
-            googleSecret = GoogleAuthenticatorUtil.single().generateSecretKey();
-            FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
-            frameUserRefVO.setAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
-            frameUserRefVO.setUserId(user.getId());
-            frameUserRefVO.setAttributeValue(googleSecret);
-            frameUserRefVO.setCreateBy("admin");
-            frameUserRefVO.setUpdateBy("admin");
-            frameUserRefVO.setRemark("谷歌验证码");
+            FrameUserRefVO frameUserRefVO = this.createNewUserRefVO(user);
             getCommonServiceFeignClient().addUserRef(frameUserRefVO);
             final Map<String, String> exceptionObject = new LinkedHashMap<>();
             exceptionObject.put("description", MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description());
-            exceptionObject.put("secret", googleSecret);
-            exceptionObject.put("secretQRBarcode", this.getQRBarcode(user.getUsername(), googleSecret));
-            exceptionObject.put("secretQRBarcodeURL", this.getQRBarcodeURL(user.getUsername(), "", googleSecret));
-            getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), googleSecret, -1L);
+            exceptionObject.put("secret", frameUserRefVO.getAttributeValue());
+            exceptionObject.put("secretQRBarcode", this.getQRBarcode(user.getUsername(), frameUserRefVO.getAttributeValue()));
+            exceptionObject.put("secretQRBarcodeURL", this.getQRBarcodeURL(user.getUsername(), "", frameUserRefVO.getAttributeValue()));
+            getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), frameUserRefVO.getAttributeValue(), -1L);
             throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), exceptionObject, HttpStatus.BAD_REQUEST.value()); //
             // 谷歌key
         }
@@ -254,6 +247,19 @@ public final class GoogleAuthenticatorUtil {
                     MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.description(), HttpStatus.BAD_REQUEST.value());
         }
         return true;
+    }
+
+    public FrameUserRefVO createNewUserRefVO(LoginUserDetails loginUserDetails) {
+        final String googleSecret = this.generateSecretKey();
+        FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
+        frameUserRefVO.setAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME);
+        frameUserRefVO.setUserId(loginUserDetails.getId());
+        frameUserRefVO.setAttributeValue(googleSecret);
+        frameUserRefVO.setCreateBy("admin");
+        frameUserRefVO.setUpdateBy("admin");
+        frameUserRefVO.setRemark("谷歌验证码");
+
+        return frameUserRefVO;
     }
 
 }

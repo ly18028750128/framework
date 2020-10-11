@@ -2,7 +2,6 @@ package com.longyou.comm.conntroller;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.longyou.comm.model.TFrameUserRef;
 import com.longyou.comm.service.FrameUserRefService;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
@@ -40,26 +39,6 @@ public class FrameUserRefController {
         return responseResult;
     }
 
-    /**
-     * 根据当前用户增加
-     *
-     * @param vo
-     * @return
-     * @throws BusinessException
-     */
-    @SystemResource(value = "userCreate", description = "根据当前用户增加", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
-    @RequestMapping(method = RequestMethod.POST, value = "/userCreate")
-    public ResponseResult userCreate(@RequestBody FrameUserRefVO vo) throws BusinessException {
-        LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        TFrameUserRef userRef = frameUserRefService.selectUserList(loginUserDetails.getId());
-        if (userRef == null) {
-            ResponseResult tFrameUserRaf = frameUserRefService.userCreate(vo);
-            ResponseResult responseResult = ResponseResult.createSuccessResult();
-            responseResult.setData(tFrameUserRaf);
-            return new ResponseResult(CoreConstant.RestStatus.SUCCESS.value(), "添加成功");
-        }
-        return new ResponseResult(CoreConstant.RestStatus.NOAUTH.value(), "用户已存在");
-    }
 
     /**
      * 查询
@@ -85,9 +64,8 @@ public class FrameUserRefController {
     @SystemResource(value = "updateUserRef", description = "修改", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/updateUserRef")
     public ResponseResult updateUserRef(@RequestBody FrameUserRefVO vo) throws BusinessException {
-        ResponseResult tFrameUser = frameUserRefService.update(vo);
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        responseResult.setData(tFrameUser);
+        responseResult.setData(frameUserRefService.update(vo));
         return new ResponseResult(CoreConstant.RestStatus.SUCCESS.value(), "修改成功");
     }
 
@@ -101,9 +79,8 @@ public class FrameUserRefController {
     @SystemResource(value = "updateUser", description = "根据当前用户修改", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/updateUser")
     public ResponseResult updateUser(@RequestBody FrameUserRefVO vo) throws BusinessException {
-        ResponseResult tFrameUser = frameUserRefService.userUpdate(vo);
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-        responseResult.setData(tFrameUser);
+        responseResult.setData(frameUserRefService.userUpdate(vo));
         return new ResponseResult(CoreConstant.RestStatus.SUCCESS.value(), "修改成功");
     }
 
@@ -125,7 +102,7 @@ public class FrameUserRefController {
     }
 
     /**
-     * 获取当前登陆用户查询
+     * 获取当前登陆用户查询用户的扩展属性列表
      *
      * @return
      */
@@ -133,13 +110,9 @@ public class FrameUserRefController {
     @RequestMapping(method = RequestMethod.GET, value = "/selectUserRefList")
     public ResponseResult selectUserRefList() {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        if (loginUserDetails != null) {
-            TFrameUserRef tFrameUserRef = frameUserRefService.selectUserList(loginUserDetails.getId());
-            ResponseResult responseResult = ResponseResult.createSuccessResult();
-            responseResult.setData(tFrameUserRef);
-            return responseResult;
-        }
-        return new ResponseResult(CoreConstant.RestStatus.NOAUTH.value(), "未授权");
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(frameUserRefService.selectUserList(loginUserDetails.getId()));
+        return responseResult;
     }
 
 }
