@@ -1,11 +1,10 @@
 package org.cloud.scheduler.service;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.scheduler.controller.QuartzController;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.quartz.QuartzJobBean;
@@ -13,22 +12,23 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @DS("quartz")
 @Lazy
+@Slf4j
 public class QuartzService {
-    final Logger logger = LoggerFactory.getLogger(QuartzService.class);
+
     @Autowired
     private Scheduler scheduler;
 
     @PostConstruct
     public void startScheduler() {
         try {
-            scheduler.startDelayed(30);
-//            scheduler.start();
+            scheduler.startDelayed(60); // 延迟60秒加载
         } catch (SchedulerException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -42,13 +42,24 @@ public class QuartzService {
      * @param jobTimes     运行的次数 （<0:表示不限次数）
      * @param jobData      参数
      */
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, TimeUnit timeUnit, int jobTime, int jobTimes,
+                       Map<String, ?> jobData) throws Exception {
 
         // 任务名称和组构成任务key
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
         // 使用simpleTrigger规则
         Trigger trigger = null;
-        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInSeconds(jobTime);
+        SimpleScheduleBuilder scheduleBuilder;
+
+        if (timeUnit.equals(TimeUnit.MILLISECONDS)) {
+            scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInMilliseconds(jobTime);
+        } else if (timeUnit.equals(TimeUnit.MINUTES)) {
+            scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInMinutes(jobTime);
+        } else if (timeUnit.equals(TimeUnit.HOURS)) {
+            scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInHours(jobTime);
+        } else {
+            scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInSeconds(jobTime);
+        }
 
         // 重复次数大于零
         if (jobTimes > 0) {
