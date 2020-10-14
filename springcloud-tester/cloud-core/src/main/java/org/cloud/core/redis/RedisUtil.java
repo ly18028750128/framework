@@ -209,6 +209,14 @@ public class RedisUtil {
         return operations.rightPushAll(key, values);
     }
 
+    public <V> Long listRightPushAll(final String key, V[] values, Long expireTime) {
+        ListOperations<String, Object> operations = redisTemplate.opsForList();
+        if (expireTime > 0) {
+            redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
+        }
+        return operations.rightPushAll(key, values);
+    }
+
     public <V> Long listLeftPushAll(final String key, Collection<V> values, Long expireTime) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         if (expireTime > 0) {
@@ -263,6 +271,27 @@ public class RedisUtil {
     public <V> V listLeftPop(final String key) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         return operations.leftPop(key);
+    }
+
+    public <V> List<V> listLeftPopAll(final String key, Long size) {
+        List<V> result = new ArrayList<>();
+        final String lockKey = key + "_lock";
+        final boolean isLock = this.getLock(lockKey, 1000);
+        try {
+            if (!isLock) {
+                return result;
+            }
+            for (int i = 0; i < size; i++) {
+                V value = this.listLeftPop(key);
+                if (value == null) {
+                    continue;
+                }
+                result.add(value);
+            }
+        } finally {
+            if(isLock) this.releaseLock(lockKey);
+        }
+        return result;
     }
 
     /**
