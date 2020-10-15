@@ -8,14 +8,15 @@ import com.longyou.comm.service.FrameUserRefService;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.QueryParamVO;
-import org.cloud.vo.ResponseResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Service
 public class FrameUserRefServiceImpl implements FrameUserRefService {
@@ -32,23 +33,18 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      */
     @Override
     public Integer create(FrameUserRefVO vo) throws BusinessException {
-
+        // todo 暂时这样处理，如果已经有属性存在的话，那么直接返回0,并将查询到的vo通过参数返回给调用类
+        FrameUserRefVO frameUserRefVOResult = this.getUserRefByAttributeName(vo.getUserId(), vo.getAttributeName());
+        if (CollectionUtil.single().isNotEmpty(frameUserRefVOResult)) {
+            BeanUtils.copyProperties(frameUserRefVOResult, vo);
+            return 0;
+        }
         if (vo.getUserId() == null) {
             throw new BusinessException("用户id不能为空");
         }
-        if (vo.getAttributeValue() == null) {
-            throw new BusinessException("属性值不能为空");
-        }
-        if (vo.getCreateBy() == null) {
-            throw new BusinessException("创建通过不能为空");
-        }
-        if (vo.getUpdateBy() == null) {
-            throw new BusinessException("更新通过不能为空");
-        }
+        checkInVo(vo);
         TFrameUserRef userRef = new TFrameUserRef();
-        BeanUtils.copyProperties(vo, userRef);
-        Date date = new Date();
-        userRef.setUpdateDate(date);
+        BeanUtils.copyProperties(vo, userRef, new String[]{"createDate", "updateDate"});
         return tFrameUserRefMapper.create(userRef);
     }
 
@@ -60,30 +56,10 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      * @throws BusinessException
      */
     @Override
-    public ResponseResult userCreate(FrameUserRefVO vo) throws BusinessException {
+    public Integer userCreate(FrameUserRefVO vo) throws BusinessException {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-
-        if (loginUserDetails.getId() == null) {
-            throw new BusinessException("用户id不能为空");
-        }
-        if (vo.getAttributeValue() == null) {
-            throw new BusinessException("属性值不能为空");
-        }
-        if (vo.getCreateBy() == null) {
-            throw new BusinessException("创建通过不能为空");
-        }
-        if (vo.getUpdateBy() == null) {
-            throw new BusinessException("更新通过不能为空");
-        }
-        TFrameUserRef userRef = new TFrameUserRef();
-        BeanUtils.copyProperties(vo, userRef);
-        userRef.setUserId(loginUserDetails.getId());
-        Date date = new Date();
-        userRef.setUpdateDate(date);
-        if (tFrameUserRefMapper.create(userRef) > 0) {
-            return new ResponseResult();
-        }
-        throw new BusinessException("创建失败");
+        vo.setUserId(loginUserDetails.getId());
+        return this.update(vo);
     }
 
 
@@ -95,56 +71,21 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
      * @throws BusinessException
      */
     @Override
-    public ResponseResult update(FrameUserRefVO vo) throws BusinessException {
-        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(vo.getUserId());
-        if (tFrameUserRef == null) {
-            throw new BusinessException("要修改的id不存在");
-        }
-
+    public Integer update(FrameUserRefVO vo) throws BusinessException {
         TFrameUserRef userRef = new TFrameUserRef();
-        userRef.setId(vo.getId());
-        userRef.setUserId(vo.getUserId());
-        userRef.setAttributeName(vo.getAttributeName());
-        userRef.setAttributeValue(vo.getAttributeValue());
-        userRef.setCreateBy(vo.getCreateBy());
-        userRef.setRemark(vo.getRemark());
-        userRef.setUpdateBy(vo.getUpdateBy());
-        Date date = new Date();
-        userRef.setUpdateDate(date);
-        if (tFrameUserRefMapper.update(userRef) > 0) {
-            return new ResponseResult();
-        }
-        throw new BusinessException("修改失败");
+        BeanUtils.copyProperties(vo, userRef, new String[]{"createDate", "updateDate"});
+        return tFrameUserRefMapper.update(userRef);
     }
 
     @Override
-    public ResponseResult userUpdate(FrameUserRefVO vo) throws BusinessException {
+    public Integer userUpdate(FrameUserRefVO vo) throws BusinessException {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-        if (loginUserDetails.getId() == null) {
-            throw new BusinessException("id不能为空");
-        }
-        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefList(loginUserDetails.getId());
-        if (tFrameUserRef == null) {
-            throw new BusinessException("要修改的id不存在");
-        }
-
-        TFrameUserRef userRef = new TFrameUserRef();
-        userRef.setUserId(loginUserDetails.getId());
-        userRef.setAttributeName(vo.getAttributeName());
-        userRef.setAttributeValue(vo.getAttributeValue());
-        userRef.setCreateBy(vo.getCreateBy());
-        userRef.setRemark(vo.getRemark());
-        userRef.setUpdateBy(vo.getUpdateBy());
-        Date date = new Date();
-        userRef.setUpdateDate(date);
-        if (tFrameUserRefMapper.update(userRef) > 0) {
-            return new ResponseResult();
-        }
-        throw new BusinessException("修改失败");
+        vo.setUserId(loginUserDetails.getId());
+        return this.update(vo);
     }
 
     @Override
-    public TFrameUserRef selectUserList(Long userId) {
+    public List<TFrameUserRef> selectUserList(Long userId) {
         return tFrameUserRefMapper.selectUserRefList(userId);
     }
 
@@ -158,4 +99,29 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
         PageHelper.startPage(queryParamVO.getPageNum(), queryParamVO.getPageSize());
         return tFrameUserRefMapper.select(queryParamVO);
     }
+
+    @Override
+    public FrameUserRefVO getUserRefByAttributeName(@NotNull Long userId, @NotNull String AttributeName) {
+        TFrameUserRef tFrameUserRef = tFrameUserRefMapper.selectUserRefByAttributeName(userId, AttributeName);
+        if (tFrameUserRef == null) {
+            return null;
+        }
+        FrameUserRefVO frameUserRefVO = new FrameUserRefVO();
+        BeanUtils.copyProperties(tFrameUserRef, frameUserRefVO);
+        return frameUserRefVO;
+    }
+
+
+    private void checkInVo(FrameUserRefVO vo) throws BusinessException {
+        if (vo.getAttributeValue() == null) {
+            throw new BusinessException("属性值不能为空");
+        }
+        if (vo.getCreateBy() == null) {
+            throw new BusinessException("创建人不能为空");
+        }
+        if (vo.getUpdateBy() == null) {
+            throw new BusinessException("更新人不能为空");
+        }
+    }
+
 }

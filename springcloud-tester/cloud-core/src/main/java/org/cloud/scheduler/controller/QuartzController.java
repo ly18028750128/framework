@@ -4,6 +4,7 @@ package org.cloud.scheduler.controller;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.scheduler.service.QuartzService;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.vo.ResponseResult;
 import org.quartz.CronExpression;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -159,7 +161,13 @@ public class QuartzController {
             if (params.get(JobFieldName.JOBTIMES.value()) != null) {
                 jobTimes = Integer.parseInt(params.get(JobFieldName.JOBTIMES.value()).toString());
             }
-            quartzService.addJob(jobClass, jobName, jobGroupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData, isStarNow);
+            TimeUnit timeUnit = null;
+            if (CollectionUtil.single().isEmpty(params.get("timeUnit"))) {
+                timeUnit = TimeUnit.SECONDS;
+            } else {
+                timeUnit = TimeUnit.valueOf(params.get("timeUnit").toString());
+            }
+            quartzService.addJob(jobClass, jobName, jobGroupName, timeUnit, Integer.parseInt(jobTime.toString()), jobTimes, jobData);
         }
     }
 

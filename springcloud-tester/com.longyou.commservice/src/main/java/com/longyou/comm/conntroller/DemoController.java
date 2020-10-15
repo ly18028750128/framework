@@ -13,7 +13,6 @@ public class DemoController {
     @GetMapping("/google/mfa/test")
     @MfaAuth
     public ResponseResult mfaTest() {
-
         return ResponseResult.createSuccessResult();
     }
 

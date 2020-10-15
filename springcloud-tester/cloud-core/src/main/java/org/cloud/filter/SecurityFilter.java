@@ -4,9 +4,8 @@ import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
+import org.cloud.utils.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -21,12 +20,14 @@ import java.util.List;
  * 安全过滤器，获取当前用户的信息，存储在上下文中。缓存到redis缓存中，通过网关登录后获取信息，这个过滤器只做基础的用户信息的上下文的过滤。
  * 及Url是否需要登录的校验，其它的权限过滤将下发到各个应用中去做处理。因为不同的模块的权限管控是不同的。
  */
-@WebFilter(urlPatterns = {"/*"}, filterName = "SecurityFilter", description = "权限安全过滤器，用于获取用户等，如果是netty等非阻塞框架那么不能引用此过滤器")
 public class SecurityFilter extends OncePerRequestFilter {
 
-    //    //security的鉴权排除列表
-    @Value("${spring.security.excludedAuthPages:}")
+    //security的鉴权排除列表
     private List<String> excludedAuthPages;
+
+    public SecurityFilter(List<String> excludedAuthPages){
+        this.excludedAuthPages = excludedAuthPages;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -34,16 +35,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-        boolean isExcludeUri = false;
-        if (excludedAuthPages != null && excludedAuthPages.size() != 0) {
-            for (String exclude : excludedAuthPages) {
-                final PathMatcher pathMathcer = new AntPathMatcher();
-                if (pathMathcer.match(exclude, httpServletRequest.getRequestURI())) {
-                    isExcludeUri = true;
-                    break;
-                }
-            }
-        }
+        boolean isExcludeUri = HttpServletUtil.signle().isExcludeUri(httpServletRequest, excludedAuthPages);
         if (isExcludeUri) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             RequestContextManager.single().setRequestContext(requestContext);
@@ -55,7 +47,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             requestContext.setUser(user);
         }
         RequestContextManager.single().setRequestContext(requestContext);
-
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
