@@ -20,7 +20,16 @@ public final class SystemDicUtil {
     private SystemDicUtil() {
     }
 
-    final RedisUtil redisUtil = SpringContextUtil.getBean(RedisUtil.class);
+    RedisUtil redisUtilService;
+
+    private RedisUtil getRedisUtilService() {
+        if (redisUtilService == null) {
+            redisUtilService = SpringContextUtil.getBean(RedisUtil.class);
+        }
+        return redisUtilService;
+    }
+
+
     private final static SystemDicUtil instance = new SystemDicUtil();
 
 
@@ -39,10 +48,7 @@ public final class SystemDicUtil {
     public List<TSystemDicItem> getDicItemList(String microServiceName, String dicCode, String language) {
 
         List<TSystemDicItem> result = new ArrayList<>();
-        if (redisUtil == null) {
-            return result;
-        }
-        Map<String, List<TSystemDicItem>> itemsMap = redisUtil.hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName, dicCode + _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT);
+        Map<String, List<TSystemDicItem>> itemsMap = getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName, dicCode + _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT);
 
         if (itemsMap == null) {
             return result;
@@ -94,10 +100,10 @@ public final class SystemDicUtil {
      * @return
      */
     public TSystemDicMaster getDic(String microServiceName, String dicCode) {
-        return redisUtil.hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName, dicCode);
+        return getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName, dicCode);
     }
 
     public TSystemDicMaster getDic(String dicCode) {
-        return redisUtil.hashGet(_SYSTEM_DIC_CACHE_KEY + _GENERAL_SYSDIC_NAME, dicCode);
+        return getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + _GENERAL_SYSDIC_NAME, dicCode);
     }
 }
