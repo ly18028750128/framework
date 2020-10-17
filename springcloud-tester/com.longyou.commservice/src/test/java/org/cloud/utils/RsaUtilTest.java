@@ -1,7 +1,9 @@
 package org.cloud.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.longyou.comm.starter.CommonServiceApplication;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.process.ProcessUtil;
 import org.junit.Test;
@@ -31,60 +33,36 @@ public class RsaUtilTest {
 
     @Test
     public void encryptByRedisRsaKey() throws Exception {
-//        final String testStr = "abc123";
-//
-//        final String encryptStr = RsaUtil.single().encryptByRedisRsaKey(testStr);
-//
-//        log.info("encryptStr=" + encryptStr);
-//
-//        final String decryptStr = RsaUtil.single().decryptByRedisRsaKey(encryptStr);
-//
-//        log.info("decryptStr=" + decryptStr);
-//        Assert.assertTrue(testStr.equals(decryptStr));
-
-//        Map<String, Object> params = new HashMap<>();
-//
-//        params.put("username","admin");
-//        params.put("password","123456");
-//        gatewayFeignClient.login(params);
-
-
         List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
-
         for (int i = 0; i < 5; i++) {
             final int j = i;
-            callables.add(new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-                    params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount"+j));
-                    params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
-                    params.add("microServiceName", "unknowaccount");
-                    params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
-                    Map<String, Object> result = LoginUtil.single().login(params);
-                    log.info("{}", result);
-                    return true;
-                }
+            callables.add(() -> {
+                MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+                params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount"+j));
+                params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
+                params.add("microServiceName", "unknowaccount");
+                params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
+                Map<String, Object> result = LoginUtil.single().login(params);
+                log.info("{}", result);
+                return true;
             });
         }
-
         ProcessUtil.single().runCablles(callables);
+    }
 
-
-//        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(params, headers);
-////  执行HTTP请求
-//        ResponseEntity<LoginUserDetails> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, LoginUserDetails.class);
-//
-////        response = null;
-//        Map<String, String> params = new LinkedHashMap<>();
-//        params.put("username", RsaUtil.single().encryptByRedisRsaKey("admin"));
-////        params.put("password", "123456");
-//        params.put("loginType", "LOGIN-BY-THIRD-LOGIN");
-//        LoginUserDetails loginUserDetails =
-//                gatewayFeignClient.login(params);
-//
-//        loginUserDetails = null;
-
+    @Test
+    public void getUserByToken() throws Exception {
+        List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
+        final String token = "YWRtaW46MTg1YjgzZmE5MjdiYzhkMjRhMDg0MGRiMjMzZmVlZWUlYTFiMmMwazNkNHk4JWM2MWM2MTNlNjFhN2QxN2E1ZDUzNDgxNWVlMzdmNDZk";
+        for (int i = 0; i < 5; i++) {
+            final int j = i;
+            callables.add(() -> {
+                LoginUserDetails loginUserDetails = LoginUtil.single().getUserByToken(token);
+                log.info("{}", JSON.toJSONString(loginUserDetails));
+                return true;
+            });
+        }
+        ProcessUtil.single().runCablles(callables);
     }
 
 }
