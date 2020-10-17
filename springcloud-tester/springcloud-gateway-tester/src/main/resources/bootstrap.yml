@@ -47,6 +47,11 @@ spring:
           uri: http://localhost:20040/framework,http://localhost:20050/framework
           predicates:
             - Path=/framework/**
+      #WebSocket转发配置
+        - id: juna-trade-service
+          uri: lb:ws://${spring.application.group:}juna-trade-service     #lb:ws://xxx 表示从注册中心获取路径转发，并且请求协议换成ws
+          predicates:
+            - Path=/${spring.application.group:}juna-trade-service/ws/**
       discovery:
         locator:
           enabled: true   #直接从配置中心获取应用并转发
