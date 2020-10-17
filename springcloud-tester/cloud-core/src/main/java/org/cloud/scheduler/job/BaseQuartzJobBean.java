@@ -11,6 +11,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class BaseQuartzJobBean extends QuartzJobBean {
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -19,6 +20,10 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
     protected String groupName = getClass().getPackage().getName();
     @NotNull
     protected Object jobTime;   // 定时任务的执行时间 如果是字符串，那么表示采用的是cron表达式，如果是整形，那么表示是按时间间隔,单位为秒
+
+    @NotNull
+    protected TimeUnit timeUnit = TimeUnit.SECONDS;  // 默认时间单位为m
+
     @NotNull
     protected Integer jobTimes = -1; // 仅间隔定时任务有效，默认为无限次数
 
@@ -34,7 +39,6 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
 
     protected abstract void init();
 
-
     protected void createJob() {
         try {
             if (!quartzService.isExists(jobName, groupName)) {  // 仅在启动时注册
@@ -42,7 +46,7 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
                 if (jobTime instanceof String) {
                     quartzService.addJob(getClass(), jobName, groupName, (String) jobTime, jobData, false);
                 } else {
-                    quartzService.addJob(getClass(), jobName, groupName, Integer.parseInt(jobTime.toString()), jobTimes, jobData, false);
+                    quartzService.addJob(getClass(), jobName, groupName, timeUnit, Integer.parseInt(jobTime.toString()), jobTimes, jobData);
                 }
             }
         } catch (Exception e) {

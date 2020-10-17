@@ -113,10 +113,10 @@ public final class CoreConstant {
             return this.statusName;
         }
     }
-    public final static String _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME = "GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME"; // 谷歌密钥存储在user_ref表里的属性名称
+
 
     // 双因子校验方式，默认为GOOGLE，验证，
-    public static enum mfaAutoType implements BasicEnum {
+    public static enum MfaAuthType implements BasicEnum {
 
         GOOGLE("GOOGLE", "谷歌验证码", ""),
         SMS("SMS", "短信验证码", "")
@@ -126,7 +126,7 @@ public final class CoreConstant {
         private String statusName;  // 名称和描述
         private String i18nValue;  // 国际化
 
-        mfaAutoType(String key, String statusName, String i18nValue) {
+        MfaAuthType(String key, String statusName, String i18nValue) {
             this.key = key;
             this.statusName = statusName;
             this.i18nValue = i18nValue;
