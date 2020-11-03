@@ -34,10 +34,10 @@ public class JasyptTest {
 
         Map<String, String> passwordMap = new LinkedHashMap<>();
         passwordMap.put("kuangji-mongodb用户", "admin");
-        passwordMap.put("kuangji-mongodb密码", "");
-        passwordMap.put("kuangji-mysql用户", "root");
-        passwordMap.put("kuangji-mysql密码", "");
-        passwordMap.put("kuangji-Redis密码", "");
+        passwordMap.put("kuangji-mongodb密码", "F%OxNMYmaZMW0BB0");
+        passwordMap.put("kuangji-mysql用户", "ruiqi");
+        passwordMap.put("kuangji-mysql密码", "Nhgd72dwg79Gr5rs@");
+        passwordMap.put("kuangji-Redis密码", "Lhdwydmuw2e2r@");
 
 
 
@@ -50,5 +50,7 @@ public class JasyptTest {
 //            log.info("{},{}={}", key, encryptStr, stringEncryptor.decrypt(encryptStr));
         }
     }
+
+
 
 }
