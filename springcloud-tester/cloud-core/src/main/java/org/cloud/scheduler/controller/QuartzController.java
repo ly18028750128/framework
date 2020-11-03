@@ -44,6 +44,7 @@ public class QuartzController {
         JOBDATA("jobData", "定时任务参数，类型为map"),
         DESCRIPTION("description", "描述"),
         JOBSTATUS("jobStatus", "描述"),
+        JOBTYPE("jobType", "任务类型"),
         ;
         private String name;
         private String desc;
