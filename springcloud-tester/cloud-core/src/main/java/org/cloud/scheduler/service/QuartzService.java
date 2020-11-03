@@ -286,10 +286,9 @@ public class QuartzService {
      */
 
     public List<Map<String, Object>> queryAllJob() throws Exception {
-        List<Map<String, Object>> jobList = null;
+        List<Map<String, Object>> jobList = new ArrayList<>();
         GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
         Set<JobKey> jobKeys = scheduler.getJobKeys(matcher);
-        jobList = new ArrayList<Map<String, Object>>();
         for (JobKey jobKey : jobKeys) {
             List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
             for (Trigger trigger : triggers) {
@@ -330,6 +329,14 @@ public class QuartzService {
         map.put(QuartzController.JobFieldName.DESCRIPTION.value(), "触发器[" + trigger.getKey() + "]");
         Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
         map.put(QuartzController.JobFieldName.JOBSTATUS.value(), triggerState.name());
+
+        if (trigger instanceof SimpleTrigger) {
+            map.put(QuartzController.JobFieldName.JOBTYPE.value(), "SimpleTrigger");
+        } else if (trigger instanceof CronTrigger) {
+            map.put(QuartzController.JobFieldName.JOBTYPE.value(), "CronTrigger");
+        } else {
+            map.put(QuartzController.JobFieldName.JOBTYPE.value(), "OtherTrigger");
+        }
         if (trigger instanceof CronTrigger) {
             CronTrigger cronTrigger = (CronTrigger) trigger;
             String cronExpression = cronTrigger.getCronExpression();
@@ -339,7 +346,7 @@ public class QuartzService {
             SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
             map.put("timesTriggered", simpleTrigger.getTimesTriggered());
             map.put("repeatCount", simpleTrigger.getRepeatCount());
-            map.put(QuartzController.JobFieldName.JOBTIME.value(), simpleTrigger.getRepeatInterval() / 1000);
+            map.put(QuartzController.JobFieldName.JOBTIME.value(), simpleTrigger.getRepeatInterval());
         }
         map.put(QuartzController.JobFieldName.JOBDATA.value(), trigger.getJobDataMap());
         map.put("nextFireTime", trigger.getNextFireTime());
