@@ -72,7 +72,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
                 // 如果是后台管理用户，那么超时时间为60分钟
                 if (LoginConstants.REGIST_SOURCE_BACKGROUND.equals(loginUserDetails.getUserRegistSource())) {
-                    timeSaltChangeInterval = 60 * 60L;
+                    timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_background_expire_time",
+                            Long.toString(60 * 60L)));
                 }
                 // 缓存当前登录用户的登录信息
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode("basic " + token), userDetails, timeSaltChangeInterval);
