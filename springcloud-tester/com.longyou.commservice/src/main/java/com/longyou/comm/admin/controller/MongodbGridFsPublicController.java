@@ -31,7 +31,8 @@ public class MongodbGridFsPublicController {
 
 
     @PostMapping("/list/{page}/{pageSize}")
-    public ResponseResult list(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize, @RequestBody Map<String, Object> params) throws Exception {
+    public ResponseResult list(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize,
+                               @RequestBody Map<String, Object> params) throws Exception {
         ResponseResult result = ResponseResult.createSuccessResult();
         final Map<String, Object> metadataQueryParams = new LinkedHashMap<>(); // metadata查询参数
         metadataQueryParams.put(MongoDBEnum.metadataFileAuthRangeFieldName.value(), MongoDBEnum.metadataFileAuthRangePublic.value());
@@ -67,7 +68,9 @@ public class MongodbGridFsPublicController {
     @GetMapping("/showFile")
     public void showFile(@RequestParam("_id") String _id, ServletResponse response) throws Exception {
         GridFSFile gridFSFile = MongoDBUtil.single().getGridFSFileByObjectId(_id);
-        if (gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()).equals(MongoDBEnum.metadataFileAuthRangePublic.value())) {
+        if (gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()).equals(MongoDBEnum.metadataFileAuthRangePublic.value())
+                || gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()).equals(MongoDBEnum.metadataFileAuthRangeResource.value())
+        ) {
             MongoDBUtil.single().downloadOrShowFile(gridFSFile, response, false);
         } else {
             throw new BusinessException("您没有权限查看此文件", null, HttpStatus.UNAUTHORIZED.value());
