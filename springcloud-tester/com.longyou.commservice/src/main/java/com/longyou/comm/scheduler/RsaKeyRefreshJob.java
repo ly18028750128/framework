@@ -18,7 +18,7 @@ public class RsaKeyRefreshJob extends BaseQuartzJobBean {
     protected void init() {
         this.jobName = "定时刷新RSA秘钥";
         jobData.put("description", "定时刷新RSA秘钥，默认60分种一次！");
-        this.jobTime = "0 0/60 * * * ? *";  //10分钟刷新一次
+        this.jobTime = "0 0/59 * * * ? *";  //10分钟刷新一次
     }
 
     @Override
