@@ -22,6 +22,15 @@ public final class RsaUtil {
     private RsaUtil() {
     }
 
+    private RedisUtil redisUtilService;
+
+    public RedisUtil getRedisUtilService() {
+        if (redisUtilService == null) {
+            redisUtilService = SpringContextUtil.getBean(RedisUtil.class);
+        }
+        return redisUtilService;
+    }
+
     private static RsaUtil instance = new RsaUtil();
 
     public static RsaUtil single() {
@@ -98,7 +107,6 @@ public final class RsaUtil {
 
     public String encryptByRedisRsaKey(String str) throws Exception {
         return this.encrypt(str, getRsaKeys().get(0));
-
     }
 
     public String decryptByRedisRsaKey(String str) throws Exception {
@@ -106,12 +114,11 @@ public final class RsaUtil {
     }
 
     public List<String> getRsaKeys() throws Exception {
-        RedisUtil redisUtil = SpringContextUtil.getBean(RedisUtil.class);
-        List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
+        List<String> rsaKeys = getRedisUtilService().get(RSA_KEYS_REDIS_KEY);
         if (rsaKeys == null) {
-            redisUtil.set(RSA_KEYS_REDIS_KEY, this.getRsaKey(1024));
+            getRedisUtilService().set(RSA_KEYS_REDIS_KEY, this.getRsaKey(1024));
         }
-        return redisUtil.get(RSA_KEYS_REDIS_KEY);
+        return getRedisUtilService().get(RSA_KEYS_REDIS_KEY);
     }
 
 
