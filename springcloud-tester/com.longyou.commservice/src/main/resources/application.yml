@@ -9,6 +9,14 @@ pagehelper:
   support-methods-arguments: true
   params:
 system:
+  redisson:
+    enabled: false
+    master-slave-config:
+      password: 1qaz@WSX
+      master-address: redis://192.168.74.128:10004
+      slave-addresses:
+        - redis://192.168.74.128:10005
+      connect-timeout: 5000
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
   config:

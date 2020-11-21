@@ -1,8 +1,9 @@
 logging:
   level:
-    com:
-      longyou:
-        gateway: DEBUG
+    com.longyou.gateway: DEBUG
+    org.springframework.web.servlet.mvc.method: INFO
+    org.springframework.web.server.adapter: INFO
+    org.springframework.web: INFO
 gateway:
   discovery:
     locator:

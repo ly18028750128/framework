@@ -38,7 +38,7 @@ public final class ProcessUtil {
                         listResult.add(future.get());
                     } catch (Exception e) {
                         listResult.add(null);
-                        logger.error(e.getMessage(), e);
+                        logger.error("future.get() err:", e.getMessage());
                     }
                 }
             } catch (InterruptedException e) {

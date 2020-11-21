@@ -22,7 +22,7 @@ public class RedisUtil {
     private RedisTemplate redisTemplate;
 
     @Value("${sys.setting.app.cacheName:}")
-    private String cacheName;   //用来区分各个服务
+    private String cacheName;   //用来区分各个服务，由于缓存的目的是共享的，所以这里实际是无效的
 
 
     /**
