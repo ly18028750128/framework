@@ -55,7 +55,7 @@ public class SystemResourceAspect {
         if (!systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
             if (loginUserDetails == null) {
-                throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "请登录！", null, null, Charset.forName("utf8"));
+                throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), null, null, Charset.forName("utf8"));
             }
             // 校验功能权限！
             if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {

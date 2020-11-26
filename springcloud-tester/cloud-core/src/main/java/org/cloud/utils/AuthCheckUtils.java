@@ -46,7 +46,7 @@ public final class AuthCheckUtils {
         }
         if (!CoreConstant.AuthMethod.NOAUTH.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
-                throw new BusinessException("请先登录！", md5, HttpStatus.UNAUTHORIZED.value());
+                throw new BusinessException(UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), md5, HttpStatus.UNAUTHORIZED.value());
             } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
                 LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
                 Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
