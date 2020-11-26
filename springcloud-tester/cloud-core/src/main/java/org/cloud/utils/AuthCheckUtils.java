@@ -13,9 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.nio.charset.Charset;
 import java.util.Set;
 
 public final class AuthCheckUtils {
@@ -46,13 +44,13 @@ public final class AuthCheckUtils {
         }
         if (!CoreConstant.AuthMethod.NOAUTH.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
-                throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), null, null, Charset.forName("utf8"));
+                throw new BusinessException(UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), UnauthorizedConstant.LOGIN_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
             } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
                 LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
                 Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
                 if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
                     logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
-                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(), null, null, Charset.forName("utf8"));
+                    throw new BusinessException(UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(), UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
                 }
             }
         }
