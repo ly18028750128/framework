@@ -10,7 +10,7 @@ pagehelper:
   params:
 system:
   redisson:
-    enabled: false
+    enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式
     master-slave-config:
       password: 1qaz@WSX
       master-address: redis://192.168.74.128:10004

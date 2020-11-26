@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.UnauthorizedConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -62,7 +63,7 @@ public class SystemResourceAspect {
                 final String functionSetStr = microName + CoreConstant._FUNCTION_SPLIT_STR + classResourceAnnotation.path() + CoreConstant._FUNCTION_SPLIT_STR + systemResource.value();
                 if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)) {
                     log.error(loginUserDetails.getUsername() + ",正在非法的请求：" + functionSetStr);
-                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有操作权限！", null, null, Charset.forName("utf8"));
+                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, UnauthorizedConstant.API_UNAUTHORIZED.value(), null, null, Charset.forName("utf8"));
                 }
             }
         }

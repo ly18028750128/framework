@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.UnauthorizedConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -51,7 +52,7 @@ public final class AuthCheckUtils {
                 Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
                 if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
                     logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
-                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有此接口权限，请联系管理员授权！", null, null, Charset.forName("utf8"));
+                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(), null, null, Charset.forName("utf8"));
                 }
             }
         }
