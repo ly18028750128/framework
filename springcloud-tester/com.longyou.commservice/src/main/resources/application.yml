@@ -9,14 +9,27 @@ pagehelper:
   support-methods-arguments: true
   params:
 system:
-  redisson:
-    enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式
+  redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
+    enabled: true #如果要放开redisson,那么改成true，暂时只支持主从模式
     master-slave-config:
       password: 1qaz@WSX
       master-address: redis://192.168.74.128:10004
       slave-addresses:
         - redis://192.168.74.128:10005
       connect-timeout: 5000
+      database: ${spring.redis.database:0}
+#    cluster-config:
+#      password: 1qaz@WSX
+#      node-addresses:
+#        - redis://192.168.74.128:11001
+#        - redis://192.168.74.128:11002
+#        - redis://192.168.74.128:11003
+#        - redis://192.168.74.128:11004
+#        - redis://192.168.74.128:11005
+#        - redis://192.168.74.128:11006
+#      connect-timeout: 5000
+#      scan-interval: 2000 # 2秒检测下集群的状态
+#      database: ${spring.redis.database:0}
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
   config:
