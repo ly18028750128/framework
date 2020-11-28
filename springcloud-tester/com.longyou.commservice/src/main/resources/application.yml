@@ -8,9 +8,9 @@ pagehelper:
   reasonable: true
   support-methods-arguments: true
   params:
-system:
+system: #这里仅是示例，请在配置中心中配置
   redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
-    enabled: true #如果要放开redisson,那么改成true，暂时只支持主从模式
+    enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式
     master-slave-config:
       password: 1qaz@WSX
       master-address: redis://192.168.74.128:10004
