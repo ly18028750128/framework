@@ -1,8 +1,4 @@
 package org.cloud.config.redisson;
-
-//@Configuration
-//@EnableRedisHttpSession
-
 import lombok.Data;
 import org.cloud.utils.RedissonUtil;
 import org.redisson.Redisson;
