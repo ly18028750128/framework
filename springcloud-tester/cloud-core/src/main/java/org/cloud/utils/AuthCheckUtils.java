@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.UnauthorizedConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -12,9 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.nio.charset.Charset;
 import java.util.Set;
 
 public final class AuthCheckUtils {
@@ -45,13 +44,13 @@ public final class AuthCheckUtils {
         }
         if (!CoreConstant.AuthMethod.NOAUTH.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
-                throw new BusinessException("请先登录！", md5, HttpStatus.UNAUTHORIZED.value());
+                throw new BusinessException(UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), UnauthorizedConstant.LOGIN_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
             } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
                 LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
                 Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
                 if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
                     logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
-                    throw HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "没有此接口权限，请联系管理员授权！", null, null, Charset.forName("utf8"));
+                    throw new BusinessException(UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(), UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
                 }
             }
         }
