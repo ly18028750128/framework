@@ -7,7 +7,6 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import org.redisson.client.codec.BaseCodec;
-import org.redisson.client.handler.State;
 import org.redisson.client.protocol.Decoder;
 import org.redisson.client.protocol.Encoder;
 
@@ -15,7 +14,7 @@ import java.io.IOException;
 
 public class FastjsonCodec extends BaseCodec {
 
-    private final Encoder encoder = in -> {
+    private final Encoder encoder = (in) -> {
         ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
         try {
             ByteBufOutputStream os = new ByteBufOutputStream(out);
@@ -30,13 +29,7 @@ public class FastjsonCodec extends BaseCodec {
         }
     };
 
-    private final Decoder<Object> decoder = new Decoder<Object>() {
-        @Override
-        public Object decode(ByteBuf buf, State state) throws IOException {
-            return JSON.parseObject(new ByteBufInputStream(buf), Object.class);
-        }
-    };
-
+    private final Decoder<Object> decoder = (buf, state) -> JSON.parseObject(new ByteBufInputStream(buf), Object.class);
 
     @Override
     public Decoder<Object> getValueDecoder() {

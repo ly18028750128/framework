@@ -6,6 +6,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.process.ProcessUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.redisson.api.RBlockingQueue;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
@@ -66,6 +67,12 @@ class RedissonUtilTest {
         Assert.isTrue(userDetails.getId() == userDetailsBack.getId(), "获取值不相等！");
         userDetails.setId(102L);
         RedissonUtil.single().hashFastPut(hashName, userDetails.getId(), userDetails);
-
     }
+
+    @Test
+    void blockingQueueTest(){
+        final String blockingQueueName = "junit:hash:test";
+        RBlockingQueue<Integer> rBlockingQueue = RedissonUtil.getRedissonClient().getBlockingQueue(blockingQueueName);
+    }
+
 }
