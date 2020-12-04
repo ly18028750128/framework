@@ -1,9 +1,7 @@
 package org.cloud.utils;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.*;
 import org.springframework.util.Assert;
@@ -18,18 +16,26 @@ public final class RedissonUtil {
 
     private final static RedissonUtil that = new RedissonUtil();
 
-    @Getter
-    private RedissonClient redissonClient;
-
-    public void initRedissonClient(@NotNull final RedissonClient redissonClient) {
-        Assert.isNull(this.redissonClient, "已经初始化，不能再次初始");
-        this.redissonClient = redissonClient;
-    }
-
     public static RedissonUtil single() {
         return that;
     }
 
+    @Getter
+    private static RedissonClient redissonClient;
+
+    public void initRedissonClient(@NotNull final RedissonClient redissonClient) {
+        Assert.isNull(RedissonUtil.redissonClient, "已经初始化，不能再次初始");
+        RedissonUtil.redissonClient = redissonClient;
+    }
+
+    /**
+     * 获取分布式锁
+     *
+     * @param name     锁的名称
+     * @param waitTime 等待时间
+     * @param lockTime 锁定时间
+     * @return
+     */
     public boolean lock(String name, Long waitTime, Long lockTime) {
         return this.lock(name, waitTime, lockTime, TimeUnit.MILLISECONDS);
     }
@@ -59,7 +65,7 @@ public final class RedissonUtil {
             RLock lock = redissonClient.getLock(name);
             return lock.tryLock(waitTime, lockTime, timeUnit);
         } catch (Exception e) {
-            log.error("获取[" + name + "]失败！");
+            log.error("获取[{}}失败！{}", name, e.getMessage());
             return false;
         }
     }
@@ -92,5 +98,15 @@ public final class RedissonUtil {
     public void listAdd(final String name, Object value) {
         RList<Object> rList = redissonClient.getList(name);
         rList.add(value);
+    }
+
+    public void listRemove(final String name, Object value) {
+        RList<Object> rList = redissonClient.getList(name);
+        rList.remove(value);
+    }
+
+    public void listRemove(final String name, int index) {
+        RList<Object> rList = redissonClient.getList(name);
+        rList.remove(index);
     }
 }
