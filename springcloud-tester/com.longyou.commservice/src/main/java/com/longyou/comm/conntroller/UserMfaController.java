@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_CACHE_KEY;
+import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
 
 @RestController
 @RequestMapping("/user/mfa")
@@ -57,6 +58,7 @@ public class UserMfaController {
             returnData.put("secret", frameUserRefVO.getAttributeValue());
             returnData.put("secretQRBarcode", GoogleAuthenticatorUtil.single().getQRBarcode(loginUserDetails.getUsername(), frameUserRefVO.getAttributeValue()));
             returnData.put("secretQRBarcodeURL", GoogleAuthenticatorUtil.single().getQRBarcodeURL(loginUserDetails.getUsername(), "", frameUserRefVO.getAttributeValue()));
+            redisUtil.set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + loginUserDetails.getId(), frameUserRefVO.getAttributeValue());
         }
         responseResult.setData(returnData);
         return responseResult;
