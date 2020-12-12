@@ -196,13 +196,8 @@ public final class GoogleAuthenticatorUtil {
             return googleSecret;
         }
 
-        FrameUserRefVO frameUserRefVO =
-                getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
-
-        if (frameUserRefVO == null || "false".equals(frameUserRefVO.getAttributeValue())) {
-            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description(),
-                    HttpStatus.BAD_REQUEST.value());
-        }
+        verifyCurrentUserBindGoogleKey();
+        FrameUserRefVO frameUserRefVO;
 
         frameUserRefVO =
                 getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
@@ -222,6 +217,18 @@ public final class GoogleAuthenticatorUtil {
         googleSecret = frameUserRefVO.getAttributeValue();
         getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), googleSecret, -1L);
         return googleSecret;
+    }
+    /**
+     * 校验当前用户是否已经绑定谷歌验证码
+     */
+    public void verifyCurrentUserBindGoogleKey() throws BusinessException {
+        FrameUserRefVO frameUserRefVO =
+                getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
+
+        if (frameUserRefVO == null || "false".equals(frameUserRefVO.getAttributeValue())) {
+            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description(),
+                    HttpStatus.BAD_REQUEST.value());
+        }
     }
 
     public Boolean checkGoogleVerifyCode(String googleSecret) throws BusinessException {

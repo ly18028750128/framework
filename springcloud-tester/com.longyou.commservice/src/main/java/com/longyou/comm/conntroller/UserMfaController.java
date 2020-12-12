@@ -115,7 +115,6 @@ public class UserMfaController {
             frameUserRefService.delete(frameUserRefVO.getId());
         }
         redisUtil.remove(__MFA_TOKEN_USER_CACHE_KEY + userId);
-        responseResult.setData(frameUserRefVO);
         return responseResult;
     }
 

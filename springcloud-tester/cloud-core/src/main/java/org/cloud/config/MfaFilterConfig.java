@@ -10,6 +10,7 @@ import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
+import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.utils.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -70,7 +71,13 @@ public class MfaFilterConfig {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
                 return;
             }
-
+            try {
+                GoogleAuthenticatorUtil.single().verifyCurrentUserBindGoogleKey();
+            } catch (BusinessException businessException) {
+                HttpServletUtil.signle().handlerBusinessException(businessException, httpServletResponse);
+                return;
+            }
+            
             Boolean isValidatePass = redisUtil.get(__MFA_TOKEN_USER_CACHE_KEY + user.getId());
             // 如果规定时间内校验过并且未过期，那么不校验
             if (isValidatePass != null && isValidatePass) {
