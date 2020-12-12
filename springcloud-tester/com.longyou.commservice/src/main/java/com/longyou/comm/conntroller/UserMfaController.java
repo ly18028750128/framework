@@ -109,6 +109,7 @@ public class UserMfaController {
             frameUserRefVO.setAttributeValue("false");
             frameUserRefService.update(frameUserRefVO);
         }
+        redisUtil.remove(__MFA_TOKEN_USER_CACHE_KEY + userId);
         responseResult.setData(frameUserRefVO);
         return responseResult;
     }
