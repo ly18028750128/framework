@@ -106,8 +106,13 @@ public class UserMfaController {
         FrameUserRefVO frameUserRefVO = frameUserRefService.getUserRefByAttributeName(userId,
                 MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
         if (frameUserRefVO != null) {
-            frameUserRefVO.setAttributeValue("false");
-            frameUserRefService.update(frameUserRefVO);
+            frameUserRefService.delete(frameUserRefVO.getId());
+        }
+
+        frameUserRefVO = frameUserRefService.getUserRefByAttributeName(userId,
+                MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
+        if (frameUserRefVO != null) {
+            frameUserRefService.delete(frameUserRefVO.getId());
         }
         redisUtil.remove(__MFA_TOKEN_USER_CACHE_KEY + userId);
         responseResult.setData(frameUserRefVO);
