@@ -24,8 +24,8 @@ public class InnerApiFilter extends OncePerRequestFilter {
         if (tracer == null) {
             tracer = SpringContextUtil.getBean(Tracer.class);
         }
-        log.info("tracer.currentSpan().context().traceIdString().id={}", tracer.currentSpan().context().traceIdString());
-        log.info("request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID)={}", httpServletRequest.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID));
+//        log.info("tracer.currentSpan().context().traceIdString().id={}", tracer.currentSpan().context().traceIdString());
+//        log.info("request.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID)={}", httpServletRequest.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID));
         if (!tracer.currentSpan().context().traceIdString().equals(httpServletRequest.getHeader(FeignTracerConfiguration.FEIGN_REQUEST_TRACER_ID))) {
             throw new ServletException("非Feign内部调用，拒绝请求");
         }
