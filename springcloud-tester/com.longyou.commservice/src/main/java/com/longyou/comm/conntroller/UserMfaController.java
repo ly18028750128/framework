@@ -126,15 +126,11 @@ public class UserMfaController {
      * @throws Exception
      */
     @GetMapping("/checkCurrentUserGoogleCode/{mfaValue}")
-    @SystemResource(value = "resetBindUserGoogleSecretFlag", description = "重置谷歌验证码状态", authMethod =
-            CoreConstant.AuthMethod.ALLSYSTEMUSER)
+    @SystemResource(value = "checkCurrentUserGoogleCode", description = "重置谷歌验证码状态", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult checkCurrentUserGoogleCode(@PathVariable String mfaValue) throws Exception {
-
         ResponseResult responseResult = ResponseResult.createSuccessResult();
-
         RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
         LoginUserDetails user = currentRequestContext.getUser();
-
         String googleSecret = GoogleAuthenticatorUtil.single().getCurrentUserVerifyKey();
         final Boolean isValidatePass = GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret, mfaValue);
         redisUtil.set(__MFA_TOKEN_USER_CACHE_KEY + user.getId(), isValidatePass, expiredTime);
