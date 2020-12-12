@@ -9,6 +9,7 @@ public enum MfaConstant implements BasicEnum<String> {
     CORRELATION_GOOGLE_VERIFY_FAILED("system.mfa.google.verify.failed", "谷歌验证失败，请输入正确谷歌验证码", "system.mfa.google.verify.failed"),
     _GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME("GOOGLE_MFA_USER_SECRET_BIND_FLAG", "谷歌验证绑定标识", "system.mfa.google.secret.flag"),
     _GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME("GOOGLE_MFA_USER_SECRET_KEY", "谷歌key", "system.mfa.google.secret.key"),
+    CORRELATION_GOOGLE_NOT_VERIFY_OR_EXPIRE("system.mfa.google.verify.notVerifyOrExpire", "谷歌验证码尚未校验，或者已经过期", "system.mfa.google.verify.notVerifyOrExpire"),
     ;
 
 

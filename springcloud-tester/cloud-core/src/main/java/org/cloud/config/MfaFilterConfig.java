@@ -4,11 +4,12 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants;
+import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.GoogleAuthenticatorUtil;
+import org.cloud.exception.BusinessException;
 import org.cloud.utils.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,6 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -36,7 +38,7 @@ public class MfaFilterConfig {
 
     private List<String> excludeUri;      // 默认为内部调用的url也可以自己添加
     private CoreConstant.MfaAuthType mfaAuthType = CoreConstant.MfaAuthType.GOOGLE;  //默认为google验证
-    private Long expiredTime = 30 * 60L;  // 用户mfa过期时间，默认30分钟
+
 
     @Autowired
     RedisUtil redisUtil;
@@ -73,22 +75,11 @@ public class MfaFilterConfig {
             // 如果规定时间内校验过并且未过期，那么不校验
             if (isValidatePass != null && isValidatePass) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
-                return;
+            } else {
+                BusinessException businessException = new BusinessException(MfaConstant.CORRELATION_GOOGLE_NOT_VERIFY_OR_EXPIRE.value(),
+                        MfaConstant.CORRELATION_GOOGLE_NOT_VERIFY_OR_EXPIRE.description(), HttpStatus.BAD_REQUEST.value());
+                HttpServletUtil.signle().handlerBusinessException(businessException, httpServletResponse);
             }
-
-            try {
-                if (CoreConstant.MfaAuthType.GOOGLE.equals(mfaAuthType)) {
-                    String googleSecret = GoogleAuthenticatorUtil.single().getCurrentUserVerifyKey();
-                    isValidatePass = GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret);
-                    redisUtil.set(__MFA_TOKEN_USER_CACHE_KEY + user.getId(), isValidatePass, expiredTime);
-                } else {
-                    // TODO 处理其它方式的双因子验证
-                }
-            } catch (Exception e) {
-                HttpServletUtil.signle().handlerBusinessException(e, httpServletResponse);
-                return;
-            }
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
     }
 

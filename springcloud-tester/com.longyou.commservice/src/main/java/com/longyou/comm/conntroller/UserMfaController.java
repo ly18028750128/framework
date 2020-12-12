@@ -4,12 +4,15 @@ import com.longyou.comm.service.FrameUserRefService;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.MfaConstant;
+import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_CACHE_KEY;
 
 @RestController
 @RequestMapping("/user/mfa")
@@ -105,6 +110,35 @@ public class UserMfaController {
             frameUserRefService.update(frameUserRefVO);
         }
         responseResult.setData(frameUserRefVO);
+        return responseResult;
+    }
+
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Value("system.mfa.expired-time:1800")
+    Long expiredTime;
+
+    /**
+     * 校验谷歌验证码绑定状态
+     *
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/checkCurrentUserGoogleCode/{mfaValue}")
+    @SystemResource(value = "resetBindUserGoogleSecretFlag", description = "重置谷歌验证码状态", authMethod =
+            CoreConstant.AuthMethod.ALLSYSTEMUSER)
+    public ResponseResult checkCurrentUserGoogleCode(@PathVariable String mfaValue) throws Exception {
+
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+
+        RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
+        LoginUserDetails user = currentRequestContext.getUser();
+
+        String googleSecret = GoogleAuthenticatorUtil.single().getCurrentUserVerifyKey();
+        final Boolean isValidatePass = GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret, mfaValue);
+        redisUtil.set(__MFA_TOKEN_USER_CACHE_KEY + user.getId(), isValidatePass, expiredTime);
+
         return responseResult;
     }
 

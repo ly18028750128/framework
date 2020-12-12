@@ -226,6 +226,10 @@ public final class GoogleAuthenticatorUtil {
 
     public Boolean checkGoogleVerifyCode(String googleSecret) throws BusinessException {
         final String mfaValue = HttpServletUtil.signle().getHttpServlet().getHeader(MfaConstant.MFA_HEADER_NAME.value());
+        return checkGoogleVerifyCode(googleSecret, mfaValue);
+    }
+
+    public Boolean checkGoogleVerifyCode(String googleSecret, final String mfaValue) throws BusinessException {
         // 请输入谷歌验证码
         if (CollectionUtil.single().isEmpty(mfaValue)) {
             throw new BusinessException(MfaConstant.CORRELATION_GOOGLE_VERIFY_CODE_ISNULL.value(),
