@@ -116,7 +116,7 @@ public class UserMfaController {
     @Autowired
     RedisUtil redisUtil;
 
-    @Value("system.mfa.expired-time:1800")
+    @Value("${system.mfa.expired-time:1800}")
     Long expiredTime;
 
     /**

@@ -63,10 +63,11 @@ public final class HttpServletUtil {
 
     public boolean isExcludeUri(HttpServletRequest httpServletRequest, final List<String> excludedAuthPages) {
         boolean isExcludeUri = false;
+        final String uri = httpServletRequest.getRequestURI();
         if (excludedAuthPages != null && excludedAuthPages.size() != 0) {
             for (String exclude : excludedAuthPages) {
                 final PathMatcher pathMathcer = new AntPathMatcher();
-                if (pathMathcer.match(exclude, httpServletRequest.getRequestURI())) {
+                if (pathMathcer.match(exclude, uri)) {
                     isExcludeUri = true;
                     break;
                 }
