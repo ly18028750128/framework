@@ -126,7 +126,7 @@ public class UserMfaController {
      * @throws Exception
      */
     @GetMapping("/checkCurrentUserGoogleCode/{mfaValue}")
-    @SystemResource(value = "checkCurrentUserGoogleCode", description = "重置谷歌验证码状态", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
+    @SystemResource(value = "checkCurrentUserGoogleCode", description = "校验当前用户的谷歌验证码", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult checkCurrentUserGoogleCode(@PathVariable String mfaValue) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
