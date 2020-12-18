@@ -10,12 +10,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.cloud.annotation.MfaAuth;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.model.TSystemDicItem;
 import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.utils.SystemDicUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -44,7 +46,8 @@ public class MfaAuthAspect {
         final MfaAuth mfaAuthAnnotation = method.getAnnotation(MfaAuth.class);
 
         // 如果不校验双因子验证那么直接不拦截，此处为url强校验开关，每次都要校验。
-        if ("false".equals(SystemDicUtil.single().getDicItem("systemConfig", "isMfaVerify"))) {
+        TSystemDicItem dicItem = SystemDicUtil.single().getDicItem("systemConfig", "isMfaVerify");
+        if (dicItem != null && !StringUtils.isEmpty(dicItem.getDicItemValue()) && "false".equals(dicItem.getDicItemValue())) {
             return joinPoint.proceed();
         }
 
