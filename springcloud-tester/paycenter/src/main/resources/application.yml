@@ -1,0 +1,12 @@
+logging:
+  level:
+    com:
+      longyou:
+        paycenter: DEBUG
+system:
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+
+
+
+
