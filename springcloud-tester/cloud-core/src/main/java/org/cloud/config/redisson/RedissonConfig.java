@@ -1,4 +1,5 @@
 package org.cloud.config.redisson;
+
 import lombok.Data;
 import org.cloud.utils.RedissonUtil;
 import org.redisson.Redisson;

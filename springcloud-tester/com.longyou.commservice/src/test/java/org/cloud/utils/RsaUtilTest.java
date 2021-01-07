@@ -38,7 +38,7 @@ public class RsaUtilTest {
             final int j = i;
             callables.add(() -> {
                 MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-                params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount"+j));
+                params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount" + j));
                 params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
                 params.add("microServiceName", "unknowaccount");
                 params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
@@ -52,7 +52,7 @@ public class RsaUtilTest {
 
     @Test
     public void getUserByToken() throws Exception {
-        List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
+        List<Callable<Boolean>> callables = new ArrayList<>();
         final String token = "YWRtaW46MTg1YjgzZmE5MjdiYzhkMjRhMDg0MGRiMjMzZmVlZWUlYTFiMmMwazNkNHk4JWM2MWM2MTNlNjFhN2QxN2E1ZDUzNDgxNWVlMzdmNDZk";
         for (int i = 0; i < 5; i++) {
             final int j = i;

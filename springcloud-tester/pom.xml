@@ -249,6 +249,7 @@
         <!--        <module>jdk8.tester</module>-->
         <module>springcloud-gateway-tester</module>
         <module>com.longyou.commservice</module>
+        <module>paycenter</module>
 <!--        <module>spring-admin-server</module>-->
     </modules>
 <!--    <distributionManagement>-->

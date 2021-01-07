@@ -70,9 +70,11 @@ class RedissonUtilTest {
     }
 
     @Test
-    void blockingQueueTest(){
+    void blockingQueueTest() {
         final String blockingQueueName = "junit:hash:test";
         RBlockingQueue<Integer> rBlockingQueue = RedissonUtil.getRedissonClient().getBlockingQueue(blockingQueueName);
+
+        
     }
 
 }
