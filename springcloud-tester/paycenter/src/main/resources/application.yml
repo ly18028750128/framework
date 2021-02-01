@@ -6,7 +6,37 @@ logging:
 system:
   userinfo:
     get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
-
-
+  aes:
+    enabled: true #是否放开aes加密，如果放开那么会加载AESService
+    key: "TW=>3S.z:9/;p5Im" #用于加密用，不要轻易改变，配置到配置中心需要进行加密
+    vi: "I)LNx.wf:2zM'sZ(" #用于加密用，不要轻易改变，配置到配置中心需要进行加密
+  pay-platforms:
+    platform-list:
+      - type: weixin-microapp
+        app-name: weixin-xgsixteen
+        appid: wx48d43e91a95c5fc2
+        mch-id: 1554920771  # 商户号
+        mch-pay-password: Huangtushengtai20190708huangtuly
+  rabbitmq:
+    exchange:
+      exchanges:
+        - exchange-name: ${spring.application.group:}xgsixteen-payCenterTopicExchange  #命名规则就对应的微服务名称+payCenterTopicExchange
+          topic-names:
+            - ${spring.application.group:}xgsixteen-weixin-xgsixteen-pay #鲜冠十六支付队列 命名规则就对应的微服务名称+payCenterTopicExchange
+            - ${spring.application.group:}xgsixteen-weixin-xgsixteen-refund #鲜冠十六退款队列 命名规则就对应的微服务名称+payCenterTopicExchange
+        - exchange-name: ${spring.application.group:}payCenterTopicExchange1
+          topic-names:
+            - ${spring.application.group:}weixin-xgsixteen-pay1 #鲜冠十六支付队列
+            - ${spring.application.group:}weixin-xgsixteen-refund1 #鲜冠十六退款队列
+        - exchange-name: ${spring.application.group:}payCenterTopicExchange2
+          topic-names:
+            - ${spring.application.group:}weixin-xgsixteen-pay2 #鲜冠十六支付队列
+            - ${spring.application.group:}weixin-xgsixteen-refund12 #鲜冠十六退款队列
+spring:
+  rabbitmq:
+    addresses: 192.168.74.128:5692,192.168.74.128:5683,192.168.74.128:5684
+    username: payCenter
+    password: payCenter
+    virtual-host: payCenter
 
 

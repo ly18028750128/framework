@@ -1,4 +1,4 @@
-package com.longyou.paycenter.service.service.impl;
+package com.longyou.paycenter.service.impl;
 
 
 import com.alibaba.fastjson.JSON;
