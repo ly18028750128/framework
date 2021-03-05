@@ -19,7 +19,7 @@
     </appender>
     <appender name="MY_MONGODB_FILE" class="org.cloud.logger.MongoDBAppender"></appender>
 
-    <springProfile name="dev,test,sit,uat,colaDev,jdyDev"> <!--开发，测试，uat，sit-->
+    <springProfile name="dev,test,sit,uat,${sys.curr_profile}"> <!--开发，测试，uat，sit-->
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
