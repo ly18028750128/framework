@@ -10,6 +10,7 @@ import org.cloud.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -74,7 +75,7 @@ public abstract class OperateLogAspect {
         // 请求资源地址
         String uri = request.getRequestURI();
         //请求ip
-        String ip = getRemoteAddr(request);
+        String ip = CommonUtil.single().getIpAddress(request);
         int type = getType(uri).getLogType();
         // 设置操作人信息
         Long userId = null;
@@ -120,29 +121,5 @@ public abstract class OperateLogAspect {
         return res;
     }
 
-    /**
-     * 获取客户端ip地址(可以穿透代理)
-     *
-     * @param request
-     * @return
-     */
-    public static String getRemoteAddr(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip;
-    }
+
 }

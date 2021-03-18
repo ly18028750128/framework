@@ -2,6 +2,7 @@ package org.cloud.core.redis;
 
 
 import lombok.Getter;
+import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.HashOperations;
@@ -379,6 +380,10 @@ public class RedisUtil {
      */
     public void releaseLock(String lockId) {
         redisTemplate.delete(locker_prefix_name + lockId);
+    }
+
+    public String getMd5Key(String key){
+       return MD5Encoder.encode(key);
     }
 
 }
