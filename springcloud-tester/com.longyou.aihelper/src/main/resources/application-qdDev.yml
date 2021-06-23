@@ -1,0 +1,17 @@
+system: #这里仅是示例，请在配置中心中配置
+  redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
+    enabled: true #如果要放开redisson,那么改成true，暂时只支持主从模式,和集群模式
+    master-slave-config:
+      password: 1qaz@WSX
+      master-address: redis://192.168.30.99:10004
+      slave-addresses:
+        - redis://192.168.30.99:10005
+      connect-timeout: 5000
+      scan-interval: 2000 # 2秒检测下集群的状态
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+  config:
+    excludedAuthPages: /userinfo/getUserByName
+  api:
+    inner:
+      url-patterns: "/inner/*,/userinfo/getUserByName" #仅内部调用的api接口
