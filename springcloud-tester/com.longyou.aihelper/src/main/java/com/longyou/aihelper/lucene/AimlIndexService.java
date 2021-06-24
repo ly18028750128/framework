@@ -29,6 +29,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TopDocs;
 import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RedissonUtil;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,8 @@ public class AimlIndexService {
       if (!locker.tryLock(3, 60, TimeUnit.MINUTES)) {  // 等待3秒，上锁10分钟后自动解锁
         return;
       }
-      Date lastModifyTime = RedissonUtil.single().getValue(__LASTUPDATETIME_KEY);
+      Date lastModifyTime = RedissonUtil.single()
+          .getValue(__LASTUPDATETIME_KEY + "." + CommonUtil.single().getEnv("spring.application.group", ""));
       final Date indexStartDate = new Date();
       OpenMode openMode = OpenMode.CREATE;
       final Map<String, Object> params = new HashMap<>();
@@ -113,7 +115,7 @@ public class AimlIndexService {
 //    TermQuery query = new TermQuery(new Term(fieldName, keyword));
     Analyzer analyzer = new SmartChineseAnalyzer();
     QueryParser queryParser = new QueryParser("name", analyzer);
-    Query query = queryParser.parse(fieldName+":"+keyword);
+    Query query = queryParser.parse(fieldName + ":" + keyword);
     TopDocs topDocs = indexSearcher.search(query, 10);
     log.info("{},{} totalHits = {}", fieldName, keyword, topDocs.totalHits);
     List<Document> docs = new ArrayList<>();
