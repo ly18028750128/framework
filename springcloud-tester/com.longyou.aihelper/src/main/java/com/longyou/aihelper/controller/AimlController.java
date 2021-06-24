@@ -1,6 +1,7 @@
 package com.longyou.aihelper.controller;
 
 import com.longyou.aihelper.aiml.service.impl.AskToAIML;
+import com.longyou.aihelper.context.ChartManager;
 import com.longyou.aihelper.lucene.AimlIndexService;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,13 @@ public class AimlController {
   public ResponseResult askToLucene(@PathVariable("fieldName") String fieldName, @RequestParam("keyWord") String keyWord) throws Exception {
     ResponseResult responseResult = ResponseResult.createSuccessResult();
     responseResult.addData(aimlIndexService.queryReplayList(fieldName, keyWord));
+    return responseResult;
+  }
+
+  @GetMapping("/askBot")
+  public ResponseResult askBot(@RequestParam("keyWord") String keyWord) throws Exception {
+    ResponseResult responseResult = ResponseResult.createSuccessResult();
+    responseResult.addData(ChartManager.getInstance().response(keyWord));
     return responseResult;
   }
 }

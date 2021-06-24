@@ -43,11 +43,6 @@ public class ChartContext implements IAskApproach {
    */
   public String response(String input) throws Exception {
     String responseFromAIML = askToAIML.response(input);
-    // 替换文本中的空格字符串
-    // 判断是中文还是英文,中文需要去掉空格。
-//        if(isContainChinese(responseFromAIML)){
-//            responseFromAIML = responseFromAIML.replace(" ", "");
-//        }
     return translate(input, responseFromAIML);
   }
 

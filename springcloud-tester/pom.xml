@@ -15,6 +15,7 @@
         <springboot.version>2.3.4.RELEASE</springboot.version>
         <springcloud.eureka.version>1.4.7.RELEASE</springcloud.eureka.version>
         <springcloud.zuul.version>1.4.6.RELEASE</springcloud.zuul.version>
+        <lucene.version>8.9.0</lucene.version>
         <skipTests>true</skipTests>
     </properties>
     <dependencyManagement>
@@ -42,18 +43,6 @@
                 <artifactId>spring-cloud-starter-zuul</artifactId>
                 <version>${springcloud.zuul.version}</version>
             </dependency>
-            <!--
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-autoconfigure</artifactId>
-                <version>${springboot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${springboot.version}</version>
-            </dependency>
-            -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -215,42 +204,52 @@
                 <artifactId>hystrix-javanica</artifactId>
                 <version>1.5.12</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>io.github.openfeign.form</groupId>-->
-<!--                <artifactId>feign-form</artifactId>-->
-<!--                <version>3.2.2</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>io.github.openfeign.form</groupId>-->
-<!--                <artifactId>feign-form-spring</artifactId>-->
-<!--                <version>3.2.2</version>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>1.5.22</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-core</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-analyzers-common</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-analyzers-smartcn</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-highlighter</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-memory</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.lucene</groupId>
+                <artifactId>lucene-queryparser</artifactId>
+                <version>${lucene.version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.8.0</version>-->
-<!--                <configuration>-->
-<!--                    <release>11</release>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
     <modules>
-<!--        <module>springcloud-eureka-tester</module>-->
-        <!--        <module>springcloud-zuul-tester</module>-->
-        <!--        <module>springcloud-eureka-client-tester</module>-->
         <module>cloud-core</module>
-<!--        <module>springcloud-config-tester</module>-->
-        <!--        <module>jdk8.tester</module>-->
         <module>springcloud-gateway-tester</module>
         <module>com.longyou.commservice</module>
         <module>paycenter</module>
-<!--        <module>spring-admin-server</module>-->
+      <module>com.longyou.aihelper</module>
     </modules>
 <!--    <distributionManagement>-->
 <!--        &lt;!&ndash; 两个ID必须与 setting.xml中的<server><id>nexus-releases</id></server>保持一致&ndash;&gt;-->

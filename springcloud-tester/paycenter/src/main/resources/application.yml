@@ -32,11 +32,5 @@ system:
           topic-names:
             - ${spring.application.group:}weixin-xgsixteen-pay2 #鲜冠十六支付队列
             - ${spring.application.group:}weixin-xgsixteen-refund12 #鲜冠十六退款队列
-spring:
-  rabbitmq:
-    addresses: 192.168.74.128:5692,192.168.74.128:5683,192.168.74.128:5684
-    username: payCenter
-    password: payCenter
-    virtual-host: payCenter
 
 

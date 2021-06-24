@@ -1,6 +1,7 @@
 package com.longyou.gateway;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,9 +41,15 @@ import javax.sql.DataSource;
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "org.cloud.feign.service"})
+@Slf4j
 public class GatewayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class, args);
+        try{
+            SpringApplication.run(GatewayApplication.class, args);
+        }catch (Exception e){
+            log.error("{}",e);
+        }
+
     }
 
     @Bean
