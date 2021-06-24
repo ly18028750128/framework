@@ -19,8 +19,7 @@ import static bitoflife.chatterbean.Match.Section.PATTERN;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Star extends TemplateElement
-{
+public class Star extends TemplateElement {
   /*
   Attributes
   */
@@ -30,15 +29,13 @@ public class Star extends TemplateElement
   /*
   Constructor
   */
-  
-  public Star(Attributes attributes)
-  {
+
+  public Star(Attributes attributes) {
     String value = attributes.getValue(0);
     index = (value != null ? Integer.parseInt(value) : 1);
   }
-  
-  public Star(int index)
-  {
+
+  public Star(int index) {
     this.index = index;
   }
   
@@ -46,29 +43,24 @@ public class Star extends TemplateElement
   Methods
   */
 
-  public boolean equals(Object obj)
-  {
-    if (obj == null || !(obj instanceof Star))
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof Star)) {
       return false;
-    else
-    {
+    } else {
       Star star = (Star) obj;
       return (index == star.index);
     }
   }
 
-  public int hashCode()
-  {
+  public int hashCode() {
     return index;
   }
-  
-  public String toString()
-  {
+
+  public String toString() {
     return "<star index=\"" + index + "\"/>";
   }
 
-  public String process(Match match)
-  {
+  public String process(Match match) {
     String wildcard = match.wildcard(PATTERN, index);
     return (wildcard != null ? wildcard.trim() : "");
   }

@@ -19,36 +19,35 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.xml.sax.Attributes;
 
-public class Sentence extends TemplateElement
-{
+public class Sentence extends TemplateElement {
   /*
   Constructors
   */
 
-  public Sentence(Attributes attributes)
-  {
+  public Sentence(Attributes attributes) {
   }
 
-  public Sentence(Object... children)
-  {
+  public Sentence(Object... children) {
     super(children);
   }
 
   /*
   Methods
   */
-  
-  public String process(Match match)
-  {
-    String result = super.process(match);
-    if (result == null || "".equals(result.trim())) return "";
 
-    /* See the description of java.util.regex.Matcher.appendReplacement() in the Javadocs to understand this code. */    
+  public String process(Match match) {
+    String result = super.process(match);
+    if (result == null || "".equals(result.trim())) {
+      return "";
+    }
+
+    /* See the description of java.util.regex.Matcher.appendReplacement() in the Javadocs to understand this code. */
     Pattern p = Pattern.compile("(^\\s*[a-z]|[\\.\\?!]+\\s*[a-z])");
     Matcher m = p.matcher(result);
     StringBuffer buffer = new StringBuffer();
-    while (m.find())
+    while (m.find()) {
       m.appendReplacement(buffer, m.group().toUpperCase());
+    }
     m.appendTail(buffer);
     return buffer.toString();
   }

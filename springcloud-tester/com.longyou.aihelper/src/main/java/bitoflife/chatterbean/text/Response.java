@@ -14,24 +14,20 @@ You should have received a copy of the GNU General Public License along with Cha
 
 package bitoflife.chatterbean.text;
 
-public class Response extends Request
-{
+public class Response extends Request {
   /*
   Constructor
   */
 
-  public Response()
-  {
+  public Response() {
     super();
   }
 
-  public Response(String original)
-  {
+  public Response(String original) {
     super(original);
   }
-  
-  public Response(String original, Sentence... sentences)
-  {
+
+  public Response(String original, Sentence... sentences) {
     super(original, sentences);
   }
 
@@ -39,17 +35,16 @@ public class Response extends Request
   Methods
   */
 
-  public void append(String output)
-  {
+  public void append(String output) {
     StringBuilder builder = new StringBuilder();
     String original = getOriginal();
-    if (original != null)
-    {
+    if (original != null) {
       builder.append(original);
-      if (builder.charAt(builder.length() - 1) != ' ')
+      if (builder.charAt(builder.length() - 1) != ' ') {
         builder.append(' ');
+      }
     }
-    
+
     builder.append(output);
     setOriginal(builder.toString());
   }

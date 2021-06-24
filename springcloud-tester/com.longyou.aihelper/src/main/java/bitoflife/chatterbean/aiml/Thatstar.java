@@ -19,51 +19,48 @@ import static bitoflife.chatterbean.Match.Section.THAT;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Thatstar extends TemplateElement
-{
+public class Thatstar extends TemplateElement {
   /*
   Attribute Section
   */
-  
+
   private int index;
 
   /*
   Constructor Section
   */
-  
-  public Thatstar(Attributes attributes)
-  {
+
+  public Thatstar(Attributes attributes) {
     String value = attributes.getValue(0);
-    if (value == null)
+    if (value == null) {
       index = 1;
-    else
+    } else {
       index = Integer.parseInt(value);
+    }
   }
-  
-  public Thatstar(int index)
-  {
+
+  public Thatstar(int index) {
     this.index = index;
   }
   
   /*
   Method Section
   */
-  
-  public boolean equals(Object obj)
-  {
-    if (!super.equals(obj)) return false;
+
+  public boolean equals(Object obj) {
+    if (!super.equals(obj)) {
+      return false;
+    }
     Thatstar compared = (Thatstar) obj;
-    
+
     return (index == compared.index);
   }
-  
-  public String toString()
-  {
+
+  public String toString() {
     return "<thatstar index=\"" + index + "\">";
   }
-  
-  public String process(Match match)
-  {
+
+  public String process(Match match) {
     String wildcard = match.wildcard(THAT, index);
     return (wildcard != null ? wildcard.trim() : "");
   }

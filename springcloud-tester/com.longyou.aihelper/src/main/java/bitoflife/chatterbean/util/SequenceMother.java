@@ -16,8 +16,7 @@ package bitoflife.chatterbean.util;
 
 import java.io.File;
 
-public class SequenceMother
-{
+public class SequenceMother {
   /*
   Attributes
   */
@@ -28,13 +27,11 @@ public class SequenceMother
   Methods
   */
 
-  public Sequence newInstance()
-  {
-      return new Sequence(file);
+  public Sequence newInstance() {
+    return new Sequence(file);
   }
 
-  public void reset()
-  {
+  public void reset() {
     (new File(file.getPath() + ".backup")).delete();
     file.delete();
   }

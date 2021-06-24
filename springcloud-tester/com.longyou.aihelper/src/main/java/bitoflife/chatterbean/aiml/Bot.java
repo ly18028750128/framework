@@ -17,8 +17,7 @@ package bitoflife.chatterbean.aiml;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Bot extends TemplateElement
-{
+public class Bot extends TemplateElement {
   /*
   Attributes
   */
@@ -29,13 +28,11 @@ public class Bot extends TemplateElement
   Constructors
   */
 
-  public Bot(Attributes attributes)
-  {
+  public Bot(Attributes attributes) {
     name = attributes.getValue(0);
   }
 
-  public Bot(String name)
-  {
+  public Bot(String name) {
     this.name = name;
   }
 
@@ -43,25 +40,19 @@ public class Bot extends TemplateElement
   Methods
   */
 
-  public boolean equals(Object obj)
-  {
+  public boolean equals(Object obj) {
     return (super.equals(obj) && name.equals(((Bot) obj).name));
   }
 
-  public int hashCode()
-  {
+  public int hashCode() {
     return name.hashCode();
   }
 
-  public String process(Match match)
-  {
-    try
-    {
+  public String process(Match match) {
+    try {
       String value = (String) match.getCallback().getContext().property("bot." + name);
       return (value != null ? value : "");
-    }
-    catch (NullPointerException e)
-    {
+    } catch (NullPointerException e) {
       return "";
     }
   }

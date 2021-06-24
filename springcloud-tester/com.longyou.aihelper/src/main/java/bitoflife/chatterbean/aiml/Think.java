@@ -17,27 +17,23 @@ package bitoflife.chatterbean.aiml;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Think extends TemplateElement
-{
+public class Think extends TemplateElement {
   /*
   Constructors
   */
 
-  public Think(Attributes attributes)
-  {
+  public Think(Attributes attributes) {
   }
-  
-  public Think(Object... children)
-  {
+
+  public Think(Object... children) {
     super(children);
   }
   
   /*
   Methods
   */
-  
-  public String process(Match match)
-  {
+
+  public String process(Match match) {
     super.process(match);
     return "";
   }

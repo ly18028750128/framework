@@ -18,44 +18,36 @@ import bitoflife.chatterbean.Match;
 import java.text.SimpleDateFormat;
 import org.xml.sax.Attributes;
 
-public class Date extends TemplateElement
-{
+public class Date extends TemplateElement {
   /*
   Attributes
   */
-  
+
   private final SimpleDateFormat format = new SimpleDateFormat();
 
   /*
   Constructors
   */
 
-  public Date()
-  {
+  public Date() {
   }
 
-  public Date(Attributes attributes)
-  {
+  public Date(Attributes attributes) {
   }
 
   /*
   Methods
   */
-  
-  public int hashCode()
-  {
+
+  public int hashCode() {
     return 13;
   }
 
-  public String process(Match match)
-  {
-    try
-    {
+  public String process(Match match) {
+    try {
       format.applyPattern((String) match.getCallback().getContext().property("predicate.dateFormat"));
       return format.format(new java.util.Date());
-    }
-    catch (NullPointerException e)
-    {
+    } catch (NullPointerException e) {
       return "";
     }
   }

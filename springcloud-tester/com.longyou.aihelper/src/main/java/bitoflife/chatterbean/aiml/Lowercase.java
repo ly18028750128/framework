@@ -17,31 +17,28 @@ package bitoflife.chatterbean.aiml;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Lowercase extends TemplateElement
-{
+public class Lowercase extends TemplateElement {
   /*
   Constructors
   */
 
-  public Lowercase(Attributes attributes)
-  {
+  public Lowercase(Attributes attributes) {
   }
-  
-  public Lowercase(Object... children)
-  {
+
+  public Lowercase(Object... children) {
     super(children);
   }
   
   /*
   Methods
   */
-  
-  public String process(Match match)
-  {
+
+  public String process(Match match) {
     String result = super.process(match);
-    if (result != null)
+    if (result != null) {
       return result.toLowerCase();
-    else
+    } else {
       return "";
+    }
   }
 }

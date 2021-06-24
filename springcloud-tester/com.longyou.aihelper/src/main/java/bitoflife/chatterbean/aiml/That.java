@@ -23,12 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 import org.xml.sax.Attributes;
 
-public class That extends TemplateElement
-{
+public class That extends TemplateElement {
   /*
   Attribute Section
   */
-  
+
   private static final String[] STRING_ARRAY = {};
 
   private int responseIndex = 1, sentenceIndex = 1;
@@ -36,24 +35,25 @@ public class That extends TemplateElement
   /*
   Constructor Section
   */
-  
-  public That(Attributes attributes)
-  {
+
+  public That(Attributes attributes) {
     String value = attributes.getValue(0);
-    if (value == null) return;
-    
+    if (value == null) {
+      return;
+    }
+
     String[] indexes = value.split(",");
     responseIndex = Integer.parseInt(indexes[0].trim());
-    if (indexes.length > 1) sentenceIndex = Integer.parseInt(indexes[1].trim());
+    if (indexes.length > 1) {
+      sentenceIndex = Integer.parseInt(indexes[1].trim());
+    }
   }
-  
-  public That(Object... children)
-  {
+
+  public That(Object... children) {
     super(children);
   }
-  
-  public That(int responseIndex, int sentenceIndex)
-  {
+
+  public That(int responseIndex, int sentenceIndex) {
     this.responseIndex = responseIndex;
     this.sentenceIndex = sentenceIndex;
   }
@@ -61,13 +61,11 @@ public class That extends TemplateElement
   /*
   Method Section
   */
-  
-  public String[] elements()
-  {
+
+  public String[] elements() {
     TemplateElement[] children = getChildren();
     List<String> elements = new LinkedList<String>();
-    for (int i = 0, n = children.length; i < n; i++)
-    {
+    for (int i = 0, n = children.length; i < n; i++) {
       String text = children[i].toString();
       text = text.trim();
       elements.addAll(Arrays.asList(text.split(" ")));
@@ -76,41 +74,40 @@ public class That extends TemplateElement
     return elements.toArray(STRING_ARRAY);
   }
 
-  public boolean equals(Object obj)
-  {
-    if (obj == null || !(obj instanceof That)) return false;
-    
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof That)) {
+      return false;
+    }
+
     That compared = (That) obj;
-    
-    return (responseIndex  == compared.responseIndex &&
-            sentenceIndex == compared.sentenceIndex);
+
+    return (responseIndex == compared.responseIndex &&
+        sentenceIndex == compared.sentenceIndex);
   }
 
-  public int hashCode()
-  {
+  public int hashCode() {
     return responseIndex + sentenceIndex;
   }
 
-  public String process(Match match)
-  {
-    if (match == null)
+  public String process(Match match) {
+    if (match == null) {
       return "";
-    
+    }
+
     AliceBot bot = match.getCallback();
     Context context = bot.getContext();
     Response response = context.getResponses(responseIndex - 1);
     return response.getSentences(sentenceIndex - 1).trimOriginal();
   }
-  
-  public String toString()
-  {
-    if (children().size() == 0)
+
+  public String toString() {
+    if (children().size() == 0) {
       return "<that index=\"" + responseIndex + ", " + sentenceIndex + "\"/>";
-    else
-    {
+    } else {
       StringBuilder builder = new StringBuilder("<that>");
-      for (TemplateElement element : children())
+      for (TemplateElement element : children()) {
         builder.append(element);
+      }
       builder.append("</that>");
 
       return builder.toString();

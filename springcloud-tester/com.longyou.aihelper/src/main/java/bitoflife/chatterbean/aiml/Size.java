@@ -17,32 +17,25 @@ package bitoflife.chatterbean.aiml;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Size extends TemplateElement
-{
+public class Size extends TemplateElement {
   /*
   Constructors
   */
 
-  public Size()
-  {
+  public Size() {
   }
 
-  public Size(Attributes attributes)
-  {
+  public Size(Attributes attributes) {
   }
 
   /*
   Methods
   */
 
-  public String process(Match match)
-  {
-    try
-    {
+  public String process(Match match) {
+    try {
       return Integer.toString(match.getCallback().getGraphmaster().size());
-    }
-    catch (NullPointerException e)
-    {
+    } catch (NullPointerException e) {
       return "0";
     }
   }

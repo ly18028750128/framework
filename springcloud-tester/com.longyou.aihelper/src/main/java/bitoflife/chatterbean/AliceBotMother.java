@@ -42,18 +42,18 @@ public class AliceBotMother {
     return gossip.toString();
   }
 
-//  public AliceBot newInstance() throws Exception {
-//    Searcher searcher = new Searcher();
-//    AliceBotParser parser = new AliceBotParser();
-//    AliceBot bot = parser.parse(getClass().getResourceAsStream("/conf/context.xml"),
-//        getClass().getResourceAsStream("/conf/splitters.xml"),
-//        getClass().getResourceAsStream("/conf/substitutions.xml"),
-//        searcher.search(getClass().getResource("/Corpus/Chinese").toString().substring(5), ".*\\.xml"));
-//
-//    Context context = bot.getContext();
-//    context.outputStream(gossip);
-//    return bot;
-//  }
+  public AliceBot newInstance() throws Exception {
+    Searcher searcher = new Searcher();
+    AliceBotParser parser = new AliceBotParser();
+    AliceBot bot = parser.parse(getClass().getResourceAsStream("/conf/context.xml"),
+        getClass().getResourceAsStream("/conf/splitters.xml"),
+        getClass().getResourceAsStream("/conf/substitutions.xml"),
+        searcher.search(getClass().getResource("/Corpus/Chinese").toString().substring(5), ".*\\.xml"));
+
+    Context context = bot.getContext();
+    context.outputStream(gossip);
+    return bot;
+  }
 
   public AliceBot newInstance(final String configPath, final String corpusPath) throws Exception {
     Searcher searcher = new Searcher();

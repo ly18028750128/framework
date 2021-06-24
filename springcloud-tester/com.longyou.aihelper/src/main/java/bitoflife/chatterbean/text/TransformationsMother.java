@@ -17,14 +17,12 @@ package bitoflife.chatterbean.text;
 import bitoflife.chatterbean.parser.TransformationsParser;
 import java.io.FileInputStream;
 
-public class TransformationsMother
-{
+public class TransformationsMother {
   /*
   Methods
   */
 
-  public Transformations newInstance() throws Exception
-  {
+  public Transformations newInstance() throws Exception {
     TransformationsParser parser = new TransformationsParser();
     return parser.parse(new FileInputStream("Bots/splitters.xml"), new FileInputStream("Bots/substitutions.xml"));
   }

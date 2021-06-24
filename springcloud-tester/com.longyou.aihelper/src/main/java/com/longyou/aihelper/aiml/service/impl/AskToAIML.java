@@ -9,18 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AskToAIML implements IAskApproach {
 
-  private  AliceBotMother mother = null;
-  private  AliceBot bot = null;
+  private AliceBot bot = null;
 
-  public AskToAIML(final String configPath, final String corpusPath) throws Exception {
-    mother = new AliceBotMother();
+  public AskToAIML(final String configPath, final String corpusPath) {
+    AliceBotMother mother = new AliceBotMother();
     mother.setUp();
     try {
-      bot = mother.newInstance(configPath,corpusPath);
+      bot = mother.newInstance(configPath, corpusPath);
     } catch (Exception e) {
-      log.info("{}", e);
+      log.error("{}", e);
     }
-
   }
 
   public String response(String input) {

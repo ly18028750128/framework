@@ -1,6 +1,5 @@
 package com.longyou.aihelper.lucene;
 
-import com.alibaba.fastjson.JSON;
 import com.longyou.aihelper.mapper.ResponsetableMapper;
 import com.longyou.aihelper.model.Responsetable;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -29,7 +27,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.RedissonUtil;

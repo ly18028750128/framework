@@ -25,130 +25,132 @@ public class AliceBot {
   Attribute Section
   */
 
-    /**
-     * Context information for this bot current conversation.
-     */
-    private Context context;
+  /**
+   * Context information for this bot current conversation.
+   */
+  private Context context;
 
-    /**
-     * The Graphmaster maps user requests to AIML categories.
-     */
-    private Graphmaster graphmaster;
-  
+  /**
+   * The Graphmaster maps user requests to AIML categories.
+   */
+  private Graphmaster graphmaster;
 
-    /**
-     * Default constructor.
-     */
-    public AliceBot() {
+
+  /**
+   * Default constructor.
+   */
+  public AliceBot() {
+  }
+
+  /**
+   * Creates a new AliceBot from a Graphmaster.
+   *
+   * @param graphmaster Graphmaster object.
+   */
+  public AliceBot(Graphmaster graphmaster) {
+    setContext(new Context());
+    setGraphmaster(graphmaster);
+  }
+
+  /**
+   * Creates a new AliceBot from a Context and a Graphmaster.
+   *
+   * @param context     A Context.
+   * @param graphmaster A Graphmaster.
+   */
+  public AliceBot(Context context, Graphmaster graphmaster) {
+    setContext(context);
+    setGraphmaster(graphmaster);
+  }
+
+
+  /**
+   * 响应
+   *
+   * @param sentence 句子
+   * @param that
+   * @param topic
+   * @param response 响应
+   */
+  private void respond(Sentence sentence, Sentence that, Sentence topic, Response response) {
+    if (sentence.length() > 0) {
+      Match match = new Match(this, sentence, that, topic);
+      // 资料库中查找匹配串，匹配的方法
+      // 支持通配符的trie查找算法
+      Category category = graphmaster.match(match);
+      if (category == null) {
+        response.append("#");// 数据库查询
+      } else {
+        response.append(category.process(match));
+      }
+
+    }
+  }
+
+  /**
+   * Responds a request.
+   *
+   * @param request A Request.
+   * @return A response to the request.
+   */
+  public Response respond(Request request) {
+    String original = request.getOriginal();
+    if (original == null || "".equals(original.trim())) {
+      return new Response("");
     }
 
-    /**
-     * Creates a new AliceBot from a Graphmaster.
-     *
-     * @param graphmaster Graphmaster object.
-     */
-    public AliceBot(Graphmaster graphmaster) {
-        setContext(new Context());
-        setGraphmaster(graphmaster);
+    Sentence that = context.getThat();
+    Sentence topic = context.getTopic();
+    transformations().normalization(request);
+    context.appendRequest(request);
+
+    // 响应
+    Response response = new Response();
+    for (Sentence sentence : request.getSentences()) {
+      respond(sentence, that, topic, response);
     }
+    context.appendResponse(response);
 
-    /**
-     * Creates a new AliceBot from a Context and a Graphmaster.
-     *
-     * @param context     A Context.
-     * @param graphmaster A Graphmaster.
-     */
-    public AliceBot(Context context, Graphmaster graphmaster) {
-        setContext(context);
-        setGraphmaster(graphmaster);
-    }
+    return response;
+  }
 
-
-    /**
-     * 响应
-     *
-     * @param sentence 句子
-     * @param that
-     * @param topic
-     * @param response 响应
-     */
-    private void respond(Sentence sentence, Sentence that, Sentence topic, Response response) {
-        if (sentence.length() > 0) {
-            Match match = new Match(this, sentence, that, topic);
-            // 资料库中查找匹配串，匹配的方法
-            // 支持通配符的trie查找算法
-            Category category = graphmaster.match(match);
-            if(category == null){
-                response.append("#");// 数据库查询
-            }else{
-                response.append(category.process(match));
-            }
-
-        }
-    }
-
-    /**
-     * Responds a request.
-     *
-     * @param request A Request.
-     * @return A response to the request.
-     */
-    public Response respond(Request request) {
-        String original = request.getOriginal();
-        if (original == null || "".equals(original.trim()))
-            return new Response("");
-
-        Sentence that = context.getThat();
-        Sentence topic = context.getTopic();
-        transformations().normalization(request);
-        context.appendRequest(request);
-
-        // 响应
-        Response response = new Response();
-        for (Sentence sentence : request.getSentences())
-            respond(sentence, that, topic, response);
-        context.appendResponse(response);
-
-        return response;
-    }
-
-    /**
-     * Responds a request.
-     *
-     * @param input request string.
-     * @return A response to the request string.
-     */
-    public String respond(String input) {
-        Response response = respond(new Request(input));
-        return response.trimOriginal();
-    }
+  /**
+   * Responds a request.
+   *
+   * @param input request string.
+   * @return A response to the request string.
+   */
+  public String respond(String input) {
+    Response response = respond(new Request(input));
+    return response.trimOriginal();
+  }
   
   /*
   Accessor Section
   */
 
-    public Transformations transformations() {
-        return context.getTransformations();
-    }
+  public Transformations transformations() {
+    return context.getTransformations();
+  }
 
-    /**
-     * Returns this AliceBot's Context.
-     *
-     * @return The Context associated to this AliceBot.
-     */
-    public Context getContext() {
-        return context;
-    }
+  /**
+   * Returns this AliceBot's Context.
+   *
+   * @return The Context associated to this AliceBot.
+   */
+  public Context getContext() {
+    return context;
+  }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
+  public void setContext(Context context) {
+    this.context = context;
+  }
 
-    public Graphmaster getGraphmaster() {
-        return graphmaster;
-    }
+  public Graphmaster getGraphmaster() {
+    return graphmaster;
+  }
 
-    public void setGraphmaster(Graphmaster graphmaster) {
-        this.graphmaster = graphmaster;
-    }
+  public void setGraphmaster(Graphmaster graphmaster) {
+    this.graphmaster = graphmaster;
+  }
 }

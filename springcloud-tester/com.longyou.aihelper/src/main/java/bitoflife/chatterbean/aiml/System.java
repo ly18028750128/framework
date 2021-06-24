@@ -20,49 +20,45 @@ import bitoflife.chatterbean.Match;
 import bitoflife.chatterbean.script.Interpreter;
 import org.xml.sax.Attributes;
 
-public class System extends TemplateElement
-{
+public class System extends TemplateElement {
   /*
   Constructors
   */
 
-  public System(Attributes attributes)
-  {
+  public System(Attributes attributes) {
   }
 
-  public System(Object... children)
-  {
+  public System(Object... children) {
     super(children);
   }
   
   /*
   Methods
   */
-  
-  public String process(Match match)
-  {
-    try
-    {
+
+  public String process(Match match) {
+    try {
       AliceBot bot = match.getCallback();
       Context context = bot.getContext();
       Interpreter interpreter = (Interpreter) context.property("beanshell.interpreter");
-      if (interpreter == null)
+      if (interpreter == null) {
         return "";
+      }
 
       String script = super.process(match);
       interpreter.variable("result", null);
       interpreter.variable("match", match);
-      
+
       Object evaluated = interpreter.evaluate(script);
       Object result = interpreter.variable("result");
-      if (result == null) result = evaluated;
-      
+      if (result == null) {
+        result = evaluated;
+      }
+
       interpreter.variable("match", null);
 
       return (result != null ? result.toString() : "");
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new RuntimeException("Evaluation error on <system> tag", e);
     }
   }

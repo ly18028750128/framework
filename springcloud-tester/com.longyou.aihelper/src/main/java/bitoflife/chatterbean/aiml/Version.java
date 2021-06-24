@@ -19,26 +19,22 @@ import bitoflife.chatterbean.Context;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Version extends TemplateElement
-{
+public class Version extends TemplateElement {
   /*
   Constructors
   */
 
-  public Version()
-  {
+  public Version() {
   }
 
-  public Version(Attributes attributes)
-  {
+  public Version(Attributes attributes) {
   }
 
   /*
   Methods
   */
 
-  public String process(Match match)
-  {
+  public String process(Match match) {
     AliceBot bot = match.getCallback();
     Context context = bot.getContext();
     return (String) context.property("bot.version");

@@ -54,89 +54,94 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class ChatterBean extends JApplet
-{
+public class ChatterBean extends JApplet {
   /*
   Attribute Section
   */
-  
-  /** Version class identifier for the serialization engine. Matches the number of the last revision where the class was created / modified. */
+
+  /**
+   * Version class identifier for the serialization engine. Matches the number of the last revision where the class was created / modified.
+   */
   private static final long serialVersionUID = 8L;
 
   private static final InputStream[] INPUT_STREAM_ARRAY = {};
-  
-  /** Javascript interpreter used by the underlying chatterbot. */
+
+  /**
+   * Javascript interpreter used by the underlying chatterbot.
+   */
   private final Interpreter javascript = new JavascriptInterpreter(this);
 
-  /** The component container for this object. */  
+  /**
+   * The component container for this object.
+   */
   private final Container container = getContentPane();
 
-  /** Input text control. */
-  private final JTextField input = new JTextField(30)
-  {
+  /**
+   * Input text control.
+   */
+  private final JTextField input = new JTextField(30) {
     /** Version class identifier for the serialization engine. */
     private static final long serialVersionUID = 7L;
 
-    /* Object initialization */
-    {
-      ActionListener listener = new ActionListener()
-      {
-        public void actionPerformed(ActionEvent e)
-        {
+    /* Object initialization */ {
+      ActionListener listener = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
           String request = getText();
           String response = aliceBot.respond(request);
-  
+
           setText("");
           output.append("> " + request + "\n");
           output.append(response + "\n");
         }
       };
-      
+
       addActionListener(listener);
       container.add(this);
     }
   };
 
-  /** Output text control. */
-  private final JTextArea output = new JTextArea(10, 30)
-  {
+  /**
+   * Output text control.
+   */
+  private final JTextArea output = new JTextArea(10, 30) {
     /** Version class identifier for the serialization engine. */
     private static final long serialVersionUID = 7L;
 
-    /* Object initialization */
-    {
+    /* Object initialization */ {
       setEditable(false);
       setLineWrap(true);
       setWrapStyleWord(true);
       container.add(new JScrollPane(this));
     }
   };
-  
-  /** The underlying AliceBot used to produce responses to user queries. */
+
+  /**
+   * The underlying AliceBot used to produce responses to user queries.
+   */
   private AliceBot aliceBot;
-  
-  /** Logger object used to keep track of this bot's conversations. */
+
+  /**
+   * Logger object used to keep track of this bot's conversations.
+   */
   private Logger logger;
   
   /*
   Constructor Section
   */
-  
+
   /**
-  Default constructor.
-  */
-  public ChatterBean()
-  {
+   * Default constructor.
+   */
+  public ChatterBean() {
     container.setLayout(new FlowLayout());
   }
-  
+
   /**
-  Creates a new ChatterBean configured with a set of properties.
-  
-  @param path Path of the properties file.
-  */
-  public ChatterBean(String path)
-  {
+   * Creates a new ChatterBean configured with a set of properties.
+   *
+   * @param path Path of the properties file.
+   */
+  public ChatterBean(String path) {
     this();
     configure(path);
   }
@@ -144,40 +149,33 @@ public class ChatterBean extends JApplet
   /*
   Event Section
   */
-  
-  private void beforeConfigure()
-  {
-    if (getAliceBot() == null)
+
+  private void beforeConfigure() {
+    if (getAliceBot() == null) {
       setAliceBot(new AliceBot());
+    }
   }
-  
-  private void afterConfigure()
-  {
+
+  private void afterConfigure() {
     Context context = aliceBot.getContext();
     context.property("javascript.interpreter", javascript);
   }
 
-  public void init()
-  {
-    try
-    {
+  public void init() {
+    try {
       beforeConfigure();
 
       AliceBotParser parser = new AliceBotParser();
       parser.parse(getAliceBot(),
-        openStream("context"),
-        openStream("splitters"),
-        openStream("substitutions"),
-        openStreams("aiml"));
+          openStream("context"),
+          openStream("splitters"),
+          openStream("substitutions"),
+          openStreams("aiml"));
 
       afterConfigure();
-    }
-    catch (ChatterBeanException e)
-    {
+    } catch (ChatterBeanException e) {
       throw e;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ChatterBeanException(e);
     }
   }
@@ -185,130 +183,111 @@ public class ChatterBean extends JApplet
   /*
   Method Section
   */
-  
-  private InputStream openStream(String name)
-  {
+
+  private InputStream openStream(String name) {
     String value = getParameter(name);
-    if (value == null || "".equals(value.trim()))
+    if (value == null || "".equals(value.trim())) {
       throw new ChatterBeanException("Invalid value for parameter \"" + name + "\": " + value);
+    }
 
     return openURLStream(value);
   }
-  
-  private InputStream openURLStream(String path)
-  {
-    try
-    {
+
+  private InputStream openURLStream(String path) {
+    try {
       URL url = new URL(getDocumentBase(), path);
       return url.openStream();
-    }
-    catch (Exception e)
-    {
-      throw new ChatterBeanException(e);
-    }
-  }
-  
-  private InputStream[] openStreams(String name)
-  {
-    String value = getParameter(name);
-    if (value == null || "".equals(value.trim()))
-      throw new ChatterBeanException("Invalid value for parameter \"" + name + "\": " + value);
-    else if (value.endsWith(".aiml"))
-      return new InputStream[] {openURLStream(value)};
-    else if (value.endsWith(".txt"))
-      return openAIMLStreams(value);
-    else
-      return searchAIMLStreams(value);
-  }
-  
-  private InputStream[] openAIMLStreams(String path)
-  {
-    try
-    {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(openURLStream(path)));
-      List<InputStream> streams = new LinkedList<InputStream>();
-      for (String fileName = ""; (fileName = reader.readLine()) != null;)
-        streams.add(openURLStream(fileName));
-      
-      return streams.toArray(INPUT_STREAM_ARRAY);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ChatterBeanException(e);
     }
   }
 
-  private InputStream[] searchAIMLStreams(String path)
-  {
-    try
-    {
-      Searcher searcher = new Searcher();
-      return searcher.search(getDocumentBase(), path, ".+\\.aiml");
+  private InputStream[] openStreams(String name) {
+    String value = getParameter(name);
+    if (value == null || "".equals(value.trim())) {
+      throw new ChatterBeanException("Invalid value for parameter \"" + name + "\": " + value);
+    } else if (value.endsWith(".aiml")) {
+      return new InputStream[]{openURLStream(value)};
+    } else if (value.endsWith(".txt")) {
+      return openAIMLStreams(value);
+    } else {
+      return searchAIMLStreams(value);
     }
-    catch (Exception e)
-    {
+  }
+
+  private InputStream[] openAIMLStreams(String path) {
+    try {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(openURLStream(path)));
+      List<InputStream> streams = new LinkedList<InputStream>();
+      for (String fileName = ""; (fileName = reader.readLine()) != null; ) {
+        streams.add(openURLStream(fileName));
+      }
+
+      return streams.toArray(INPUT_STREAM_ARRAY);
+    } catch (Exception e) {
       throw new ChatterBeanException(e);
     }
   }
-  
+
+  private InputStream[] searchAIMLStreams(String path) {
+    try {
+      Searcher searcher = new Searcher();
+      return searcher.search(getDocumentBase(), path, ".+\\.aiml");
+    } catch (Exception e) {
+      throw new ChatterBeanException(e);
+    }
+  }
+
   /**
-  Configures this object with a set of properties.
-  
-  @param path Path of the properties file.
-  */
-  public void configure(String path)
-  {
-    try
-    {
+   * Configures this object with a set of properties.
+   *
+   * @param path Path of the properties file.
+   */
+  public void configure(String path) {
+    try {
       beforeConfigure();
       ChatterBeanParser parser = new ChatterBeanParser();
       parser.parse(this, path);
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new ChatterBeanException(e);
     }
   }
-  
-  public String respond(String request)
-  {
+
+  public String respond(String request) {
     String response = "";
-    if(request != null && !"".equals(request.trim())) try
-    {
-      response = aliceBot.respond(request);
-      if (logger != null)
-        logger.append(request, response);
-    }
-    catch (Exception e)
-    {
-      throw new RuntimeException(e);
+    if (request != null && !"".equals(request.trim())) {
+      try {
+        response = aliceBot.respond(request);
+        if (logger != null) {
+          logger.append(request, response);
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
 
     return response;
   }
-  
+
   /**
-  Main entry point.
-  */
-  public static void main(String[] args) throws Exception
-  {
+   * Main entry point.
+   */
+  public static void main(String[] args) throws Exception {
     ChatterBean applet = new ChatterBean(args[0]);
-    
-    if (args.length > 1 && "gui".equals(args[1]))
-    {
+
+    if (args.length > 1 && "gui".equals(args[1])) {
       JFrame frame = new JFrame("ChatterBean GUI Window");
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.getContentPane().add(applet);
       frame.setSize(350, 210);
       frame.setVisible(true);
-    }
-    else
-    {
+    } else {
       BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-      for(;;)
-      {
+      for (; ; ) {
         String input = reader.readLine();
-        if (input == null || "".equals(input.trim())) break;
+        if (input == null || "".equals(input.trim())) {
+          break;
+        }
         System.out.println(applet.respond(input));
       }
     }
@@ -317,44 +296,40 @@ public class ChatterBean extends JApplet
   /*
   Property Section
   */
-  
+
   /**
-  Gets the AliceBot encapsulated by this bot.
-  
-  @return An AliceBot.
-  */
-  public AliceBot getAliceBot()
-  {
+   * Gets the AliceBot encapsulated by this bot.
+   *
+   * @return An AliceBot.
+   */
+  public AliceBot getAliceBot() {
     return aliceBot;
   }
-  
+
   /**
-  Sets the AliceBot encapsulated by this bot.
-  
-  @param aliceBot An AliceBot.
-  */
-  public void setAliceBot(AliceBot aliceBot)
-  {
+   * Sets the AliceBot encapsulated by this bot.
+   *
+   * @param aliceBot An AliceBot.
+   */
+  public void setAliceBot(AliceBot aliceBot) {
     this.aliceBot = aliceBot;
   }
-  
+
   /**
-  Gets the logger object used by this bot.
-  
-  @return A Logger object.
-  */
-  public Logger getLogger()
-  {
+   * Gets the logger object used by this bot.
+   *
+   * @return A Logger object.
+   */
+  public Logger getLogger() {
     return logger;
   }
-  
+
   /**
-  Sets the logger object used by this bot.
-  
-  @param logger A Logger object.
-  */
-  public void setLogger(Logger logger)
-  {
+   * Sets the logger object used by this bot.
+   *
+   * @param logger A Logger object.
+   */
+  public void setLogger(Logger logger) {
     this.logger = logger;
   }
 }

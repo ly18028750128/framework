@@ -20,18 +20,15 @@ import bitoflife.chatterbean.Match;
 import bitoflife.chatterbean.script.Interpreter;
 import org.xml.sax.Attributes;
 
-public class Javascript extends TemplateElement
-{
+public class Javascript extends TemplateElement {
   /*
   Constructor Section
   */
 
-  public Javascript(Attributes attributes)
-  {
+  public Javascript(Attributes attributes) {
   }
 
-  public Javascript(Object... children)
-  {
+  public Javascript(Object... children) {
     super(children);
   }
 
@@ -39,26 +36,25 @@ public class Javascript extends TemplateElement
   Method Section
   */
 
-  public String process(Match match)
-  {
-    try
-    {
+  public String process(Match match) {
+    try {
       AliceBot bot = match.getCallback();
       Context context = bot.getContext();
       Interpreter interpreter = (Interpreter) context.property("javascript.interpreter");
-      if (interpreter == null)
+      if (interpreter == null) {
         return "";
+      }
 
       String script = super.process(match);
       interpreter.variable("result", null);
       Object evaluated = interpreter.evaluate(script);
       Object result = interpreter.variable("result");
-      if (result == null) result = evaluated;
-      
+      if (result == null) {
+        result = evaluated;
+      }
+
       return (result != null ? result.toString() : "");
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new RuntimeException("Evaluation error on <javascript> tag", e);
     }
   }

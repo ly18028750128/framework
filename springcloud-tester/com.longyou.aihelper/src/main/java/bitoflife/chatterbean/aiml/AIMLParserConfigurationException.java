@@ -14,20 +14,18 @@ You should have received a copy of the GNU General Public License along with Cha
 
 package bitoflife.chatterbean.aiml;
 
-public class AIMLParserConfigurationException extends Exception
-{
+public class AIMLParserConfigurationException extends Exception {
   /*
   Attribute Section
   */
-  
+
   private static final long serialVersionUID = 7L;
 
   /*
   Constructor Section
   */
-  
-  public AIMLParserConfigurationException(Exception e)
-  {
+
+  public AIMLParserConfigurationException(Exception e) {
     super(e);
   }
 }

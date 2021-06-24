@@ -38,8 +38,8 @@ public class AimlConfig {
     return gossipLoad;
   }
 
-  @Bean
-  public AskToAIML askToAIML() throws Exception {
+  @Bean("aiml.askToAIML")
+  public AskToAIML askToAIML() {
     AskToAIML askToAIML = new AskToAIML(configPath, corpusPath);
     return askToAIML;
   }

@@ -23,32 +23,31 @@ public class Srai extends TemplateElement {
   Constructor Section
   */
 
-    public Srai(Attributes attributes) {
+  public Srai(Attributes attributes) {
+  }
+
+  public Srai(Object... children) {
+    super(children);
+
+  }
+
+  public Srai(int index) {
+    super(new Star(index));
+  }
+
+
+  public String process(Match match) {
+    String request = super.process(match);
+
+    try {
+      AliceBot bot = (match != null ? match.getCallback() : null);
+      return (bot != null ? bot.respond(request) : "");
+    } catch (Exception e) {
+      throw new RuntimeException("While trying to respond \"" + request + "\"", e);
     }
+  }
 
-    public Srai(Object... children) {
-        super(children);
-
-    }
-
-    public Srai(int index) {
-        super(new Star(index));
-    }
-  
-
-
-    public String process(Match match) {
-        String request = super.process(match);
-
-        try {
-            AliceBot bot = (match != null ? match.getCallback() : null);
-            return (bot != null ? bot.respond(request) : "");
-        } catch (Exception e) {
-            throw new RuntimeException("While trying to respond \"" + request + "\"", e);
-        }
-    }
-
-    public String toString() {
-        return "<srai>" + super.toString() + "</srai>";
-    }
+  public String toString() {
+    return "<srai>" + super.toString() + "</srai>";
+  }
 }

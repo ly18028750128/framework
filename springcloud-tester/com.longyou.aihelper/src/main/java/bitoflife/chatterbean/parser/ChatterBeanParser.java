@@ -27,32 +27,25 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.Properties;
 
-public class ChatterBeanParser
-{
+public class ChatterBeanParser {
   /*
   Attributes
   */
-  
+
   private AliceBotParser botParser;
-  
+
   private Class<? extends Logger> loggerClass = Logger.class;
   
   /*
   Constructor
   */
-  
-  public ChatterBeanParser() throws AliceBotParserConfigurationException
-  {
-    try
-    {
+
+  public ChatterBeanParser() throws AliceBotParserConfigurationException {
+    try {
       botParser = new AliceBotParser();
-    }
-    catch (AliceBotParserConfigurationException e)
-    {
+    } catch (AliceBotParserConfigurationException e) {
       throw e;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new AliceBotParserConfigurationException(e);
     }
   }
@@ -60,39 +53,35 @@ public class ChatterBeanParser
   /*
   Methods
   */
-  
-  private Logger newLogger(String root, String dir) throws Exception
-  {
-    if (dir == null) return null;
+
+  private Logger newLogger(String root, String dir) throws Exception {
+    if (dir == null) {
+      return null;
+    }
     String path = root + dir;
-    
+
     Sequence sequence = new Sequence(path + "sequence.txt");
     File file = new File(path + "log" + sequence.getNext() + ".txt");
     return loggerClass.getConstructor(Writer.class).newInstance(new FileWriter(file));
   }
-  
-  private InputStream newResourceStream(String resource, String root, String path) throws Exception
-  {
-    if (root == null || path == null)
+
+  private InputStream newResourceStream(String resource, String root, String path) throws Exception {
+    if (root == null || path == null) {
       throw new IllegalArgumentException(
-        "Invalid path elements for retrieving " + resource + ": root(" + root + "), path(" + path + ")");
-    
-    path = root + path;
-    
-    try
-    {
-      return new FileInputStream(path);
+          "Invalid path elements for retrieving " + resource + ": root(" + root + "), path(" + path + ")");
     }
-    catch (Exception e)
-    {
+
+    path = root + path;
+
+    try {
+      return new FileInputStream(path);
+    } catch (Exception e) {
       throw new Exception("Error while retrieving " + resource + ": " + path, e);
     }
   }
-  
-  public void parse(ChatterBean bot, String path) throws AliceBotParserException
-  {
-    try
-    {
+
+  public void parse(ChatterBean bot, String path) throws AliceBotParserException {
+    try {
       Properties properties = new Properties();
       properties.loadFromXML(new FileInputStream(path));
 
@@ -107,13 +96,9 @@ public class ChatterBeanParser
       Searcher searcher = new Searcher();
       bot.setLogger(newLogger(root, logs));
       botParser.parse(bot.getAliceBot(), context, splitters, substitutions, searcher.search(categories, ".*\\.aiml"));
-    }
-    catch (AliceBotParserException e)
-    {
+    } catch (AliceBotParserException e) {
       throw e;
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new AliceBotParserException(e);
     }
   }
@@ -121,19 +106,16 @@ public class ChatterBeanParser
   /*
   Accessor Section
   */
-  
-  public <C extends Context> void contextClass(Class<C> contextClass)
-  {
+
+  public <C extends Context> void contextClass(Class<C> contextClass) {
     botParser.contextClass(contextClass);
   }
 
-  public <L extends Logger> void loggerClass(Class<L> loggerClass)
-  {
+  public <L extends Logger> void loggerClass(Class<L> loggerClass) {
     this.loggerClass = loggerClass;
   }
-  
-  public <M extends Graphmaster> void graphmasterClass(Class<M> matcherClass)
-  {
+
+  public <M extends Graphmaster> void graphmasterClass(Class<M> matcherClass) {
     botParser.graphmasterClass(matcherClass);
   }
 }

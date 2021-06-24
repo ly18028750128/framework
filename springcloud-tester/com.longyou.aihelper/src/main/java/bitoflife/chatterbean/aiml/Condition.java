@@ -20,8 +20,7 @@ import bitoflife.chatterbean.Match;
 import bitoflife.chatterbean.text.Transformations;
 import org.xml.sax.Attributes;
 
-public class Condition extends TemplateElement
-{
+public class Condition extends TemplateElement {
   /*
   Attributes
   */
@@ -34,18 +33,15 @@ public class Condition extends TemplateElement
   Constructors
   */
 
-  public Condition()
-  {
+  public Condition() {
   }
 
-  public Condition(Attributes attributes)
-  {
+  public Condition(Attributes attributes) {
     name = attributes.getValue("name");
     value = attributes.getValue("value");
   }
 
-  public Condition(String name, String value, Object... children)
-  {
+  public Condition(String name, String value, Object... children) {
     super(children);
     this.name = name;
     this.value = value;
@@ -55,68 +51,63 @@ public class Condition extends TemplateElement
   Methods
   */
 
-  private Li find(Context context, Transformations transformations)
-  {
-    for (AIMLElement child : getChildren())
-    {
+  private Li find(Context context, Transformations transformations) {
+    for (AIMLElement child : getChildren()) {
       Li li = (Li) child;
       String comparing = li.getValue();
-      if (comparing == null)
+      if (comparing == null) {
         return li;
+      }
 
       String compared = (String) context.property("predicate." + li.getName());
-      if ("".equals(compared))
+      if ("".equals(compared)) {
         continue;
+      }
 
       comparing = transformations.normalization(comparing);
       compared = transformations.normalization(compared);
-      if (comparing.equals(compared))
+      if (comparing.equals(compared)) {
         return li;
+      }
     }
 
     return null;
   }
 
-  private Li find(String compared, Transformations transformations)
-  {
+  private Li find(String compared, Transformations transformations) {
     // 中文支持去空格。
 //    compared = compared.replaceAll(" ","");
 
-    for (TemplateElement child : getChildren())
-    {
+    for (TemplateElement child : getChildren()) {
       Li li = (Li) child;
       String comparing = li.getValue();
-      if (comparing == null)
+      if (comparing == null) {
         return li;
+      }
 
       comparing = transformations.normalization(comparing);
-      if (comparing.equals(compared))
+      if (comparing.equals(compared)) {
         return li;
+      }
     }
 
     return null;
   }
 
-  public String process(Match match)
-  {
+  public String process(Match match) {
     AliceBot bot = match.getCallback();
     Context context = bot.getContext();
     Transformations transformations = context.getTransformations();
 
     String compared = (String) context.property("predicate." + name);
     compared = transformations.normalization(compared);
-    if (value != null)
-    {
+    if (value != null) {
       String comparing = transformations.normalization(value);
       return (comparing.equals(compared) ? super.process(match) : "");
-    }
-    else if (name != null)
-    {
+    } else if (name != null) {
       Li li = find(compared, transformations);
       return (li != null ? li.process(match) : "");
-    }
-    else
-    {
+    } else {
       Li li = find(context, transformations);
       return (li != null ? li.process(match) : "");
     }
@@ -126,23 +117,19 @@ public class Condition extends TemplateElement
   Properties
   */
 
-  public String getName()
-  {
+  public String getName() {
     return name;
   }
 
-  public void setName(String name)
-  {
+  public void setName(String name) {
     this.name = name;
   }
 
-  public String getValue()
-  {
+  public String getValue() {
     return value;
   }
 
-  public void setValue(String value)
-  {
+  public void setValue(String value) {
     this.value = value;
   }
 }

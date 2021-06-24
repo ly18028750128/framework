@@ -25,36 +25,36 @@ public class AIMLParser {
   Attributes
   */
 
-    private final Searcher searcher = new Searcher();
-    private final AIMLHandler handler = new AIMLHandler();
-    private SAXParser parser;
+  private final Searcher searcher = new Searcher();
+  private final AIMLHandler handler = new AIMLHandler();
+  private SAXParser parser;
 
   /*
   Constructor
   */
 
-    public AIMLParser() throws AIMLParserConfigurationException {
-        try {
-            parser = SAXParserFactory.newInstance().newSAXParser();
-        } catch (Exception e) {
-            throw new AIMLParserConfigurationException(e);
-        }
+  public AIMLParser() throws AIMLParserConfigurationException {
+    try {
+      parser = SAXParserFactory.newInstance().newSAXParser();
+    } catch (Exception e) {
+      throw new AIMLParserConfigurationException(e);
     }
+  }
 
   /*
   Methods
   */
 
-    public void parse(Graphmaster graphmaster, InputStream... sources) throws AIMLParserException {
-        try {
-            for (InputStream aiml : sources) {
-                parser.parse(aiml, handler);
-            }
+  public void parse(Graphmaster graphmaster, InputStream... sources) throws AIMLParserException {
+    try {
+      for (InputStream aiml : sources) {
+        parser.parse(aiml, handler);
+      }
 
-            graphmaster.append(handler.unload());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new AIMLParserException(e);
-        }
+      graphmaster.append(handler.unload());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new AIMLParserException(e);
     }
+  }
 }

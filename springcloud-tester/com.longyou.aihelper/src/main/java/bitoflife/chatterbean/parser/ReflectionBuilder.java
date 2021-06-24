@@ -14,13 +14,12 @@ You should have received a copy of the GNU General Public License along with Cha
 
 package bitoflife.chatterbean.parser;
 
-public interface ReflectionBuilder
-{
+public interface ReflectionBuilder {
   /*
   Methods
   */
-  
+
   public void characters(char[] chars, int start, int length);
-  
+
   public void clear();
 }

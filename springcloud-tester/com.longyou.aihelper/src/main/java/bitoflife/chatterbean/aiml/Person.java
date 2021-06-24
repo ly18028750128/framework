@@ -19,27 +19,23 @@ import bitoflife.chatterbean.Match;
 import bitoflife.chatterbean.text.Transformations;
 import org.xml.sax.Attributes;
 
-public class Person extends TemplateElement
-{
+public class Person extends TemplateElement {
   /*
   Constructor Section
   */
 
-  public Person(Attributes attributes)
-  {
+  public Person(Attributes attributes) {
   }
 
-  public Person(Object... children)
-  {
+  public Person(Object... children) {
     super(children);
   }
   
   /*
   Method Section
   */
-  
-  public String process(Match match)
-  {
+
+  public String process(Match match) {
     String input = super.process(match);
     AliceBot bot = match.getCallback();
     Transformations transformations = bot.transformations();

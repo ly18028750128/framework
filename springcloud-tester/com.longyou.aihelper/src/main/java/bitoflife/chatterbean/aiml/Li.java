@@ -16,12 +16,11 @@ package bitoflife.chatterbean.aiml;
 
 import org.xml.sax.Attributes;
 
-public class Li extends TemplateElement
-{
+public class Li extends TemplateElement {
   /*
   Attributes
   */
-  
+
   private String name;
   private String value;
   
@@ -30,18 +29,15 @@ public class Li extends TemplateElement
   Constructors
   */
 
-  public Li()
-  {
+  public Li() {
   }
 
-  public Li(Attributes attributes)
-  {
+  public Li(Attributes attributes) {
     name = attributes.getValue("name");
     value = attributes.getValue("value");
   }
 
-  public Li(String name, String value, Object... children)
-  {
+  public Li(String name, String value, Object... children) {
     super(children);
     this.name = name;
     this.value = value;
@@ -50,15 +46,15 @@ public class Li extends TemplateElement
   /*
   Methods
   */
-  
-  private boolean isEquals(Object comparing, Object compared)
-  {
+
+  private boolean isEquals(Object comparing, Object compared) {
     return (comparing == null ? compared == null : comparing.equals(compared));
   }
-  
-  public boolean equals(Object obj)
-  {
-    if (!super.equals(obj)) return false;
+
+  public boolean equals(Object obj) {
+    if (!super.equals(obj)) {
+      return false;
+    }
     Li compared = (Li) obj;
     return (isEquals(name, compared.name) && isEquals(value, compared.value));
   }
@@ -66,24 +62,20 @@ public class Li extends TemplateElement
   /*
   Properties
   */
-  
-  public String getName()
-  {
+
+  public String getName() {
     return name;
   }
-  
-  public void setName(String name)
-  {
+
+  public void setName(String name) {
     this.name = name;
   }
-  
-  public String getValue()
-  {
+
+  public String getValue() {
     return value;
   }
-  
-  public void setValue(String value)
-  {
+
+  public void setValue(String value) {
     this.value = value;
   }
 }

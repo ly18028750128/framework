@@ -17,14 +17,12 @@ package bitoflife.chatterbean;
 import bitoflife.chatterbean.aiml.Category;
 import bitoflife.chatterbean.aiml.Star;
 
-public class GraphmasterMother
-{
+public class GraphmasterMother {
   /*
   Methods
   */
 
-  public Graphmaster newInstance()
-  {
+  public Graphmaster newInstance() {
     Graphmaster root = new Graphmaster();
 
     root.append(new Category(" SAY _ AGAIN ", "What, again? \"", new Star(1), "\"."));

@@ -14,20 +14,18 @@ You should have received a copy of the GNU General Public License along with Cha
 
 package bitoflife.chatterbean.parser;
 
-public class AliceBotParserException extends Exception
-{
+public class AliceBotParserException extends Exception {
   /*
   Attribute Section
   */
-  
+
   private static final long serialVersionUID = 7L;
 
   /*
   Constructor Section
   */
-  
-  public AliceBotParserException(Exception e)
-  {
+
+  public AliceBotParserException(Exception e) {
     super(e);
   }
 }

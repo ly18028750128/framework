@@ -17,31 +17,28 @@ package bitoflife.chatterbean.aiml;
 import bitoflife.chatterbean.Match;
 import org.xml.sax.Attributes;
 
-public class Uppercase extends TemplateElement
-{
+public class Uppercase extends TemplateElement {
   /*
   Constructors
   */
 
-  public Uppercase(Attributes attributes)
-  {
+  public Uppercase(Attributes attributes) {
   }
-  
-  public Uppercase(Object... children)
-  {
+
+  public Uppercase(Object... children) {
     super(children);
   }
   
   /*
   Methods
   */
-  
-  public String process(Match match)
-  {
+
+  public String process(Match match) {
     String result = super.process(match);
-    if (result != null)
+    if (result != null) {
       return result.toUpperCase();
-    else
+    } else {
       return "";
+    }
   }
 }

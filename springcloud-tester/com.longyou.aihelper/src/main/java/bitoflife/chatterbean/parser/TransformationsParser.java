@@ -31,8 +31,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
-public class TransformationsParser
-{
+public class TransformationsParser {
   /*
   Attribute Section
   */
@@ -40,15 +39,14 @@ public class TransformationsParser
   private final SubstitutionBuilder substBuilder = new SubstitutionBuilder();
   private final ReflectionHandler substHandler = new ReflectionHandler(substBuilder);
   private final SplitterHandler splitHandler = new SplitterHandler();
-  
+
   private SAXParser parser;
 
   /*
   Constructor Section
   */
-  
-  public TransformationsParser() throws ParserConfigurationException, SAXException
-  {
+
+  public TransformationsParser() throws ParserConfigurationException, SAXException {
     parser = SAXParserFactory.newInstance().newSAXParser();
   }
 
@@ -56,38 +54,36 @@ public class TransformationsParser
   Method Section
   */
 
-  private List<String> parseSplitters(InputStream splitters) throws IOException, SAXException
-  {
+  private List<String> parseSplitters(InputStream splitters) throws IOException, SAXException {
     splitHandler.clear();
     parser.parse(splitters, splitHandler);
     return splitHandler.parsed();
   }
 
-  private Map<String, Map<String, String>> parseSubstitutions(InputStream substitutions) throws IOException, SAXException
-  {
+  private Map<String, Map<String, String>> parseSubstitutions(InputStream substitutions) throws IOException, SAXException {
     substBuilder.clear();
     parser.parse(substitutions, substHandler);
     return substBuilder.parsed();
   }
-  
-  private byte[] toByteArray(InputStream input) throws IOException
-  {
+
+  private byte[] toByteArray(InputStream input) throws IOException {
     List<Byte> list = new LinkedList<Byte>();
-    for (int i = 0; (i = input.read()) > -1;)
+    for (int i = 0; (i = input.read()) > -1; ) {
       list.add((byte) i);
+    }
 
     int i = 0;
     byte[] bytes = new byte[list.size()];
-    for (byte b : list)
+    for (byte b : list) {
       bytes[i++] = b;
+    }
     return bytes;
   }
-  
+
   public Transformations parse(InputStream splitters, InputStream substitutions)
-    throws ConfigException, IOException, SAXException
-  {
+      throws ConfigException, IOException, SAXException {
     byte[] bytes = toByteArray(splitters);
-    
+
     TokenizerConfig config = new TokenizerConfigStream(new ByteArrayInputStream(bytes));
     Tokenizer tokenizer = new Tokenizer(config);
 

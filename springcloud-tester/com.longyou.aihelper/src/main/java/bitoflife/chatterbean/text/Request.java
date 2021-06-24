@@ -22,87 +22,90 @@ import java.util.Arrays;
  */
 public class Request {
 
-    /**
-     * 句子
-     */
-    private Sentence[] sentences;
+  /**
+   * 句子
+   */
+  private Sentence[] sentences;
 
-    /**
-     * 来源
-     */
-    private String original;
+  /**
+   * 来源
+   */
+  private String original;
 
-    /**
-     * 构造
-     */
-    public Request() {
+  /**
+   * 构造
+   */
+  public Request() {
+  }
+
+  public Request(String original) {
+    this.original = original;
+  }
+
+  /**
+   * 复合构造
+   */
+  public Request(String original, Sentence... sentences) {
+    this.original = original;
+    this.sentences = sentences;
+  }
+
+  /**
+   * 空句子
+   *
+   * @return
+   */
+  public boolean empty() {
+    return (sentences == null || sentences.length == 0);
+  }
+
+
+  public boolean equals(Object obj) {
+    if (obj == null || !(obj instanceof Request)) {
+      return false;
     }
 
-    public Request(String original) {
-        this.original = original;
-    }
-
-    /**
-     * 复合构造
-     */
-    public Request(String original, Sentence... sentences) {
-        this.original = original;
-        this.sentences = sentences;
-    }
-
-    /**
-     * 空句子
-     * @return
-     */
-    public boolean empty() {
-        return (sentences == null || sentences.length == 0);
-    }
+    Request compared = (Request) obj;
+    return original.equals(compared.original) &&
+        Arrays.equals(sentences, compared.sentences);
+  }
 
 
+  /**
+   * 最后一个句子
+   *
+   * @param index
+   * @return
+   */
+  public Sentence lastSentence(int index) {
+    return sentences[sentences.length - (1 + index)];
+  }
 
-    public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Request)) return false;
+  public String toString() {
+    return original;
+  }
 
-        Request compared = (Request) obj;
-        return original.equals(compared.original) &&
-                Arrays.equals(sentences, compared.sentences);
-    }
+  public String trimOriginal() {
+    return original.trim();
+  }
 
+  public String getOriginal() {
+    return original;
+  }
 
-    /**
-     * 最后一个句子
-     * @param index
-     * @return
-     */
-    public Sentence lastSentence(int index) {
-        return sentences[sentences.length - (1 + index)];
-    }
+  public void setOriginal(String original) {
+    this.original = original;
+  }
 
-    public String toString() {
-        return original;
-    }
+  public Sentence[] getSentences() {
+    return sentences;
+  }
 
-    public String trimOriginal() {
-        return original.trim();
-    }
+  public Sentence getSentences(int index) {
+    return sentences[index];
+  }
 
-    public String getOriginal() {
-        return original;
-    }
-
-    public void setOriginal(String original) {
-        this.original = original;
-    }
-
-    public Sentence[] getSentences() {
-        return sentences;
-    }
-
-    public Sentence getSentences(int index) {
-        return sentences[index];
-    }
-
-    public void setSentences(Sentence[] sentences) {
-        this.sentences = sentences;
-    }
+  public void setSentences(Sentence[] sentences) {
+    this.sentences = sentences;
+  }
 }

@@ -18,8 +18,7 @@ import bitoflife.chatterbean.Match;
 import bitoflife.chatterbean.text.Request;
 import org.xml.sax.Attributes;
 
-public class Input extends TemplateElement
-{
+public class Input extends TemplateElement {
   /*
   Attributes
   */
@@ -30,18 +29,20 @@ public class Input extends TemplateElement
   Constructors
   */
 
-  public Input(Attributes attributes)
-  {
+  public Input(Attributes attributes) {
     String value = attributes.getValue(0);
-    if (value == null) return;
-    
+    if (value == null) {
+      return;
+    }
+
     String[] indexes = value.split(",");
     requestIndex = Integer.parseInt(indexes[0].trim());
-    if (indexes.length > 1) sentenceIndex = Integer.parseInt(indexes[1].trim());
+    if (indexes.length > 1) {
+      sentenceIndex = Integer.parseInt(indexes[1].trim());
+    }
   }
-  
-  public Input(int requestIndex, int sentenceIndex)
-  {
+
+  public Input(int requestIndex, int sentenceIndex) {
     this.requestIndex = requestIndex;
     this.sentenceIndex = sentenceIndex;
   }
@@ -49,24 +50,25 @@ public class Input extends TemplateElement
   /*
   Methods
   */
-  
-  public boolean equals(Object obj)
-  {
-    if (!super.equals(obj)) return false;
+
+  public boolean equals(Object obj) {
+    if (!super.equals(obj)) {
+      return false;
+    }
 
     Input compared = (Input) obj;
     return (requestIndex == compared.requestIndex &&
-            sentenceIndex == compared.sentenceIndex);
+        sentenceIndex == compared.sentenceIndex);
   }
-  
-  public String toString()
-  {
+
+  public String toString() {
     return "<input index=\"" + requestIndex + ", " + sentenceIndex + "\"/>";
   }
-  
-  public String process(Match match)
-  {
-    if (match == null) return "";
+
+  public String process(Match match) {
+    if (match == null) {
+      return "";
+    }
     Request request = match.getCallback().getContext().getRequests(requestIndex - 1);
     return request.lastSentence(sentenceIndex - 1).trimOriginal();
   }

@@ -20,18 +20,15 @@ import bitoflife.chatterbean.Match;
 import java.net.URL;
 import org.xml.sax.Attributes;
 
-public class Learn extends TemplateElement
-{
+public class Learn extends TemplateElement {
   /*
   Constructors
   */
 
-  public Learn(Attributes attributes)
-  {
+  public Learn(Attributes attributes) {
   }
 
-  public Learn(Object... children)
-  {
+  public Learn(Object... children) {
     super(children);
   }
 
@@ -39,11 +36,9 @@ public class Learn extends TemplateElement
   Methods
   */
 
-  public String process(Match match)
-  {
+  public String process(Match match) {
     AliceBot bot = null;
-    try
-    {
+    try {
       bot = match.getCallback();
       Graphmaster graphmaster = bot.getGraphmaster();
 
@@ -52,9 +47,7 @@ public class Learn extends TemplateElement
 
       AIMLParser parser = new AIMLParser();
       parser.parse(graphmaster, url.openStream());
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 

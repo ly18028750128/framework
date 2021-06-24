@@ -22,10 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
-Log file generator.
-*/
-public class Logger
-{
+ * Log file generator.
+ */
+public class Logger {
   /*
   Attributes
   */
@@ -39,24 +38,22 @@ public class Logger
   */
 
   /**
-  Constructs a new Log on the given directory.
-  */
-  public Logger(Writer writer)
-  {
-    this.writer =  new PrintWriter(writer, true);
+   * Constructs a new Log on the given directory.
+   */
+  public Logger(Writer writer) {
+    this.writer = new PrintWriter(writer, true);
   }
   
   /*
   Methods
   */
-  
+
   /**
-  Adds an entry to this Log.
-  */
-  public void append(String request, String response) throws IOException
-  {
+   * Adds an entry to this Log.
+   */
+  public void append(String request, String response) throws IOException {
     String now = date.format(new Date());
-  
+
     writer.println("[" + now + "][" + request + "][" + response + "]");
   }
 }
