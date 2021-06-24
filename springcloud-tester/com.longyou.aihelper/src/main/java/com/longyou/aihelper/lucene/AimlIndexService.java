@@ -59,8 +59,10 @@ public class AimlIndexService {
       if (!locker.tryLock(3, 60, TimeUnit.MINUTES)) {  // 等待3秒，上锁10分钟后自动解锁
         return;
       }
-      Date lastModifyTime = RedissonUtil.single()
-          .getValue(__LASTUPDATETIME_KEY + "." + CommonUtil.single().getEnv("spring.application.group", ""));
+
+      final String lastIndexUpdateTime = __LASTUPDATETIME_KEY + "." + CommonUtil.single().getEnv("spring.application.group", "");
+
+      Date lastModifyTime = RedissonUtil.single().getValue(lastIndexUpdateTime);
       final Date indexStartDate = new Date();
       OpenMode openMode = OpenMode.CREATE;
       final Map<String, Object> params = new HashMap<>();
@@ -68,7 +70,7 @@ public class AimlIndexService {
         params.put("lastModifyTimeStart", lastModifyTime);
         openMode = OpenMode.APPEND;
       }
-      RedissonUtil.single().setValue(__LASTUPDATETIME_KEY, indexStartDate);
+      RedissonUtil.single().setValue(lastIndexUpdateTime, indexStartDate);
       this.createIndex(responsetableMapper.selectByCondition(params), openMode);
     } catch (InterruptedException e) {
       log.info("{}", e);
