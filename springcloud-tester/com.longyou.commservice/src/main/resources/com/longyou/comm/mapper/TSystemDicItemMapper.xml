@@ -41,7 +41,13 @@
         <include refid="Base_Column_List"/>
         from t_system_dic_item
         where dic_master_id = #{dicMasterId,jdbcType=BIGINT}
-        order by status desc,seq;
+        <![CDATA[
+          <dataDimension>[{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"micro_service_name","operator":"=", "connector":"or"},{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"micro_service_name","operator":"=", "connector":"or"}]</dataDimension>
+          <dataDimension>[{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"micro_service_name","operator":"=", "connector":"or"}]</dataDimension>
+          <dataDimension>[{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"child_search_path","operator":"in", "connector":"or"}]</dataDimension>
+          <dataDimension>[{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"child_search_path","operator":"like", "connector":"and"},{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"child_search_path","operator":"in", "connector":"or"}]</dataDimension>
+        ]]>
+        order by status desc,seq
     </select>
 
     <select id="selectByDicCode" parameterType="java.util.Map" resultMap="BaseResultMap">

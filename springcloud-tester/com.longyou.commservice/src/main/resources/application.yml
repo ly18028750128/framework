@@ -1,8 +1,7 @@
 logging:
   level:
-    com:
-      longyou:
-        common: DEBUG
+    com.longyou.common: debug
+    org.cloud: debug
 pagehelper:
   helper-dialect: mysql
   reasonable: true
@@ -11,13 +10,13 @@ pagehelper:
 system: #这里仅是示例，请在配置中心中配置
   redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
     enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式,和集群模式
-#    master-slave-config:
-#      password: 1qaz@WSX
-#      master-address: redis://192.168.74.128:10004
-#      slave-addresses:
-#        - redis://192.168.74.128:10005
-#      connect-timeout: 5000
-#      database: ${spring.redis.database:0}
+    #    master-slave-config:
+    #      password: 1qaz@WSX
+    #      master-address: redis://192.168.74.128:10004
+    #      slave-addresses:
+    #        - redis://192.168.74.128:10005
+    #      connect-timeout: 5000
+    #      database: ${spring.redis.database:0}
     cluster-config:
       password: 1qaz@WSX
       node-addresses:
