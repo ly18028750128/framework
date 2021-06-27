@@ -120,7 +120,6 @@ public class DataDimensionInterceptor implements Interceptor {
     final Pattern pattern = Pattern.compile("^.*<dataDimension>.+</dataDimension>", Pattern.MULTILINE);
     Matcher matcher = pattern.matcher(boundSql);
     while (matcher.find()) {
-      final String dataDimensionStr = matcher.group();
       boundSql = matcher.replaceFirst("");
       matcher = pattern.matcher(boundSql);
     }
