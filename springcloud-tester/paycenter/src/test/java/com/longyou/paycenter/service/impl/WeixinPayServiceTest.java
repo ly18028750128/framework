@@ -26,7 +26,7 @@ class RabbitTemplateTest {
     rabbitTemplate.convertAndSend("testExchange", ".testExchange.", "测试消息1");
     rabbitTemplate.convertAndSend("testExchange", "message.2.testExchange.message.2", "测试消息2");
     rabbitTemplate.convertAndSend("testExchange", "3.testExchange.3", "测试消息3");
-//    Thread.sleep(1L);
+    Thread.sleep(30L);
     for (int i = 0; i < 2; i++) {
       log.info(i + "::::testExchangeQueue1 message is::::{}", rabbitTemplate.receiveAndConvert("testExchangeQueue1", 1000L));
       log.info(i + "::::testExchangeQueue2 message is::::{}", rabbitTemplate.receiveAndConvert("testExchangeQueue2", 1000L));

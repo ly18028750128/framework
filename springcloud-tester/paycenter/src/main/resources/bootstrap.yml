@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: ${sys.curr_profile:dev}
   application:
     #group: 'LONGYOU' #这里写在启动参数里
     noGroupName: common-paycenter
@@ -33,14 +35,10 @@ spring:
           enabled: true
           delay: 1000
           wait-time: 30
-  main:
-    allow-bean-definition-overriding: true
   security:
     #salt-password: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
     #excludedAuthPages: /** #暂时不走验证
     excludedAuthPages: ${sys.setting.default.exclude-url:},/userinfo/getUserByName,/system/resource/**
-  profiles:
-    active: ${sys.curr_profile:dev}
 #  zipkin:
 #    base-url: http://192.168.74.128:10060
 #  sleuth:
@@ -65,3 +63,5 @@ eureka:
 jasypt:
   encryptor:
     password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！
+
+

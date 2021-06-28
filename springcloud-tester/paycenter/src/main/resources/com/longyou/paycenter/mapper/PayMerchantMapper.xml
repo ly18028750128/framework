@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.paycenter.mapper.PayMerchantMapper">
+  <resultMap id="BaseResultMap" type="com.longyou.paycenter.model.PayMerchant">
+    <!--@mbg.generated-->
+    <!--@Table t_pay_merchant-->
+    <id column="pay_merchant_id" jdbcType="BIGINT" property="payMerchantId" />
+    <result column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+    <result column="max_pay_account" jdbcType="INTEGER" property="maxPayAccount" />
+    <result column="expire_date" jdbcType="TIMESTAMP" property="expireDate" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="aes_key" jdbcType="VARCHAR" property="aesKey" />
+    <result column="aes_vi_val" jdbcType="VARCHAR" property="aesViVal" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    pay_merchant_id, merchant_code, merchant_name, max_pay_account, expire_date, `status`, 
+    aes_key, aes_vi_val, create_by, create_date, update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from t_pay_merchant
+    where pay_merchant_id = #{payMerchantId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from t_pay_merchant
+    where pay_merchant_id = #{payMerchantId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="pay_merchant_id" keyProperty="payMerchantId" parameterType="com.longyou.paycenter.model.PayMerchant" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_pay_merchant (merchant_code, merchant_name, max_pay_account, 
+      expire_date, `status`, aes_key, 
+      aes_vi_val, create_by, create_date, 
+      update_by, update_date)
+    values (#{merchantCode,jdbcType=VARCHAR}, #{merchantName,jdbcType=VARCHAR}, #{maxPayAccount,jdbcType=INTEGER}, 
+      #{expireDate,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{aesKey,jdbcType=VARCHAR}, 
+      #{aesViVal,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="pay_merchant_id" keyProperty="payMerchantId" parameterType="com.longyou.paycenter.model.PayMerchant" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_pay_merchant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantCode != null">
+        merchant_code,
+      </if>
+      <if test="merchantName != null">
+        merchant_name,
+      </if>
+      <if test="maxPayAccount != null">
+        max_pay_account,
+      </if>
+      <if test="expireDate != null">
+        expire_date,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="aesKey != null">
+        aes_key,
+      </if>
+      <if test="aesViVal != null">
+        aes_vi_val,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantCode != null">
+        #{merchantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPayAccount != null">
+        #{maxPayAccount,jdbcType=INTEGER},
+      </if>
+      <if test="expireDate != null">
+        #{expireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="aesKey != null">
+        #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="aesViVal != null">
+        #{aesViVal,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longyou.paycenter.model.PayMerchant">
+    <!--@mbg.generated-->
+    update t_pay_merchant
+    <set>
+      <if test="merchantCode != null">
+        merchant_code = #{merchantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        merchant_name = #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPayAccount != null">
+        max_pay_account = #{maxPayAccount,jdbcType=INTEGER},
+      </if>
+      <if test="expireDate != null">
+        expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="aesKey != null">
+        aes_key = #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="aesViVal != null">
+        aes_vi_val = #{aesViVal,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where pay_merchant_id = #{payMerchantId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longyou.paycenter.model.PayMerchant">
+    <!--@mbg.generated-->
+    update t_pay_merchant
+    set merchant_code = #{merchantCode,jdbcType=VARCHAR},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      max_pay_account = #{maxPayAccount,jdbcType=INTEGER},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      `status` = #{status,jdbcType=INTEGER},
+      aes_key = #{aesKey,jdbcType=VARCHAR},
+      aes_vi_val = #{aesViVal,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where pay_merchant_id = #{payMerchantId,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_pay_merchant
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="merchant_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.merchantCode,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="merchant_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.merchantName,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="max_pay_account = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.maxPayAccount,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="expire_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.expireDate,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="aes_key = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.aesKey,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="aes_vi_val = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.aesViVal,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.createBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.createDate,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="update_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.updateBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="update_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when pay_merchant_id = #{item.payMerchantId,jdbcType=BIGINT} then #{item.updateDate,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+    </trim>
+    where pay_merchant_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.payMerchantId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="pay_merchant_id" keyProperty="payMerchantId" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_pay_merchant
+    (merchant_code, merchant_name, max_pay_account, expire_date, `status`, aes_key, aes_vi_val, 
+      create_by, create_date, update_by, update_date)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.merchantCode,jdbcType=VARCHAR}, #{item.merchantName,jdbcType=VARCHAR}, #{item.maxPayAccount,jdbcType=INTEGER}, 
+        #{item.expireDate,jdbcType=TIMESTAMP}, #{item.status,jdbcType=INTEGER}, #{item.aesKey,jdbcType=VARCHAR}, 
+        #{item.aesViVal,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createDate,jdbcType=TIMESTAMP}, 
+        #{item.updateBy,jdbcType=VARCHAR}, #{item.updateDate,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="pay_merchant_id" keyProperty="payMerchantId" parameterType="com.longyou.paycenter.model.PayMerchant" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_pay_merchant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payMerchantId != null">
+        pay_merchant_id,
+      </if>
+      merchant_code,
+      merchant_name,
+      max_pay_account,
+      expire_date,
+      `status`,
+      aes_key,
+      aes_vi_val,
+      create_by,
+      create_date,
+      update_by,
+      update_date,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payMerchantId != null">
+        #{payMerchantId,jdbcType=BIGINT},
+      </if>
+      #{merchantCode,jdbcType=VARCHAR},
+      #{merchantName,jdbcType=VARCHAR},
+      #{maxPayAccount,jdbcType=INTEGER},
+      #{expireDate,jdbcType=TIMESTAMP},
+      #{status,jdbcType=INTEGER},
+      #{aesKey,jdbcType=VARCHAR},
+      #{aesViVal,jdbcType=VARCHAR},
+      #{createBy,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="payMerchantId != null">
+        pay_merchant_id = #{payMerchantId,jdbcType=BIGINT},
+      </if>
+      merchant_code = #{merchantCode,jdbcType=VARCHAR},
+      merchant_name = #{merchantName,jdbcType=VARCHAR},
+      max_pay_account = #{maxPayAccount,jdbcType=INTEGER},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      `status` = #{status,jdbcType=INTEGER},
+      aes_key = #{aesKey,jdbcType=VARCHAR},
+      aes_vi_val = #{aesViVal,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="pay_merchant_id" keyProperty="payMerchantId" parameterType="com.longyou.paycenter.model.PayMerchant" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_pay_merchant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payMerchantId != null">
+        pay_merchant_id,
+      </if>
+      <if test="merchantCode != null">
+        merchant_code,
+      </if>
+      <if test="merchantName != null">
+        merchant_name,
+      </if>
+      <if test="maxPayAccount != null">
+        max_pay_account,
+      </if>
+      <if test="expireDate != null">
+        expire_date,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="aesKey != null">
+        aes_key,
+      </if>
+      <if test="aesViVal != null">
+        aes_vi_val,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="payMerchantId != null">
+        #{payMerchantId,jdbcType=BIGINT},
+      </if>
+      <if test="merchantCode != null">
+        #{merchantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPayAccount != null">
+        #{maxPayAccount,jdbcType=INTEGER},
+      </if>
+      <if test="expireDate != null">
+        #{expireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="aesKey != null">
+        #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="aesViVal != null">
+        #{aesViVal,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="payMerchantId != null">
+        pay_merchant_id = #{payMerchantId,jdbcType=BIGINT},
+      </if>
+      <if test="merchantCode != null">
+        merchant_code = #{merchantCode,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantName != null">
+        merchant_name = #{merchantName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPayAccount != null">
+        max_pay_account = #{maxPayAccount,jdbcType=INTEGER},
+      </if>
+      <if test="expireDate != null">
+        expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="aesKey != null">
+        aes_key = #{aesKey,jdbcType=VARCHAR},
+      </if>
+      <if test="aesViVal != null">
+        aes_vi_val = #{aesViVal,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

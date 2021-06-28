@@ -1,0 +1,65 @@
+spring:
+  application:
+    #group: 'LONGYOU' #这里写在启动参数里
+    noGroupName: aihelper-service
+    upperCaseName: ${spring.application.group:}AIHELPER-SERVICE  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
+    name: ${spring.application.group:}${spring.application.noGroupName:}
+  cloud:
+    consul:
+      enabled: ${system.config.consul.enabled:true}
+      host: ${system.config.consul.host:192.168.74.128}  # 开发环境可以覆盖consul
+      port: ${system.config.consul.port:10050} # 开发环境可以覆盖consul
+      discovery:
+        #是否需要注册
+        register: true
+        #注册的实例ID (唯一标志)
+        instance-id: ${spring.application.upperCaseName}-${spring.cloud.consul.discovery.ip-address}:${spring.cloud.consul.discovery.port}
+        #服务的名称
+        service-name: ${spring.application.upperCaseName}
+        #指定开启ip地址注册
+        prefer-ip-address: true
+        #当前服务的请求ip
+        #ip-address: ${spring.cloud.client.ip-address}
+        ip-address: ${system_config_consul_instance_ip:${spring.cloud.client.ip-address}}
+        #服务的请求端口
+        port: ${system_config_consul_instance_port:${server.port}}
+        health-check-path: /monitor/health
+      config:
+        enabled: true
+        name: ${spring.application.noGroupName:}
+        format: yaml
+        data-key: data
+        watch:
+          enabled: true
+          delay: 1000
+          wait-time: 30
+  security:
+    #salt-password: 想暴力破解没门   #密码加盐，其它微服务用户注册时应该和些值保持一致
+    #excludedAuthPages: /** #暂时不走验证
+    excludedAuthPages: ${sys.setting.default.exclude-url:},/userinfo/getUserByName,/system/resource/**
+  profiles:
+    active: ${sys.curr_profile:dev}
+#  zipkin:
+#    base-url: http://192.168.74.128:10060
+#  sleuth:
+#    sampler:
+#      probability: 1.0
+system:
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: rcm3pro
+#    password: isI17^2jM11oP*a2#1qq
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://rm-j6cetf168arj31g20io.mysql.rds.aliyuncs.com:3306/framework?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+  instance:
+    health-check-url-path: /monitor/health
+# 配置加解密根秘钥
+jasypt:
+  encryptor:
+    password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！

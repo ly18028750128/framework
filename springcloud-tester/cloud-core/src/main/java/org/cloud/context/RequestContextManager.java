@@ -25,6 +25,9 @@ public class RequestContextManager {
     }
 
     public RequestContext getRequestContext() {
+        if(requestContextThreadLocal.get()==null){
+            requestContextThreadLocal.set(new RequestContext());
+        }
         return requestContextThreadLocal.get();
     }
 

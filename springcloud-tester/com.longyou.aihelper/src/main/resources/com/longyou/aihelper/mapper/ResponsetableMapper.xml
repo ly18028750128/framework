@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.aihelper.mapper.ResponsetableMapper">
+  <resultMap id="BaseResultMap" type="com.longyou.aihelper.model.Responsetable">
+    <!--@mbg.generated-->
+    <!--@Table responsetable-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="isDeleted" jdbcType="INTEGER" property="isdeleted" />
+    <result column="lastModifyTime" jdbcType="TIMESTAMP" property="lastmodifytime" />
+    <result column="question" jdbcType="VARCHAR" property="question" />
+    <result column="replay" jdbcType="VARCHAR" property="replay" />
+    <result column="label" jdbcType="VARCHAR" property="label" />
+    <result column="copyfield" jdbcType="VARCHAR" property="copyfield" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, createTime, isDeleted, lastModifyTime, question, replay, `label`, copyfield
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from responsetable
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByCondition" parameterType="java.util.Map" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from responsetable
+    <where>
+      <if test="lastModifyTimeStart != null">
+        lastModifyTime >= #{lastModifyTimeStart,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from responsetable
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.longyou.aihelper.model.Responsetable" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into responsetable (createTime, isDeleted, lastModifyTime, 
+      question, replay, `label`, 
+      copyfield)
+    values (#{createtime,jdbcType=TIMESTAMP}, #{isdeleted,jdbcType=INTEGER}, #{lastmodifytime,jdbcType=TIMESTAMP}, 
+      #{question,jdbcType=VARCHAR}, #{replay,jdbcType=VARCHAR}, #{label,jdbcType=VARCHAR}, 
+      #{copyfield,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.longyou.aihelper.model.Responsetable" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into responsetable
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="isdeleted != null">
+        isDeleted,
+      </if>
+      <if test="lastmodifytime != null">
+        lastModifyTime,
+      </if>
+      <if test="question != null">
+        question,
+      </if>
+      <if test="replay != null">
+        replay,
+      </if>
+      <if test="label != null">
+        `label`,
+      </if>
+      <if test="copyfield != null">
+        copyfield,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdeleted != null">
+        #{isdeleted,jdbcType=INTEGER},
+      </if>
+      <if test="lastmodifytime != null">
+        #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="question != null">
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="replay != null">
+        #{replay,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="copyfield != null">
+        #{copyfield,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.longyou.aihelper.model.Responsetable">
+    <!--@mbg.generated-->
+    update responsetable
+    <set>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdeleted != null">
+        isDeleted = #{isdeleted,jdbcType=INTEGER},
+      </if>
+      <if test="lastmodifytime != null">
+        lastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="question != null">
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="replay != null">
+        replay = #{replay,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        `label` = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="copyfield != null">
+        copyfield = #{copyfield,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.longyou.aihelper.model.Responsetable">
+    <!--@mbg.generated-->
+    update responsetable
+    set createTime = #{createtime,jdbcType=TIMESTAMP},
+      isDeleted = #{isdeleted,jdbcType=INTEGER},
+      lastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      question = #{question,jdbcType=VARCHAR},
+      replay = #{replay,jdbcType=VARCHAR},
+      `label` = #{label,jdbcType=VARCHAR},
+      copyfield = #{copyfield,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update responsetable
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="createTime = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.createtime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="isDeleted = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.isdeleted,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="lastModifyTime = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.lastmodifytime,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="question = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.question,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="replay = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.replay,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`label` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.label,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="copyfield = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.copyfield,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into responsetable
+    (createTime, isDeleted, lastModifyTime, question, replay, `label`, copyfield)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.createtime,jdbcType=TIMESTAMP}, #{item.isdeleted,jdbcType=INTEGER}, #{item.lastmodifytime,jdbcType=TIMESTAMP}, 
+        #{item.question,jdbcType=VARCHAR}, #{item.replay,jdbcType=VARCHAR}, #{item.label,jdbcType=VARCHAR}, 
+        #{item.copyfield,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.longyou.aihelper.model.Responsetable" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into responsetable
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      createTime,
+      isDeleted,
+      lastModifyTime,
+      question,
+      replay,
+      `label`,
+      copyfield,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      #{createtime,jdbcType=TIMESTAMP},
+      #{isdeleted,jdbcType=INTEGER},
+      #{lastmodifytime,jdbcType=TIMESTAMP},
+      #{question,jdbcType=VARCHAR},
+      #{replay,jdbcType=VARCHAR},
+      #{label,jdbcType=VARCHAR},
+      #{copyfield,jdbcType=VARCHAR},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      isDeleted = #{isdeleted,jdbcType=INTEGER},
+      lastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      question = #{question,jdbcType=VARCHAR},
+      replay = #{replay,jdbcType=VARCHAR},
+      `label` = #{label,jdbcType=VARCHAR},
+      copyfield = #{copyfield,jdbcType=VARCHAR},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.longyou.aihelper.model.Responsetable" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into responsetable
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="isdeleted != null">
+        isDeleted,
+      </if>
+      <if test="lastmodifytime != null">
+        lastModifyTime,
+      </if>
+      <if test="question != null">
+        question,
+      </if>
+      <if test="replay != null">
+        replay,
+      </if>
+      <if test="label != null">
+        `label`,
+      </if>
+      <if test="copyfield != null">
+        copyfield,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdeleted != null">
+        #{isdeleted,jdbcType=INTEGER},
+      </if>
+      <if test="lastmodifytime != null">
+        #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="question != null">
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="replay != null">
+        #{replay,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="copyfield != null">
+        #{copyfield,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isdeleted != null">
+        isDeleted = #{isdeleted,jdbcType=INTEGER},
+      </if>
+      <if test="lastmodifytime != null">
+        lastModifyTime = #{lastmodifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="question != null">
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="replay != null">
+        replay = #{replay,jdbcType=VARCHAR},
+      </if>
+      <if test="label != null">
+        `label` = #{label,jdbcType=VARCHAR},
+      </if>
+      <if test="copyfield != null">
+        copyfield = #{copyfield,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

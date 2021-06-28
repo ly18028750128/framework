@@ -7,6 +7,7 @@ import com.longyou.paycenter.service.PayService;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.ResponseResult;
 import org.slf4j.Logger;
@@ -27,13 +28,14 @@ public class PayController {
   @Autowired
   PayAppConfigList payAppConfigList;
 
-    /**
-     * 支付接口
-     * @param payPlatformIndex
-     * @param params
-     * @return
-     * @throws Exception
-     */
+  /**
+   * 支付接口
+   *
+   * @param payPlatformIndex
+   * @param params
+   * @return
+   * @throws Exception
+   */
 
   @RequestMapping(value = "/unifiedorder/{payPlatformIndex}", method = RequestMethod.POST)
   public ResponseResult unifiedorder(@PathVariable("payPlatformIndex") Integer payPlatformIndex, @RequestBody Map<String, Object> params)
@@ -87,7 +89,11 @@ public class PayController {
 
     logger.info(JSON.toJSONString(refundResult));
 
-    return null;
+    ResponseResult result = ResponseResult.createSuccessResult();
+
+    result.setData(CommonUtil.single().getEnv("spring.profiles.active", "默认！"));
+
+    return result;
   }
 }
 

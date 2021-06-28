@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longyou.comm.mapper.FrameDataDimensionMapper">
+  <resultMap id="BaseResultMap" type="org.cloud.model.FrameDataDimension">
+    <!--@mbg.generated-->
+    <!--@Table t_frame_data_dimension-->
+    <id column="data_auth_list_id" jdbcType="BIGINT" property="dataAuthListId" />
+    <result column="data_dimension_type" jdbcType="INTEGER" property="dataDimensionType" />
+    <result column="refer_id" jdbcType="BIGINT" property="referId" />
+    <result column="data_dimension" jdbcType="VARCHAR" property="dataDimension" />
+    <result column="data_dimension_value" jdbcType="VARCHAR" property="dataDimensionValue" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    data_auth_list_id, data_dimension_type, refer_id, data_dimension, data_dimension_value, 
+    `status`, create_by, create_date, update_by, update_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from t_frame_data_dimension
+    where data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from t_frame_data_dimension
+    where data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.FrameDataDimension" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_data_dimension (data_dimension_type, refer_id, data_dimension, 
+      data_dimension_value, `status`, create_by, 
+      create_date, update_by, update_date
+      )
+    values (#{dataDimensionType,jdbcType=INTEGER}, #{referId,jdbcType=BIGINT}, #{dataDimension,jdbcType=VARCHAR}, 
+      #{dataDimensionValue,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.FrameDataDimension" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_data_dimension
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataDimensionType != null">
+        data_dimension_type,
+      </if>
+      <if test="referId != null">
+        refer_id,
+      </if>
+      <if test="dataDimension != null">
+        data_dimension,
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dataDimensionType != null">
+        #{dataDimensionType,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        #{referId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimension != null">
+        #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.FrameDataDimension">
+    <!--@mbg.generated-->
+    update t_frame_data_dimension
+    <set>
+      <if test="dataDimensionType != null">
+        data_dimension_type = #{dataDimensionType,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        refer_id = #{referId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimension != null">
+        data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.cloud.model.FrameDataDimension">
+    <!--@mbg.generated-->
+    update t_frame_data_dimension
+    set data_dimension_type = #{dataDimensionType,jdbcType=INTEGER},
+      refer_id = #{referId,jdbcType=BIGINT},
+      data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    where data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update t_frame_data_dimension
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="data_dimension_type = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.dataDimensionType,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="refer_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.referId,jdbcType=BIGINT}
+        </foreach>
+      </trim>
+      <trim prefix="data_dimension = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.dataDimension,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="data_dimension_value = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.dataDimensionValue,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="`status` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.status,jdbcType=INTEGER}
+        </foreach>
+      </trim>
+      <trim prefix="create_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.createBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="create_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.createDate,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+      <trim prefix="update_by = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.updateBy,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="update_date = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when data_auth_list_id = #{item.dataAuthListId,jdbcType=BIGINT} then #{item.updateDate,jdbcType=TIMESTAMP}
+        </foreach>
+      </trim>
+    </trim>
+    where data_auth_list_id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.dataAuthListId,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_data_dimension
+    (data_dimension_type, refer_id, data_dimension, data_dimension_value, `status`, create_by, 
+      create_date, update_by, update_date)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.dataDimensionType,jdbcType=INTEGER}, #{item.referId,jdbcType=BIGINT}, #{item.dataDimension,jdbcType=VARCHAR}, 
+        #{item.dataDimensionValue,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER}, #{item.createBy,jdbcType=VARCHAR}, 
+        #{item.createDate,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.updateDate,jdbcType=TIMESTAMP}
+        )
+    </foreach>
+  </insert>
+  <insert id="insertOrUpdate" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.FrameDataDimension" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_data_dimension
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        data_auth_list_id,
+      </if>
+      data_dimension_type,
+      refer_id,
+      data_dimension,
+      data_dimension_value,
+      `status`,
+      create_by,
+      create_date,
+      update_by,
+      update_date,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        #{dataAuthListId,jdbcType=BIGINT},
+      </if>
+      #{dataDimensionType,jdbcType=INTEGER},
+      #{referId,jdbcType=BIGINT},
+      #{dataDimension,jdbcType=VARCHAR},
+      #{dataDimensionValue,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER},
+      #{createBy,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT},
+      </if>
+      data_dimension_type = #{dataDimensionType,jdbcType=INTEGER},
+      refer_id = #{referId,jdbcType=BIGINT},
+      data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="data_auth_list_id" keyProperty="dataAuthListId" parameterType="org.cloud.model.FrameDataDimension" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_data_dimension
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        data_auth_list_id,
+      </if>
+      <if test="dataDimensionType != null">
+        data_dimension_type,
+      </if>
+      <if test="referId != null">
+        refer_id,
+      </if>
+      <if test="dataDimension != null">
+        data_dimension,
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        #{dataAuthListId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimensionType != null">
+        #{dataDimensionType,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        #{referId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimension != null">
+        #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="dataAuthListId != null">
+        data_auth_list_id = #{dataAuthListId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimensionType != null">
+        data_dimension_type = #{dataDimensionType,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        refer_id = #{referId,jdbcType=BIGINT},
+      </if>
+      <if test="dataDimension != null">
+        data_dimension = #{dataDimension,jdbcType=VARCHAR},
+      </if>
+      <if test="dataDimensionValue != null">
+        data_dimension_value = #{dataDimensionValue,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectDataDimensionByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from t_frame_data_dimension
+    where (
+           (refer_id = #{userId,jdbcType=NUMERIC} and data_dimension_type=20) or
+           (refer_id in (select role_id from t_frame_user_role where t_frame_user_role.user_id=#{userId,jdbcType=NUMERIC}  )
+             and data_dimension_type=10)
+           )
+  </select>
+</mapper>

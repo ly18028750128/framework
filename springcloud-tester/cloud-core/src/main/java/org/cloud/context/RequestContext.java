@@ -1,5 +1,6 @@
 package org.cloud.context;
 
+import lombok.Getter;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.entity.Role;
 
@@ -12,9 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestContext {
 
-    private ThreadLocal<Properties> propertiesThreadLocal = new ThreadLocal<>();
+    @Getter
+    private ThreadLocal<ConcurrentHashMap<String,Object>> propertiesThreadLocal = new ThreadLocal<>();
 
     public RequestContext() {
+        propertiesThreadLocal.set(new ConcurrentHashMap<>());
     }
 
     public RequestContext(LoginUserDetails user) {

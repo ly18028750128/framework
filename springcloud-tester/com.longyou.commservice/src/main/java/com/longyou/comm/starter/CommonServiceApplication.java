@@ -35,7 +35,12 @@ import java.util.Properties;
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CommonServiceApplication.class, args);
+        try{
+            SpringApplication.run(CommonServiceApplication.class, args);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Bean

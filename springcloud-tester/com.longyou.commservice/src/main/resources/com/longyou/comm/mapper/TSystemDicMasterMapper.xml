@@ -178,6 +178,10 @@
         <include refid="Base_Column_List"/>
         from t_system_dic_master
         <where>
+          <![CDATA[
+            1=1
+              <dataDimension> [{"fieldName":"t_system_dic_master.belong_micro_service","dimensionName":"micro_service_name","operator":"="}] </dataDimension>
+            ]]>
             <if test="params.dicMasterId!=null">
                 dic_master_id = #{params.dicMasterId,jdbcType=BIGINT}
             </if>
