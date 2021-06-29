@@ -1,9 +1,12 @@
 package org.cloud.aop;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.cloud.annotation.AuthLog;
@@ -11,51 +14,64 @@ import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
-import org.cloud.utils.SpringContextUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  *
  */
 @Slf4j
-public abstract class OperateLogAspect {
+@Aspect
+public class OperateLogAspect {
 
-    private static MongoTemplate mongoTemplate;
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Value("${spring.application.name:}")
+    private String microName;
 
-    /**
-     * 获取服务名称
-     * @return
-     */
-    public abstract String getMicroName();
+    public String getMicroName() {
+        return microName.toUpperCase();
+    }
 
-    /**
-     * 获取请求类型（前台用户或者后台管理）
-     * @param uri
-     * @return
-     */
-    public abstract CoreConstant.OperateLogType getType(String uri);
+    public CoreConstant.OperateLogType getType(String uri) {
+        if (uri != null && uri.matches("^/admin/.*$")) {
+            return CoreConstant.OperateLogType.LOG_TYPE_BACKEND;
+        }
+        return CoreConstant.OperateLogType.LOG_TYPE_FRONTEND;
+    }
 
+    public int getResultCode(Object res) {
+        if (!StringUtils.isEmpty(res)){
+            JSONObject resJson = JSONObject.parseObject(JSON.toJSON(res).toString());
+            Integer code = resJson.getInteger("code");
+            if (code != null){
+                return code;
+            }
+            Integer status = resJson.getInteger("status");
+            if (status != null){
+                return status;
+            }
+        }
+        return -999;
+    }
 
-    /**
-     * 获取返回结果状态码
-     * @param res
-     * @return
-     */
-    public abstract int getResultCode(Object res);
-    /**
-     * 获取返回结果描述
-     * @param res
-     * @return
-     */
-    public abstract String getResultMsg(Object res);
+    public String getResultMsg(Object res) {
+        if (!StringUtils.isEmpty(res)){
+            JSONObject resJson = JSONObject.parseObject(JSON.toJSON(res).toString());
+            String message = resJson.getString("message");
+            return message;
+        }
+        return "-999";
+    }
 
     @Pointcut("@annotation(org.cloud.annotation.AuthLog)")
     public void authLog(){}
@@ -76,7 +92,6 @@ public abstract class OperateLogAspect {
         String uri = request.getRequestURI();
         //请求ip
         String ip = CommonUtil.single().getIpAddress(request);
-        int type = getType(uri).getLogType();
         // 设置操作人信息
         Long userId = null;
         String userName = "";
@@ -97,12 +112,14 @@ public abstract class OperateLogAspect {
             throw new RuntimeException(e1);
         }
         long endTime = System.currentTimeMillis();
+
+        CoreConstant.OperateLogType operateLogType = oLog.operateLogType();
+        if (operateLogType == null || operateLogType.getLogType() == CoreConstant.OperateLogType.LOG_TYPE_DEFAULT.getLogType()){
+            operateLogType = getType(uri);
+        }
         try {
-            if (mongoTemplate == null){
-                mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
-            }
             doc.append("microName", microName);
-            doc.append("type", type);
+            doc.append("type", operateLogType.getLogType());
             doc.append("bizType", oLog.bizType());
             doc.append("uri", uri);
             doc.append("desc", oLog.desc());
