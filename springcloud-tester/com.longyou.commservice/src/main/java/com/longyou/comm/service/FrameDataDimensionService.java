@@ -2,32 +2,36 @@ package com.longyou.comm.service;
 
 import java.util.List;
 import org.cloud.model.FrameDataDimension;
+import org.cloud.validator.GroupForUpdate;
+import org.springframework.validation.annotation.Validated;
 
 public interface FrameDataDimensionService {
 
 
-  int deleteByPrimaryKey(Long dataAuthListId);
+    int deleteByPrimaryKey(Long dataAuthListId);
 
-  int insert(FrameDataDimension record);
+    int insert(FrameDataDimension record);
 
-  int insertOrUpdate(FrameDataDimension record);
+    int insertOrUpdate(@Validated(GroupForUpdate.class) FrameDataDimension record);
 
-  int insertOrUpdateSelective(FrameDataDimension record);
+    int insertOrUpdateBatch( List<FrameDataDimension> records);
 
-  int insertSelective(FrameDataDimension record);
+    int insertOrUpdateSelective(FrameDataDimension record);
 
-  FrameDataDimension selectByPrimaryKey(Long dataAuthListId);
+    int insertSelective(FrameDataDimension record);
 
-  int updateByPrimaryKeySelective(FrameDataDimension record);
+    FrameDataDimension selectByPrimaryKey(Long dataAuthListId);
 
-  int updateByPrimaryKey(FrameDataDimension record);
+    int updateByPrimaryKeySelective(FrameDataDimension record);
 
-  int updateBatch(List<FrameDataDimension> list);
+    int updateByPrimaryKey(FrameDataDimension record);
 
-  int batchInsert(List<FrameDataDimension> list);
+    int updateBatch(List<FrameDataDimension> list);
 
-  List<FrameDataDimension> selectDataDimensionByUserId(Long userId);
+    int batchInsert(List<FrameDataDimension> list);
 
-  List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId);
+    List<FrameDataDimension> selectDataDimensionByUserId(Long userId);
+
+    List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId);
 
 }
