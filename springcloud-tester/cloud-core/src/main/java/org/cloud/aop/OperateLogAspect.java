@@ -1,5 +1,6 @@
 package org.cloud.aop;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,6 @@ import org.cloud.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,8 +31,7 @@ import java.util.Date;
  */
 @Slf4j
 @Aspect
-@Component
-public abstract class OperateLogAspect {
+public class OperateLogAspect {
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -52,7 +51,7 @@ public abstract class OperateLogAspect {
 
     public int getResultCode(Object res) {
         if (!StringUtils.isEmpty(res)){
-            JSONObject resJson = JSONObject.parseObject(res.toString());
+            JSONObject resJson = JSONObject.parseObject(JSON.toJSON(res).toString());
             Integer code = resJson.getInteger("code");
             if (code != null){
                 return code;
@@ -67,7 +66,7 @@ public abstract class OperateLogAspect {
 
     public String getResultMsg(Object res) {
         if (!StringUtils.isEmpty(res)){
-            JSONObject resJson = JSONObject.parseObject(res.toString());
+            JSONObject resJson = JSONObject.parseObject(JSON.toJSON(res).toString());
             String message = resJson.getString("message");
             return message;
         }
@@ -93,7 +92,6 @@ public abstract class OperateLogAspect {
         String uri = request.getRequestURI();
         //请求ip
         String ip = CommonUtil.single().getIpAddress(request);
-        int type = getType(uri).getLogType();
         // 设置操作人信息
         Long userId = null;
         String userName = "";
@@ -114,9 +112,14 @@ public abstract class OperateLogAspect {
             throw new RuntimeException(e1);
         }
         long endTime = System.currentTimeMillis();
+
+        CoreConstant.OperateLogType operateLogType = oLog.operateLogType();
+        if (operateLogType == null || operateLogType.getLogType() == CoreConstant.OperateLogType.LOG_TYPE_DEFAULT.getLogType()){
+            operateLogType = getType(uri);
+        }
         try {
             doc.append("microName", microName);
-            doc.append("type", type);
+            doc.append("type", operateLogType.getLogType());
             doc.append("bizType", oLog.bizType());
             doc.append("uri", uri);
             doc.append("desc", oLog.desc());
