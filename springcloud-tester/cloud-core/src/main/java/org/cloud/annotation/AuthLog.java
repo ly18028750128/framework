@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 public @interface AuthLog {
 	
 	//业务类型
-	int bizType();
+	String bizType();
 	//接口描述
 	String desc();
 }
