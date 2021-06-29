@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
@@ -136,6 +139,28 @@ public class AimlIndexService {
       results.addAll(Arrays.asList(document.getValues("replay")));
     }
 
+    return results;
+  }
+
+  /**
+   * @param fieldName  查询字段
+   * @param keyword    关键字
+   * @param backFields 返回的对象名称
+   * @return
+   * @throws IOException
+   * @throws ParseException
+   */
+  public List<Map<String, List<String>>> queryList(String fieldName, String keyword, String... backFields)
+      throws IOException, ParseException {
+    List<Document> docs = query(fieldName, keyword);
+    List<Map<String, List<String>>> results = new ArrayList<>();
+    for (Document document : docs) {
+      Map<String, List<String>> fieldResults = new LinkedHashMap<>();
+      for (String backField : backFields) {
+        fieldResults.put(backField, Arrays.asList(document.getValues(backField)));
+      }
+      results.add(fieldResults);
+    }
     return results;
   }
 
