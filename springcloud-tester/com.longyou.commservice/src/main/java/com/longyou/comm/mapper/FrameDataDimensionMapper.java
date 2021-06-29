@@ -1,8 +1,9 @@
 package com.longyou.comm.mapper;
 
-import org.cloud.model.FrameDataDimension;
 import java.util.List;
+import java.util.Map;
 import org.apache.ibatis.annotations.Param;
+import org.cloud.model.FrameDataDimension;
 
 public interface FrameDataDimensionMapper {
 
@@ -63,5 +64,7 @@ public interface FrameDataDimensionMapper {
   int batchInsert(@Param("list") List<FrameDataDimension> list);
 
   List<FrameDataDimension> selectDataDimensionByUserId(@Param("userId") Long userId);
+
+  List<FrameDataDimension> list(Map<String, Object> params);
 
 }

@@ -1,5 +1,7 @@
 package com.longyou.comm.service.impl;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.longyou.comm.mapper.FrameDataDimensionMapper;
@@ -64,13 +66,17 @@ public class FrameDataDimensionServiceImpl implements FrameDataDimensionService 
   }
 
 
-
-
   @Override
   public List<FrameDataDimension> selectDataDimensionByUserId(Long userId) {
     return frameDataDimensionMapper.selectDataDimensionByUserId(userId);
   }
 
-
+  @Override
+  public List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId) {
+    Map<String, Object> params = new LinkedHashMap<>();
+    params.put("dataDimensionType", dataDimensionType);
+    params.put("referId", referId);
+    return frameDataDimensionMapper.list(params);
+  }
 
 }
