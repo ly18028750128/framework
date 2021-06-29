@@ -31,7 +31,7 @@ public class AimlController {
   @GetMapping("/ask/{fieldName}")
   public ResponseResult askToLucene(@PathVariable("fieldName") String fieldName, @RequestParam("keyWord") String keyWord) throws Exception {
     ResponseResult responseResult = ResponseResult.createSuccessResult();
-    responseResult.addData(aimlIndexService.queryList(fieldName, keyWord, "question", "replay"));
+    responseResult.addData(aimlIndexService.queryList(fieldName, keyWord, "question", "replay","label"));
     return responseResult;
   }
 
