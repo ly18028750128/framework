@@ -1,14 +1,13 @@
 package org.cloud.vo;
 
-import org.apache.poi.ss.formula.functions.T;
-import org.cloud.constant.CoreConstant;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import org.cloud.constant.CoreConstant;
 
 public class ResponseResult extends LinkedHashMap<String, Object> {
 
+    public final static String _HTTP_STATUS_CODE_KEY = "code";
     public final static String _STATUS_CODE_KEY = "status";
     public final static String _MESSAGE_KEY = "message";
     public final static String _ERROR_RESULT_DATA_KEY = "errResultData";   //用来保存错误时的错误数据
@@ -21,15 +20,19 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
 
     public ResponseResult(int status) {
         put(_STATUS_CODE_KEY, status);
+        put(_HTTP_STATUS_CODE_KEY, status);
     }
 
     public ResponseResult(int status, Object data) {
+        put(_HTTP_STATUS_CODE_KEY, status);
         put(_STATUS_CODE_KEY, status);
         put(_DATA_KEY, data);
     }
 
     public final static ResponseResult createFailResult() {
-        return new ResponseResult(CoreConstant.RestStatus.FAIL.value());
+        ResponseResult responseResult = new ResponseResult(CoreConstant.RestStatus.FAIL.value());
+        responseResult.setMessage("rest.failed.running");
+        return responseResult;
     }
 
     public final static ResponseResult createSuccessResult() {
@@ -76,6 +79,7 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
 
     public void setStatus(CoreConstant.RestStatus value) {
         put(_STATUS_CODE_KEY, value.value());
+        put(_HTTP_STATUS_CODE_KEY, value.value());
     }
 
 }
