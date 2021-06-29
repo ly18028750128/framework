@@ -287,6 +287,8 @@ public final class CoreConstant {
     @AllArgsConstructor
     public enum OperateLogType implements BasicEnum {
 
+        LOG_TYPE_DEFAULT(0, "默认"),
+
         LOG_TYPE_FRONTEND(1, "前端操作"),
 
         LOG_TYPE_BACKEND(2, "后台管理操作"),
