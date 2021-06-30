@@ -1,7 +1,9 @@
 package com.longyou.comm.service.impl;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.cloud.validator.GroupForAdd;
@@ -86,10 +88,19 @@ public class FrameDataDimensionServiceImpl implements FrameDataDimensionService 
 
     @Override
     public List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId) {
+        return selectDataDimensionByUserId(dataDimensionType, referId, null);
+    }
+
+    @Override
+    public List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId, Integer status) {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("dataDimensionType", dataDimensionType);
         params.put("referId", referId);
-        return frameDataDimensionMapper.list(params);
+        if (status != null) {
+            params.put("status", status);
+        }
+        List<FrameDataDimension> result = frameDataDimensionMapper.list(params);
+        return result.stream().sorted(Comparator.comparing(FrameDataDimension::getDataDimensionType)).collect(Collectors.toList());
     }
 
 }

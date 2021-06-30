@@ -47,9 +47,9 @@ public class FrameDataDimensionController {
     @SystemResource(value = "queryDataDimensionListByTypeAndId", description = "按类型查询数据权限", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping("/queryDataDimensionListByTypeAndId")
     public ResponseResult queryDataDimensionListByTypeAndId(@RequestParam("dataDimensionType") String dataDimensionType,
-        @RequestParam("referId") Long referId) throws Exception {
+        @RequestParam("referId") Long referId, @RequestParam(value = "status", required = false) Integer status) throws Exception {
         ResponseResult successResponseResult = ResponseResult.createSuccessResult();
-        successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(dataDimensionType, referId));
+        successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(dataDimensionType, referId, status));
         return successResponseResult;
     }
 
@@ -66,6 +66,21 @@ public class FrameDataDimensionController {
 
         ResponseResult successResponseResult = ResponseResult.createSuccessResult();
         successResponseResult.setData(frameDataDimensionService.insertOrUpdateBatch(records));
+        return successResponseResult;
+    }
+
+    /**
+     * 查询用户的全部有效的数据权限列表
+     *
+     * @param userId 用户userId
+     * @return
+     * @throws Exception
+     */
+    @SystemResource(value = "selectDataDimensionByUserId", description = "查询用户有效的数据权限列表", authMethod = AuthMethod.BYUSERPERMISSION)
+    @GetMapping("/selectDataDimensionByUserId")
+    public ResponseResult selectDataDimensionByUserId(@RequestParam("userId") Long userId) throws Exception {
+        ResponseResult successResponseResult = ResponseResult.createSuccessResult();
+        successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(userId));
         return successResponseResult;
     }
 

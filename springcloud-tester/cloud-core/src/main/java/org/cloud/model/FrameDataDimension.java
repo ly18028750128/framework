@@ -63,14 +63,14 @@ public class FrameDataDimension {
     private Integer status;
 
     @ApiModelProperty(value="")
-    @NotBlank(message = "data.dimension.createBy.notnull",groups = {GroupForAdd.class, GroupForUpdate.class})
+//    @NotBlank(message = "data.dimension.createBy.notnull",groups = {GroupForAdd.class, GroupForUpdate.class})
     private String createBy;
 
     @ApiModelProperty(value="")
     private Date createDate;
 
     @ApiModelProperty(value="")
-    @NotBlank(message = "data.dimension.updateBy.notnull",groups = {GroupForAdd.class, GroupForUpdate.class})
+//    @NotBlank(message = "data.dimension.updateBy.notnull",groups = {GroupForAdd.class, GroupForUpdate.class})
     private String updateBy;
 
     @ApiModelProperty(value="")
