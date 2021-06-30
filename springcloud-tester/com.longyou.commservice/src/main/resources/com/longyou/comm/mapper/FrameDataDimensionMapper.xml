@@ -393,13 +393,15 @@
   <select id="selectDataDimensionByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select *
     from t_frame_data_dimension
-    where (
+    where `status` = 1
+    and (
             (refer_id = #{userId,jdbcType=NUMERIC} and data_dimension_type = 20) or
             (refer_id in (select role_id
                           from t_frame_user_role
                           where t_frame_user_role.user_id = #{userId,jdbcType=NUMERIC})
               and data_dimension_type = 10)
             )
+    order by data_dimension_type,data_dimension,refer_id
   </select>
   <select id="list" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select

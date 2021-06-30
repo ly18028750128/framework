@@ -103,8 +103,7 @@
         )
     </insert>
     <insert id="insertSelective" parameterType="org.cloud.model.TSystemDicItem" keyColumn="dic_item_id"
-            keyProperty="dicItemId"
-            useGeneratedKeys="true">
+            keyProperty="dicItemId" useGeneratedKeys="true">
         <!-- @mbg.generated: generated automatically, do not modify! -->
         insert into t_system_dic_item
         <trim prefix="(" suffix=")" suffixOverrides=",">

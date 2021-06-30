@@ -14,7 +14,7 @@ public interface FrameDataDimensionService {
 
     int insertOrUpdate(@Validated(GroupForUpdate.class) FrameDataDimension record);
 
-    int insertOrUpdateBatch( List<FrameDataDimension> records);
+    int insertOrUpdateBatch(List<FrameDataDimension> records);
 
     int insertOrUpdateSelective(FrameDataDimension record);
 
@@ -33,5 +33,7 @@ public interface FrameDataDimensionService {
     List<FrameDataDimension> selectDataDimensionByUserId(Long userId);
 
     List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId);
+
+    List<FrameDataDimension> selectDataDimensionByUserId(String dataDimensionType, Long referId, Integer status);
 
 }
