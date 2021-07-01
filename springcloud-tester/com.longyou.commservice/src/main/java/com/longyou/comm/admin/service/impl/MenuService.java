@@ -30,7 +30,7 @@ public class MenuService implements IMenuService {
         DynamicSqlQueryParamsVO queryParamsVO = new DynamicSqlQueryParamsVO();
         queryParamsVO.setSorts("seq_no");
         String sqlContext;
-        queryParamsVO.getParams().put("currentLevel", 1);
+        queryParamsVO.getParams().put(_MENU_CURR_LEVEL_KEY, 1);
         if (parentId == null) {
             sqlContext = baseMenuQuerySql + " and parent_menu_id is null";
         } else {
@@ -39,7 +39,6 @@ public class MenuService implements IMenuService {
         }
         List<JavaBeanResultMap<Object>> result = DynamicSqlUtil.single().listDataBySqlContext(sqlContext, queryParamsVO);
         this.setChildMenu(result, maxLevel);
-
         if (parentId == null) {
             redisUtil.set(_ALL_MENUS_CACHE_KEY, result, 60 * 60 * 24L);   //缓存一天
         }

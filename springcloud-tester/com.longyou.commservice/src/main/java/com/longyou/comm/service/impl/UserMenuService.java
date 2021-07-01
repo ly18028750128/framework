@@ -7,6 +7,7 @@ import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.vo.JavaBeanResultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,14 +36,40 @@ public class UserMenuService implements IUserMenuService {
         }
         List<JavaBeanResultMap<Object>> allMenu = menuService.getAllSystemMenuFromCache();
 
-        log.info("allMenu=={}",allMenu);
+        log.info("allMenu=={}", allMenu);
 
-        Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
+        Set<String> userFunctions = redisUtil
+            .hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
         getCurrentUserMenu(allMenu, userFunctions);
 
-        log.info("userFunctions=={}",userFunctions);
+        log.info("userFunctions=={}", userFunctions);
+
+        removeNoChildMenu(allMenu);
 
         return allMenu;
+    }
+
+    /**
+     * 重新遍历一次去掉没有子菜单的情况
+     *
+     * @param menuItems
+     */
+    private void removeNoChildMenu(List<JavaBeanResultMap<Object>> menuItems) {
+
+        List<JavaBeanResultMap<Object>> noChildMenuList = new ArrayList<>();
+        for (JavaBeanResultMap<Object> menu : noChildMenuList) {
+            List<JavaBeanResultMap<Object>> childMenuList = (List<JavaBeanResultMap<Object>>) menu.get(IMenuService._MENU_CHILD_KEY);
+            if (CollectionUtil.single().isNotEmpty(childMenuList)) {
+                this.removeNoChildMenu(childMenuList);
+            } else {
+                String showType = menu.get("showType") == null ? "2" : menu.get("showType").toString();
+                if (Integer.parseInt(showType) == 0) {
+                    noChildMenuList.add(menu);
+                }
+            }
+        }
+        log.info("noChildMenuList=={}", noChildMenuList);
+        menuItems.removeAll(noChildMenuList);
     }
 
     private void getCurrentUserMenu(List<JavaBeanResultMap<Object>> menuItems, Set<String> userFunctions) {
@@ -59,7 +86,7 @@ public class UserMenuService implements IUserMenuService {
                 }
             }
         }
-        log.info("noAuthMenuList=={}",noAuthMenuList);
+        log.info("noAuthMenuList=={}", noAuthMenuList);
         menuItems.removeAll(noAuthMenuList);
     }
 }
