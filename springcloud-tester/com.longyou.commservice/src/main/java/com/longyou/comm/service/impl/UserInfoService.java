@@ -37,7 +37,6 @@ import org.cloud.model.TFrameRoleResource;
 import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
-import org.cloud.utils.RedissonUtil;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,6 +231,16 @@ public class UserInfoService implements IUserInfoService {
         } catch (Exception e) {
             log.error("清空用户登录缓存失败，踢出用户失败！");
         }
+        return "success";
+    }
+
+    @Override
+    @AuthLog(bizType = "enabledUser", desc = "启用用户", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
+    public String enabledUser(Long userId) throws Exception {
+        LoginUserDetails loginUserDetails = new LoginUserDetails();
+        loginUserDetails.setId(userId);
+        loginUserDetails.setStatus(userStatus.Active.value());
+        userInfoMapper.updateLoginUserById(loginUserDetails);
         return "success";
     }
 
