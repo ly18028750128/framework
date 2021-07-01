@@ -12,6 +12,7 @@ public final class CommonServiceConst {
 
         Active(1, "生效", "active"),
         Inactive(-1, "失效", "active"),
+        Disabled(-2, "禁用", "disabled"),
         New(2, "新建", "active"),
         Reset(3, "重置", "active"),
         ;

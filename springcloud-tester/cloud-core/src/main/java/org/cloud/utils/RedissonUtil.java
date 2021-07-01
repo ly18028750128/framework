@@ -80,6 +80,11 @@ public final class RedissonUtil {
         rBucket.set(Object);
     }
 
+    public void remove(final String key) {
+        RBucket<Object> rBucket = redissonClient.getBucket(key);
+        rBucket.delete();
+    }
+
     public <V> V hashPut(final String name, final Object key, final V value) {
         RMap<Object, V> rBucket = redissonClient.getMap(name);
         return rBucket.put(key, value);
@@ -109,4 +114,6 @@ public final class RedissonUtil {
         RList<Object> rList = redissonClient.getList(name);
         rList.remove(index);
     }
+
+
 }
