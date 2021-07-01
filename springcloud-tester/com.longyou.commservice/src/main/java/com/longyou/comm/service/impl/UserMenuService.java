@@ -2,6 +2,7 @@ package com.longyou.comm.service.impl;
 
 import com.longyou.comm.admin.service.IMenuService;
 import com.longyou.comm.service.IUserMenuService;
+import java.util.HashSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
@@ -40,6 +41,11 @@ public class UserMenuService implements IUserMenuService {
 
         Set<String> userFunctions = redisUtil
             .hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
+
+        if (userFunctions == null) {
+            userFunctions = new HashSet<>();
+        }
+
         getCurrentUserMenu(allMenu, userFunctions);
 
         log.info("userFunctions=={}", userFunctions);
