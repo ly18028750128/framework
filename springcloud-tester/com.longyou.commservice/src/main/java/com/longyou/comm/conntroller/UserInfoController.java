@@ -68,9 +68,17 @@ public class UserInfoController {
 
     @GetMapping(value = "/disabledUser/{userId}")
     @SystemResource(value = "disabledUser", description = "禁用用户", authMethod = AuthMethod.BYUSERPERMISSION)
-    public ResponseResult updatePassWordByUser(@PathVariable("userId") Long userId) throws Exception {
+    public ResponseResult disabledUser(@PathVariable("userId") Long userId) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(userInfoService.disabledUser(userId));
+        return responseResult;
+    }
+
+    @GetMapping(value = "/enabledUser/{userId}")
+    @SystemResource(value = "enabledUser", description = "启用用户", authMethod = AuthMethod.BYUSERPERMISSION)
+    public ResponseResult enabledUser(@PathVariable("userId") Long userId) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(userInfoService.enabledUser(userId));
         return responseResult;
     }
 

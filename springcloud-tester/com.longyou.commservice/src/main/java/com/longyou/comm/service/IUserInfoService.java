@@ -10,4 +10,6 @@ public interface IUserInfoService {
     public int updatePassword(String oldPassword, String password) throws Exception;
 
     String disabledUser(Long userId) throws Exception;
+
+    String enabledUser(Long userId) throws Exception;
 }

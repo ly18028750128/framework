@@ -8,6 +8,8 @@ pagehelper:
   support-methods-arguments: true
   params:
 system: #这里仅是示例，请在配置中心中配置
+  OperateLog:
+    enabled: true
   redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
     enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式,和集群模式
     #    master-slave-config:
