@@ -4,12 +4,16 @@ package org.cloud.utils;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.SneakyThrows;
+import org.checkerframework.checker.units.qual.K;
 
 public final class CollectionUtil {
+
     private CollectionUtil() {
     }
 
     private static class Handler {
+
         private Handler() {
         }
 
@@ -79,8 +83,8 @@ public final class CollectionUtil {
         Map<K, V> result = new LinkedHashMap<>();
 
         map.entrySet().stream()
-                .sorted(Map.Entry.<K, V>comparingByValue()
-                        .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+            .sorted(Map.Entry.<K, V>comparingByValue()
+                .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
 
@@ -88,9 +92,31 @@ public final class CollectionUtil {
         Map<K, V> result = new LinkedHashMap<>();
 
         map.entrySet().stream()
-                .sorted(Map.Entry.<K, V>comparingByKey()
-                        .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+            .sorted(Map.Entry.<K, V>comparingByKey()
+                .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
+    }
+
+    /*
+     * 取LinkedHashMap的子集
+     * zakza
+     * @param sortMap 源map
+     * @param start   开始位置
+     * @param end     结束位置
+     * @return
+     */
+    @SneakyThrows
+    public <K, V> LinkedHashMap<K, V> subMap(LinkedHashMap<K, V> sortMap, int start, int end) {
+        if (end < start) {
+            throw new Exception("end must less than start index");
+        }
+        List<Map.Entry<K, V>> lists = new ArrayList(sortMap.entrySet());
+        LinkedHashMap<K, V> map = new LinkedHashMap();
+        end = (end < lists.size() ? end : lists.size());
+        for (Map.Entry<K, V> set : lists.subList(start, end)) {
+            map.put(set.getKey(), set.getValue());
+        }
+        return map;
     }
 
 }
