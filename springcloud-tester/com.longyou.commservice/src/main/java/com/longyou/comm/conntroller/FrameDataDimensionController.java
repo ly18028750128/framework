@@ -1,26 +1,18 @@
 package com.longyou.comm.conntroller;
 
 import com.longyou.comm.service.FrameDataDimensionService;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
-import javax.validation.Validator;
-import javax.validation.constraints.Size;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.FrameDataDimension;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.ValidateUtil;
-import org.cloud.validator.GroupForAdd;
 import org.cloud.validator.GroupForUpdate;
 import org.cloud.vo.ResponseResult;
 import org.cloud.vo.ValidateResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,6 +75,4 @@ public class FrameDataDimensionController {
         successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(userId));
         return successResponseResult;
     }
-
-
 }
