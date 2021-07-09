@@ -102,7 +102,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 final int maxSingleUserLoginCount = Integer
                     .parseInt(CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
 
-                if (userLoginTokenTokeMap.size() > maxSingleUserLoginCount) {
+                if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
 
                     LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
                     userLoginTokenTokeMap.entrySet().stream()

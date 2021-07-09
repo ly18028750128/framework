@@ -8,7 +8,7 @@ public enum MessageCode {
 
     COMMON_SUCCESS("0000_0", "执行成功"),
     COMMON_FAILURE("0000_1", "执行失败"),
-    COMMON_AUTHORIZED_FAILURE("0000_24", "身份鉴权失败"),
+    COMMON_AUTHORIZED_FAILURE("0000_24", "用户名密码错误"),
     COMMON_VALIDATE_CODE_FAILURE("0000_25", "验证码错误");
 
     //Message 编码
@@ -52,7 +52,7 @@ public enum MessageCode {
     @Override
     public String toString() {
         return "{code:'" + code + '\'' +
-                ", message:'" + message + '\'' +
-                '}';
+            ", message:'" + message + '\'' +
+            '}';
     }
 }
