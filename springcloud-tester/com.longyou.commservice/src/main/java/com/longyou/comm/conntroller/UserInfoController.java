@@ -1,13 +1,23 @@
 package com.longyou.comm.conntroller;
 
+import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
+
 import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.service.IUserInfoService;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
+import org.cloud.constant.CoreConstant.UserCacheKey;
+import org.cloud.context.RequestContextManager;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.SpringContextUtil;
@@ -15,9 +25,14 @@ import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/userinfo")
@@ -79,6 +94,35 @@ public class UserInfoController {
     public ResponseResult enabledUser(@PathVariable("userId") Long userId) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(userInfoService.enabledUser(userId));
+        return responseResult;
+    }
+
+    @Autowired
+    RedisUtil redisUtil;
+
+    /**
+     * 校验当前用户的操作权限列表，所有的登录用户都可以调用
+     *
+     * @param operateAuthList
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/checkCurrentUserOperater")
+    @SystemResource(value = "checkCurrentUserOperater", description = "校验当前用户的操作权限列表", authMethod = AuthMethod.ALLSYSTEMUSER)
+    public ResponseResult checkCurrentUserOperater(@RequestBody List<String> operateAuthList) throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+
+        Map<String, Boolean> checkResult = new LinkedHashMap<>(1);
+
+        LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+
+        Set<String> currentUserOperateAuthSet = redisUtil
+            .hashGet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), UserCacheKey.FUNCTION.value());
+
+        for (String operateAuth : operateAuthList) {
+            checkResult.put(operateAuth, currentUserOperateAuthSet.contains(operateAuth));
+        }
+        responseResult.setData(checkResult);
         return responseResult;
     }
 
