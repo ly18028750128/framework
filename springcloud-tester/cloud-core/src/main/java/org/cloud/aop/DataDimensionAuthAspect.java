@@ -35,7 +35,7 @@ public class DataDimensionAuthAspect {
       MethodSignature ms = (MethodSignature) joinPoint.getSignature();
       DataDimensionAuth dataDimensionAuth = ms.getMethod().getAnnotation(DataDimensionAuth.class);
       if (dataDimensionAuth.open()) {
-        log.info("方法[{}]需要校验数据权限", ms.getMethod());
+//        log.info("方法[{}]需要校验数据权限", ms.getMethod());
       }
       dataDimensionOpenThreadLocal.set(dataDimensionAuth.open());
       return joinPoint.proceed();
