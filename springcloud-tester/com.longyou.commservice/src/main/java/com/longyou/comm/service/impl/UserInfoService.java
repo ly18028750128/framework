@@ -35,6 +35,7 @@ import org.cloud.model.TFrameRoleDataInterface;
 import org.cloud.model.TFrameRoleMenu;
 import org.cloud.model.TFrameRoleResource;
 import org.cloud.model.TFrameUserRole;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
@@ -68,6 +69,11 @@ public class UserInfoService implements IUserInfoService {
     @Transactional(readOnly = true)
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
+
+        if(CollectionUtil.single().isEmpty(loginUserDetails)){
+            return null;
+        }
+
         List<TFrameUserRole> frameUserRoleList = frameUserRoleDao.selectByUserId(loginUserDetails.getId());
         if (frameUserRoleList == null || frameUserRoleList.isEmpty()) {
             TFrameRole frameRole = frameRoleDao.selectByRoleCode(loginUserDetails.getDefaultRole());

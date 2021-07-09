@@ -67,46 +67,48 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
 
         if (swe.getRequest().getURI().toString().endsWith("/auth/login")) {
             return swe.getFormData().doOnNext(
-                    multiValueMap -> {
-                        formData.putAll(multiValueMap);
-                    })
-                    .then(Mono.defer(
-                            () -> {
-                                if (CollectionUtil.single().isEmpty(formData.getFirst("microServiceName"))) {
-                                    throw new AuthenticationServiceException("microServiceName不能为空！");
-                                }
-                                if (CollectionUtil.single().isEmpty(formData.getFirst(LoginFormField.PASSWORD.field()))) {
-                                    throw new AuthenticationServiceException(LoginFormField.PASSWORD.field() + "不能为空！");
-                                }
-                                loginUserGetParamsDTO.setMicroServiceName(formData.getFirst("microServiceName"));
-                                loginUserGetParamsDTO.setPassword(formData.getFirst(LoginFormField.PASSWORD.field()));
-                                if (microAppindex != null) {
-                                    final String weixinLoginCode = formData.getFirst(LoginFormField.PASSWORD.field());
-                                    loginUserGetParamsDTO.setUserName(weixinLoginCode);
-                                    loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
-                                    final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
-                                    User.withUserDetails(userDetails).build();
-                                    return Mono.just(userDetails);
-                                } else {
-                                    if (formData.getFirst("loginType") != null) {
-                                        loginUserGetParamsDTO.setLoginType(formData.getFirst("loginType"));
-                                    } else {
-                                        // 未定义登录方式，默认为后台页面登录
-                                        if (isValidateCode && (!checkValidateCode(swe, formData))) {
-                                            return Mono.error(new ValidateCodeAuthFailException("验证码错误"));
-                                        }
-                                    }
-                                    loginUserGetParamsDTO.setUserName(username);
-                                    final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
-                                    if (userDetails != null) { // && StringUtils.equals(userDetails.getUsername(), username)
-                                        User.withUserDetails(userDetails).build();
-                                        return Mono.just(userDetails);
-                                    } else {
-                                        return Mono.error(new UsernameNotFoundException("User Not Found"));
-                                    }
+                multiValueMap -> {
+                    formData.putAll(multiValueMap);
+                })
+                .then(Mono.defer(
+                    () -> {
+                        if (CollectionUtil.single().isEmpty(formData.getFirst("microServiceName"))) {
+                            throw new AuthenticationServiceException("microServiceName不能为空！");
+                        }
+                        if (CollectionUtil.single().isEmpty(formData.getFirst(LoginFormField.PASSWORD.field()))) {
+                            throw new AuthenticationServiceException(LoginFormField.PASSWORD.field() + "不能为空！");
+                        }
+                        loginUserGetParamsDTO.setMicroServiceName(formData.getFirst("microServiceName"));
+                        loginUserGetParamsDTO.setPassword(formData.getFirst(LoginFormField.PASSWORD.field()));
+                        // 微信小程序登录实现
+                        if (microAppindex != null) {
+                            final String weixinLoginCode = formData.getFirst(LoginFormField.PASSWORD.field());
+                            loginUserGetParamsDTO.setUserName(weixinLoginCode);
+                            loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
+                            final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+                            User.withUserDetails(userDetails).build();
+                            return Mono.just(userDetails);
+                        } else {
+                            if (formData.getFirst("loginType") != null) {
+                                loginUserGetParamsDTO.setLoginType(formData.getFirst("loginType"));
+                            } else {
+                                // 未定义登录方式，默认为后台页面登录
+                                if (isValidateCode && (!checkValidateCode(swe, formData))) {
+                                    return Mono.error(new ValidateCodeAuthFailException("验证码错误"));
                                 }
                             }
-                    ));
+                            loginUserGetParamsDTO.setUserName(username);
+                            final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+                            if (userDetails != null && CollectionUtil.single()
+                                .isNotEmpty(userDetails.getUsername())) { // && StringUtils.equals(userDetails.getUsername(), username)
+                                User.withUserDetails(userDetails).build();
+                                return Mono.just(userDetails);
+                            } else {
+                                return Mono.error(new UsernameNotFoundException("User Not Found"));
+                            }
+                        }
+                    }
+                ));
         } else {
             loginUserGetParamsDTO.setUserName(username);
             final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
@@ -152,8 +154,8 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
     private LoginUserDetails getUserByName(LoginUserGetParamsDTO loginUserGetParamsDTO) {
         LoginUserDetails loginUserDetails = null;
         if (CorsWebFilter.serverWebExchangeThreadLocal.get() == null
-                || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest() == null
-                || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders() == null) {
+            || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest() == null
+            || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders() == null) {
             return null;
         }
         final String token = CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
