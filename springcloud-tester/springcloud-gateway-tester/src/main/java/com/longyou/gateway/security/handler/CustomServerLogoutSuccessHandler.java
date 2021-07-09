@@ -1,7 +1,12 @@
 package com.longyou.gateway.security.handler;
 
+import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
+
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +32,12 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
     @Override
     public Mono<Void> onLogoutSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         try {
-            // 退出时将生成的随机加密值给清空，token直接失效（自动失效时间为24小时），如果想token有效，请不要调用登出接口
-            redisUtil.remove(MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix()));
-            final String authStr = webFilterExchange.getExchange().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            redisUtil.remove(MD5Encoder.encode(authStr));
+            if (authentication.getPrincipal() instanceof LoginUserDetails) {
+                LoginUserDetails loginUserDetails = (LoginUserDetails) authentication.getPrincipal();
+                final String logoutKey = MD5Encoder.encode("basic " + loginUserDetails.getToken());
+                redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + logoutKey);
+                redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), logoutKey);
+            }
         } catch (Exception ex) {
             log.error("{}", ex);
         }

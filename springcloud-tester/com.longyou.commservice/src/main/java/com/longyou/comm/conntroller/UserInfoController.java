@@ -50,7 +50,7 @@ public class UserInfoController {
             loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
         } else {
             loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
-            if (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty()) {
+            if (loginUserDetails != null && (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty())) {
                 loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
             }
         }

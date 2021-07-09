@@ -7,10 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
+import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.utils.RedissonUtil;
@@ -81,12 +88,36 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                         Long.toString(60 * 60L)));
                 }
                 // 缓存当前登录用户的登录信息
-
                 final String successKey = MD5Encoder.encode("basic " + token);
                 redisUtil.set(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + successKey, userDetails, timeSaltChangeInterval);
 
+                // 缓存已经登录的信息
                 final Long expireTime = System.currentTimeMillis() + timeSaltChangeInterval * 1000L;
                 redisUtil.hashSet(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), successKey, expireTime, -1L);
+
+                Map<String, Long> userLoginTokenTokeMap = redisUtil.getRedisTemplate().opsForHash()
+                    .entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
+
+                // 每个用户最大的登录客户端，默认为5个
+                final int maxSingleUserLoginCount = Integer
+                    .parseInt(CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
+
+                if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
+
+                    LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
+                    userLoginTokenTokeMap.entrySet().stream()
+                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                        .forEachOrdered(s -> sortedMap.put(s.getKey(), s.getValue()));
+
+                    LinkedHashMap<String, Long> willRemoveMaps = CollectionUtil.single()
+                        .subMap(sortedMap, maxSingleUserLoginCount, userLoginTokenTokeMap.size());
+
+                    for (Entry<String, Long> entry : willRemoveMaps.entrySet()) {
+                        redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), entry.getKey());
+                        redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + entry.getKey());
+                    }
+
+                }
 
                 loginUserDetails.setPassword("***********");
                 loginUserDetails.setToken(token);
