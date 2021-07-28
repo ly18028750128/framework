@@ -27,11 +27,11 @@ public class UserAdminService implements IUserAdminService {
 
 
     @Override
-    public int saveOrUpdate(TFrameUser frameUser) throws Exception {
+    public long saveOrUpdate(TFrameUser frameUser) throws Exception {
 
         LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
 
-        int result = 0;
+        long result = 0;
 
         frameUser.setUpdateBy(userDetails.getUsername());
         frameUser.setUpdateDate(new Date());
@@ -42,11 +42,11 @@ public class UserAdminService implements IUserAdminService {
             final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
             frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(), salt));
             if (frameUserDao.insertSelective(frameUser)>0) {
-                result = frameUser.getId().intValue();
+                result = frameUser.getId();
             }
         } else {
             if (frameUserDao.updateByPrimaryKeySelective(frameUser) > 0) {
-                result = frameUser.getId().intValue();
+                result = frameUser.getId();
             }
         }
 
