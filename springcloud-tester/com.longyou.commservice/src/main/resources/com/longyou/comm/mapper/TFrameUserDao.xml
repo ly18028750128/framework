@@ -48,6 +48,9 @@
       )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="org.cloud.model.TFrameUser" useGeneratedKeys="true">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into t_frame_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userName != null">
