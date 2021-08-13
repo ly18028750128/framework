@@ -1,6 +1,7 @@
 package org.cloud.scheduler.job;
 
 
+import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.service.QuartzService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -35,6 +36,14 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
         jobData.put("description", "System auto create!");
         init();
         createJob();
+    }
+
+    protected void setMisfire(MisfireEnum.CronScheduleMisfireEnum cronScheduleMisfire){
+        this.jobData.put(MisfireEnum.CRON_SCHEDULE_MISFIRE_MODE_KEY, cronScheduleMisfire.getMisfireMethodName());
+    }
+
+    protected void setMisfire(MisfireEnum.SimpleScheduleMisfireEnum simpleScheduleMisfire){
+        this.jobData.put(MisfireEnum.SIMPLE_SCHEDULE_MISFIRE_MODE_KEY, simpleScheduleMisfire.getMisfireMethodName());
     }
 
     protected abstract void init();

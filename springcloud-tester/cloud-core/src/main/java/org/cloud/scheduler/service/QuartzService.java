@@ -2,6 +2,7 @@ package org.cloud.scheduler.service;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.controller.QuartzController;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -61,6 +63,11 @@ public class QuartzService {
             scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInSeconds(jobTime);
         }
 
+        Object simple_schedule_misfire_mode = jobData.get(MisfireEnum.SIMPLE_SCHEDULE_MISFIRE_MODE_KEY);
+        if (!StringUtils.isEmpty(simple_schedule_misfire_mode)){
+            scheduleBuilder = (SimpleScheduleBuilder)scheduleBuilder.getClass().getMethod(simple_schedule_misfire_mode.toString()).invoke(scheduleBuilder);
+        }
+
         // 重复次数大于零
         if (jobTimes > 0) {
             scheduleBuilder.withRepeatCount(jobTimes);
@@ -98,10 +105,21 @@ public class QuartzService {
         // 指明job的名称，所在组的名称，以及绑定job类
         // 任务名称和组构成任务key
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
+
+        //处理任务的失败补偿模式
+        Object cron_schedule_misfire_mode = jobData.get(MisfireEnum.CRON_SCHEDULE_MISFIRE_MODE_KEY);
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(jobTime);
+        if (!StringUtils.isEmpty(cron_schedule_misfire_mode)){
+            cronScheduleBuilder = (CronScheduleBuilder) cronScheduleBuilder.getClass().getMethod(cron_schedule_misfire_mode.toString()).invoke(cronScheduleBuilder);
+        }
         // 定义调度触发规则
         // 使用cornTrigger规则
         // 触发器key
-        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName).withDescription(getDescription(jobData)).startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
+        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger()
+                .withIdentity(jobName, jobGroupName)
+                .withDescription(getDescription(jobData))
+                .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
+                .withSchedule(cronScheduleBuilder);
 
         Trigger trigger = triggerBuilder.build();
 
