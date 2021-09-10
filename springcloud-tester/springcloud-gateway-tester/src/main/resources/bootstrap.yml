@@ -71,7 +71,7 @@ spring:
 # 配置加解密根秘钥
 jasypt:
   encryptor:
-    password: "2019-11-15,2018-04-08,2009-09-09,I will never forgot!" #更换后所有密码要重新加密，不然启动会报错！
+    password: ${jasypt_encryptor_password} #更换后所有密码要重新加密，不然启动会报错！
 server:
   ssl:
     enabled: ${system.ssl.enabled:false}
