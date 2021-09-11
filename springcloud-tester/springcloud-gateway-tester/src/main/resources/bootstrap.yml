@@ -72,14 +72,14 @@ spring:
 jasypt:
   encryptor:
     password: ${jasypt_encryptor_password} #更换后所有密码要重新加密，不然启动会报错！
-server:
-  ssl:
-    enabled: ${system.ssl.enabled:false}
-    key-store-password: ENC(URpieK0FYMtvbTompqehWlu1wpyni8G3arBS8+nF5fQbDMmwar+5hsGuBUvqDRbr)             # 腾讯云申请生成证书时填写的密码，如果申请时没有填写，name下载的证书文件家中会包括一个keystorePass.txt文件，里面就是密码
-    key-store: "classpath:4367958_rcm3.coinr.pro.pfx"     # 我自己进行了文件重命名
-    key-store-type: PKCS12
+#server:
+#  ssl:
+#    enabled: ${system.ssl.enabled:false}
+#    key-store-password: ENC(URpieK0FYMtvbTompqehWlu1wpyni8G3arBS8+nF5fQbDMmwar+5hsGuBUvqDRbr)             # 腾讯云申请生成证书时填写的密码，如果申请时没有填写，name下载的证书文件家中会包括一个keystorePass.txt文件，里面就是密码
+#    key-store: "classpath:4367958_rcm3.coinr.pro.pfx"     # 我自己进行了文件重命名
+#    key-store-type: PKCS12
 #    key-alias: netty
-system:
+#system:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: rcm3pro
