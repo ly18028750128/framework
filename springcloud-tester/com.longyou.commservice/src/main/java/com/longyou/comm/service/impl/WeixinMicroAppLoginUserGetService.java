@@ -51,7 +51,8 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
 
         // TODO 此处编写通过jscode获取用户信息的操作
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        final Call call = OKHttpClientUtil.single().createGetCall(httpRequestParams, String.format(wenxinLoginUrl, microAppConfig.getAppid(), microAppConfig.getAppPassword(), micrLoginCode));
+        final Call call = OKHttpClientUtil.single().createGetCall(httpRequestParams,
+            String.format(wenxinLoginUrl, microAppConfig.getAppid(), microAppConfig.getAppPassword(), micrLoginCode));
 
         ResponseBody responeWexinLoginInfo = call.execute().body();
         Map weixinUserMap = JSON.parseObject(responeWexinLoginInfo.string(), Map.class);

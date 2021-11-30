@@ -34,11 +34,11 @@ public class RsaUtilTest {
     @Test
     public void encryptByRedisRsaKey() throws Exception {
         List<Callable<Boolean>> callables = new ArrayList<Callable<Boolean>>();
-        for (int i = 0; i < 5; i++) {
-            final int j = i;
+//        for (int i = 0; i < 5; i++) {
+//            final int j = i;
             callables.add(() -> {
                 MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-                params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount" + j));
+                params.add("username", RsaUtil.single().encryptByRedisRsaKey("unknowaccount" + Math.random()));
                 params.add("password", String.valueOf(Math.random() + System.currentTimeMillis()));
                 params.add("microServiceName", "unknowaccount");
                 params.add("loginType", "LOGIN-BY-THIRD-LOGIN");
@@ -46,7 +46,7 @@ public class RsaUtilTest {
                 log.info("{}", result);
                 return true;
             });
-        }
+//        }
         ProcessUtil.single().runCablles(callables);
     }
 

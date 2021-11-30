@@ -126,6 +126,11 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>4.8.8</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

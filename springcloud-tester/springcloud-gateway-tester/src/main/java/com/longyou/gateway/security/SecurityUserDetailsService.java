@@ -4,6 +4,7 @@ import com.longyou.gateway.contants.LoginFormField;
 import com.longyou.gateway.exception.ValidateCodeAuthFailException;
 import com.longyou.gateway.filter.CorsWebFilter;
 import com.longyou.gateway.service.feign.IGetUserInfoFeignClient;
+import com.rabbitmq.client.AMQP.Basic.Get;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -66,10 +68,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         final MultiValueMap<String, String> formData = CollectionUtils.toMultiValueMap(new HashMap<>());
 
         if (swe.getRequest().getURI().toString().endsWith("/auth/login")) {
-            return swe.getFormData().doOnNext(
-                multiValueMap -> {
-                    formData.putAll(multiValueMap);
-                })
+            return swe.getFormData().doOnNext(formData::putAll)
                 .then(Mono.defer(
                     () -> {
                         if (CollectionUtil.single().isEmpty(formData.getFirst("microServiceName"))) {
@@ -86,6 +85,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
                             loginUserGetParamsDTO.setUserName(weixinLoginCode);
                             loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppindex));
                             final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
+                            assert userDetails != null;
                             User.withUserDetails(userDetails).build();
                             return Mono.just(userDetails);
                         } else {
@@ -98,6 +98,12 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
                                 }
                             }
                             loginUserGetParamsDTO.setUserName(username);
+
+                            final Object otherFieldValue = formData.getFirst(LoginFormField.OTHER_FIELD_KEY.field());
+
+                            if (!StringUtils.isEmpty(otherFieldValue)) {
+                                loginUserGetParamsDTO.setParams(otherFieldValue.toString());
+                            }
                             final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO);
                             if (userDetails != null && CollectionUtil.single()
                                 .isNotEmpty(userDetails.getUsername())) { // && StringUtils.equals(userDetails.getUsername(), username)
@@ -107,6 +113,8 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
                                 return Mono.error(new UsernameNotFoundException("User Not Found"));
                             }
                         }
+
+
                     }
                 ));
         } else {

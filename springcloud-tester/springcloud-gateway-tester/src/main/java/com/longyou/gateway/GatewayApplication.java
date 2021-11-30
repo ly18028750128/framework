@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
@@ -33,6 +34,7 @@ import javax.sql.DataSource;
         }
         ,
         exclude = {
+            RabbitAutoConfiguration.class
 //                MongoAutoConfiguration.class,
 //                GatewayAutoConfiguration.class,
 //                MongoDataAutoConfiguration.class,
@@ -41,6 +43,7 @@ import javax.sql.DataSource;
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "org.cloud.feign.service"})
+
 @Slf4j
 public class GatewayApplication {
     public static void main(String[] args) {

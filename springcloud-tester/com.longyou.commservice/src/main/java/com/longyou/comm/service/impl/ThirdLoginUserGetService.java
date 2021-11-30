@@ -1,6 +1,7 @@
 package com.longyou.comm.service.impl;
 
 
+import com.longyou.comm.LoginUtils;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
@@ -50,36 +51,10 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
         String realUserName = loginUserGetParamsDTO.getUserName();
         try{
             realUserName = RsaUtil.single().decrypt(realUserName, rsaKeys.get(1));
+            loginUserGetParamsDTO.setUserName(realUserName);
         }catch (Exception e){
             log.error("解密失败，按明文用户处理！");
         }
-        final String password = MD5Encoder.encode(loginUserGetParamsDTO.getPassword(), salt);  // 先用用户名做校验
-        final String appName = loginUserGetParamsDTO.getMicroServiceName();
-        loginUserGetParamsDTO.setUserName(realUserName);
-        // 设置成获取的用户名
-        loginUserGetParamsDTO.setUserName(realUserName);
-        loginUserGetParamsDTO.getParamMap().put(CoreConstant._USER_TYPE_KEY, appName);
-        LoginUserDetails userDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
-
-        if (userDetails == null) {
-            // TODO 保存到t_frame_user表里
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("userName", realUserName);
-            userMap.put("password", password);
-            userMap.put("createBy", realUserName);
-            userMap.put("updateBy", realUserName);
-            userMap.put("status", 1);
-            userMap.put("defaultRole", "User");
-            userMap.put("userType", loginUserGetParamsDTO.getLoginType());
-            userMap.put("userRegistSource", appName);
-            userMap.put("sessionKey", "");
-            userInfoMapper.insertIntoUserInfo(userMap);
-        } else {
-            userDetails.setPassword(password);
-            userDetails.setSessionKey(appName);
-            userInfoMapper.updateLoginUserById(userDetails);
-        }
-        userDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
-        return userDetails;
+        return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
     }
 }

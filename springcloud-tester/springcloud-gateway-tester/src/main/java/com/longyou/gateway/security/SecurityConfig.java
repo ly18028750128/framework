@@ -48,7 +48,7 @@ public class SecurityConfig {
 //        });
         http
                 .authorizeExchange()
-                .pathMatchers(new String[]{"/**"}).permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验
+                .pathMatchers("/**").permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验
                 .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
                 .anyExchange().authenticated()
                 .and()
