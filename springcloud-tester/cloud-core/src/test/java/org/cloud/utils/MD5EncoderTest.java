@@ -20,9 +20,13 @@ public class MD5EncoderTest {
 
     @Test
     public void encode() {
-        logger.debug(MD5Encoder.encode("123456", "想暴力破解没门"));
+//        logger.debug(MD5Encoder.encode("123456", "想暴力破解没门"));
+        logger.debug(MD5Encoder.encode("123456", "Vt@pfkkxc43mpuFn"));
         logger.debug(MD5Encoder.encode("123456"));
     }
 
 
+    @org.junit.jupiter.api.Test
+    void testEncode() {
+    }
 }

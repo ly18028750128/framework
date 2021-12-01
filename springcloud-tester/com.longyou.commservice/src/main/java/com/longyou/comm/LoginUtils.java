@@ -34,7 +34,7 @@ public final class LoginUtils {
     }
 
     @SneakyThrows
-    public final static LoginUserDetails createOrUpdateUserByLoginUserGetParamsDTO(final LoginUserGetParamsDTO loginUserGetParamsDTO,
+    public static LoginUserDetails createOrUpdateUserByLoginUserGetParamsDTO(final LoginUserGetParamsDTO loginUserGetParamsDTO,
         final String salt) {
 
         setUserInfoMapperAndService();
