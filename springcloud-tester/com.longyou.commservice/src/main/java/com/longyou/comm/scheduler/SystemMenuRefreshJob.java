@@ -1,6 +1,9 @@
 package com.longyou.comm.scheduler;
 
+import static com.longyou.comm.admin.service.IMenuService._ALL_MENUS_CACHE_KEY;
+
 import com.longyou.comm.admin.service.IMenuService;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
 import org.cloud.utils.SpringContextUtil;
 import org.quartz.JobExecutionContext;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SystemMenuRefreshJob extends BaseQuartzJobBean {
+
     @Override
     protected void init() {
         this.jobName = "定时刷新系统菜单缓存";
@@ -19,12 +23,14 @@ public class SystemMenuRefreshJob extends BaseQuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
-            final IMenuService iMenuService = SpringContextUtil.getBean(IMenuService.class);
-            if (iMenuService != null) {
-                iMenuService.listAllTreeMenu(null, 5);   //查询并刷新缓存
+            final RedisUtil redisUtil = SpringContextUtil.getBean(RedisUtil.class);
+            final IMenuService menuService = SpringContextUtil.getBean(IMenuService.class);
+            if (redisUtil != null && menuService != null) {
+                redisUtil.set(_ALL_MENUS_CACHE_KEY, menuService.listAllTreeMenu(null, 5, false), 0L);
             }
+            //查询并刷新缓存
         } catch (Exception e) {
-            new JobExecutionException(e);
+             throw new JobExecutionException(e);
         }
     }
 }

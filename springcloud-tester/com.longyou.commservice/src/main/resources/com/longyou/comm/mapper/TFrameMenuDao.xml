@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longyou.comm.mapper.TFrameMenuDao">
   <resultMap id="BaseResultMap" type="org.cloud.model.TFrameMenu">
-    <id column="menu_id" jdbcType="BIGINT" property="menuId" />
-    <result column="menu_code" jdbcType="VARCHAR" property="menuCode" />
-    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
-    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
-    <result column="seq_no" jdbcType="INTEGER" property="seqNo" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="parent_menu_id" jdbcType="BIGINT" property="parentMenuId" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <!--@mbg.generated-->
+    <!--@Table t_frame_menu-->
+    <id column="menu_id" jdbcType="BIGINT" property="menuId"/>
+    <result column="menu_code" jdbcType="VARCHAR" property="menuCode"/>
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl"/>
+    <result column="component_path" jdbcType="VARCHAR" property="componentPath"/>
+    <result column="type" jdbcType="INTEGER" property="type"/>
+    <result column="show_type" jdbcType="INTEGER" property="showType"/>
+    <result column="icon" jdbcType="VARCHAR" property="icon"/>
+    <result column="function_resource_code" jdbcType="VARCHAR" property="functionResourceCode"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+    <result column="seq_no" jdbcType="INTEGER" property="seqNo"/>
+    <result column="parent_menu_id" jdbcType="BIGINT" property="parentMenuId"/>
+    <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+    <result column="meta_data" jdbcType="VARCHAR" property="metaData"/>
   </resultMap>
   <sql id="Base_Column_List">
-    menu_id, menu_code, menu_name, menu_url, seq_no, `status`, parent_menu_id, create_by, 
-    create_date, update_by, update_date
+    <!--@mbg.generated-->
+    menu_id, menu_code, menu_name, menu_url, component_path, `type`, show_type, icon,
+    function_resource_code, `status`, seq_no, parent_menu_id, create_by, create_date,
+    update_by, update_date, meta_data
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List"/>
     from t_frame_menu
     where menu_id = #{menuId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_frame_menu
+    <!--@mbg.generated-->
+    delete
+    from t_frame_menu
     where menu_id = #{menuId,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" keyColumn="menu_id" keyProperty="menuId" parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
-    insert into t_frame_menu (menu_code, menu_name, menu_url, 
-      seq_no, `status`, parent_menu_id, 
-      create_by, create_date, update_by, 
-      update_date)
-    values (#{menuCode,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, 
-      #{seqNo,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{parentMenuId,jdbcType=BIGINT}, 
-      #{createBy,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP})
+  <insert id="insert" keyColumn="menu_id" keyProperty="menuId"
+    parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into t_frame_menu (menu_code, menu_name, menu_url,
+                              component_path, `type`, show_type,
+                              icon, function_resource_code, `status`,
+                              seq_no, parent_menu_id, create_by,
+                              create_date, update_by, update_date,
+                              meta_data)
+    values (#{menuCode,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR},
+            #{componentPath,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+            #{showType,jdbcType=INTEGER},
+            #{icon,jdbcType=VARCHAR}, #{functionResourceCode,jdbcType=VARCHAR},
+            #{status,jdbcType=INTEGER},
+            #{seqNo,jdbcType=INTEGER}, #{parentMenuId,jdbcType=BIGINT},
+            #{createBy,jdbcType=VARCHAR},
+            #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+            #{updateDate,jdbcType=TIMESTAMP},
+            #{metaData,jdbcType=VARCHAR})
   </insert>
-  <select id="selectByMenuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_frame_menu
-    where menu_code = #{menuCode,jdbcType=VARCHAR}
-  </select>
-  <insert id="insertSelective" keyColumn="menu_id" keyProperty="menuId" parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="menu_id" keyProperty="menuId"
+    parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
+    <!--@mbg.generated-->
     insert into t_frame_menu
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="menuCode != null">
@@ -56,11 +76,26 @@
       <if test="menuUrl != null">
         menu_url,
       </if>
-      <if test="seqNo != null">
-        seq_no,
+      <if test="componentPath != null">
+        component_path,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="showType != null">
+        show_type,
+      </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="functionResourceCode != null">
+        function_resource_code,
       </if>
       <if test="status != null">
         `status`,
+      </if>
+      <if test="seqNo != null">
+        seq_no,
       </if>
       <if test="parentMenuId != null">
         parent_menu_id,
@@ -77,6 +112,9 @@
       <if test="updateDate != null">
         update_date,
       </if>
+      <if test="metaData != null">
+        meta_data,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="menuCode != null">
@@ -88,11 +126,26 @@
       <if test="menuUrl != null">
         #{menuUrl,jdbcType=VARCHAR},
       </if>
-      <if test="seqNo != null">
-        #{seqNo,jdbcType=INTEGER},
+      <if test="componentPath != null">
+        #{componentPath,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="showType != null">
+        #{showType,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="functionResourceCode != null">
+        #{functionResourceCode,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="seqNo != null">
+        #{seqNo,jdbcType=INTEGER},
       </if>
       <if test="parentMenuId != null">
         #{parentMenuId,jdbcType=BIGINT},
@@ -109,9 +162,13 @@
       <if test="updateDate != null">
         #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="metaData != null">
+        #{metaData,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="org.cloud.model.TFrameMenu">
+    <!--@mbg.generated-->
     update t_frame_menu
     <set>
       <if test="menuCode != null">
@@ -123,11 +180,26 @@
       <if test="menuUrl != null">
         menu_url = #{menuUrl,jdbcType=VARCHAR},
       </if>
-      <if test="seqNo != null">
-        seq_no = #{seqNo,jdbcType=INTEGER},
+      <if test="componentPath != null">
+        component_path = #{componentPath,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="showType != null">
+        show_type = #{showType,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null">
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="functionResourceCode != null">
+        function_resource_code = #{functionResourceCode,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="seqNo != null">
+        seq_no = #{seqNo,jdbcType=INTEGER},
       </if>
       <if test="parentMenuId != null">
         parent_menu_id = #{parentMenuId,jdbcType=BIGINT},
@@ -144,21 +216,31 @@
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="metaData != null">
+        meta_data = #{metaData,jdbcType=VARCHAR},
+      </if>
     </set>
     where menu_id = #{menuId,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.cloud.model.TFrameMenu">
+    <!--@mbg.generated-->
     update t_frame_menu
-    set menu_code = #{menuCode,jdbcType=VARCHAR},
-      menu_name = #{menuName,jdbcType=VARCHAR},
-      menu_url = #{menuUrl,jdbcType=VARCHAR},
-      seq_no = #{seqNo,jdbcType=INTEGER},
-      `status` = #{status,jdbcType=INTEGER},
-      parent_menu_id = #{parentMenuId,jdbcType=BIGINT},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
+    set menu_code              = #{menuCode,jdbcType=VARCHAR},
+        menu_name              = #{menuName,jdbcType=VARCHAR},
+        menu_url               = #{menuUrl,jdbcType=VARCHAR},
+        component_path         = #{componentPath,jdbcType=VARCHAR},
+        `type`                 = #{type,jdbcType=INTEGER},
+        show_type              = #{showType,jdbcType=INTEGER},
+        icon                   = #{icon,jdbcType=VARCHAR},
+        function_resource_code = #{functionResourceCode,jdbcType=VARCHAR},
+        `status`               = #{status,jdbcType=INTEGER},
+        seq_no                 = #{seqNo,jdbcType=INTEGER},
+        parent_menu_id         = #{parentMenuId,jdbcType=BIGINT},
+        create_by              = #{createBy,jdbcType=VARCHAR},
+        create_date            = #{createDate,jdbcType=TIMESTAMP},
+        update_by              = #{updateBy,jdbcType=VARCHAR},
+        update_date            = #{updateDate,jdbcType=TIMESTAMP},
+        meta_data              = #{metaData,jdbcType=VARCHAR}
     where menu_id = #{menuId,jdbcType=BIGINT}
   </update>
 </mapper>

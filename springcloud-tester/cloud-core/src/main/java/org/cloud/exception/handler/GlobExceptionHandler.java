@@ -1,5 +1,6 @@
 package org.cloud.exception.handler;
 
+import java.sql.SQLException;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.CommonUtil;
 import org.cloud.vo.ResponseResult;
@@ -62,12 +63,17 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         return responseResult;
     }
 
+    @ExceptionHandler(SQLException.class)
+    public ResponseResult handlerSQLException(@NotNull SQLException e, @NotNull HttpServletResponse response) {
+        return getStringObjectMap(e, response);
+    }
+
     private ResponseResult getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response, int httpStatus) {
         if (e.getCause() != null && e.getCause() instanceof BusinessException) {
             return this.handlerBusinessException((BusinessException) e.getCause(), response);
         }
         ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage(e.getMessage());
+        responseResult.setMessage("error.system.runtime");
         response.setStatus(httpStatus);
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
