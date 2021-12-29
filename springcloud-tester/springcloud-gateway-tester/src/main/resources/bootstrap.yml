@@ -63,9 +63,9 @@ spring:
       classpath:/static/,classpath:/public/,file:${system.static.web-uploadpath}
   profiles:
     active: ${sys.curr_profile:dev}
-    user:
-      name: admin
-      password: fwedsflja123u120318412jlwejf
+#    user:
+#      name: admin
+#      password: fwedsflja123u120318412jlwejf
   main:
     allow-bean-definition-overriding: true
 # 配置加解密根秘钥
