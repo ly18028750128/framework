@@ -33,8 +33,8 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
     @Value("${spring.security.salt-password:}")
     String salt;
 
-    @Value("${system.eth.sign.expire.time:1800000}")
-    Long signValueExpireTime = 30 * 60 * 1000L; // 默认30分钟过过期
+    @Value("${system.eth.sign.expire.time:3600000}")
+    Long signValueExpireTime = 60 * 60 * 1000L; // 默认60分钟过过期,也就是说30分钟内可以用同一个密钥登录
 
 
     @Autowired
@@ -49,7 +49,7 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
     @Autowired
     RedisUtil redisUtil;
 
-    public static final String ADDRESS_SIGN_MAP_KEY = "system:config:ETH-CHAIN-SIGN-MAP";  // 签名数据存放的map
+    public static final String ADDRESS_SIGN_MAP_KEY = "system:config:ETH-CHAIN-SIGN-MAP:";  // 签名数据存放的map
 
 
     @Override
@@ -60,14 +60,13 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
 
         final String address = loginUserGetParamsDTO.getUserName();
 
+        final String addressSignKey = ADDRESS_SIGN_MAP_KEY + address;
+
         loginUserGetParamsDTO.setUserName(address.toLowerCase(Locale.ROOT));
 
         final String message = loginUserGetParamsDTO.getParamMap().get("signValue").toString();
 
-        final String fieldName = address + "." + message;
-
-        Long expireEndTime = redisUtil.hashGet(ADDRESS_SIGN_MAP_KEY, fieldName);
-
+        Long expireEndTime = redisUtil.hashGet(addressSignKey, message);
         if (expireEndTime != null && System.currentTimeMillis() > expireEndTime) {
             throw new BusinessException("签名数据已经过期,请重新签名！");
         }
@@ -110,7 +109,7 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
             throw new BusinessException("签名数据验证错误！");
         }
 
-        redisUtil.hashSet(ADDRESS_SIGN_MAP_KEY, fieldName, System.currentTimeMillis() + signValueExpireTime, 0L);
+        redisUtil.hashSet(addressSignKey, message, System.currentTimeMillis() + signValueExpireTime, 3600L);
 
         return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
 
