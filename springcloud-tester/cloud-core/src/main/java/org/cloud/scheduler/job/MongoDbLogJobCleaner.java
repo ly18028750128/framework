@@ -19,6 +19,7 @@ import java.util.Date;
 // 定时删除日志，每天23点59分执行 0 59 23 * * ?
 @Component
 public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
+
     Logger logger = LoggerFactory.getLogger(MongoDbLogJobCleaner.class);
 
     @Override
@@ -34,9 +35,12 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
         if (mongoTemplate != null) {
             Long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.mongodb.expire.days", "30"));  //默认保留30天的数据
             final String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();
-            Query query = new Query(Criteria.where(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value()).lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
-            DeleteResult deleteResult = mongoTemplate.remove(query, microServiceName + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value());
-            logger.info("清除[" + microServiceName + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value() + "]日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
+            final String activeProfile = CommonUtil.single().getEnv("spring.profiles.active", "").toUpperCase();
+            final String documentName = microServiceName + "_" + activeProfile + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value();
+            Query query = new Query(Criteria.where(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value())
+                .lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
+            DeleteResult deleteResult = mongoTemplate.remove(query, documentName);
+            logger.info("清除[" + documentName + "]日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
         }
     }
 }

@@ -39,7 +39,7 @@ public class CustomServerLogoutSuccessHandler extends HttpStatusReturningServerL
                 redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), logoutKey);
             }
         } catch (Exception ex) {
-            log.error("{}", ex);
+            log.error("{}", ex.getMessage());
         }
         return super.onLogoutSuccess(webFilterExchange, authentication);
     }

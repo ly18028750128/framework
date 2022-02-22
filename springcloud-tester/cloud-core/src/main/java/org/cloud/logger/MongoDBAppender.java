@@ -15,6 +15,7 @@ import java.util.Date;
 
 
 public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
+
     private static MongoTemplate mongoTemplate;
     private Logger logger = LoggerFactory.getLogger(MongoDBAppender.class);
 
@@ -27,6 +28,8 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 return;
             }
             String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();
+            String activeProfile = CommonUtil.single().getEnv("spring.profiles.active", "").toUpperCase();
+            final String documentName = microServiceName + "_" + activeProfile + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value();
             final BasicDBObject doc = new BasicDBObject();
             doc.append("level", eventObject.getLevel().toString());
             doc.append("logger", eventObject.getLoggerName());
@@ -39,7 +42,7 @@ public class MongoDBAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
                 logger.error("日志参数转换错误！");
             }
             doc.append(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value(), new Date(eventObject.getTimeStamp()));
-            mongoTemplate.insert(doc, microServiceName + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value());
+            mongoTemplate.insert(doc, documentName);
         }
     }
 }
