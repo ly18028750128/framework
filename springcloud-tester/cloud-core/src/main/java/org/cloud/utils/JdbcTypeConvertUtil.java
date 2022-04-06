@@ -1,6 +1,9 @@
 package org.cloud.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +67,8 @@ public final class JdbcTypeConvertUtil {
     }
 
     public String dateToString(Date date) {
-        return CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format(new java.util.Date(date.getTime()));
+        SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+        return dateFormat.format(new java.util.Date(date.getTime()));
     }
 }

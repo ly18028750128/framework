@@ -279,11 +279,11 @@ public final class MongoDBUtil {
             count = mongoTemplate.count(query, collectionName);
         }
         pageInfo.setTotal(count);
-        query.skip((pageNum - 1) * pageSize).limit(pageSize.intValue());
+
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));
         }
-
+        query.skip((pageNum - 1) * pageSize).limit(pageSize.intValue());
         if (collectionName == null) {
             pageInfo.setList(mongoTemplate.find(query, cls));
         } else {
@@ -299,7 +299,7 @@ public final class MongoDBUtil {
     public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class cls, String collectionName) throws Exception {
         Query query = new Query();
         if (!queryParamsDTO.getParams().isEmpty()) {
-            MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
+            query = MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
         }
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));

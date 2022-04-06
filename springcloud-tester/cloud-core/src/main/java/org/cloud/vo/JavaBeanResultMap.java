@@ -1,6 +1,10 @@
 package org.cloud.vo;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.TimeZone;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.utils.JdbcTypeConvertUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.slf4j.Logger;
@@ -37,7 +41,10 @@ public class JavaBeanResultMap<V> extends LinkedHashMap<String, V> {
         }
 
         if (value instanceof java.util.Date) {
-            return super.put(key, (V) CoreConstant.DateTimeFormat.ISODATE.getDateFormat().format((java.util.Date) value));
+            SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+
+            return super.put(key, (V) dateFormat.format((java.util.Date) value));
         }
 
         return super.put(key, value);
