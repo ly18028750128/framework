@@ -237,6 +237,12 @@
         <artifactId>lucene-queryparser</artifactId>
         <version>${lucene.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-extension</artifactId>
+        <version>3.5.1</version>
+        <scope>compile</scope>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

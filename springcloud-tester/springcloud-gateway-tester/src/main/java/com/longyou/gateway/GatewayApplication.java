@@ -63,7 +63,7 @@ public class GatewayApplication {
     @Primary
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DruidDataSource druidDataSource() {
+    public DataSource druidDataSource() {
         return new DruidDataSource();
     }
 

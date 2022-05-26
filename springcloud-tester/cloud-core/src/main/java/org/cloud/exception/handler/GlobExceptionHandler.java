@@ -7,6 +7,7 @@ import org.cloud.vo.ResponseResult;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -72,8 +73,19 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         if (e.getCause() != null && e.getCause() instanceof BusinessException) {
             return this.handlerBusinessException((BusinessException) e.getCause(), response);
         }
+
         ResponseResult responseResult = ResponseResult.createFailResult();
-        responseResult.setMessage("error.system.runtime");
+
+        if ((e instanceof java.sql.SQLException)) {
+            responseResult.setMessage(e.getMessage());
+        } else if ((e.getCause() != null && e.getCause() instanceof java.sql.SQLException)) {
+            responseResult.setMessage(e.getCause().getMessage());
+        } else if ((e instanceof DataAccessException) || (e.getCause() != null && e.getCause() instanceof DataAccessException)) {
+            responseResult.setMessage("system.db.error");
+        } else {
+            responseResult.setMessage(e.getMessage());
+        }
+
         response.setStatus(httpStatus);
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
