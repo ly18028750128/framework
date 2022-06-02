@@ -29,6 +29,7 @@ spring:
         name: ${spring.application.noGroupName:}
         format: yaml
         data-key: data
+        fail-fast: false
         watch:
           enabled: true
           delay: 1000
