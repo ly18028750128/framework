@@ -65,7 +65,7 @@ public class OperateLogAspect {
             }
             doc.append("resMsg", resJson.getString("message"));
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -116,13 +116,11 @@ public class OperateLogAspect {
         }
 
         final HttpServletResponse response = HttpServletUtil.signle().getHttpServletResponse();
-
         if (response != null) {
             doc.append("httpStatus", response.getStatus());
         }
-
         // 设置操作人信息
-        Long userId = null;
+        Long userId = -9999999L;
         String userName = "";
 
         if (loginUserDetails != null) {
@@ -150,7 +148,7 @@ public class OperateLogAspect {
             doc.append(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value(), date);
             mongoTemplate.insert(doc, microName + CoreConstant.MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value());
         } catch (Exception e) {
-            log.error("保存操作日志错误：{}", e);
+            log.error("保存操作日志错误", e);
         }
     }
 
