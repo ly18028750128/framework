@@ -1,9 +1,13 @@
 package com.longyou.comm.service;
 
+import org.cloud.annotation.AuthLog;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.LoginUserGetParamsDTO;
 
 public interface IUserInfoService {
+
+
 
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception;
 

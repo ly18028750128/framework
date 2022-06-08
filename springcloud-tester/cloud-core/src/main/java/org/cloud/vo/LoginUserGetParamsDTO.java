@@ -22,4 +22,15 @@ public class LoginUserGetParamsDTO {
         return JSON.parseObject(params);
     }
 
+    @Override
+    public String toString() {
+        return "LoginUserGetParamsDTO{" +
+            "userId=" + userId +
+            ", userName='" + userName + '\'' +
+            ", microServiceName='" + microServiceName + '\'' +
+            ", loginType='" + loginType + '\'' +
+            ", microAppIndex=" + microAppIndex +
+            ", params='" + params + '\'' +
+            '}';
+    }
 }

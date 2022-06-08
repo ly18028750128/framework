@@ -3,6 +3,7 @@ package org.cloud.aop;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -97,6 +98,8 @@ public class OperateLogAspect {
         // 方法的注解对象
         MethodSignature ms = (MethodSignature) pjd.getSignature();
         Method method = ms.getMethod();
+        doc.append("targetClass", pjd.getTarget().getClass().getName());
+        doc.append("method", method.getName());
         AuthLog oLog = method.getAnnotation(AuthLog.class);
         if (request != null) {
             // 请求资源地址
@@ -110,6 +113,12 @@ public class OperateLogAspect {
             doc.append("type", operateLogType.getLogType());
             doc.append("uri", uri);
             doc.append("reqIp", ip);
+        }
+
+        final HttpServletResponse response = HttpServletUtil.signle().getHttpServletResponse();
+
+        if (response != null) {
+            doc.append("httpStatus", response.getStatus());
         }
 
         // 设置操作人信息
@@ -135,6 +144,7 @@ public class OperateLogAspect {
             doc.append("params", targetMethodParams);
             doc.append("userId", userId);
             doc.append("userName", userName);
+
             setStatusAndMsg(res, doc);
             doc.append("spendTime", endTime - startTime);
             doc.append(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value(), date);

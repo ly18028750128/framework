@@ -6,7 +6,9 @@ import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.userinfo.LoginUserGetInterface;
@@ -46,6 +48,7 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
 
     @Override
     @Transactional
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
         String realUserName = loginUserGetParamsDTO.getUserName();

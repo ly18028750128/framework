@@ -6,10 +6,11 @@ import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.SignatureException;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.Arrays;
+import org.cloud.annotation.AuthLog;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
@@ -19,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.web3j.crypto.ECDSASignature;
-import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.crypto.Sign.SignatureData;
@@ -57,6 +56,7 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
 
 
     @Override
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
 
         // 先对password进行验证操作

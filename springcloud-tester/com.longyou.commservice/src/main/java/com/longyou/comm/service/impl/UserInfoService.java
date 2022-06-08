@@ -67,6 +67,7 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     @Transactional(readOnly = true)
+    @AuthLog(bizType = "getUserByNameForAuth", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
 

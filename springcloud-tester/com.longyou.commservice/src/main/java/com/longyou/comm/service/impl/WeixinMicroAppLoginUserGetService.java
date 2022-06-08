@@ -6,9 +6,13 @@ import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
+import java.util.HashMap;
+import java.util.Map;
 import okhttp3.Call;
 import okhttp3.ResponseBody;
+import org.cloud.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.MD5Encoder;
@@ -19,9 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "LOGIN-BY-WEIXIN-MICROAPP")
 public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface {
@@ -40,6 +41,7 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
 
     @Override
     @Transactional
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
 
         final MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
