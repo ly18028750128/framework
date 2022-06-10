@@ -10,6 +10,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.cloud.annotation.MfaAuth;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicItem;
 import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.utils.SystemDicUtil;
@@ -65,7 +66,9 @@ public class MfaAuthAspect {
      */
     private void checkGoogleValidCode() throws Exception {
         String googleSecret = GoogleAuthenticatorUtil.single().getCurrentUserVerifyKey();
-        GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret);
+        if (!GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret)) {
+            throw new BusinessException("system.error.google.valid", 401);
+        }
     }
 
 }

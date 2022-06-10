@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class CommonUtil {
+
     Logger logger = LoggerFactory.getLogger(CommonUtil.class);
     IGatewayFeignClient gatewayFeignClient;
     Environment env;
@@ -31,6 +32,7 @@ public final class CommonUtil {
     }
 
     private static class Holder {
+
         private Holder() {
         }
 
@@ -150,11 +152,7 @@ public final class CommonUtil {
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        if (ip.contains(",")) {
-            return ip.split(",")[0];
-        } else {
-            return ip;
-        }
+        return ip;
     }
 
 }
