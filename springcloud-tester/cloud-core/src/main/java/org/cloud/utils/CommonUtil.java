@@ -154,5 +154,4 @@ public final class CommonUtil {
         }
         return ip;
     }
-
 }
