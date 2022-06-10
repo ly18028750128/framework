@@ -23,34 +23,34 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 import javax.sql.DataSource;
 
 @SpringBootApplication(
-        scanBasePackages = {
-                "com.longyou.gateway",
-                "org.cloud.core.redis",
-                "org.cloud.controller",
-                "org.cloud.scheduler",
+    scanBasePackages = {
+        "com.longyou.gateway",
+        "org.cloud.core.redis",
+        "org.cloud.controller",
+        "org.cloud.scheduler",
 //                "org.cloud.aop",    // 网关没有权限控制，权限控制都在各应用中处理
-                "org.cloud.mongo",
-                "org.cloud.config.rest"
-        }
-        ,
-        exclude = {
-            RabbitAutoConfiguration.class
+        "org.cloud.mongo",
+        "org.cloud.config.rest"
+    }
+    ,
+    exclude = {
+        RabbitAutoConfiguration.class
 //                MongoAutoConfiguration.class,
 //                GatewayAutoConfiguration.class,
 //                MongoDataAutoConfiguration.class,
-        }
+    }
 )
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
-@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "org.cloud.feign.service"})
-
+@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
 @Slf4j
 public class GatewayApplication {
+
     public static void main(String[] args) {
-        try{
+        try {
             SpringApplication.run(GatewayApplication.class, args);
-        }catch (Exception e){
-            log.error("{}",e);
+        } catch (Exception e) {
+            log.error("{}", e);
         }
 
     }
@@ -83,7 +83,8 @@ public class GatewayApplication {
     @Bean
     @ConditionalOnBean(ReactiveDiscoveryClient.class)
     @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
-    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
+    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient,
+        DiscoveryLocatorProperties properties) {
         return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
     }
 }

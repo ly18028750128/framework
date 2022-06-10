@@ -1,12 +1,16 @@
 package com.longyou.gateway.filter;
 
 import com.longyou.gateway.config.vo.CorsConfigVO;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.CommonUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -14,16 +18,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 public class CorsWebFilter implements WebFilter {
@@ -36,9 +35,7 @@ public class CorsWebFilter implements WebFilter {
 
     public final static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
 
-    @Autowired
-    IGatewayFeignClient gatewayFeignClient;
-
+    @NotNull
     @Override
     public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {
         serverWebExchangeThreadLocal.set(swe);
@@ -56,7 +53,7 @@ public class CorsWebFilter implements WebFilter {
             return wfc.filter(swe.mutate().request(newRequest).build());
         }
         // 如果自己转发给自己那么直接返回
-        if (CommonUtil.single().pathMatch(uri, CollectionUtils.arrayToList(new String[]{"/" + applicationName.toUpperCase() + "/**"}))) {
+        if (CommonUtil.single().pathMatch(uri, Collections.singletonList("/" + applicationName.toUpperCase() + "/**"))) {
             return wfc.filter(swe);
         }
 
@@ -83,11 +80,11 @@ public class CorsWebFilter implements WebFilter {
         return swe.getSession().doOnNext(webSession -> {
             try {
                 SecurityContextImpl securityContext = webSession.getAttribute("SPRING_SECURITY_CONTEXT");
-                if (user != null && securityContext != null){
+                if (securityContext != null) {
                     user.set((LoginUserDetails) securityContext.getAuthentication().getPrincipal());
                 }
             } catch (Exception e) {
-                log.error("{}", e);
+                log.error(e.getMessage(), e);
             }
         }).then(Mono.defer(() -> {
             requestContext.setUser(user.get());

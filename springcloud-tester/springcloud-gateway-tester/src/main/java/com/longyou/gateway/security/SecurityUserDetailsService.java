@@ -14,6 +14,7 @@ import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -150,6 +151,7 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
         return true;
     }
 
+    @Lazy
     @Autowired
     IGetUserInfoFeignClient getUserInfoFeignClient;
 
@@ -161,18 +163,18 @@ public class SecurityUserDetailsService implements ReactiveUserDetailsService {
      */
     private LoginUserDetails getUserByName(LoginUserGetParamsDTO loginUserGetParamsDTO) {
         LoginUserDetails loginUserDetails = null;
-        if (CorsWebFilter.serverWebExchangeThreadLocal.get() == null
-            || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest() == null
-            || CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders() == null) {
+        if (CorsWebFilter.serverWebExchangeThreadLocal.get() == null) {
             return null;
+        } else {
+            CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest();
+            CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders();
         }
         final String token = CorsWebFilter.serverWebExchangeThreadLocal.get().getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         // 如果带了token那么从缓存中获取数据
         if (token != null && !"0".equals(token) && token.length() > 15) {
             return redisUtil.get(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + MD5Encoder.encode(token));
-        } else if (loginUserDetails == null) {
+        } else {
             return getUserInfoFeignClient.getUserInfo(loginUserGetParamsDTO);
         }
-        return null;
     }
 }

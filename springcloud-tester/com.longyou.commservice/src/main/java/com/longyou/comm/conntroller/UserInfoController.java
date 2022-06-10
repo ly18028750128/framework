@@ -6,6 +6,8 @@ import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.service.IUserInfoService;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import org.cloud.constant.CoreConstant.UserCacheKey;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.model.TFrameRole;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.LoginUserGetParamsDTO;
@@ -66,7 +69,9 @@ public class UserInfoController {
         } else {
             loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
             if (loginUserDetails != null && (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty())) {
-                loginUserDetails.setRoles(CollectionUtils.arrayToList(new String[]{"User"}));
+                TFrameRole tFrameRole = new TFrameRole();
+                tFrameRole.setRoleName("User");
+                loginUserDetails.setRoles(Collections.singletonList(tFrameRole));
             }
         }
         return loginUserDetails;

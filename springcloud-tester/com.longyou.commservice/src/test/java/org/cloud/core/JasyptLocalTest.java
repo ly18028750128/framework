@@ -42,7 +42,7 @@ public class JasyptLocalTest {
     public void encrypAesAndEnctTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("withdraw.private-key","");
+//        passwordMap.put("withdraw.private-key","");
         passwordMap.put("harvest-private-key","");
         passwordMap.put("block.signPrivateKey","");
         for (String key : passwordMap.keySet()) {
@@ -58,6 +58,9 @@ public class JasyptLocalTest {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
         passwordMap.put("aaa","");
+        passwordMap.put("bbb","");
+        passwordMap.put("mongo","");
+        passwordMap.put("salt","");
         for (String key : passwordMap.keySet()) {
             String encryptStr = decrypt(passwordMap.get(key));
             log.info("{}\t{}", key, encryptStr);
@@ -71,9 +74,9 @@ public class JasyptLocalTest {
     public void decryptTestAesAndEnc() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("withdraw.private-key","");
         passwordMap.put("harvest-private-key","");
-        passwordMap.put("222222","");
+        passwordMap.put("block.signPrivateKey","");
+
         for (String key : passwordMap.keySet()) {
             String encryptStr = decrypt(passwordMap.get(key));
             encryptStr = AES128Util.single().decrypt(encryptStr,aesKey,aesIV);

@@ -37,4 +37,4 @@ system: #这里仅是示例，请在配置中心中配置
     excludedAuthPages: /userinfo/getUserByName
   api:
     inner:
-      url-patterns: "/inner/*,/userinfo/getUserByName" #仅内部调用的api接口
+      url-patterns: "/inner/*" #仅内部调用的api接口
