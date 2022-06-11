@@ -6,10 +6,13 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.3.7.RELEASE</version>
+    <relativePath/>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
+  <groupId>com.longyou</groupId>
   <artifactId>springcloud-gateway-tester</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
   <dependencyManagement>
     <dependencies>
