@@ -128,7 +128,7 @@
         )
     </foreach>
   </insert>
-  <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.unknow.first.dapp.admin.account.mapper.Article" useGeneratedKeys="true">
+  <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.article.manager.mapper.Article" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into t_article
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -194,7 +194,7 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
     </trim>
   </insert>
-  <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.unknow.first.dapp.admin.account.mapper.Article" useGeneratedKeys="true">
+  <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.article.manager.mapper.Article" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into t_article
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -351,7 +351,7 @@
     </trim>
   </insert>
 
-  <select id="selectArticleListByParentCode" resultType="com.unknow.first.dapp.admin.account.vo.ArticleResultVO">
+  <select id="selectArticleListByParentCode" resultType="com.article.manager.vo.ArticleResultVO">
     select * from t_article
     where parent_id in
     (
