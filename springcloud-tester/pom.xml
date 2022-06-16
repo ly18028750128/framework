@@ -241,6 +241,7 @@
     <module>com.longyou.commservice</module>
     <module>paycenter</module>
     <module>com.longyou.aihelper</module>
+    <module>article-manager</module>
   </modules>
   <build>
     <plugins>

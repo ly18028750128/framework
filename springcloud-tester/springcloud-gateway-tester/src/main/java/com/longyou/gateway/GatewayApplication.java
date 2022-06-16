@@ -28,16 +28,12 @@ import javax.sql.DataSource;
         "org.cloud.core.redis",
         "org.cloud.controller",
         "org.cloud.scheduler",
-//                "org.cloud.aop",    // 网关没有权限控制，权限控制都在各应用中处理
         "org.cloud.mongo",
         "org.cloud.config.rest"
     }
     ,
     exclude = {
         RabbitAutoConfiguration.class
-//                MongoAutoConfiguration.class,
-//                GatewayAutoConfiguration.class,
-//                MongoDataAutoConfiguration.class,
     }
 )
 @EnableDiscoveryClient
@@ -50,7 +46,7 @@ public class GatewayApplication {
         try {
             SpringApplication.run(GatewayApplication.class, args);
         } catch (Exception e) {
-            log.error("{}", e);
+            log.error(e.getMessage(), e);
         }
 
     }

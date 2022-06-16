@@ -34,8 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user/mfa")
 @SystemResource(path = "/common/user/mfa")
 public class UserMfaController {
+
     @Autowired
     private FrameUserRefService frameUserRefService;
+
     /**
      * 校验谷歌验证码是否已经绑定
      *
