@@ -1,8 +1,8 @@
-package com.article.manager.service;
+package com.unknow.first.article.manager.service;
 
-import com.article.manager.mapper.Article;
-import com.article.manager.vo.ArticleParamVO;
-import com.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.vo.ArticleParamVO;
+import com.unknow.first.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.mapper.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.juna.ruiqi.api.CommonPage;
 import com.juna.ruiqi.api.CommonParam;

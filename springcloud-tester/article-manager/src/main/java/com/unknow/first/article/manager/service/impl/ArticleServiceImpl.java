@@ -1,12 +1,12 @@
-package com.article.manager.service.impl;
+package com.unknow.first.article.manager.service.impl;
 
 
-import com.article.manager.constants.ArticleConstants;
-import com.article.manager.mapper.Article;
-import com.article.manager.mapper.ArticleMapper;
-import com.article.manager.service.ArticleService;
-import com.article.manager.vo.ArticleParamVO;
-import com.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.constants.ArticleConstants;
+import com.unknow.first.article.manager.mapper.Article;
+import com.unknow.first.article.manager.mapper.ArticleMapper;
+import com.unknow.first.article.manager.service.ArticleService;
+import com.unknow.first.article.manager.vo.ArticleParamVO;
+import com.unknow.first.article.manager.vo.ArticleResultVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.juna.ruiqi.api.CommonPage;
@@ -41,10 +41,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if (vo.getNodeType() == ArticleConstants.ArticleNodeTypeEnum.CLASS.getType()) {
             if (StringUtils.isEmpty(vo.getClassCode())) {
                 throw new BusinessException("分类编码不能为空");
-            }
-            if (vo.getLanguageType() == null || (vo.getLanguageType() != ArticleConstants.LanguageTypeEnum.EN.getType()
-                    && vo.getLanguageType() != ArticleConstants.LanguageTypeEnum.ZH.getType())) {
-                throw new BusinessException("语言类型不合法");
             }
             article.setLanguageType(vo.getLanguageType());
             article.setClassCode(vo.getClassCode());

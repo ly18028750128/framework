@@ -1,9 +1,9 @@
-package com.article.manager.controller.admin;
+package com.unknow.first.article.manager.controller.admin;
 
 
-import com.article.manager.mapper.Article;
-import com.article.manager.service.ArticleService;
-import com.article.manager.vo.ArticleParamVO;
+import com.unknow.first.article.manager.service.ArticleService;
+import com.unknow.first.article.manager.vo.ArticleParamVO;
+import com.unknow.first.article.manager.mapper.Article;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.juna.ruiqi.api.CommonPage;

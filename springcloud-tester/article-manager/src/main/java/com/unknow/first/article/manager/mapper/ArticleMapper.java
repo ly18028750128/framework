@@ -1,7 +1,7 @@
-package com.article.manager.mapper;
+package com.unknow.first.article.manager.mapper;
 
 
-import com.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.vo.ArticleResultVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;

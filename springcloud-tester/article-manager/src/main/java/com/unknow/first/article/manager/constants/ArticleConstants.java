@@ -1,4 +1,4 @@
-package com.article.manager.constants;
+package com.unknow.first.article.manager.constants;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.article.manager.vo;
+package com.unknow.first.article.manager.vo;
 
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.article.manager.vo;
+package com.unknow.first.article.manager.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;

@@ -1,4 +1,4 @@
-package com.article.manager.mapper;
+package com.unknow.first.article.manager.mapper;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

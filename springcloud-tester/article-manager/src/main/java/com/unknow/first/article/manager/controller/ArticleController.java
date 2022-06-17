@@ -1,7 +1,7 @@
-package com.article.manager.controller;
+package com.unknow.first.article.manager.controller;
 
-import com.article.manager.service.ArticleService;
-import com.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.vo.ArticleResultVO;
+import com.unknow.first.article.manager.service.ArticleService;
 import com.juna.ruiqi.api.CommonPage;
 import com.juna.ruiqi.api.CommonParam;
 import com.juna.ruiqi.api.CommonResult;
