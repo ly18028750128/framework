@@ -242,6 +242,7 @@
     <module>paycenter</module>
     <module>com.longyou.aihelper</module>
     <module>article-manager</module>
+    <module>photo-manager</module>
   </modules>
   <build>
     <plugins>

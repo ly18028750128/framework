@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unkow.first.photo.manager.mapper.TPhotoMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="com.unkow.first.photo.manager.mapper.TPhoto">
+    <id column="id" property="id"/>
+    <result column="photo_type" property="photoType"/>
+    <result column="sort" property="sort"/>
+    <result column="image_url" property="imageUrl"/>
+    <result column="jump_url" property="jumpUrl"/>
+    <result column="status" property="status"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_time" property="updateTime"/>
+    <result column="photo_desc" property="photoDesc"/>
+    <result column="language_type" property="languageType"/>
+  </resultMap>
+
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+    id, photo_type, sort, image_url, jump_url, status, create_time, update_time, photo_desc,language_type
+  </sql>
+
+</mapper>
