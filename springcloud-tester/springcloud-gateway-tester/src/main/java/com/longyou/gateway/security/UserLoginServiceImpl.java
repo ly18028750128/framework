@@ -87,10 +87,16 @@ public class UserLoginServiceImpl implements UserLoginService {
 
                 if (userDetails != null && CollectionUtil.single().isNotEmpty(userDetails.getUsername())) {
                     User.withUserDetails(userDetails).build();
-                    saveLoginLog(username, userDetails, targetMethodParams, swe, true);
+
+                    new Thread(() -> {
+                        saveLoginLog(username, userDetails, targetMethodParams, swe, true);
+                    }).start();
+
                     return Mono.just(userDetails);
                 } else {
-                    saveLoginLog(username, userDetails, targetMethodParams, swe, false);
+                    new Thread(() -> {
+                        saveLoginLog(username, userDetails, targetMethodParams, swe, false);
+                    }).start();
                     return Mono.error(new UsernameNotFoundException("User Not Found"));
                 }
             }
