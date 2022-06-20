@@ -12,7 +12,7 @@ public class RouteConfiguration {
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public WebFilter croseFilter() {
+    public WebFilter corsFilter() {
         return new CorsWebFilter();
     }
 }

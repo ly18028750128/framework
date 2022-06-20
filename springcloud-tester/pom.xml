@@ -158,11 +158,11 @@
         <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
         <version>1.4.2</version>
       </dependency>
-<!--      <dependency>-->
-<!--        <groupId>de.codecentric</groupId>-->
-<!--        <artifactId>spring-boot-admin-starter-client</artifactId>-->
-<!--        <version>2.6.3</version>-->
-<!--      </dependency>-->
+      <!--      <dependency>-->
+      <!--        <groupId>de.codecentric</groupId>-->
+      <!--        <artifactId>spring-boot-admin-starter-client</artifactId>-->
+      <!--        <version>2.6.3</version>-->
+      <!--      </dependency>-->
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
@@ -241,14 +241,16 @@
     <module>com.longyou.commservice</module>
     <module>paycenter</module>
     <module>com.longyou.aihelper</module>
-    <module>article-manager</module>
-    <module>photo-manager</module>
+    <module>common-module/article-manager</module>
+    <module>common-module/photo-manager</module>
+    <module>common-module/mail-manager</module>
   </modules>
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>

@@ -22,20 +22,8 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 
 import javax.sql.DataSource;
 
-@SpringBootApplication(
-    scanBasePackages = {
-        "com.longyou.gateway",
-        "org.cloud.core.redis",
-        "org.cloud.controller",
-        "org.cloud.scheduler",
-        "org.cloud.mongo",
-        "org.cloud.config.rest"
-    }
-    ,
-    exclude = {
-        RabbitAutoConfiguration.class
-    }
-)
+@SpringBootApplication(scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller",
+    "org.cloud.scheduler", "org.cloud.mongo", "org.cloud.config.rest"}, exclude = {RabbitAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
@@ -48,7 +36,6 @@ public class GatewayApplication {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-
     }
 
     @Bean

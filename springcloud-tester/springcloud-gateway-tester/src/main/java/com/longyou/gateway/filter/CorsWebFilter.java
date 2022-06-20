@@ -33,13 +33,11 @@ public class CorsWebFilter implements WebFilter {
     @Value("${spring.application.name}")
     String applicationName;
 
-    public final static ThreadLocal<ServerWebExchange> serverWebExchangeThreadLocal = new ThreadLocal<>();
 
     @NotNull
     @Override
-    public Mono<Void> filter(ServerWebExchange swe, WebFilterChain wfc) {
-        serverWebExchangeThreadLocal.set(swe);
-
+    public Mono<Void> filter(@NotNull ServerWebExchange swe, @NotNull WebFilterChain wfc) {
+//        ServerWebExchangeThreadLocal.value.set(swe);
         ServerHttpRequest request = swe.getRequest();
         String uri = request.getURI().getPath();
         if (request.getMethod() == HttpMethod.OPTIONS) {
@@ -89,7 +87,7 @@ public class CorsWebFilter implements WebFilter {
         }).then(Mono.defer(() -> {
             requestContext.setUser(user.get());
             RequestContextManager.single().setRequestContext(requestContext);
-            serverWebExchangeThreadLocal.set(swe);
+//            ServerWebExchangeThreadLocal.value.set(swe);
             return wfc.filter(swe);
         }));
     }
