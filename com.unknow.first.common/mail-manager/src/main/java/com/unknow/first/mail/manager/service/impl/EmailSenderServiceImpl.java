@@ -6,6 +6,9 @@ import java.io.File;
 import java.util.Date;
 import javax.mail.internet.MimeMessage;
 import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.CommonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -53,9 +56,8 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
         this.sendEmail(mailVO);
     }
 
-
     private void setMessageBaseInfo(MailMessage message, MailVO mailVO) throws Exception {
-        message.setFrom(mailVO.getFrom());
+        message.setFrom(CommonUtil.single().getEnv("spring.mail.username", ""));
         message.setTo(mailVO.getTo());
         message.setCc(mailVO.getCc());
         message.setBcc(mailVO.getBcc());
