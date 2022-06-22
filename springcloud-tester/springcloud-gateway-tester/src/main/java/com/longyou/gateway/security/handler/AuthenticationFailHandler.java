@@ -75,6 +75,21 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
         if (ipLoginErrorCount > ipLoginErrorLimit) {
             redisUtil.set(ipLockerKey, true, ipLoginErrorLimitTime);
             redisUtil.set(ipAddressLockerCountKey, 0);
+
+            new Thread(() -> {
+                MailVO mailVO = new MailVO();
+                mailVO.setTo(new String[]{userLoginErrorEmailTo});
+                mailVO.setText(String.format("ip %s is locked,on %tD %tT", ipAddress, new Date(), new Date()));
+                mailVO.setSubject(String.format("ip %s is locked!", ipAddress));
+                try {
+                    IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
+                    assert emailSenderService != null;
+                    emailSenderService.sendEmail(mailVO);
+                } catch (Exception ex) {
+                    log.error(e.getMessage(), ex);
+                }
+            }).start();
+
         } else if (!ipIsLocked) {
             redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount);
         }
