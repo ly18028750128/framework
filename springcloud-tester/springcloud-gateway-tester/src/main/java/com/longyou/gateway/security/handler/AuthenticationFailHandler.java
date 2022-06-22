@@ -117,7 +117,8 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             new Thread(() -> {
                 MailVO mailVO = new MailVO();
                 mailVO.setTo(new String[]{userLoginErrorEmailTo});
-                mailVO.setText(String.format("User %s is locked,on %tD %tT", username, new Date(), new Date()));
+                mailVO.setText(
+                    String.format("User %s is locked on %tD %tT,Last login ip is %s", username, new Date(), new Date(), ipAddress));
                 mailVO.setSubject(String.format("User %s is locked!", username));
                 try {
                     IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
