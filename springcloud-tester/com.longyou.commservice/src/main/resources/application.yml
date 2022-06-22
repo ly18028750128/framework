@@ -38,3 +38,4 @@ system: #这里仅是示例，请在配置中心中配置
   api:
     inner:
       url-patterns: "/inner/*" #仅内部调用的api接口
+

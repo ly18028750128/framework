@@ -1,6 +1,7 @@
 package com.longyou.gateway.security.handler;
 
 
+import static com.longyou.gateway.security.response.MessageCode.COMMON_FAILURE;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants;
+import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
@@ -65,27 +67,32 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         ObjectMapper mapper = new ObjectMapper();
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
             // 生成token加盐值和key
             final String userBasic64Random = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(), "天下无双");
             final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
-            long timeSaltChangeInterval = Long
-                .parseLong(CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
+            long timeSaltChangeInterval = Long.parseLong(
+                CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
             // 获取解密分隔符的处理
             final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
 
             // 分隔userName, 备注用户名和密码不能包含 ：
-            final StringBuffer authValue = new StringBuffer(
-                userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random));
             // 将token加盐的key增加到尾部
-            authValue.append(basic64SplitStr + userBasic64RandomKey);
-            String token = Base64.getEncoder().encodeToString(authValue.toString().getBytes());
+            String token = Base64.getEncoder().encodeToString(
+                (userDetails.getUsername() + ":" + MD5Encoder.encode(userDetails.getPassword(), userBasic64Random) + basic64SplitStr
+                    + userBasic64RandomKey).getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
+                // 登录成功后重置
+                final String userNameKey = loginUserDetails.getUserType() + ":" + loginUserDetails.getUsername();
+                final String userLoginCountKey = LoginError.USER_ERROR_COUNT_KEY.value + userNameKey;
+                redisUtil.set(userLoginCountKey, 0);
+
                 // 如果是后台管理用户，那么超时时间为60分钟
                 if (LoginConstants.REGIST_SOURCE_BACKGROUND.equals(loginUserDetails.getUserRegistSource())) {
-                    timeSaltChangeInterval = Long.parseLong(CommonUtil.single().getEnv("system.auth_basic_background_expire_time",
-                        Long.toString(60 * 60L)));
+                    timeSaltChangeInterval = Long.parseLong(
+                        CommonUtil.single().getEnv("system.auth_basic_background_expire_time", Long.toString(60 * 60L)));
                 }
                 // 缓存当前登录用户的登录信息
                 final String successKey = MD5Encoder.encode("basic " + token);
@@ -94,19 +101,17 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 // 缓存已经登录的信息
                 final Long expireTime = System.currentTimeMillis() + timeSaltChangeInterval * 1000L;
                 redisUtil.hashSet(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), successKey, expireTime, -1L);
-
                 Map<String, Long> userLoginTokenTokeMap = redisUtil.getRedisTemplate().opsForHash()
                     .entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
 
                 // 每个用户最大的登录客户端，默认为5个
-                final int maxSingleUserLoginCount = Integer
-                    .parseInt(CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
+                final int maxSingleUserLoginCount = Integer.parseInt(
+                    CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
 
                 if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
 
                     LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
-                    userLoginTokenTokeMap.entrySet().stream()
-                        .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    userLoginTokenTokeMap.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                         .forEachOrdered(s -> sortedMap.put(s.getKey(), s.getValue()));
 
                     LinkedHashMap<String, Long> willRemoveMaps = CollectionUtil.single()
@@ -116,9 +121,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                         redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), entry.getKey());
                         redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + entry.getKey());
                     }
-
                 }
-
                 loginUserDetails.setPassword("***********");
                 loginUserDetails.setToken(token);
             }
@@ -130,7 +133,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             JsonObject result = new JsonObject();
-            result.addProperty("status", MessageCode.COMMON_FAILURE.getCode());
+            result.addProperty("status", COMMON_FAILURE.code);
             result.addProperty("message", "授权异常");
             dataBytes = result.toString().getBytes();
         }

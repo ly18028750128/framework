@@ -9,6 +9,8 @@ gateway:
     locator:
       enabled: true
 system:
+  email:
+    enable: true
   auth_basic_expire_time: 18000000
   route:
     cors:

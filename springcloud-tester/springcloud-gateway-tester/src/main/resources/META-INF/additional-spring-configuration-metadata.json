@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "system.email.enable",
+      "type": "java.lang.String",
+      "description": "Description for system.email.enable."
+    },
+    {
+      "name": "system.auth_basic_expire_time",
+      "type": "java.lang.String",
+      "description": "Description for system.auth_basic_expire_time."
+    },
+    {
+      "name": "system.route.cors.allow-expose",
+      "type": "java.lang.String",
+      "description": "Description for system.route.cors.allow-expose."
+    }
+  ] }

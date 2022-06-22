@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
-@ComponentScan({"org.cloud.*", "com.longyou.comm.*"})
+@ComponentScan({"org.cloud.*", "com.longyou.comm.*","com.unknow.first.mail.manager.*"})
 @MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic"})
 @ServletComponentScan({"org.cloud.filter"})
 @EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service"})

@@ -19,7 +19,7 @@ public class MailVO {
     private String[] cc; // 抄送
     private String[] bcc; // 密送
     private Date sendDate;
-    private String templateString; //thymeleaf模板
+    private String templateText; //thymeleaf模板
     private Map<String, Object> emailParams;
     private List<File> files;  // 附件
     private String[] resId; // 资源ID

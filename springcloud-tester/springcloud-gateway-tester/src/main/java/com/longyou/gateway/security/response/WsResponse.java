@@ -1,5 +1,7 @@
 package com.longyou.gateway.security.response;
 
+import static com.longyou.gateway.security.response.MessageCode.COMMON_SUCCESS;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -21,24 +23,8 @@ public class WsResponse<T> {
         this.result = result;
     }
 
-    public MessageCode getStatus() {
-        return status;
-    }
-
-    public void setStatus(MessageCode status) {
-        this.status = status;
-    }
-
     public List<String> getMessages() {
         return messages;
-    }
-
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
-    }
-
-    public T getResult() {
-        return result;
     }
 
     public void setResult(T result) {
@@ -50,25 +36,25 @@ public class WsResponse<T> {
         return "error code:" + status + " result:" + result;
     }
 
-    public static WsResponse failure(String msg) {
-        WsResponse resp = new WsResponse();
+    public static WsResponse<?> failure(String msg) {
+        WsResponse<?> resp = new WsResponse<>();
         resp.status = MessageCode.COMMON_FAILURE;
         resp.getMessages().add(msg);
         return resp;
     }
 
-    public static WsResponse failure(MessageCode messageCode) {
-        WsResponse resp = new WsResponse();
+    public static WsResponse<?> failure(MessageCode messageCode) {
+        WsResponse<?> resp = new WsResponse<>();
         resp.status = messageCode;
-        resp.getMessages().add(messageCode.getMsg());
+        resp.getMessages().add(messageCode.message);
         return resp;
     }
 
-    public static WsResponse failure(MessageCode messageCode, String message) {
-        WsResponse resp = new WsResponse();
+    public static WsResponse<?> failure(MessageCode messageCode, String message) {
+        WsResponse<?> resp = new WsResponse<>();
         resp.status = messageCode;
-        if (StringUtils.isNotBlank(messageCode.getMsg())) {
-            resp.getMessages().add(messageCode.getMsg());
+        if (StringUtils.isNotBlank(messageCode.message)) {
+            resp.getMessages().add(messageCode.message);
         }
         if (StringUtils.isNotBlank(message)) {
             resp.getMessages().add(message);
@@ -76,19 +62,18 @@ public class WsResponse<T> {
         return resp;
     }
 
-    public static WsResponse success() {
-        WsResponse resp = new WsResponse();
-        resp.status = MessageCode.COMMON_SUCCESS;
-        resp.getMessages().add(MessageCode.COMMON_SUCCESS.getMsg());
+    public static WsResponse<?> success() {
+        WsResponse<?> resp = new WsResponse<>();
+        resp.status = COMMON_SUCCESS;
+        resp.getMessages().add(COMMON_SUCCESS.message);
         return resp;
     }
 
     public static <K> WsResponse<K> success(K t) {
         WsResponse<K> resp = new WsResponse<>();
-        resp.status = MessageCode.COMMON_SUCCESS;
-        resp.getMessages().add(MessageCode.COMMON_SUCCESS.getMsg());
+        resp.status = COMMON_SUCCESS;
+        resp.getMessages().add(COMMON_SUCCESS.message);
         resp.result = t;
-
         return resp;
     }
 
@@ -99,12 +84,6 @@ public class WsResponse<T> {
      * @return
      */
     public static boolean isWsResponseJson(String json) {
-        if (json != null && json.indexOf("\"status\":") != -1
-                && json.indexOf("\"messages\":") != -1
-                && json.indexOf("\"result\":") != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return json != null && json.contains("\"status\":") && json.contains("\"messages\":") && json.contains("\"result\":");
     }
 }

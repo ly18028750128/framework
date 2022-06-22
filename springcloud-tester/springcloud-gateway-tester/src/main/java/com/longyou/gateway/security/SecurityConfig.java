@@ -1,11 +1,12 @@
 package com.longyou.gateway.security;
 
 
-import com.longyou.gateway.security.handler.AuthenticationFaillHandler;
+import com.longyou.gateway.security.handler.AuthenticationFailHandler;
 import com.longyou.gateway.security.handler.AuthenticationSuccessHandler;
 import com.longyou.gateway.security.handler.CustomHttpBasicServerAuthenticationEntryPoint;
 import com.longyou.gateway.security.handler.CustomServerLogoutSuccessHandler;
 import com.longyou.gateway.util.MD5PasswordEncoder;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -16,8 +17,6 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
-import java.util.List;
-
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
@@ -25,7 +24,7 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
-    private AuthenticationFaillHandler authenticationFaillHandler;
+    private AuthenticationFailHandler authenticationFaillHandler;
     @Autowired
     private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
     @Autowired
@@ -46,21 +45,14 @@ public class SecurityConfig {
 //        services.forEach((value)->{
 //            excludedAuthPages.add("/"+value.toUpperCase()+"/**");
 //        });
-        http
-                .authorizeExchange()
-                .pathMatchers("/**").permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验
-                .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
-                .anyExchange().authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .formLogin().loginPage("/auth/login")
-                .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
-                .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
-                .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
-                .and().csrf().disable()//必须支持跨域
-                .logout().logoutSuccessHandler(customServerLogoutSuccessHandler).logoutUrl("/auth/logout")
-        ;
+        http.authorizeExchange().pathMatchers("/**").permitAll()  //这里只做登录和生成token,最终的强制登录校验由core里的SecurityFilter进行校验
+            .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
+            .anyExchange().authenticated().and().httpBasic().and().formLogin().loginPage("/auth/login")
+            .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
+            .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
+            .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
+            .and().csrf().disable()//必须支持跨域
+            .logout().logoutSuccessHandler(customServerLogoutSuccessHandler).logoutUrl("/auth/logout");
 
         return http.build();
     }

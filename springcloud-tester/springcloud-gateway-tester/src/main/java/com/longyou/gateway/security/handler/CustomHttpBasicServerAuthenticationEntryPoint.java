@@ -1,8 +1,9 @@
 package com.longyou.gateway.security.handler;
 
 
+import static com.longyou.gateway.security.response.MessageCode.COMMON_AUTHORIZED_FAILURE;
+
 import com.google.gson.JsonObject;
-import com.longyou.gateway.security.response.MessageCode;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,10 @@ import reactor.core.publisher.Mono;
 
 @Component
 @Transactional(propagation = Propagation.NEVER)
-public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServerAuthenticationEntryPoint /* implements ServerAuthenticationEntryPoint */ {
+public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServerAuthenticationEntryPoint {
+
     private static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     private static final String DEFAULT_REALM = "Realm";
-    private static String WWW_AUTHENTICATE_FORMAT = "Basic realm=\"%s\"";
     private String headerValue = createHeaderValue("Realm");
 
     public CustomHttpBasicServerAuthenticationEntryPoint() {
@@ -34,7 +35,8 @@ public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServ
 
     private static String createHeaderValue(String realm) {
         Assert.notNull(realm, "realm cannot be null");
-        return String.format(WWW_AUTHENTICATE_FORMAT, new Object[]{realm});
+        String WWW_AUTHENTICATE_FORMAT = "Basic realm=\"%s\"";
+        return String.format(WWW_AUTHENTICATE_FORMAT, realm);
     }
 
     @Override
@@ -44,8 +46,8 @@ public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServ
         response.getHeaders().add("Content-Type", "application/json; charset=UTF-8");
         response.getHeaders().set(HttpHeaders.AUTHORIZATION, this.headerValue);
         JsonObject result = new JsonObject();
-        result.addProperty("status", MessageCode.COMMON_AUTHORIZED_FAILURE.getCode());
-        result.addProperty("message", MessageCode.COMMON_AUTHORIZED_FAILURE.getMsg());
+        result.addProperty("status", COMMON_AUTHORIZED_FAILURE.code);
+        result.addProperty("message", COMMON_AUTHORIZED_FAILURE.code);
         byte[] dataBytes = result.toString().getBytes();
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));

@@ -241,9 +241,6 @@
     <module>com.longyou.commservice</module>
     <module>paycenter</module>
     <module>com.longyou.aihelper</module>
-    <module>common-module/article-manager</module>
-    <module>common-module/photo-manager</module>
-    <module>common-module/mail-manager</module>
   </modules>
   <build>
     <plugins>

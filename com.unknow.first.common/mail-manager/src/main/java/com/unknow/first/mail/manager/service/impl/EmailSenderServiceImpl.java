@@ -4,9 +4,6 @@ import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.vo.MailVO;
 import java.io.File;
 import java.util.Date;
-import javax.mail.Message;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.cloud.utils.CollectionUtil;
 import org.springframework.mail.MailMessage;
@@ -29,7 +26,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
 
     @Override
     public void sendEmail(MailVO mailVO) throws Exception {
-        if (CollectionUtil.single().isEmpty(mailVO.getTemplateString())) {
+        if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             this.setMessageBaseInfo(simpleMailMessage, mailVO);
             simpleMailMessage.setText(mailVO.getText());
@@ -38,7 +35,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             Context ctx = new Context();
             ctx.setVariables(mailVO.getEmailParams());
-            String emailText = templateEngine.process(mailVO.getTemplateString(), ctx);
+            String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
             mimeMessage.setText(emailText);
             if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);

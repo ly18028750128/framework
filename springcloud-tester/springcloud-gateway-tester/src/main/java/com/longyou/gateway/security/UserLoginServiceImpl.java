@@ -1,14 +1,16 @@
 package com.longyou.gateway.security;
 
-import com.longyou.gateway.contants.LoginFormField;
+import com.longyou.gateway.constants.GatewayConstants.LoginException;
+import com.longyou.gateway.constants.LoginFormField;
 import com.longyou.gateway.exception.ValidateCodeAuthFailException;
 import com.longyou.gateway.service.feign.IGetUserInfoFeignClient;
+import com.longyou.gateway.util.IPUtils;
 import com.mongodb.BasicDBObject;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Objects;
-import org.cloud.annotation.AuthLog;
+import java.util.HashMap;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
@@ -20,13 +22,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
@@ -44,62 +45,70 @@ public class UserLoginServiceImpl implements UserLoginService {
 
     @Override
     public Mono<UserDetails> userLogin(String username, LoginUserGetParamsDTO loginUserGetParamsDTO, String microAppIndex,
-        MultiValueMap<String, String> formData, ServerWebExchange swe) {
+        ServerWebExchange swe) {
+
+        final MultiValueMap<String, String> formData = CollectionUtils.toMultiValueMap(new HashMap<>());
+        String ipAddressLockerCountKey = LoginError.IP_LOCK_KEY.value + IPUtils.getIpAddress(swe.getRequest());
+        Boolean ipIsLocker = redisUtil.get(ipAddressLockerCountKey);
+        if (ipIsLocker != null && ipIsLocker) {
+            return Mono.error(new UsernameNotFoundException(LoginException.ERROR_35.i18nValue));
+        }
         return swe.getFormData().doOnNext(formData::putAll).then(Mono.defer(() -> {
-            if (CollectionUtil.single().isEmpty(formData.getFirst("microServiceName"))) {
-                throw new AuthenticationServiceException("microServiceName不能为空！");
-            }
-            if (CollectionUtil.single().isEmpty(formData.getFirst(LoginFormField.PASSWORD.field()))) {
-                throw new AuthenticationServiceException(LoginFormField.PASSWORD.field() + "不能为空！");
-            }
+            final String loginMicroServiceName = formData.getFirst("microServiceName");
+            final String loginType = formData.getFirst("loginType");
+            final String validateCode = formData.getFirst(LoginFormField.VALIDATE_CODE.field);
+            final String userNameKey = (loginType == null ? "admin" : loginType) + ":" + username;
 
-            loginUserGetParamsDTO.setMicroServiceName(formData.getFirst("microServiceName"));
-            loginUserGetParamsDTO.setPassword(formData.getFirst(LoginFormField.PASSWORD.field()));
+            if (CollectionUtil.single().isEmpty(loginMicroServiceName)) {
+                throw new AuthenticationServiceException(LoginException.ERROR_10.i18nValue);
+            }
+            if (CollectionUtil.single().isEmpty(formData.getFirst(LoginFormField.PASSWORD.field))) {
+                throw new AuthenticationServiceException(LoginException.ERROR_20.i18nValue);
+            }
+            final String userIsLockedKey = LoginError.USER_LOCK_KEY.value + userNameKey;
+            Boolean userIsLocked = redisUtil.get(userIsLockedKey);
+            if (userIsLocked != null && userIsLocked) {
+                return Mono.error(new UsernameNotFoundException(LoginException.ERROR_30.i18nValue));
+            }
+            loginUserGetParamsDTO.setMicroServiceName(loginMicroServiceName);
+            loginUserGetParamsDTO.setPassword(formData.getFirst(LoginFormField.PASSWORD.field));
 
-            final String targetMethodParams = Arrays.toString(
-                new Object[]{username, formData.getFirst("microServiceName"), formData.getFirst("loginType"),
-                    formData.getFirst(LoginFormField.VALIDATE_CODE.field()), microAppIndex});
+            if (loginType != null) {
+                loginUserGetParamsDTO.setLoginType(loginType);
+            } else if (isValidateCode && (!checkValidateCode(swe, formData))) { // 未定义登录方式，默认为后台页面登录,那么要校验验证码
+                return Mono.error(new ValidateCodeAuthFailException(LoginException.ERROR_40.i18nValue));
+            }
 
             // 微信小程序登录实现
             if (microAppIndex != null) {
-                final String wechatLoginCode = formData.getFirst(LoginFormField.PASSWORD.field());
+                final String wechatLoginCode = formData.getFirst(LoginFormField.PASSWORD.field);
                 loginUserGetParamsDTO.setUserName(wechatLoginCode);
                 loginUserGetParamsDTO.setMicroAppIndex(Integer.parseInt(microAppIndex));
-                final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO, swe);
-                assert userDetails != null;
-                User.withUserDetails(userDetails).build();
-                return Mono.just(userDetails);
             } else {
-                if (formData.getFirst("loginType") != null) {
-                    loginUserGetParamsDTO.setLoginType(formData.getFirst("loginType"));
-                } else {
-                    // 未定义登录方式，默认为后台页面登录
-                    if (isValidateCode && (!checkValidateCode(swe, formData))) {
-                        return Mono.error(new ValidateCodeAuthFailException("验证码错误"));
-                    }
-                }
                 loginUserGetParamsDTO.setUserName(username);
-                final Object otherFieldValue = formData.getFirst(LoginFormField.OTHER_FIELD_KEY.field());
+                final Object otherFieldValue = formData.getFirst(LoginFormField.OTHER_FIELD_KEY.field);
                 if (!StringUtils.isEmpty(otherFieldValue)) {
                     loginUserGetParamsDTO.setParams(otherFieldValue.toString());
                 }
-                final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO, swe);
-
-                if (userDetails != null && CollectionUtil.single().isNotEmpty(userDetails.getUsername())) {
-                    User.withUserDetails(userDetails).build();
-
-                    new Thread(() -> {
-                        saveLoginLog(username, userDetails, targetMethodParams, swe, true);
-                    }).start();
-
-                    return Mono.just(userDetails);
-                } else {
-                    new Thread(() -> {
-                        saveLoginLog(username, userDetails, targetMethodParams, swe, false);
-                    }).start();
-                    return Mono.error(new UsernameNotFoundException("User Not Found"));
-                }
             }
+
+            final LoginUserDetails userDetails = getUserByName(loginUserGetParamsDTO, swe);
+            final String targetMethodParams = Arrays.toString(
+                new Object[]{username, loginMicroServiceName, loginType, validateCode, microAppIndex});
+
+            if (userDetails != null && CollectionUtil.single().isNotEmpty(userDetails.getUsername())) {
+                User.withUserDetails(userDetails).build();
+                new Thread(() -> {
+                    saveLoginLog(username, userDetails, targetMethodParams, swe, "getUserSuccess", "用户获取成功，密码校验中");
+                }).start();
+                return Mono.just(userDetails);
+            } else {
+                new Thread(() -> {
+                    saveLoginLog(username, userDetails, targetMethodParams, swe, "Fail", "用户不存在！");
+                }).start();
+                return Mono.error(new UsernameNotFoundException("User Not Found"));
+            }
+
         }));
     }
 
@@ -109,17 +118,19 @@ public class UserLoginServiceImpl implements UserLoginService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    private void saveLoginLog(String username, LoginUserDetails userDetails, final String targetMethodParams, ServerWebExchange swe,
-        final Boolean successFlag) {
+    @Override
+    public void saveLoginLog(String username, LoginUserDetails userDetails, final String targetMethodParams, ServerWebExchange swe,
+        final String successFlag, String message) {
         final BasicDBObject doc = new BasicDBObject();
 
         doc.append("success", successFlag);
         doc.append("microName", microName);
         doc.append("bizType", "gateway.login");
         doc.append("desc", "网关登录");
-        doc.append("ip", this.getIpAddress(swe.getRequest()));
+        doc.append("ip", IPUtils.getIpAddress(swe.getRequest()));
         doc.append("userName", username);
         doc.append("params", targetMethodParams);
+        doc.append("message", message);
         if (userDetails != null) {
             doc.append("userId", userDetails.getId());
         }
@@ -135,9 +146,9 @@ public class UserLoginServiceImpl implements UserLoginService {
      * @return
      */
     private boolean checkValidateCode(ServerWebExchange swe, MultiValueMap<String, String> formData) {
-        final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field());
+        final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field);
         final String validateCode = redisUtil.get(validateRedisKey);
-        final String userValidateCode = formData.getFirst(LoginFormField.VALIDATE_CODE.field());
+        final String userValidateCode = validateCode;
         if (CollectionUtil.single().isEmpty(validateCode)) {
             swe.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
             // @todo 这里需要自定义异常，继承AuthenticationException
@@ -173,39 +184,4 @@ public class UserLoginServiceImpl implements UserLoginService {
             return getUserInfoFeignClient.getUserInfo(loginUserGetParamsDTO);
         }
     }
-
-    public String getIpAddress(ServerHttpRequest request) {
-        String ip = request.getHeaders().getFirst("x-forwarded-for");
-        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
-            // 多次反向代理后会有多个ip值，第一个ip才是真实ip
-            if (ip.contains(",")) {
-                ip = ip.split(",")[0];
-            }
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeaders().getFirst("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeaders().getFirst("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeaders().getFirst("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeaders().getFirst("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeaders().getFirst("X-Real-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = Objects.requireNonNull(request.getRemoteAddress()).toString();
-        }
-
-        if ("0:0:0:0:0:0:0:1".equals(ip)) {
-            return "127.0.0.1";
-        }
-
-        return ip;
-    }
-
 }
