@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.utils.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -38,9 +39,6 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
 
     @Autowired
     UserLoginService userLoginService;
-
-    @Autowired
-    IEmailSenderService emailSenderService;
 
     @Autowired
     RedisUtil redisUtil;
@@ -107,6 +105,8 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
                 mailVO.setText(String.format("User %s is locked,on %tD %tT", username, new Date(), new Date()));
                 mailVO.setSubject(String.format("User %s is locked!", username));
                 try {
+                    IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
+                    assert emailSenderService != null;
                     emailSenderService.sendEmail(mailVO);
                 } catch (Exception ex) {
                     log.error(e.getMessage(), ex);
