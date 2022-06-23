@@ -1,6 +1,7 @@
 package com.longyou.gateway;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
@@ -20,10 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
-import javax.sql.DataSource;
-
-@SpringBootApplication(scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller",
-    "org.cloud.scheduler", "org.cloud.mongo", "org.cloud.config.rest", "com.unknow.first.mail.manager.*"}, exclude = {
+@SpringBootApplication(scanBasePackages = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.scheduler",
+    "org.cloud.mongo", "org.cloud.config.rest", "com.unknow.first.mail.manager.*", "org.cloud.config.async"}, exclude = {
     RabbitAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")

@@ -61,9 +61,9 @@ public final class CollectionUtil {
         } else if (obj instanceof Object[]) {
             return ((Object[]) obj).length < 1;
         } else if (obj instanceof Collection) {
-            return ((Collection) obj).isEmpty();
+            return ((Collection<?>) obj).isEmpty();
         } else if (obj instanceof Map) {
-            return ((Map) obj).isEmpty();
+            return ((Map<?, ?>) obj).isEmpty();
         }
         return false;
     }

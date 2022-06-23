@@ -89,7 +89,6 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
                     log.error(e.getMessage(), ex);
                 }
             }).start();
-
         } else if (!ipIsLocked) {
             redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount);
         }
@@ -128,11 +127,9 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
                     log.error(e.getMessage(), ex);
                 }
             }).start();
-
         } else if (!userIsLocked) {
             redisUtil.set(userLoginCountKey, userLoginErrorCount);
         }
-
         new Thread(() -> {
             userLoginService.saveLoginLog(username, null, loginParams, exchange, "Fail", e.getMessage());
         }).start();

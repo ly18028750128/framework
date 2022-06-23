@@ -11,6 +11,7 @@ public interface UserLoginService {
     public Mono<UserDetails> userLogin(String username, LoginUserGetParamsDTO loginUserGetParamsDTO, String microAppIndex,
         ServerWebExchange swe);
 
+
     public void saveLoginLog(String username, LoginUserDetails userDetails, String targetMethodParams, ServerWebExchange swe,
         String successFlag,String message);
 

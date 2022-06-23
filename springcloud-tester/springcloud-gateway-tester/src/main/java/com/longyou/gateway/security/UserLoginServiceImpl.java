@@ -9,10 +9,12 @@ import com.mongodb.BasicDBObject;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import lombok.SneakyThrows;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.exception.BusinessException;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.vo.LoginUserGetParamsDTO;
@@ -22,6 +24,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -98,9 +101,11 @@ public class UserLoginServiceImpl implements UserLoginService {
 
             if (userDetails != null && CollectionUtil.single().isNotEmpty(userDetails.getUsername())) {
                 User.withUserDetails(userDetails).build();
+
                 new Thread(() -> {
-                    saveLoginLog(username, userDetails, targetMethodParams, swe, "getUserSuccess", "用户获取成功，密码校验中");
+                    saveLoginLog(username, userDetails, targetMethodParams, swe, "getUserSuccess", "用户获取成功，密码校验中!");
                 }).start();
+
                 return Mono.just(userDetails);
             } else {
                 new Thread(() -> {
@@ -118,7 +123,9 @@ public class UserLoginServiceImpl implements UserLoginService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+
     @Override
+    @Async
     public void saveLoginLog(String username, LoginUserDetails userDetails, final String targetMethodParams, ServerWebExchange swe,
         final String successFlag, String message) {
         final BasicDBObject doc = new BasicDBObject();

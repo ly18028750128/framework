@@ -6,5 +6,5 @@ public interface IEmailSenderService {
 
     public void sendEmail(MailVO mailVO) throws Exception;
 
-    public void sendEmail(MailVO mailVO, Integer templateId) throws Exception;
+    public void sendEmail(MailVO mailVO, String templateCode) throws Exception;
 }

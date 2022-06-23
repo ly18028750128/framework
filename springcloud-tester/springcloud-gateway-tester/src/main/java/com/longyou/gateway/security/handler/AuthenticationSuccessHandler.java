@@ -2,13 +2,16 @@ package com.longyou.gateway.security.handler;
 
 
 import static com.longyou.gateway.security.response.MessageCode.COMMON_FAILURE;
+import static com.longyou.gateway.security.response.MessageCode.COMMON_SUCCESS;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -62,9 +66,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         httpHeaders.add("Content-Type", "application/json; charset=UTF-8");
         httpHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         //设置body
-        WsResponse wsResponse = WsResponse.success();
+
         byte[] dataBytes = {};
-        ObjectMapper mapper = new ObjectMapper();
         try {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -101,22 +104,21 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 // 缓存已经登录的信息
                 final Long expireTime = System.currentTimeMillis() + timeSaltChangeInterval * 1000L;
                 redisUtil.hashSet(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), successKey, expireTime, -1L);
-                Map<String, Long> userLoginTokenTokeMap = redisUtil.getRedisTemplate().opsForHash()
-                    .entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
+
+                HashOperations<String, String, Long> opsForHash = redisUtil.getRedisTemplate().opsForHash();
+                Map<String, Long> userLoginTokenTokeMap = opsForHash.entries(
+                    _BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
 
                 // 每个用户最大的登录客户端，默认为5个
                 final int maxSingleUserLoginCount = Integer.parseInt(
                     CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
 
                 if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
-
                     LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
                     userLoginTokenTokeMap.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                         .forEachOrdered(s -> sortedMap.put(s.getKey(), s.getValue()));
-
                     LinkedHashMap<String, Long> willRemoveMaps = CollectionUtil.single()
                         .subMap(sortedMap, maxSingleUserLoginCount, userLoginTokenTokeMap.size());
-
                     for (Entry<String, Long> entry : willRemoveMaps.entrySet()) {
                         redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), entry.getKey());
                         redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + entry.getKey());
@@ -128,8 +130,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             // 将token加盐的值放到redis缓存中
             redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);
             httpHeaders.add(HttpHeaders.AUTHORIZATION, token);
-            wsResponse.setResult(userDetails);
-            dataBytes = mapper.writeValueAsBytes(wsResponse);
+            WsResponse<UserDetails> wsResponse = new WsResponse<>(COMMON_SUCCESS, userDetails);
+            dataBytes = JSON.toJSONString(wsResponse).getBytes(StandardCharsets.UTF_8);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             JsonObject result = new JsonObject();
