@@ -1,0 +1,33 @@
+1:在framework中执行t_email_template.sql
+2:pom.xml中引用jar包
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mail-manager</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+3:springboot启动类中增加
+  @MapperScan "com.unknow.first.mail.manager.mapper"
+  @EnableFeignClients增加："com.unknow.first.mail.manager.feign"
+  scanBasePackages增加 "com.unknow.first.mail.manager.*"
+4：配置文件或者配置中心添加如下配置
+  system:
+    email:
+      enable: true
+  spring:
+    mail:
+      default-encoding: utf-8
+      host: smtp.126.com
+      username: 用户名
+      password: 密码，不同的邮箱申请方式不一样
+      port: 465
+      properties:
+        mail.smtp.auth: true
+        mail:
+          smtp:
+            ssl:
+              enable: true
+        mail.smtp.socketFactory.port: 465
+        mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+        mail.smtp.socketFactory.fallback: false
+ 5：参考代码
+  com/longyou/gateway/security/handler/AuthenticationFailHandler.java:80
