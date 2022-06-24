@@ -64,9 +64,7 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException e) {
         ServerWebExchange exchange = webFilterExchange.getExchange();
         ServerHttpResponse response = exchange.getResponse();
-
         IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
-
         final String ipAddress = IPUtils.getIpAddress(exchange.getRequest());
         final String ipAddressLockerCountKey = LoginError.IP_ERROR_COUNT_KEY.value + ipAddress;
         Integer ipLoginErrorCount = redisUtil.get(ipAddressLockerCountKey);
@@ -95,8 +93,6 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             } else {
                 log.error("邮件功能未开启，将不会发送登录异常预警！");
             }
-
-
         } else if (!ipIsLocked) {
             redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount);
         }
@@ -130,7 +126,6 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
                     emailParams.getEmailParams()
                         .put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
                     try {
-
                         emailSenderService.sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
                     } catch (Exception ex) {
                         log.error("用户锁定邮件发送异常", ex);
