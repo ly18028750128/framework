@@ -1,4 +1,4 @@
-1:在framework中执行t_email_template.sql
+1:在framework中执行t_email_template.sql，需要在framework里执行
 2:pom.xml中引用jar包
     <dependency>
       <groupId>com.unknow.first</groupId>

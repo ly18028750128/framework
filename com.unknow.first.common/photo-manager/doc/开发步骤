@@ -1,0 +1,17 @@
+1:在framework中执行 t_photo.sql
+2:pom.xml中引用jar包
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>photo-manager</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+3:springboot启动类中增加
+  @MapperScan： "com.unkow.first.photo.manager.mapper"
+  scanBasePackages： "com.unkow.first.photo.manager.*"
+4：参考代码
+  com/unknow/first/dapp/admin/DappAdminApplication.java:37
+  http://lianziyou.tech:10001/tc/tc-dapp-admin.git
+5:api
+  GET /{{微服务名称}}/photo/info/getPhotoList?languageType=1&photoType=BANNER HTTP/1.1
+  Host: localhost:8085
+  其它后台api请参考：com.unkow.first.photo.manager.controller.admin.AdminPhotoController
