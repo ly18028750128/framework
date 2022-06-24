@@ -1,4 +1,4 @@
-1:在framework中执行t_article.sql
+1:执行t_article.sql
 2:pom.xml中引用jar包
     <dependency>
       <groupId>com.unknow.first</groupId>
