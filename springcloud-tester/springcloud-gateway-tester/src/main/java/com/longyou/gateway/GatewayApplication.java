@@ -4,6 +4,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.SpringContextUtil;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
@@ -26,7 +27,8 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
     RabbitAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
-@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
+@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "com.unknow.first.mail.manager.feign"})
+@MapperScan({"com.unknow.first.mail.manager.mapper"})
 @Slf4j
 public class GatewayApplication {
 

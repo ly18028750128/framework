@@ -9,6 +9,7 @@ import com.longyou.gateway.security.response.WsResponse;
 import com.longyou.gateway.util.IPUtils;
 import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.vo.MailVO;
+import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
 import java.util.Arrays;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -77,14 +78,14 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             redisUtil.set(ipAddressLockerCountKey, 0);
 
             new Thread(() -> {
-                MailVO mailVO = new MailVO();
-                mailVO.setTo(new String[]{userLoginErrorEmailTo});
-                mailVO.setText(String.format("ip %s is locked,on %tD %tT", ipAddress, new Date(), new Date()));
-                mailVO.setSubject(String.format("ip %s is locked!", ipAddress));
+                EmailParams emailParams = new EmailParams();
+                emailParams.getSubjectParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+                IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
+                assert emailSenderService != null;
                 try {
-                    IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
-                    assert emailSenderService != null;
-                    emailSenderService.sendEmail(mailVO);
+                    emailSenderService.sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
                 } catch (Exception ex) {
                     log.error(e.getMessage(), ex);
                 }
@@ -114,15 +115,17 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             redisUtil.set(userLoginCountKey, 0);
 
             new Thread(() -> {
-                MailVO mailVO = new MailVO();
-                mailVO.setTo(new String[]{userLoginErrorEmailTo});
-                mailVO.setText(
-                    String.format("User %s is locked on %tD %tT,Last login ip is %s", username, new Date(), new Date(), ipAddress));
-                mailVO.setSubject(String.format("User %s is locked!", username));
+
+                EmailParams emailParams = new EmailParams();
+                emailParams.getSubjectParams().put("userName", username);
+                emailParams.getEmailParams().put("userName", username);
+                emailParams.getEmailParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
+                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
                 try {
                     IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
                     assert emailSenderService != null;
-                    emailSenderService.sendEmail(mailVO);
+                    emailSenderService.sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
                 } catch (Exception ex) {
                     log.error(e.getMessage(), ex);
                 }

@@ -7,14 +7,32 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 @Configuration
 @ConditionalOnProperty(prefix = "system.email", name = "enable", havingValue = "true")
 public class EmailConfig {
 
     @Bean
-    public IEmailSenderService emailSenderService(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
-        return new EmailSenderServiceImpl(javaMailSender, templateEngine);
+    public StringTemplateResolver stringTemplateResolver() {
+        StringTemplateResolver stringTemplateResolver = new StringTemplateResolver();
+        stringTemplateResolver.setCacheable(true);
+        stringTemplateResolver.setTemplateMode(TemplateMode.HTML);
+        return stringTemplateResolver;
     }
+
+    @Bean
+    public SpringTemplateEngine springTemplateEngine(StringTemplateResolver stringTemplateResolver) {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(stringTemplateResolver);
+        return templateEngine;
+    }
+
+    @Bean
+    public IEmailSenderService emailSenderService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine) {
+        return new EmailSenderServiceImpl(javaMailSender, springTemplateEngine);
+    }
+
 }

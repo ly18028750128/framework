@@ -20,19 +20,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
-@ComponentScan({"org.cloud.*", "com.longyou.comm.*","com.unknow.first.mail.manager.*"})
-@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic"})
+@ComponentScan({"org.cloud.*", "com.longyou.comm.*", "com.unknow.first.mail.manager.*", })
+@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic","com.unknow.first.mail.manager.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service"})
+@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service","com.unknow.first.mail.manager.feign"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
+
     public static void main(String[] args) {
-        try{
+        try {
             SpringApplication.run(CommonServiceApplication.class, args);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -85,18 +86,5 @@ public class CommonServiceApplication {
         return new DruidDataSource();
     }
 
-
-//    @Value("#{'${system.api.inner.url-patterns:/inner/*}'.split(',')}")
-//    String[] innerApis;
-//
-//
-//    @Bean
-//    public FilterRegistrationBean registerFilter() {
-//        FilterRegistrationBean registration = new FilterRegistrationBean();
-//        registration.setFilter(new InnerApiFilter());
-//        registration.addUrlPatterns(innerApis);
-//        registration.setName("InnerApiFilter");
-//        return registration;
-//    }
 
 }

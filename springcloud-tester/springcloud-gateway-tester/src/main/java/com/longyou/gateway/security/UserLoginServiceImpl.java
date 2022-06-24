@@ -155,7 +155,7 @@ public class UserLoginServiceImpl implements UserLoginService {
     private boolean checkValidateCode(ServerWebExchange swe, MultiValueMap<String, String> formData) {
         final String validateRedisKey = formData.getFirst(LoginFormField.VALIDATE_REDIS_KEY.field);
         final String validateCode = redisUtil.get(validateRedisKey);
-        final String userValidateCode = validateCode;
+        final String userValidateCode = formData.getFirst(LoginFormField.VALIDATE_CODE.field);
         if (CollectionUtil.single().isEmpty(validateCode)) {
             swe.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
             // @todo 这里需要自定义异常，继承AuthenticationException

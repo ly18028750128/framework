@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknow.first.mail.manager.mapper.EmailTemplateMapper">
+
+    <resultMap id="BaseResultMap" type="com.unknow.first.mail.manager.domain.EmailTemplate">
+            <id property="templateId" column="template_id" jdbcType="BIGINT"/>
+            <result property="templateCode" column="template_code" jdbcType="VARCHAR"/>
+            <result property="language" column="language" jdbcType="VARCHAR"/>
+            <result property="subject" column="subject" jdbcType="VARCHAR"/>
+            <result property="fromAddress" column="from_address" jdbcType="VARCHAR"/>
+            <result property="toAddress" column="to_address" jdbcType="VARCHAR"/>
+            <result property="templateText" column="template_text" jdbcType="VARCHAR"/>
+            <result property="cc" column="CC" jdbcType="VARCHAR"/>
+            <result property="bcc" column="BCC" jdbcType="VARCHAR"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"/>
+            <result property="createdDate" column="CREATED_DATE" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"/>
+            <result property="updatedDate" column="UPDATED_DATE" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        template_id,template_code,language,
+        subject,from_address,to_address,
+        template_text,CC,BCC,
+        CREATED_BY,CREATED_DATE,UPDATED_BY,
+        UPDATED_DATE
+    </sql>
+</mapper>

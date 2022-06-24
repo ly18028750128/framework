@@ -1,7 +1,10 @@
 package com.longyou.comm.conntroller.inner;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.longyou.comm.model.TFrameUserRef;
 import com.longyou.comm.service.FrameUserRefService;
+import com.unknow.first.mail.manager.domain.EmailTemplate;
+import com.unknow.first.mail.manager.service.EmailTemplateService;
 import org.cloud.annotation.SystemResource;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
@@ -44,6 +47,19 @@ public class InnerCallController {
     public FrameUserRefVO getCurrentUserRefByAttributeName(@RequestParam("name") String attributeName) throws Exception {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         return frameUserRefService.getUserRefByAttributeName(loginUserDetails.getId(), attributeName);
+    }
+
+    @Autowired
+    EmailTemplateService emailTemplateService;
+
+    @GetMapping("/email/getEmailTemplateByCode")
+    public EmailTemplate getEmailTemplateByCode(@RequestParam("templateCode") String templateCode,
+        @RequestParam(value = "language", defaultValue = "zh_CN") String language) {
+        QueryWrapper<EmailTemplate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("template_code", templateCode);
+        queryWrapper.eq("language", language);
+
+        return emailTemplateService.getOne(queryWrapper);
     }
 
 }
