@@ -21,12 +21,9 @@ import reactor.core.publisher.Mono;
 @Transactional(propagation = Propagation.NEVER)
 public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServerAuthenticationEntryPoint {
 
-    private static final String WWW_AUTHENTICATE = "WWW-Authenticate";
-    private static final String DEFAULT_REALM = "Realm";
     private String headerValue = createHeaderValue("Realm");
 
     public CustomHttpBasicServerAuthenticationEntryPoint() {
-
     }
 
     public void setRealm(String realm) {
@@ -47,7 +44,7 @@ public class CustomHttpBasicServerAuthenticationEntryPoint extends HttpBasicServ
         response.getHeaders().set(HttpHeaders.AUTHORIZATION, this.headerValue);
         JsonObject result = new JsonObject();
         result.addProperty("status", COMMON_AUTHORIZED_FAILURE.code);
-        result.addProperty("message", COMMON_AUTHORIZED_FAILURE.code);
+        result.addProperty("message", COMMON_AUTHORIZED_FAILURE.message);
         byte[] dataBytes = result.toString().getBytes();
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));
