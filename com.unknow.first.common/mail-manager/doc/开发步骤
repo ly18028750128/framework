@@ -31,3 +31,7 @@
         mail.smtp.socketFactory.fallback: false
  5：参考代码
   com/longyou/gateway/security/handler/AuthenticationFailHandler.java:80
+ 6：注
+  邮件模板采用thymeleaf
+  参考：https://www.pianshen.com/article/3836348992/
+  https://www.thymeleaf.org/doc/articles/thymeleaf3migration.html
