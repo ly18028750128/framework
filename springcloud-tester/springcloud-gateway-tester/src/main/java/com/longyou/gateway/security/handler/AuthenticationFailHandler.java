@@ -94,7 +94,7 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
                 log.error("邮件功能未开启，将不会发送登录异常预警！");
             }
         } else if (!ipIsLocked) {
-            redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount);
+            redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount, 24 * 60 * 60L);
         }
 
         MultiValueMap<String, String> formData = exchange.getFormData().block();

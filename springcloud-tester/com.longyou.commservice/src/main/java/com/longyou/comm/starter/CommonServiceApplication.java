@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
+@SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 @ComponentScan({"org.cloud.*", "com.longyou.comm.*", "com.unknow.first.mail.manager.*", })
 @MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic","com.unknow.first.mail.manager.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
@@ -27,7 +28,6 @@ import org.springframework.context.annotation.Primary;
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix
-@SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 public class CommonServiceApplication {
 
     public static void main(String[] args) {
