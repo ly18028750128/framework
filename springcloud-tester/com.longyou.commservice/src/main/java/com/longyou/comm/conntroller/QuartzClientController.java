@@ -1,5 +1,6 @@
 package com.longyou.comm.conntroller;
 
+import java.util.Map.Entry;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SystemStringUtil;
@@ -30,7 +31,7 @@ public class QuartzClientController {
     @Autowired
     DiscoveryClient discoveryClient;
 
-    @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseResult getQuartzJobs() throws Exception {
         String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
         ResponseResult successResult = ResponseResult.createSuccessResult();
@@ -38,56 +39,41 @@ public class QuartzClientController {
         List<Callable<Boolean>> callables = new ArrayList<>();
         List<String> services = discoveryClient.getServices();
         for (String serviceId : services) {
-
             if (!"".equals(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)) {
                 continue;
             }
-
-
-            callables.add(new ProcessCallable<Boolean>() {
-                @Override
-                public Boolean process() {
-                    try {
-                        final String url = "http://" + serviceId.toUpperCase() + "/quartz/job/all";
-                        ResponseEntity<List> response = RestTemplateUtil.single().getResponse(url, HttpMethod.GET, List.class);
-                        if (response.getBody() != null && !response.getBody().isEmpty()) {
-                            quartzJobs.put(serviceId.toUpperCase(), response.getBody());
-                        }
-
-                    } catch (Exception e) {
-                        logger.info(serviceId + ",没有定时任务！");
+            callables.add(() -> {
+                try {
+                    final String url = "http://" + serviceId.toUpperCase() + "/quartz/job/all";
+                    ResponseEntity<List> response = RestTemplateUtil.single().getResponse(url, HttpMethod.GET, List.class);
+                    if (response.getBody() != null && !response.getBody().isEmpty()) {
+                        quartzJobs.put(serviceId.toUpperCase(), response.getBody());
                     }
-                    return true;
+                } catch (Exception e) {
+                    logger.info(serviceId + ",没有定时任务！");
                 }
+                return true;
             });
         }
         ProcessUtil.single().runCablles(callables, 10, 180L);
 
-        Map<String, List<Map>> sortResults = quartzJobs.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey((v1, v2) -> {
-                    if (SystemStringUtil.single().isNotEmpty(applicationGroup)
-                            && (!v1.startsWith(applicationGroup))
-                            && v2.startsWith(applicationGroup)) {
-                        return 100;
-                    } else if (SystemStringUtil.single().isNotEmpty(applicationGroup)
-                            && v1.startsWith(applicationGroup)
-                            && (!v2.startsWith(applicationGroup))) {
-                        return -100;
-                    } else {
-                        return v1.compareTo(v2);
-                    }
-                }))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+        Map<String, List<Map>> sortResults = quartzJobs.entrySet().stream().sorted(Entry.comparingByKey((v1, v2) -> {
+            if (SystemStringUtil.single().isNotEmpty(applicationGroup) && (!v1.startsWith(applicationGroup)) && v2.startsWith(
+                applicationGroup)) {
+                return 100;
+            } else if (SystemStringUtil.single().isNotEmpty(applicationGroup) && v1.startsWith(applicationGroup) && (!v2.startsWith(
+                applicationGroup))) {
+                return -100;
+            } else {
+                return v1.compareTo(v2);
+            }
+        })).collect(Collectors.toMap(Entry::getKey, Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         successResult.setData(sortResults);
         return successResult;
     }
 
-    @GetMapping(value = "/getAllRunJob", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/getAllRunJob", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseResult getQuartzRunJobs() throws Exception {
         ResponseResult successResult = ResponseResult.createSuccessResult();
         Map<String, List<Map>> quartzJobs = new LinkedHashMap<>();

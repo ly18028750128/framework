@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.text.SimpleDateFormat;
 
 public final class CoreConstant {
+
     public final static String RSA_KEYS_REDIS_KEY = "SYSTEM:CONFIG:RSA_KEYS";
 
     private CoreConstant() {
@@ -34,10 +35,8 @@ public final class CoreConstant {
     // rest服务返回值处理，可以继续增加
     public static enum RestStatus implements BasicEnum {
 
-        SUCCESS(200, "成功", "rest.status.200"),
-        NOAUTH(401, "未授权", "rest.status.401"),
-        PARTSUCCESS(100, "部分成功", "rest.status.100"),
-        FAIL(-100, "失败", "rest.status.-100");
+        SUCCESS(200, "成功", "rest.status.200"), NOAUTH(401, "未授权", "rest.status.401"), PARTSUCCESS(100, "部分成功", "rest.status.100"), FAIL(
+            -100, "失败", "rest.status.-100");
 
         private int statusValue;     // 值
         private String statusName;  // 名称和描述
@@ -81,12 +80,8 @@ public final class CoreConstant {
     // rest服务返回值处理，可以继续增加
     public static enum UserCacheKey implements BasicEnum {
 
-        DATA("data", "数据权限", ""),
-        FUNCTION("function", "功能权限", ""),
-        MENU("menu", "菜单权限", ""),
-        DATA_INTERFACE("dataInterface", "数据接口权限", ""),
-        ROLE("role", "角色", ""),
-        ROLE_NAME("roleName", "角色名列表", ""),
+        DATA("data", "数据权限", ""), FUNCTION("function", "功能权限", ""), MENU("menu", "菜单权限", ""), DATA_INTERFACE("dataInterface", "数据接口权限",
+            ""), ROLE("role", "角色", ""), ROLE_NAME("roleName", "角色名列表", ""),
         ;
 
         private String key;     // 值
@@ -119,9 +114,7 @@ public final class CoreConstant {
     // 双因子校验方式，默认为GOOGLE，验证，
     public static enum MfaAuthType implements BasicEnum {
 
-        GOOGLE("GOOGLE", "谷歌验证码", ""),
-        SMS("SMS", "短信验证码", "")
-        ;
+        GOOGLE("GOOGLE", "谷歌验证码", ""), SMS("SMS", "短信验证码", "");
 
         private String key;     // 值
         private String statusName;  // 名称和描述
@@ -158,9 +151,8 @@ public final class CoreConstant {
      */
     public static enum AuthMethod implements BasicEnum {
 
-        ALLSYSTEMUSER("ALLSYSTEMUSER", "所有登录用户", "rest.AuthMethod.ALLSYSTEMUSER"),
-        BYUSERPERMISSION("BYUSERPERMISSION", "通过用户所属权限验证", "rest.AuthMethod.BYUSERPERMISSION"),
-        NOAUTH("NOAUTH", "不用授权", "rest.AuthMethod.NOAUTH"),
+        ALLSYSTEMUSER("ALLSYSTEMUSER", "所有登录用户", "rest.AuthMethod.ALLSYSTEMUSER"), BYUSERPERMISSION("BYUSERPERMISSION", "通过用户所属权限验证",
+            "rest.AuthMethod.BYUSERPERMISSION"), NOAUTH("NOAUTH", "不用授权", "rest.AuthMethod.NOAUTH"),
         ;
 
         private String value;     // 值
@@ -194,8 +186,7 @@ public final class CoreConstant {
      */
     public static enum DataAutoType implements BasicEnum {
 
-        MICROSERVICE("micro", "微服务", ""),
-        ORGANIZATION("org", "组织机构（部门）", ""),
+        MICROSERVICE("micro", "微服务", ""), ORGANIZATION("org", "组织机构（部门）", ""),
         ;
 
         private String value;     // 值
@@ -227,9 +218,8 @@ public final class CoreConstant {
     public final static String _FUNCTION_SPLIT_STR = "::";
 
     public static enum MongoDbLogConfig {
-        MONGODB_LOG_SUFFIX("_logbackLogCollection", "日志存储collection后缀"),
-        MONGODB_OPERATE_LOG_SUFFIX("_logbackOperateLogCollection", "操作日志存储collection后缀"),
-        CREATE_DATE_FIELD("createDate", "创建日期字段");
+        MONGODB_LOG_SUFFIX("_logbackLogCollection", "日志存储collection后缀"), MONGODB_OPERATE_LOG_SUFFIX("_logbackOperateLogCollection",
+            "操作日志存储collection后缀"), CREATE_DATE_FIELD("createDate", "创建日期字段");
         private String value;
         private String desc;
 
@@ -254,8 +244,7 @@ public final class CoreConstant {
 
     public static enum SystemSupportLanguage implements BasicEnum {
 
-        ZH_CN("zh_CN", "中文"),
-        EN_US("en_US", "English");
+        ZH_CN("zh_CN", "中文"), EN_US("en_US", "English");
 
         private String code;
         private String name;
@@ -293,6 +282,8 @@ public final class CoreConstant {
         LOG_TYPE_FRONTEND(1, "前端操作"),
 
         LOG_TYPE_BACKEND(2, "后台管理操作"),
+
+        LOG_TYPE_SCHEDULER(3, "定时任务调用"),
         ;
 
         private int logType;

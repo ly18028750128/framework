@@ -44,8 +44,9 @@ public class QuartzService {
      * @param jobTimes     运行的次数 （<0:表示不限次数）
      * @param jobData      参数
      */
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, TimeUnit timeUnit, int jobTime, int jobTimes,
-                       Map<String, ?> jobData) throws Exception {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, TimeUnit timeUnit, int jobTime,
+        int jobTimes,
+        Map<String, ?> jobData) throws Exception {
 
         // 任务名称和组构成任务key
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
@@ -64,8 +65,9 @@ public class QuartzService {
         }
 
         Object simple_schedule_misfire_mode = jobData.get(MisfireEnum.SIMPLE_SCHEDULE_MISFIRE_MODE_KEY);
-        if (!StringUtils.isEmpty(simple_schedule_misfire_mode)){
-            scheduleBuilder = (SimpleScheduleBuilder)scheduleBuilder.getClass().getMethod(simple_schedule_misfire_mode.toString()).invoke(scheduleBuilder);
+        if (!StringUtils.isEmpty(simple_schedule_misfire_mode)) {
+            scheduleBuilder = (SimpleScheduleBuilder) scheduleBuilder.getClass().getMethod(simple_schedule_misfire_mode.toString())
+                .invoke(scheduleBuilder);
         }
 
         // 重复次数大于零
@@ -73,7 +75,8 @@ public class QuartzService {
             scheduleBuilder.withRepeatCount(jobTimes);
         }
 
-        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName).withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
+        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
+            .withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
         trigger = triggerBuilder.build();
 
@@ -90,6 +93,10 @@ public class QuartzService {
 //        }
     }
 
+    public void getJob() throws Exception {
+        scheduler.getJobKeys(GroupMatcher.groupEquals("11"));
+    }
+
     /**
      * 增加一个job
      *
@@ -99,7 +106,8 @@ public class QuartzService {
      * @param jobTime      时间表达式 （如：0/5 * * * * ? ）
      * @param jobData      参数
      */
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData,
+        Boolean isStartNow) throws Exception {
 
         // 创建jobDetail实例，绑定Job实现类
         // 指明job的名称，所在组的名称，以及绑定job类
@@ -109,22 +117,21 @@ public class QuartzService {
         //处理任务的失败补偿模式
         Object cron_schedule_misfire_mode = jobData.get(MisfireEnum.CRON_SCHEDULE_MISFIRE_MODE_KEY);
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(jobTime);
-        if (!StringUtils.isEmpty(cron_schedule_misfire_mode)){
-            cronScheduleBuilder = (CronScheduleBuilder) cronScheduleBuilder.getClass().getMethod(cron_schedule_misfire_mode.toString()).invoke(cronScheduleBuilder);
+        if (!StringUtils.isEmpty(cron_schedule_misfire_mode)) {
+            cronScheduleBuilder = (CronScheduleBuilder) cronScheduleBuilder.getClass().getMethod(cron_schedule_misfire_mode.toString())
+                .invoke(cronScheduleBuilder);
         }
-        // 定义调度触发规则
-        // 使用cornTrigger规则
-        // 触发器key
-        TriggerBuilder triggerBuilder = TriggerBuilder.newTrigger()
-                .withIdentity(jobName, jobGroupName)
-                .withDescription(getDescription(jobData))
-                .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
-                .withSchedule(cronScheduleBuilder);
+        // 定义调度触发规则 使用cornTrigger规则 触发器key
+        TriggerBuilder<CronTrigger> triggerBuilder = TriggerBuilder.newTrigger()
+            .withIdentity(jobName, jobGroupName)
+            .withDescription(getDescription(jobData))
+            .startAt(DateBuilder.futureDate(1, DateBuilder.IntervalUnit.SECOND))
+            .withSchedule(cronScheduleBuilder);
 
         Trigger trigger = triggerBuilder.build();
 
         // 设置job参数
-        if (jobData != null && jobData.size() > 0) {
+        if (jobData.size() > 0) {
             trigger.getJobDataMap().putAll(jobData);
             jobDetail.getJobDataMap().putAll(jobData);
         }
@@ -145,7 +152,8 @@ public class QuartzService {
      * @param jobGroupName
      * @param jobTime
      */
-    public void updateJob(String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
+    public void updateJob(String jobName, String jobGroupName, String jobTime, Map<String, ?> jobData, Boolean isStartNow)
+        throws Exception {
 
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(triggerKey);
@@ -154,7 +162,7 @@ public class QuartzService {
         }
         CronTrigger cronTrigger = (CronTrigger) trigger;
         TriggerBuilder<CronTrigger> triggerBuilder = cronTrigger.getTriggerBuilder().withIdentity(triggerKey).
-                withDescription(getDescription(jobData)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
+            withDescription(getDescription(jobData)).withSchedule(CronScheduleBuilder.cronSchedule(jobTime));
 
         cronTrigger = triggerBuilder.build();
         JobDetail jobDetail = scheduler.getJobDetail(cronTrigger.getJobKey());
@@ -184,7 +192,8 @@ public class QuartzService {
      * @param jobTimes
      * @throws Exception
      */
-    public void updateJob(String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData, Boolean isStartNow) throws Exception {
+    public void updateJob(String jobName, String jobGroupName, int jobTime, int jobTimes, Map<String, ?> jobData, Boolean isStartNow)
+        throws Exception {
         TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
         Trigger trigger = scheduler.getTrigger(triggerKey);
         if (!(trigger instanceof SimpleTrigger)) {
@@ -196,7 +205,8 @@ public class QuartzService {
         if (jobTimes > 0) {
             scheduleBuilder.withRepeatCount(jobTimes);
         }
-        TriggerBuilder<SimpleTrigger> triggerBuilder = simpleTrigger.getTriggerBuilder().withIdentity(triggerKey).withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
+        TriggerBuilder<SimpleTrigger> triggerBuilder = simpleTrigger.getTriggerBuilder().withIdentity(triggerKey)
+            .withDescription(getDescription(jobData)).withSchedule(scheduleBuilder);
 
         simpleTrigger = triggerBuilder.build();
         JobDetail jobDetail = scheduler.getJobDetail(simpleTrigger.getJobKey());
@@ -227,7 +237,6 @@ public class QuartzService {
 
     public void deleteJob(String jobName, String jobGroupName) throws Exception {
         scheduler.deleteJob(new JobKey(jobName, jobGroupName));
-
     }
 
     /**
@@ -326,7 +335,7 @@ public class QuartzService {
 
     public List<Map<String, Object>> queryRunJob() throws Exception {
         List<JobExecutionContext> executingJobs = scheduler.getCurrentlyExecutingJobs();
-        List<Map<String, Object>> jobList = new ArrayList<Map<String, Object>>(executingJobs.size());
+        List<Map<String, Object>> jobList = new ArrayList<>(executingJobs.size());
         for (JobExecutionContext executingJob : executingJobs) {
             Map<String, Object> map = new LinkedHashMap<String, Object>();
             JobDetail jobDetail = executingJob.getJobDetail();
@@ -373,7 +382,7 @@ public class QuartzService {
         map.put("description", trigger.getDescription());
     }
 
-    private String getDescription(Map datas) {
+    private String getDescription(Map<?, ?> datas) {
         if (datas == null) {
             return "";
         }
