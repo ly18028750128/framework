@@ -49,7 +49,7 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
             }
 
             try {
-                documentName = microServiceName + "_" + activeProfile + MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value();
+                documentName = microServiceName + MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value();
                 Query query = new Query(Criteria.where(MongoDbLogConfig.CREATE_DATE_FIELD.value())
                     .lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
                 DeleteResult deleteResult = mongoTemplate.remove(query, documentName);
