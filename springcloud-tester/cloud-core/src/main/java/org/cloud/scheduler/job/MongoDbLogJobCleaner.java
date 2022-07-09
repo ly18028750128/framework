@@ -3,8 +3,10 @@ package org.cloud.scheduler.job;
 import com.alibaba.fastjson.JSON;
 import com.mongodb.client.result.DeleteResult;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.MongoDbLogConfig;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SpringContextUtil;
+import org.jetbrains.annotations.NotNull;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -30,17 +32,31 @@ public class MongoDbLogJobCleaner extends BaseQuartzJobBean {
     }
 
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(@NotNull JobExecutionContext context) throws JobExecutionException {
         final MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         if (mongoTemplate != null) {
-            Long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.mongodb.expire.days", "30"));  //默认保留30天的数据
+            long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.mongodb.expire.days", "30"));  //默认保留30天的数据
             final String microServiceName = CommonUtil.single().getEnv("spring.application.name", "").toUpperCase();
             final String activeProfile = CommonUtil.single().getEnv("spring.profiles.active", "").toUpperCase();
-            final String documentName = microServiceName + "_" + activeProfile + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value();
-            Query query = new Query(Criteria.where(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value())
-                .lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
-            DeleteResult deleteResult = mongoTemplate.remove(query, documentName);
-            logger.info("清除[" + documentName + "]日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
+            String documentName = microServiceName + "_" + activeProfile + CoreConstant.MongoDbLogConfig.MONGODB_LOG_SUFFIX.value();
+            try {
+                Query query = new Query(Criteria.where(CoreConstant.MongoDbLogConfig.CREATE_DATE_FIELD.value())
+                    .lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
+                DeleteResult deleteResult = mongoTemplate.remove(query, documentName);
+                logger.info("清除[" + documentName + "]日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
+            } catch (Exception e) {
+                logger.error("清除[" + documentName + "]日志失败,{}", e.getMessage());
+            }
+
+            try {
+                documentName = microServiceName + "_" + activeProfile + MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value();
+                Query query = new Query(Criteria.where(MongoDbLogConfig.CREATE_DATE_FIELD.value())
+                    .lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
+                DeleteResult deleteResult = mongoTemplate.remove(query, documentName);
+                logger.info("清除[" + documentName + "]操作日志成功，清理结果为::" + JSON.toJSONString(deleteResult));
+            } catch (Exception e) {
+                logger.error("清除[" + documentName + "]操作日志失败,{}", e.getMessage());
+            }
         }
     }
 }
