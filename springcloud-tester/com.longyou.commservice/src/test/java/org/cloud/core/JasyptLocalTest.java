@@ -17,20 +17,22 @@ import org.junit.Test;
 public class JasyptLocalTest {
     final String aesKey = "";
     final String aesIV = "";
-    final String encKey = "";
+    final String encKey = "~fBrtwQdx+V9dExh";
 
     @Test
     public void encryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("mysql用户名：","");
-        passwordMap.put("mysql密码：","");
-        passwordMap.put("mongodb用户名：","");
-        passwordMap.put("mongodb密码：","");
-        passwordMap.put("redis密码：","");
-        passwordMap.put("md5 salt","");
-        passwordMap.put("aesKey：",aesKey);
-        passwordMap.put("aesIV：",aesIV);
+//        passwordMap.put("mysql用户名：","");
+        passwordMap.put("mysql密码：","Pkbe8BKlk5vVukP3");
+        passwordMap.put("邮箱用户名：", "kidu@fmail.coinr.pro");
+        passwordMap.put("邮箱密码：", "aK3e9tUwh6GW7lhB");
+//        passwordMap.put("mongodb用户名：","");
+//        passwordMap.put("mongodb密码：","");
+//        passwordMap.put("redis密码：","");
+//        passwordMap.put("md5 salt","");
+//        passwordMap.put("aesKey：",aesKey);
+//        passwordMap.put("aesIV：",aesIV);
         for (String key : passwordMap.keySet()) {
             String encryptStr = encrypt(passwordMap.get(key));
             Assert.assertEquals(passwordMap.get(key), decrypt(encryptStr));
@@ -57,10 +59,10 @@ public class JasyptLocalTest {
     public void decryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("aaa","");
-        passwordMap.put("bbb","");
-        passwordMap.put("mongo","");
-        passwordMap.put("salt","");
+        passwordMap.put("aaa","ORoHNLEhR4fkhwjQ+jgYfonSAkWc+PHrNth4qpyeHOam6i4vedmNIkOrcTNDYqhv");
+//        passwordMap.put("bbb","");
+//        passwordMap.put("mongo","");
+//        passwordMap.put("salt","");
         for (String key : passwordMap.keySet()) {
             String encryptStr = decrypt(passwordMap.get(key));
             log.info("{}\t{}", key, encryptStr);

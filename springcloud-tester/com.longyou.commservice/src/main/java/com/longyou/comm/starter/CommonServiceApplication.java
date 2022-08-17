@@ -21,10 +21,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
-@ComponentScan({"org.cloud.*", "com.longyou.comm.*", "com.unknow.first.mail.manager.*", })
-@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic","com.unknow.first.mail.manager.mapper"})
+@ComponentScan({"org.cloud.*", "com.longyou.comm.*", "com.unknow.first.mail.manager.*", "com.unknow.first.article.manager.*",
+    "com.unkow.first.photo.manager.*"})
+@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic", "com.unknow.first.mail.manager.mapper", "com.unknow.first.article.manager.mapper",
+    "com.unkow.first.photo.manager.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service","com.unknow.first.mail.manager.feign"})
+@EnableFeignClients(basePackages = {"com.longyou.comm.service.feign", "org.cloud.feign.service", "com.unknow.first.mail.manager.feign"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix
