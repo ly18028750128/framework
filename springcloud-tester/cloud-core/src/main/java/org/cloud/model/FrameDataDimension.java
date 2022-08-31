@@ -30,7 +30,7 @@ public class FrameDataDimension {
     /**
     * 10:角色 20:用户数据权限
     */
-    @ApiModelProperty(value="10:角色 20:用户数据权限")
+    @ApiModelProperty(value="10:角色 20:用户数据权限",example = "10")
     @NotNull(message = "data.dimension.type.notnull",groups = {GroupForAdd.class, GroupForUpdate.class})
     private Integer dataDimensionType;
 
@@ -58,7 +58,7 @@ public class FrameDataDimension {
     /**
     * 状态，1/有效 0/无效 -1/过期
     */
-    @ApiModelProperty(value="状态，1/有效 0/无效 -1/过期")
+    @ApiModelProperty(value="状态，1/有效 0/无效 -1/过期",example = "1")
     @Range(max = 1,min = -1,groups = {GroupForAdd.class, GroupForUpdate.class})
     private Integer status;
 
