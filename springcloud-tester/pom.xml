@@ -26,6 +26,11 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.github.xiaoymin</groupId>
+      <artifactId>swagger-bootstrap-ui</artifactId>
+      <version>1.9.6</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -194,6 +199,7 @@
         <artifactId>swagger-annotations</artifactId>
         <version>1.5.22</version>
       </dependency>
+
       <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
       <dependency>
         <groupId>org.apache.lucene</groupId>
@@ -241,6 +247,11 @@
         <groupId>com.unknow.first</groupId>
         <artifactId>photo-manager</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-boot-starter</artifactId>
+        <version>3.0.0</version>
       </dependency>
     </dependencies>
 

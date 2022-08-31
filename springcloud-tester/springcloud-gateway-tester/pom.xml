@@ -142,6 +142,10 @@
           <artifactId>bcpkix-jdk15on</artifactId>
           <groupId>org.bouncycastle</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>springfox-boot-starter</artifactId>
+          <groupId>io.springfox</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
