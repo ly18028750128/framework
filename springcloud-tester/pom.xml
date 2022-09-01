@@ -26,11 +26,6 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.github.xiaoymin</groupId>
-      <artifactId>swagger-bootstrap-ui</artifactId>
-      <version>1.9.6</version>
-    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -252,6 +247,11 @@
         <groupId>io.springfox</groupId>
         <artifactId>springfox-boot-starter</artifactId>
         <version>3.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>swagger-bootstrap-ui</artifactId>
+        <version>1.9.6</version>
       </dependency>
     </dependencies>
 
