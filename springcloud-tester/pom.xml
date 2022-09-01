@@ -253,6 +253,16 @@
         <artifactId>swagger-bootstrap-ui</artifactId>
         <version>1.9.6</version>
       </dependency>
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>3.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.xiaoymin</groupId>
+        <artifactId>knife4j-spring-boot-starter</artifactId>
+        <version>3.0.3</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>
