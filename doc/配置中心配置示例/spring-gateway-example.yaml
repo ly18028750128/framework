@@ -1,0 +1,29 @@
+system:
+  current_appname: 网关服务
+  mfa:
+    enabled: false # 网关服务不需要全局双因子验证
+    exclude-uri: ${system.api.inner.url-patterns:},${system.mfa.other-url:},/monitor/*
+  auth_basic_background_expire_time: 21600
+spring:
+  cloud:
+    gateway:
+
+      httpclient:
+        connect-timeout: 20000
+        response-timeout: 60s
+  datasource:
+    url: jdbc:mysql://${local-server.ip}:10002/framework${local-server.suffix}?userSSL=false&autoReconnect=true&failOverReadOnly=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=CONVERT_TO_NULL
+    username: root
+    password: 1qaz@WSX
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    max-active: 200
+    max-idle: 100
+    min-idle: 50
+    initial-size: 10
+    maximum-pool-size: 100
+logging:
+  level:
+    com:
+      longyou:
+        gateway: INFO

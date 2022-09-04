@@ -1,0 +1,218 @@
+local-server:
+  ip: 192.168.30.239
+  redis-ip: 192.168.30.239
+  suffix:
+  redis-db-num: 0
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 1024
+    response:
+      enabled: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutinMilliseconds: 30000
+  serverMethod:
+    execution:
+      isolation:
+        thread:
+          timeoutInMilliseconds: 60000
+management:
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
+  endpoints:
+    web:
+      base-path: /monitor
+      exposure:
+        include: '*'
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  mail:
+    default-encoding: utf-8
+    host: smtp.126.com
+    username: com_unknow_first@126.com
+    password: WBLRNZMEXGASLQDF
+    port: 465
+    properties:
+      mail.smtp.auth: true
+      mail:
+        smtp:
+          ssl:
+            enable: true
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
+  cloud:
+    consul:
+      discovery:
+        #是否需要注册
+        register: true
+        #注册的实例ID (唯一标志)
+        instance-id: ${spring.application.upperCaseName}-${spring.cloud.consul.discovery.ip-address}:${spring.cloud.consul.discovery.port}
+        #服务的名称
+        service-name: ${spring.application.upperCaseName}
+        #指定开启ip地址注册
+        prefer-ip-address: true
+        #当前服务的请求ip
+        #ip-address: ${spring.cloud.client.ip-address}
+        ip-address: ${system_config_consul_instance_ip:${spring.cloud.client.ip-address}}
+        #服务的请求端口
+        port: ${system_config_consul_instance_port:${server.port}}
+        health-check-path: /monitor/health
+  datasource:
+    quartz:
+      url: jdbc:mysql://${local-server.ip}:10002/quartz${local-server.suffix}?userSSL=false&autoReconnect=true&failOverReadOnly=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=CONVERT_TO_NULL
+      jdbc-url: ${spring.datasource.url}
+      username: root
+      password: 1qaz@WSX
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      max-active: 200
+      max-idle: 100
+      min-idle: 50
+      initial-size: 10
+      maximum-pool-size: 100
+  quartz:
+    jdbc:
+      # 初始化Quartz表结构,项目第一次启动配置程always,然后改成never 否则已生成的job会被初始化掉
+      initialize-schema: never
+    #设置quartz任务的数据持久化方式，默认是内存方式
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: ${spring.application.name:}_etlCleanScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_  #Quartz表前缀
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            #线程数 一个任务使用一个线程
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+  data:
+    mongodb:
+      host: ${local-server.ip}
+      port: 10003
+      database: framework
+      username: admin
+      password: '123456'
+      authentication-database: admin
+      options:
+        always-use-m-beans: false
+        connect-timeout: 10000
+        heartbeat-connect-timeout: 20000
+        heartbeat-frequency: 10000
+        heartbeat-socket-timeout: 20000
+        local-threshold: 15
+        max-connection-idle-time: 0
+        max-connection-life-time: 0
+        max-connections-per-host: 50
+        max-wait-time: 120000
+        min-connections-per-host: 20
+        min-heartbeat-frequency: 500
+        server-selection-timeout: 5000
+        socket-keep-alive: false
+        socket-timeout: 0
+        ssl-enabled: false
+        ssl-invalid-host-name-allowed: false
+        threads-allowed-to-block-for-connection-multiplier: 5
+  redis:
+    database: ${local-server.redis-db-num}
+    host: ${local-server.redis-ip}
+    password: 1qaz@WSX
+    pool:
+      max-active: 100
+      max-idle: 20
+      max-wait: 18000
+      min-idle: 20
+    port: 10004
+    timeout: 180000
+  security:
+    salt-password: "Vt@pfkkxc43mpuFn"   #密码加盐，其它微服务用户注册时应该和些值保持一致，生产环境应该要进行二次加密
+    excludedAuthPages: /login?logout,/auth/login,*/logout,${management.endpoints.web.base-path:monitor}/health,${system.config.excludedAuthPages:}
+server:
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    max-connections: 20000
+    connection-timeout: 30000
+sys:
+  setting:
+    #    app:
+    #      cacheName: "${spring.application.noGroupName:}:" #暂时不用，避免缓存不一致的问题
+    default:
+      exclude-url: /monitor/health,/monitor/info,/monitor/env,/monitor/mappings
+  logger:
+    mongodb:
+      expire:
+        days: 60 # 默认保留两天的数据
+  resttemplate:
+    connection-request-timeout: 10000
+    connect-timeout: 10000
+    read-timeout: 10000
+system:
+  current_profies_active: prod
+  mfa:
+    enabled: false # 全局拦截器暂时不开放，只通过拦截切面处理
+    exclude-uri: ${system.api.inner.url-patterns:},${system.mfa.other-url:},/monitor/*,/user/menu/getMenus
+    expired-time: 1800
+  api:
+    inner:
+      url-patterns: "/inner/**/*,/user/mfa/**/*,/userinfo/getUserByName"
+  logger:
+    mongodb:
+      expire:
+        days: 1 #生产默认保存60天的数据
+  aes:
+    enabled: true #是否放开aes加密，如果放开那么会加载AESService
+    key: "TW=>3S.z:9/;p5Im" #用于加密用，不要轻易改变，配置到配置中心需要进行加密
+    vi: "I)LNx.wf:2zM'sZ(" #用于加密用，不要轻易改变，配置到配置中心需要进行加密
+logging:  #LOG日志全局配置，默认为debug
+  level:
+    com.tensquare.base: debug
+    com:
+      apache:
+        ibatis: INFO
+      github:
+        pagehelper: INFO
+      baomidou:
+        mybatisplus: INFO
+    java:
+      sql:
+        Connection: INFO
+        PreparedStatement: INFO
+        Statement: INFO
+    org:
+      cloud: INFO
+      hibernate: ERROR
+      springframework:
+        web: INFO
+    root: INFO
+swagger:
+  show: true
