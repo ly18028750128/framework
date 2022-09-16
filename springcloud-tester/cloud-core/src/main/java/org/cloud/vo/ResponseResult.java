@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import org.cloud.constant.CoreConstant;
 
-public class ResponseResult extends LinkedHashMap<String, Object> {
+public class ResponseResult<E> extends LinkedHashMap<String, Object> {
 
     public final static String _HTTP_STATUS_CODE_KEY = "code";
     public final static String _STATUS_CODE_KEY = "status";
@@ -23,21 +23,35 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
         put(_HTTP_STATUS_CODE_KEY, status);
     }
 
-    public ResponseResult(int status, Object data) {
+    public ResponseResult(int status, E data) {
         put(_HTTP_STATUS_CODE_KEY, status);
         put(_STATUS_CODE_KEY, status);
         put(_DATA_KEY, data);
     }
 
-    public final static ResponseResult createFailResult() {
-        ResponseResult responseResult = new ResponseResult(CoreConstant.RestStatus.FAIL.value());
+    public static <E> ResponseResult<E> createFailResult() {
+        ResponseResult<E> responseResult = new ResponseResult<>(CoreConstant.RestStatus.FAIL.value());
         responseResult.setMessage("rest.failed.running");
         return responseResult;
     }
 
-    public final static ResponseResult createSuccessResult() {
-        ResponseResult responseResult = new ResponseResult(CoreConstant.RestStatus.SUCCESS.value());
+    public static <E> ResponseResult<E> createSuccessResult() {
+        ResponseResult<E> responseResult = new ResponseResult<>(CoreConstant.RestStatus.SUCCESS.value());
         responseResult.setMessage("rest.success.running");
+        return responseResult;
+    }
+
+    public static <E> ResponseResult<E> createSuccessResult(E data) {
+        ResponseResult<E> responseResult = new ResponseResult<>(CoreConstant.RestStatus.SUCCESS.value());
+        responseResult.setMessage("rest.success.running");
+        responseResult.setData(data);
+        return responseResult;
+    }
+
+    public static <E> ResponseResult<E> createSuccessResult(Collection<E> data) {
+        ResponseResult<E> responseResult = new ResponseResult<>(CoreConstant.RestStatus.SUCCESS.value());
+        responseResult.setMessage("rest.success.running");
+        responseResult.setData(data);
         return responseResult;
     }
 
@@ -55,16 +69,16 @@ public class ResponseResult extends LinkedHashMap<String, Object> {
      *
      * @param value
      */
-    public void addData(Object value) {
+    public void addData(E value) {
         Object datas = this.get(_DATA_KEY);
         if (datas == null) {
             this.put(_DATA_KEY, new ArrayList<>());
             datas = this.get(_DATA_KEY);
         }
         if (datas instanceof Collection) {
-            Collection dataCollection = ((Collection) datas);
-            if (value instanceof Collection) {
-                dataCollection.addAll((Collection) value);
+            Collection<E> dataCollection = ((Collection<E>) datas);
+            if (value instanceof Collection<?>) {
+                dataCollection.addAll((Collection<E>) value);
             } else {
                 dataCollection.add(value);
             }
