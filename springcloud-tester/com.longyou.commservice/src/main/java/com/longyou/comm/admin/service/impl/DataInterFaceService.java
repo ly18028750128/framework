@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.mongo.DataInterFaceVO;
+import org.cloud.utils.MD5Encoder;
 import org.cloud.utils.mongo.MongoDBUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -34,6 +35,7 @@ public class DataInterFaceService implements IDataInterFaceService {
             interFaceVO.setCreatedOrUpdateBy(user.getId());
             interFaceVO.setCreatedOrUpdateUserName(user.getUsername());
             interFaceVO.setCreatedOrUpdateTime(new Date());
+            interFaceVO.setMd5(MD5Encoder.encode(interFaceVO.getInterfaceName()));
             if (StringUtils.isEmpty(interFaceVO.get_id())) {
                 result.add(mongoTemplate.insert(interFaceVO));
             } else {

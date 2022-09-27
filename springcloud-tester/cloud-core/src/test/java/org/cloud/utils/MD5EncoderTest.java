@@ -20,8 +20,7 @@ public class MD5EncoderTest {
 
     @Test
     public void encode() {
-//        logger.debug(MD5Encoder.encode("123456", "想暴力破解没门"));
-        logger.debug(MD5Encoder.encode("87CTKFxGXpqa5ddh", "m!g7#PF#Q8dV!B!T"));
+        logger.debug(MD5Encoder.encode("", ""));
         logger.debug(MD5Encoder.encode("123456"));
     }
 

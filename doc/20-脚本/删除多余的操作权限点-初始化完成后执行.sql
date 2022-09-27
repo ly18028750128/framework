@@ -10,4 +10,4 @@ where t_frame_role_resource.resource_id in (
 
 delete
 from t_framework_resource
-where belong_microservice not in ('common-service', 'spring-gateway', 'chain-block-scan-service')
+where belong_microservice not in ('common-service', 'spring-gateway')

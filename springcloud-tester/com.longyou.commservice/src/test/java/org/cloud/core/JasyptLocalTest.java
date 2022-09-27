@@ -12,31 +12,31 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-
 @Slf4j
 public class JasyptLocalTest {
+
     final String aesKey = "";
     final String aesIV = "";
-    final String encKey = "~fBrtwQdx+V9dExh";
+    final String encKey = "";
 
     @Test
     public void encryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-//        passwordMap.put("mysql用户名：","");
-        passwordMap.put("mysql密码：","Pkbe8BKlk5vVukP3");
-        passwordMap.put("邮箱用户名：", "kidu@fmail.coinr.pro");
-        passwordMap.put("邮箱密码：", "aK3e9tUwh6GW7lhB");
-//        passwordMap.put("mongodb用户名：","");
-//        passwordMap.put("mongodb密码：","");
-//        passwordMap.put("redis密码：","");
-//        passwordMap.put("md5 salt","");
-//        passwordMap.put("aesKey：",aesKey);
-//        passwordMap.put("aesIV：",aesIV);
+        passwordMap.put("mysql用户名：", "");
+        passwordMap.put("mysql密码：", "");
+        passwordMap.put("邮箱用户名：", "");
+        passwordMap.put("邮箱密码：", "");
+        passwordMap.put("mongodb用户名：", "");
+        passwordMap.put("mongodb密码：", "");
+        passwordMap.put("redis密码：", "");
+        passwordMap.put("md5 salt", "");
+        passwordMap.put("aesKey：", aesKey);
+        passwordMap.put("aesIV：", aesIV);
         for (String key : passwordMap.keySet()) {
             String encryptStr = encrypt(passwordMap.get(key));
             Assert.assertEquals(passwordMap.get(key), decrypt(encryptStr));
-            log.info("{}\t{}", key, encryptStr);
+            log.info("{}\tENC(\"{}\")", key, encryptStr);
         }
     }
 
@@ -45,12 +45,12 @@ public class JasyptLocalTest {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
 //        passwordMap.put("withdraw.private-key","");
-        passwordMap.put("harvest-private-key","");
-        passwordMap.put("block.signPrivateKey","");
+        passwordMap.put("harvest-private-key", "");
+        passwordMap.put("block.signPrivateKey", "");
         for (String key : passwordMap.keySet()) {
-            String encryptStr =AES128Util.single().encrypt(passwordMap.get(key),aesKey,aesIV);
+            String encryptStr = AES128Util.single().encrypt(passwordMap.get(key), aesKey, aesIV);
             encryptStr = encrypt(encryptStr);
-            Assert.assertEquals(passwordMap.get(key),AES128Util.single().decrypt(decrypt(encryptStr),aesKey,aesIV) );
+            Assert.assertEquals(passwordMap.get(key), AES128Util.single().decrypt(decrypt(encryptStr), aesKey, aesIV));
             log.info("{}\t{}", key, encryptStr);
         }
     }
@@ -59,7 +59,7 @@ public class JasyptLocalTest {
     public void decryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("aaa","ORoHNLEhR4fkhwjQ+jgYfonSAkWc+PHrNth4qpyeHOam6i4vedmNIkOrcTNDYqhv");
+        passwordMap.put("aaa", "");
 //        passwordMap.put("bbb","");
 //        passwordMap.put("mongo","");
 //        passwordMap.put("salt","");
@@ -70,18 +70,16 @@ public class JasyptLocalTest {
     }
 
 
-
-
     @Test
     public void decryptTestAesAndEnc() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("harvest-private-key","");
-        passwordMap.put("block.signPrivateKey","");
+        passwordMap.put("harvest-private-key", "");
+        passwordMap.put("block.signPrivateKey", "");
 
         for (String key : passwordMap.keySet()) {
             String encryptStr = decrypt(passwordMap.get(key));
-            encryptStr = AES128Util.single().decrypt(encryptStr,aesKey,aesIV);
+            encryptStr = AES128Util.single().decrypt(encryptStr, aesKey, aesIV);
             log.info("{}\t{}", key, encryptStr);
         }
     }
@@ -89,6 +87,7 @@ public class JasyptLocalTest {
     private final StringEncryptor basicTextEncryptor;
 
     final static StandardPBEByteEncryptor pbeByteEncryptor = new StandardPBEByteEncryptor();
+
     static {
         pbeByteEncryptor.setAlgorithm("PBEWITHHMACSHA512ANDAES_256");
         pbeByteEncryptor.setIvGenerator(new org.jasypt.iv.RandomIvGenerator());
@@ -97,6 +96,7 @@ public class JasyptLocalTest {
     public JasyptLocalTest() {
         basicTextEncryptor = new SimplePBEStringEncryptor(pbeByteEncryptor);
     }
+
     /**
      * 明文加密
      *
@@ -107,6 +107,7 @@ public class JasyptLocalTest {
         // 使用的加密算法参考2.2节内容，也可以在源码的类注释中看到
         return basicTextEncryptor.encrypt(plaintext);
     }
+
     /**
      * 解密
      *
