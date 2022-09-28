@@ -60,8 +60,7 @@ public final class MongoDBUtil {
     public GridFSFile getGridFSFileByObjectId(final String _id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(_id)));
-        GridFSFile gridFSFile = gridFsTemplate.findOne(query);
-        return gridFSFile;
+        return gridFsTemplate.findOne(query);
     }
 
     public InputStream getInputStreamByObjectId(final String _id) {
@@ -79,7 +78,7 @@ public final class MongoDBUtil {
     /**
      * 分布搜索文件
      */
-    public PageInfo listFilePage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
+    public PageInfo<?> listFilePage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
         final Query query = new Query();
         if (!StringUtils.isEmpty(params.get("filename"))) {
             query.addCriteria(Criteria.where("filename").regex("(?i)(" + params.get("filename") + ")"));
