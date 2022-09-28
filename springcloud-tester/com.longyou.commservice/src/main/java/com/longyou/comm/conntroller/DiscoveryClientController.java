@@ -1,8 +1,12 @@
 package com.longyou.comm.conntroller;
 
-import java.util.ArrayList;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.vo.ResponseResult;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(value = "DiscoveryClientController", tags = "Discovery服务端管理")
+@SystemResource(path = "/discovery/client")
 @RestController
 @RequestMapping("/discovery/client")
 @Slf4j
@@ -22,16 +28,15 @@ public class DiscoveryClientController {
     @Autowired
     DiscoveryClient discoveryClient;
 
+    @ApiOperation(value = "getServices", notes = "获取所有微服务")
+    @SystemResource(value = "/getServices", description = "获取所有微服务", authMethod = AuthMethod.ALLSYSTEMUSER)
     @GetMapping("/getServices")
-    public ResponseResult getServices() {
-        ResponseResult successResult = ResponseResult.createSuccessResult();
+    public ResponseResult<String> getServices() {
         List<String> services = discoveryClient.getServices();
         String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
         services.sort((v1, v2) -> {
-
             v1 = v1.toUpperCase();
             v2 = v2.toUpperCase();
-
             if (SystemStringUtil.single().isNotEmpty(applicationGroup)
                 && (!v1.startsWith(applicationGroup))
                 && v2.startsWith(applicationGroup)) {
@@ -44,8 +49,7 @@ public class DiscoveryClientController {
                 return v1.compareTo(v2);
             }
         });
-        successResult.setData(services);
-        return successResult;
+        return ResponseResult.createSuccessResult(services);
     }
 
     /**
@@ -54,16 +58,12 @@ public class DiscoveryClientController {
      * @param serviceId serviceId
      * @return 服务实例
      */
+    @ApiOperation(value = "getServices", notes = "获取所有微服务")
+    @SystemResource(value = "/register/microservice", description = "获取所有微服务", authMethod = AuthMethod.BYUSERPERMISSION)
+    @ApiParam(name = "serviceId", value = "服务名称")
     @GetMapping("/getServiceInstances")
-    public ResponseResult getServiceInstances(@RequestParam("serviceId") String serviceId) {
-        List<ServiceInstance> serviceInstances = new ArrayList<>();
-        try {
-            serviceInstances = discoveryClient.getInstances(serviceId);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        ResponseResult successResult = ResponseResult.createSuccessResult();
-        successResult.setData(serviceInstances);
-        return successResult;
+    public ResponseResult<ServiceInstance> getServiceInstances(@RequestParam("serviceId") String serviceId) {
+        List<ServiceInstance> serviceInstances = discoveryClient.getInstances(serviceId);
+        return ResponseResult.createSuccessResult(serviceInstances);
     }
 }

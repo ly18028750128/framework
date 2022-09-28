@@ -1,6 +1,12 @@
 package com.longyou.comm.conntroller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.Map.Entry;
+import lombok.extern.slf4j.Slf4j;
+import org.cloud.annotation.SystemResource;
+import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SystemStringUtil;
@@ -22,19 +28,22 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+@Api(value = "QuartzClientController", tags = "定时任务查询")
+@SystemResource(path = "/quartz/client")
 @RestController
 @RequestMapping("/quartz/client")
+@Slf4j
 public class QuartzClientController {
-
-    Logger logger = LoggerFactory.getLogger(QuartzClientController.class);
 
     @Autowired
     DiscoveryClient discoveryClient;
 
+    @ApiOperation(value = "查询全部定时任务", notes = "查询全部定时任务,查询所有的相关微服务的定时任务")
+    @SystemResource(value = "/getAll", description = "查询全部定时任务", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseResult getQuartzJobs() throws Exception {
+    public ResponseResult<?> getQuartzJobs() throws Exception {
         String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
-        ResponseResult successResult = ResponseResult.createSuccessResult();
+        ResponseResult<?> successResult = ResponseResult.createSuccessResult();
         Map<String, List<Map>> quartzJobs = new HashMap<>();
         List<Callable<Boolean>> callables = new ArrayList<>();
         List<String> services = discoveryClient.getServices();
@@ -50,7 +59,7 @@ public class QuartzClientController {
                         quartzJobs.put(serviceId.toUpperCase(), response.getBody());
                     }
                 } catch (Exception e) {
-                    logger.info(serviceId + ",没有定时任务！");
+                    log.info(serviceId + ",没有定时任务！");
                 }
                 return true;
             });
@@ -73,9 +82,11 @@ public class QuartzClientController {
         return successResult;
     }
 
+    @ApiOperation(value = "查询运行中的定时任务", notes = "查询运行中的定时任务,查询所有的相关微服务的定时任务")
+    @SystemResource(value = "/getAllRunJob", description = "查询运行中的定时任务", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping(value = "/getAllRunJob", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseResult getQuartzRunJobs() throws Exception {
-        ResponseResult successResult = ResponseResult.createSuccessResult();
+    public ResponseResult<?> getQuartzRunJobs() throws Exception {
+        ResponseResult<?> successResult = ResponseResult.createSuccessResult();
         Map<String, List<Map>> quartzJobs = new LinkedHashMap<>();
         List<String> services = discoveryClient.getServices();
         for (String serviceId : services) {
@@ -84,7 +95,7 @@ public class QuartzClientController {
                 ResponseEntity<List> response = RestTemplateUtil.single().getResponse(url, HttpMethod.GET, List.class);
                 quartzJobs.put(serviceId.toUpperCase(), response.getBody());
             } catch (Exception e) {
-                logger.info(serviceId + ",没有运行中定时任务！");
+                log.info(serviceId + ",没有运行中定时任务！");
             }
         }
         successResult.setData(quartzJobs);

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(description = "图片接口", tags = "PhotoController")
+@Api(value = "PhotoController", tags = "图片接口")
 @Validated
 @RestController
 @RequestMapping("/photo/info")

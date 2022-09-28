@@ -2,6 +2,7 @@ package org.cloud.controller;
 
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
+import org.cloud.feign.service.ICommonServiceFeignClient;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
@@ -36,6 +37,9 @@ public class SystemResourceRegisterController {
     @Value("${spring.application.group:}")
     String appGroup;
 
+    @Autowired
+    ICommonServiceFeignClient commonServiceFeignClient;
+
     @RequestMapping("/register/all")
     @SystemResource(path = "/system/resource", value = "/register/all", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult register() throws Exception {
@@ -46,10 +50,8 @@ public class SystemResourceRegisterController {
             microserviceRegister.setCreateDate(new Date());
             microserviceRegister.setUpdateBy("admin");
             microserviceRegister.setUpdateDate(new Date());
-//            system/resource/register/microservice
             try {
-                ResponseEntity<ResponseResult> response = restTemplate.postForEntity("http://" + appGroup + "COMMON-SERVICE/system/resource/register/microservice", microserviceRegister, ResponseResult.class);
-                ResponseResult value = response.getBody();
+                logger.info("microserviceRegister:{}", commonServiceFeignClient.saveOrUpdateMicroserviceRegister(microserviceRegister));
             } catch (Exception e) {
                 logger.error("{}", e);
             }
@@ -59,8 +61,6 @@ public class SystemResourceRegisterController {
             logger.info("beanName:{}", beanName);
             SystemResource beanResourceAnnotation = AnnotationUtils.findAnnotation(beans.get(beanName).getClass(), SystemResource.class);
             logger.info("beanResourceAnnotation:{}", beanResourceAnnotation);
-            // todo 这里处理菜单创建的逻辑
-
             if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())) {
                 TFrameMenu parentMenu = null;
                 if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())) {
@@ -73,10 +73,8 @@ public class SystemResourceRegisterController {
                     parentMenu.setUpdateBy("admin");
                     parentMenu.setUpdateDate(new Date());
                     parentMenu.setStatus(1);
-
                     try {
-                        ResponseEntity<TFrameMenu> response = restTemplate.postForEntity("http://" + appGroup + "COMMON-SERVICE/system/resource/register/menu", parentMenu, TFrameMenu.class);
-                        parentMenu = response.getBody();
+                        logger.info("parentMenu:{}", commonServiceFeignClient.saveOrUpdateMenu(parentMenu));
                     } catch (Exception e) {
                         logger.error("{}", e);
                     }
@@ -95,8 +93,7 @@ public class SystemResourceRegisterController {
                 menu.setUpdateDate(new Date());
                 menu.setStatus(1);
                 try {
-                    ResponseEntity<TFrameMenu> response = restTemplate.postForEntity("http://" + appGroup + "COMMON-SERVICE/system/resource/register/menu", menu, TFrameMenu.class);
-                    TFrameMenu value = response.getBody();
+                    logger.info("menu:{}", commonServiceFeignClient.saveOrUpdateMenu(menu));
                 } catch (Exception e) {
                     logger.error("{}", e);
                 }
@@ -107,7 +104,6 @@ public class SystemResourceRegisterController {
                 SystemResource methodResourceAnnotation = AnnotationUtils.findAnnotation(declaredMethod, SystemResource.class);
                 if (methodResourceAnnotation != null) {
                     TFrameworkResource frameworkResource = new TFrameworkResource();
-
                     frameworkResource.setResourcePath(beanResourceAnnotation.path());
                     frameworkResource.setResourceCode(methodResourceAnnotation.value());
                     frameworkResource.setResourceName(methodResourceAnnotation.description());
@@ -117,18 +113,11 @@ public class SystemResourceRegisterController {
                     frameworkResource.setCreateDate(new Date());
                     frameworkResource.setUpdateBy("admin");
                     frameworkResource.setUpdateDate(new Date());
-
                     try {
-                        ResponseEntity<TFrameworkResource> response = restTemplate.postForEntity(
-                                "http://" + appGroup + "COMMON-SERVICE/system/resource/register/resource",
-                                frameworkResource, TFrameworkResource.class);
-                        frameworkResource = response.getBody();
+                        logger.info("frameworkResource:{}", commonServiceFeignClient.saveOrUpdateResource(frameworkResource));
                     } catch (Exception e) {
-                        logger.error("{}", e);
+                        logger.error(e.getMessage(), e);
                     }
-
-                    // todo 这里处理资源注册的相关逻辑
-                    logger.info("frameworkResource:{}", frameworkResource);
                 }
             }
         }

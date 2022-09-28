@@ -6,6 +6,8 @@ import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.service.IUserInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(value = "UserInfoController", tags = "用户管理")
 @RestController
 @RequestMapping(value = "/userinfo")
 @SystemResource(path = "/userinfo")
@@ -77,15 +80,17 @@ public class UserInfoController {
         return loginUserDetails;
     }
 
+    @ApiOperation(value = "admin-用户更新密码", notes = "admin-用户更新密码")
     @GetMapping(value = "/updatePassWord")
     @SystemResource(value = "updatePassWordByUser", description = "用户更新密码", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
-    public ResponseResult updatePassWordByUser(@RequestParam("oldPassword") String oldPassword,
-        @RequestParam("newPassword") String newPassword) throws Exception {
+    public ResponseResult updatePassWordByUser(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword)
+        throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(userInfoService.updatePassword(oldPassword, newPassword));
         return responseResult;
     }
 
+    @ApiOperation(value = "admin-禁用用户", notes = "admin-禁用用户")
     @GetMapping(value = "/disabledUser/{userId}")
     @SystemResource(value = "disabledUser", description = "禁用用户", authMethod = AuthMethod.BYUSERPERMISSION)
     public ResponseResult disabledUser(@PathVariable("userId") Long userId) throws Exception {
@@ -94,6 +99,7 @@ public class UserInfoController {
         return responseResult;
     }
 
+    @ApiOperation(value = "admin-启用用户", notes = "admin-启用用户")
     @GetMapping(value = "/enabledUser/{userId}")
     @SystemResource(value = "enabledUser", description = "启用用户", authMethod = AuthMethod.BYUSERPERMISSION)
     public ResponseResult enabledUser(@PathVariable("userId") Long userId) throws Exception {
@@ -106,29 +112,23 @@ public class UserInfoController {
     RedisUtil redisUtil;
 
     /**
-     * 校验当前用户的操作权限列表，所有的登录用户都可以调用
+     * 校验当前用户的操作权限列表，所有的登录用户都可以调用,用于控制按钮.
      *
      * @param operateAuthList
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "校验当前用户的操作权限列表", notes = "校验当前用户的操作权限列表，所有的登录用户都可以调用,用于控制按钮")
     @PostMapping(value = "/checkCurrentUserOperater")
-    @SystemResource(value = "checkCurrentUserOperater", description = "校验当前用户的操作权限列表", authMethod = AuthMethod.ALLSYSTEMUSER)
-    public ResponseResult checkCurrentUserOperater(@RequestBody List<String> operateAuthList) throws Exception {
-        ResponseResult responseResult = ResponseResult.createSuccessResult();
-
+    @SystemResource(value = "checkCurrentUserOperator", description = "校验当前用户的操作权限列表", authMethod = AuthMethod.ALLSYSTEMUSER)
+    public ResponseResult<Map<String, Boolean>> checkCurrentUserOperator(@RequestBody List<String> operateAuthList) throws Exception {
         Map<String, Boolean> checkResult = new LinkedHashMap<>(1);
-
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-
-        Set<String> currentUserOperateAuthSet = redisUtil
-            .hashGet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), UserCacheKey.FUNCTION.value());
-
+        Set<String> currentUserOperateAuthSet = redisUtil.hashGet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), UserCacheKey.FUNCTION.value());
         for (String operateAuth : operateAuthList) {
             checkResult.put(operateAuth, currentUserOperateAuthSet.contains(operateAuth));
         }
-        responseResult.setData(checkResult);
-        return responseResult;
+        return ResponseResult.createSuccessResult(checkResult);
     }
 
 }
