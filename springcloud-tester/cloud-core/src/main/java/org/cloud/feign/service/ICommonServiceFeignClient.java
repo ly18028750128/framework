@@ -19,15 +19,4 @@ public interface ICommonServiceFeignClient {
     @GetMapping(value = "/inner/userinfo/getCurrentUserRefByAttributeName")
     FrameUserRefVO getCurrentUserRefByAttributeName(@RequestParam("name") String attributeName);
 
-
-    @PostMapping(value = "/inner/system/resource/register/microservice", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseResult<Integer> saveOrUpdateMicroserviceRegister(@RequestBody TMicroserviceRegister microserviceRegister);
-
-    @PostMapping(value = "/inner/system/resource/register/menu", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseResult<TFrameMenu> saveOrUpdateMenu(@RequestBody TFrameMenu frameMenu);
-
-    @PostMapping(value = "/inner/system/resource/register/resource", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseResult<TFrameworkResource> saveOrUpdateResource(@RequestBody TFrameworkResource frameworkResource);
-
-
 }

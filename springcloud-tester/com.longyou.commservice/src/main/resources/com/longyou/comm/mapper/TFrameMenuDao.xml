@@ -62,6 +62,12 @@
             #{updateDate,jdbcType=TIMESTAMP},
             #{metaData,jdbcType=VARCHAR})
   </insert>
+  <select id="selectByMenuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_frame_menu
+    where menu_code = #{menuCode,jdbcType=VARCHAR}
+  </select>
   <insert id="insertSelective" keyColumn="menu_id" keyProperty="menuId"
     parameterType="org.cloud.model.TFrameMenu" useGeneratedKeys="true">
     <!--@mbg.generated-->

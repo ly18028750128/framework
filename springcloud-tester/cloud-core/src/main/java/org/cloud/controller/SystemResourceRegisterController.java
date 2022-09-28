@@ -3,6 +3,7 @@ package org.cloud.controller;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.feign.service.ICommonServiceFeignClient;
+import org.cloud.feign.service.ISystemResourceRegisterFeignClient;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
@@ -38,7 +39,7 @@ public class SystemResourceRegisterController {
     String appGroup;
 
     @Autowired
-    ICommonServiceFeignClient commonServiceFeignClient;
+    ISystemResourceRegisterFeignClient systemResourceRegisterFeignClient;
 
     @RequestMapping("/register/all")
     @SystemResource(path = "/system/resource", value = "/register/all", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
@@ -51,7 +52,7 @@ public class SystemResourceRegisterController {
             microserviceRegister.setUpdateBy("admin");
             microserviceRegister.setUpdateDate(new Date());
             try {
-                logger.info("microserviceRegister:{}", commonServiceFeignClient.saveOrUpdateMicroserviceRegister(microserviceRegister));
+                logger.info("microserviceRegister:{}", systemResourceRegisterFeignClient.saveOrUpdateMicroserviceRegister(microserviceRegister));
             } catch (Exception e) {
                 logger.error("{}", e);
             }
@@ -74,7 +75,7 @@ public class SystemResourceRegisterController {
                     parentMenu.setUpdateDate(new Date());
                     parentMenu.setStatus(1);
                     try {
-                        logger.info("parentMenu:{}", commonServiceFeignClient.saveOrUpdateMenu(parentMenu));
+                        logger.info("parentMenu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(parentMenu));
                     } catch (Exception e) {
                         logger.error("{}", e);
                     }
@@ -93,7 +94,7 @@ public class SystemResourceRegisterController {
                 menu.setUpdateDate(new Date());
                 menu.setStatus(1);
                 try {
-                    logger.info("menu:{}", commonServiceFeignClient.saveOrUpdateMenu(menu));
+                    logger.info("menu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(menu));
                 } catch (Exception e) {
                     logger.error("{}", e);
                 }
@@ -114,7 +115,7 @@ public class SystemResourceRegisterController {
                     frameworkResource.setUpdateBy("admin");
                     frameworkResource.setUpdateDate(new Date());
                     try {
-                        logger.info("frameworkResource:{}", commonServiceFeignClient.saveOrUpdateResource(frameworkResource));
+                        logger.info("frameworkResource:{}", systemResourceRegisterFeignClient.saveOrUpdateResource(frameworkResource));
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
