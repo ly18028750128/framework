@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/demo")
+@Deprecated
 public class DemoController {
 
     @GetMapping("/google/mfa/test")
