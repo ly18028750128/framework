@@ -26,7 +26,7 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 @SpringBootApplication(exclude = {RabbitAutoConfiguration.class})
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
-@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "com.unknow.first.mail.manager.feign"})
+@EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "com.unknow.first.mail.manager.feign", "org.cloud.feign.service"})
 @MapperScan({"com.unknow.first.mail.manager.mapper"})
 @ComponentScan({"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.scheduler", "org.cloud.mongo",
     "org.cloud.config.rest", "com.unknow.first.mail.manager.*", "org.cloud.config.async"})
