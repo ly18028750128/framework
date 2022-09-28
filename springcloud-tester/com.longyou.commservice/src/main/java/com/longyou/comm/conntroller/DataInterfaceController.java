@@ -9,11 +9,17 @@ import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+
+/**
+ * 已经迁移到mongo数据库中,这个类不再使用
+ * **/
 @RestController
 @RequestMapping("/common/config/datainterface")
 @SystemResource(path = "系统管理/接口配置", index = 1,
         menuName = "接口配置", menuCode = "menu_datainterface_config",
         parentMenuCode = "menu_system_manager", parentMenuName = "系统管理")
+@Deprecated
 public class DataInterfaceController {
     @Autowired
     DataInterfaceService dataInterfaceService;

@@ -35,8 +35,8 @@ public class DataInterFaceService implements IDataInterFaceService {
             interFaceVO.setCreatedOrUpdateBy(user.getId());
             interFaceVO.setCreatedOrUpdateUserName(user.getUsername());
             interFaceVO.setCreatedOrUpdateTime(new Date());
-            interFaceVO.setMd5(MD5Encoder.encode(interFaceVO.getInterfaceName()));
-            if (StringUtils.isEmpty(interFaceVO.get_id())) {
+            if (!StringUtils.hasLength(interFaceVO.get_id())) {
+                interFaceVO.setMd5(MD5Encoder.encode(interFaceVO.getInterfaceName()));
                 result.add(mongoTemplate.insert(interFaceVO));
             } else {
                 Query query = new Query();
