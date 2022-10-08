@@ -5,7 +5,7 @@ public final class MongoEnumVO {
     /**
      * 运算符
      */
-    public static enum MongoOperatorEnum {
+    public enum MongoOperatorEnum {
         GTE("gte", "大于等于"),
         LTE("lte", "小于等于"),
         GT("gt", "大于"),
@@ -34,7 +34,7 @@ public final class MongoEnumVO {
     /**
      * 关系运算符，先定义着，暂时不支持
      */
-    public static enum RelationalOperator {
+    public enum RelationalOperator {
         AND("and", "并且"),
         OR("or", "或者"),
         NOR("nor", "或者取反");
@@ -50,7 +50,7 @@ public final class MongoEnumVO {
     /**
      * 数据类型
      */
-    public static enum DataType {
+    public enum DataType {
         Double("Double", 1, ""),
         String("String", 2, ""),
         Object("Object", 3, ""),

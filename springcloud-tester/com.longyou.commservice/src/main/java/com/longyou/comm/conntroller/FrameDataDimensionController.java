@@ -1,6 +1,8 @@
 package com.longyou.comm.conntroller;
 
 import com.longyou.comm.service.FrameDataDimensionService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.Map;
 import org.cloud.annotation.SystemResource;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(value="FrameDataDimensionController",tags = "数据权限配置接口")
 @RestController
 @SystemResource(path = "/admin/dataDimension")
 @RequestMapping("/admin/dataDimension")
@@ -36,29 +39,24 @@ public class FrameDataDimensionController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "查询用户的操作权限点")
     @SystemResource(value = "queryDataDimensionListByTypeAndId", description = "按类型查询数据权限", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping("/queryDataDimensionListByTypeAndId")
-    public ResponseResult queryDataDimensionListByTypeAndId(@RequestParam("dataDimensionType") String dataDimensionType,
+    public ResponseResult<FrameDataDimension> queryDataDimensionListByTypeAndId(@RequestParam("dataDimensionType") String dataDimensionType,
         @RequestParam("referId") Long referId, @RequestParam(value = "status", required = false) Integer status) throws Exception {
-        ResponseResult successResponseResult = ResponseResult.createSuccessResult();
-        successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(dataDimensionType, referId, status));
-        return successResponseResult;
+        return ResponseResult.createSuccessResult(frameDataDimensionService.selectDataDimensionByUserId(dataDimensionType, referId, status));
     }
 
-
+    @ApiOperation(value = "查询用户的操作权限点")
     @SystemResource(value = "insertOrUpdateBatch", description = "批量更新数据权限", authMethod = AuthMethod.BYUSERPERMISSION)
     @PostMapping("/insertOrUpdateBatch")
-    public ResponseResult insertOrUpdateBatch(@RequestBody List<FrameDataDimension> records)
+    public ResponseResult<Integer> insertOrUpdateBatch(@RequestBody List<FrameDataDimension> records)
         throws Exception {
-
         Map<Integer, List<ValidateResultVO>> validateResult = ValidateUtil.single().validate(records, GroupForUpdate.class);
         if (CollectionUtil.single().isNotEmpty(validateResult)) {
-            throw new BusinessException("", validateResult);
+            throw new BusinessException("参数校验失败!", validateResult);
         }
-
-        ResponseResult successResponseResult = ResponseResult.createSuccessResult();
-        successResponseResult.setData(frameDataDimensionService.insertOrUpdateBatch(records));
-        return successResponseResult;
+        return ResponseResult.createSuccessResult(frameDataDimensionService.insertOrUpdateBatch(records));
     }
 
     /**
@@ -68,11 +66,10 @@ public class FrameDataDimensionController {
      * @return
      * @throws Exception
      */
+    @ApiOperation(value = "查询用户有效的数据权限列表")
     @SystemResource(value = "selectDataDimensionByUserId", description = "查询用户有效的数据权限列表", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping("/selectDataDimensionByUserId")
-    public ResponseResult selectDataDimensionByUserId(@RequestParam("userId") Long userId) throws Exception {
-        ResponseResult successResponseResult = ResponseResult.createSuccessResult();
-        successResponseResult.setData(frameDataDimensionService.selectDataDimensionByUserId(userId));
-        return successResponseResult;
+    public ResponseResult<FrameDataDimension> selectDataDimensionByUserId(@RequestParam("userId") Long userId) throws Exception {
+        return ResponseResult.createSuccessResult(frameDataDimensionService.selectDataDimensionByUserId(userId));
     }
 }

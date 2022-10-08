@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 此类将在未来的过程中不再维护，相关功能请用RedissonUtil
  */
-@Deprecated
 @Component
 public class RedisUtil {
     @Getter

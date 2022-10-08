@@ -137,7 +137,7 @@ public class DataDimensionInterceptor implements Interceptor {
 
     private String generateSingleDataDimension(final List<DataDimensionCondition> dataDimensionConditionList,
         Map<String, Set<String>> userDataDimensionMap) {
-        StringBuffer result = new StringBuffer("and (");
+        StringBuilder result = new StringBuilder("and (");
         for (int idx = 0; idx < dataDimensionConditionList.size(); idx++) {
             result.append(" ( ");
             final DataDimensionCondition dataDimension = dataDimensionConditionList.get(idx);
@@ -152,16 +152,13 @@ public class DataDimensionInterceptor implements Interceptor {
                     if ("in".equalsIgnoreCase(dataDimension.getOperator())) {
                         String mergeString = dataDimensionValueSet.stream().filter(string -> !string.isEmpty())
                             .collect(Collectors.joining("','"));
-                        result.append(
-                            " (" + dataDimension.getFieldName() + " " + dataDimension.getOperator() + " " + "('" + mergeString + "'))");
+                        result.append(" (").append(dataDimension.getFieldName()).append(" ").append(dataDimension.getOperator()).append(" ").append("('")
+                            .append(mergeString).append("'))");
                     } else {
                         int idx1 = 0;
-                        Iterator<String> dataDimensionIterator = dataDimensionValueSet.iterator();
-                        while (dataDimensionIterator.hasNext()) {
-                            result.append(
-                                " (" + dataDimension.getFieldName() + " " + dataDimension.getOperator() + " " + "'" + dataDimensionIterator
-                                    .next()
-                                    + "')");
+                        for (String s : dataDimensionValueSet) {
+                            result.append(" (").append(dataDimension.getFieldName()).append(" ").append(dataDimension.getOperator()).append(" ").append("'")
+                                .append(s).append("')");
                             idx1++;
                             if (idx1 < dataDimensionValueSet.size()) { // 最后一条不加连接符
                                 result.append(" or ");
@@ -172,7 +169,7 @@ public class DataDimensionInterceptor implements Interceptor {
             }
             result.append(" ) ");
             if (idx < dataDimensionConditionList.size() - 1) { // 最后一条不加连接符
-                result.append(" " + dataDimension.getConnector() + " ");
+                result.append(" ").append(dataDimension.getConnector()).append(" ");
             }
         }
         result.append(" )");

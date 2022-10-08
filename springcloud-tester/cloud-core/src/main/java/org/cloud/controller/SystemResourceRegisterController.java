@@ -1,8 +1,12 @@
 package org.cloud.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.Map;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
-import org.cloud.feign.service.ICommonServiceFeignClient;
 import org.cloud.feign.service.ISystemResourceRegisterFeignClient;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
@@ -15,15 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Map;
-
+@Api(value = "SystemResourceRegisterController", tags = "系统资源注册接口")
 @RestController
 @RequestMapping("/system/resource")
 public class SystemResourceRegisterController {
@@ -41,9 +42,10 @@ public class SystemResourceRegisterController {
     @Autowired
     ISystemResourceRegisterFeignClient systemResourceRegisterFeignClient;
 
-    @RequestMapping("/register/all")
+    @ApiOperation(value = "注册操作资源到数据库", notes = "注册资源到数据库")
+    @PostMapping("/register/all")
     @SystemResource(path = "/system/resource", value = "/register/all", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
-    public ResponseResult register() throws Exception {
+    public ResponseResult<Object> register() throws Exception {
         if (!SystemStringUtil.single().isEmpty(microName)) {
             TMicroserviceRegister microserviceRegister = new TMicroserviceRegister();
             microserviceRegister.setMicroserviceName(microName);
@@ -54,7 +56,7 @@ public class SystemResourceRegisterController {
             try {
                 logger.info("microserviceRegister:{}", systemResourceRegisterFeignClient.saveOrUpdateMicroserviceRegister(microserviceRegister));
             } catch (Exception e) {
-                logger.error("{}", e);
+                logger.error(e.getMessage(), e);
             }
         }
         Map<String, Object> beans = SpringContextUtil.getApplicationContext().getBeansWithAnnotation(SystemResource.class);
@@ -62,7 +64,7 @@ public class SystemResourceRegisterController {
             logger.info("beanName:{}", beanName);
             SystemResource beanResourceAnnotation = AnnotationUtils.findAnnotation(beans.get(beanName).getClass(), SystemResource.class);
             logger.info("beanResourceAnnotation:{}", beanResourceAnnotation);
-            if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())) {
+            if (beanResourceAnnotation != null && !SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())) {
                 TFrameMenu parentMenu = null;
                 if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())) {
                     parentMenu = new TFrameMenu();
@@ -77,7 +79,7 @@ public class SystemResourceRegisterController {
                     try {
                         logger.info("parentMenu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(parentMenu));
                     } catch (Exception e) {
-                        logger.error("{}", e);
+                        logger.error(e.getMessage(), e);
                     }
 
                 }
@@ -96,7 +98,7 @@ public class SystemResourceRegisterController {
                 try {
                     logger.info("menu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(menu));
                 } catch (Exception e) {
-                    logger.error("{}", e);
+                    logger.error(e.getMessage(), e);
                 }
             }
 

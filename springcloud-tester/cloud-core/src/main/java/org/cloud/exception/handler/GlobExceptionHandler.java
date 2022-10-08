@@ -30,7 +30,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ServletException.class)
-    public Map<String, Object> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
+    public ResponseResult handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 

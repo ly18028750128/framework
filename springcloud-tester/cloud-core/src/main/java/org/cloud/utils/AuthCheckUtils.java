@@ -1,5 +1,6 @@
 package org.cloud.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.UnauthorizedConstant;
 import org.cloud.context.RequestContextManager;
@@ -16,17 +17,18 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Set;
 
+@Slf4j
 public final class AuthCheckUtils {
-    private MongoTemplate mongoTemplate;
-    private RedisUtil redisUtil;
-    private Logger logger = LoggerFactory.getLogger(AuthCheckUtils.class);
+
+    private final MongoTemplate mongoTemplate;
+    private final RedisUtil redisUtil;
 
     private AuthCheckUtils() {
         mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         redisUtil = SpringContextUtil.getBean(RedisUtil.class);
     }
 
-    private static AuthCheckUtils instance = new AuthCheckUtils();
+    private static final AuthCheckUtils instance = new AuthCheckUtils();
 
     public static AuthCheckUtils single() {
         return instance;
@@ -44,13 +46,16 @@ public final class AuthCheckUtils {
         }
         if (!CoreConstant.AuthMethod.NOAUTH.equals(dataInterFaceVO.getAuthMethod())) {
             if (RequestContextManager.single().getRequestContext().getUser() == null) {
-                throw new BusinessException(UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), UnauthorizedConstant.LOGIN_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
+                throw new BusinessException(UnauthorizedConstant.LOGIN_UNAUTHORIZED.value(), UnauthorizedConstant.LOGIN_UNAUTHORIZED.description(),
+                    HttpStatus.UNAUTHORIZED.value());
             } else if (CoreConstant.AuthMethod.BYUSERPERMISSION.equals(dataInterFaceVO.getAuthMethod())) {
                 LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
-                Set<String> userDataiterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value());
-                if (userDataiterfaces == null || userDataiterfaces.isEmpty() || !userDataiterfaces.contains(md5)) {
-                    logger.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
-                    throw new BusinessException(UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(), UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
+                Set<String> userDataInterfaces = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
+                    CoreConstant.UserCacheKey.DATA_INTERFACE.value());
+                if (userDataInterfaces == null || userDataInterfaces.isEmpty() || !userDataInterfaces.contains(md5)) {
+                    log.error(loginUserDetails.getUsername() + ",正在非法的请求接口：" + md5);
+                    throw new BusinessException(UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.value(),
+                        UnauthorizedConstant.DATA_INTERFACE_UNAUTHORIZED.description(), HttpStatus.UNAUTHORIZED.value());
                 }
             }
         }
