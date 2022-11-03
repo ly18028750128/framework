@@ -34,6 +34,9 @@ public class FeignHeaderConfiguration {
                 return;
             }
             HttpHeaders headers = RestTemplateUtil.single().getHttpHeadersFromHttpRequest(request, new String[]{"authorization", "cookie"});
+            if(headers==null || headers.isEmpty()){
+                return;
+            }
             Map<String, Collection<String>> headersMap = new HashMap<>(headers);
             requestTemplate.headers(headersMap);
 
