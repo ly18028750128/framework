@@ -20,6 +20,8 @@ import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
@@ -28,8 +30,8 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign", "com.unknow.first.mail.manager.feign", "org.cloud.feign.service"})
 @MapperScan({"com.unknow.first.mail.manager.mapper"})
-@ComponentScan({"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.scheduler", "org.cloud.mongo",
-    "org.cloud.config.rest", "com.unknow.first.mail.manager.*", "org.cloud.config.async"})
+@ComponentScan(value = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.controller", "org.cloud.scheduler", "org.cloud.mongo",
+    "org.cloud.config.rest", "com.unknow.first.mail.manager.*", "org.cloud.config.async", } )
 @Slf4j
 public class GatewayApplication {
 
@@ -69,8 +71,7 @@ public class GatewayApplication {
     @Bean
     @ConditionalOnBean(ReactiveDiscoveryClient.class)
     @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
-    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient,
-        DiscoveryLocatorProperties properties) {
+    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
         return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
     }
 }
