@@ -53,3 +53,6 @@ spring:
     mongodb:
       option:
         server-selection-timeout: 10000
+swagger:
+  WebMvcEndpoint:
+    enabled: false

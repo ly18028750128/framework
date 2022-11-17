@@ -16,6 +16,7 @@ import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -25,6 +26,7 @@ import org.springframework.util.StringUtils;
  * 自定义BeanPostProcessor
  */
 @Configuration
+@ConditionalOnProperty(prefix = "swagger.WebMvcEndpoint", name = "enabled", matchIfMissing = true )
 @Slf4j
 public class MyBeanPostProcessor {
 
