@@ -3,11 +3,9 @@ package com.longyou.gateway.config;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,12 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
+import org.springframework.util.StringUtils;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(name = "spring.application.group")
+//@ConditionalOnProperty(name = "spring.application.group")
 @ComponentScan(value = {"org.cloud.config.swagger"}, excludeFilters = {
     @Filter(type = FilterType.REGEX, pattern = {"org.cloud.config.swagger.MyBeanPostProcessor",
         "springfox.documentation.swagger.web.InMemorySwaggerResourcesProvider"}),})
@@ -38,6 +37,9 @@ public class SwaggerResourceConfig {
     @Value("${management.endpoints.web.base-path:/actuator}")
     private String monitorPath;
 
+    @Value("${system.gateway.services:COMMON-SERVICE,SPRING-GATEWAY,CHAIN-BLOCK-SCAN-SERVICE}")  //
+    private List<String> servicesList;
+
     @Bean
     @Primary
     SwaggerResourcesProvider swaggerResourcesProvider(DiscoveryClient discoveryClient) {
@@ -46,16 +48,27 @@ public class SwaggerResourceConfig {
             final List<String> servers = discoveryClient.getServices();
 
             servers.stream()
-                   .filter(item -> item.startsWith(group) && (!item.contains("SPRING-GATEWAY")))
-                   .forEach(item -> {
+                   .filter(item -> {
 
+                       if (item.contains("SPRING-GATEWAY") || item.contains("consul")) {
+                           return false;
+                       }
                        try {
                            RestTemplateUtil.single()
                                            .getResponse("http://" + item + "/" + monitorPath + "/health", HttpMethod.GET, String.class);
-                           resourceList.add(swaggerResource(item, item.replace(group, "")));
+                           RestTemplateUtil.single()
+                                           .getResponse("http://" + item + "/v2/api-docs", HttpMethod.GET, String.class);
                        } catch (Exception e) {
-                           log.warn("[{}]服务不健康", item);
+                           log.warn("[{}]服务不健康或者未启用swagger", item);
+                           return false;
                        }
+                       if (StringUtils.hasLength(group)) {
+                           return item.startsWith(group);
+                       }
+                       return servicesList.contains(item);
+                   })
+                   .forEach(item -> {
+                       resourceList.add(swaggerResource(item, item.replace(group, "")));
                    });
 
             return resourceList;
