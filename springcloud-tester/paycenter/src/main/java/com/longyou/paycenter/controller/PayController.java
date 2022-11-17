@@ -41,7 +41,7 @@ public class PayController {
   public ResponseResult unifiedorder(@PathVariable("payPlatformIndex") Integer payPlatformIndex, @RequestBody Map<String, Object> params)
       throws Exception {
     PayAppConfig payAppConfig = payAppConfigList.getPlatformList().get(payPlatformIndex);
-    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PRFIX + payAppConfig.getType(), PayService.class);
+    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PREFIX + payAppConfig.getType(), PayService.class);
     return payService.unifiedorder(payPlatformIndex, payAppConfig, params);
   }
 
@@ -58,7 +58,7 @@ public class PayController {
   public ResponseResult refund(@PathVariable("payPlatformIndex") Integer payPlatformIndex, @RequestBody Map<String, Object> params)
       throws Exception {
     PayAppConfig payAppConfig = payAppConfigList.getPlatformList().get(payPlatformIndex);
-    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PRFIX + payAppConfig.getType(), PayService.class);
+    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PREFIX + payAppConfig.getType(), PayService.class);
     return payService.refund(payPlatformIndex, payAppConfig, params);
   }
 
@@ -77,7 +77,7 @@ public class PayController {
   public ResponseResult receiver(@PathVariable("payPlatformIndex") int payPlatformIndex, @RequestBody Map<String, Object> payResult,
       HttpServletRequest request, HttpServletResponse response) throws Exception {
     PayAppConfig payAppConfig = payAppConfigList.getPlatformList().get(payPlatformIndex);
-    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PRFIX + payAppConfig.getType(), PayService.class);
+    PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PREFIX + payAppConfig.getType(), PayService.class);
     return payService.receiver(payPlatformIndex, payAppConfig, payResult, request, response);
   }
 

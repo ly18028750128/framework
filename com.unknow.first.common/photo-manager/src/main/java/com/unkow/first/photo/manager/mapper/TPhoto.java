@@ -27,14 +27,14 @@ public class TPhoto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "主键id",example = "1")
+    @ApiModelProperty(value = "主键id")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @ApiModelProperty(value = "启动页-LAUNCH_PAGE；首页-BANNER")
     private String photoType;
 
-    @ApiModelProperty(value = "排序号（越大越靠前）",example = "0")
+    @ApiModelProperty(value = "排序号（越大越靠前）")
     private Integer sort;
 
     @ApiModelProperty(value = "图片资源地址")
@@ -43,7 +43,7 @@ public class TPhoto implements Serializable {
     @ApiModelProperty(value = "跳转链接")
     private String jumpUrl;
 
-    @ApiModelProperty(value = "状态（1正常；0禁用）",example = "1")
+    @ApiModelProperty(value = "状态（1正常；0禁用）")
     private Integer status;
 
     @ApiModelProperty(value = "创建时间")
@@ -55,6 +55,6 @@ public class TPhoto implements Serializable {
     @ApiModelProperty(value = "图片说明")
     private String photoDesc;
 
-    @ApiModelProperty(value = "语言类型",example = "0")
+    @ApiModelProperty(value = "语言类型")
     private Integer languageType;
 }

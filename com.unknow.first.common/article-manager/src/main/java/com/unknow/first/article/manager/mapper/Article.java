@@ -21,28 +21,28 @@ public class Article {
      * 主键id
      */
     @TableId(value = "id", type = IdType.INPUT)
-    @ApiModelProperty(value = "主键id",example = "1")
+    @ApiModelProperty(value = "主键id")
     private Integer id;
 
     /**
      * 类型（1分类；2文章）
      */
     @TableField(value = "node_type")
-    @ApiModelProperty(value = "类型（1分类；2文章）",example = "1")
+    @ApiModelProperty(value = "类型（1分类；2文章）")
     private Integer nodeType;
 
     /**
      * 分类时语言类型（1中文，2英文）
      */
     @TableField(value = "language_type")
-    @ApiModelProperty(value = "分类时语言类型（1中文，2英文）",example = "1")
+    @ApiModelProperty(value = "分类时语言类型（1中文，2英文）")
     private Integer languageType;
 
     /**
      * 所属分类id
      */
     @TableField(value = "parent_id")
-    @ApiModelProperty(value = "所属分类id",example = "0")
+    @ApiModelProperty(value = "所属分类id")
     private Integer parentId;
 
     /**
@@ -56,7 +56,7 @@ public class Article {
      * 排序号（越大越靠前）
      */
     @TableField(value = "article_sort")
-    @ApiModelProperty(value = "排序号（越大越靠前）",example = "1")
+    @ApiModelProperty(value = "排序号（越大越靠前）")
     private Integer articleSort;
 
     /**
@@ -98,7 +98,7 @@ public class Article {
      * 状态（1正常；0禁用）
      */
     @TableField(value = "`status`")
-    @ApiModelProperty(value = "状态（1正常；0禁用）",example = "1")
+    @ApiModelProperty(value = "状态（1正常；0禁用）")
     private Integer status;
 
     /**

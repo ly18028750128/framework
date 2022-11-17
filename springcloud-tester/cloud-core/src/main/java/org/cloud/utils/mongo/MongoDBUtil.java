@@ -21,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletResponse;
@@ -78,9 +79,9 @@ public final class MongoDBUtil {
     /**
      * 分布搜索文件
      */
-    public PageInfo<?> listFilePage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
+    public PageInfo<MongoDbGridFsVO> listFilePage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
         final Query query = new Query();
-        if (!StringUtils.isEmpty(params.get("filename"))) {
+        if (!ObjectUtils.isEmpty(params.get("filename"))) {
             query.addCriteria(Criteria.where("filename").regex("(?i)(" + params.get("filename") + ")"));
         }
         Criteria lengthWhere = null;
@@ -122,7 +123,7 @@ public final class MongoDBUtil {
             });
         }
         List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
-        PageInfo pageInfo = new PageInfo(listData);
+        PageInfo<MongoDbGridFsVO> pageInfo = new PageInfo<>(listData);
         pageInfo.setPageNum(page);
         pageInfo.setPageSize(pageSize);
         pageInfo.setTotal(mongoTemplate.getCollection("fs.files").countDocuments(query.getQueryObject()));

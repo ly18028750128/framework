@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(description = "文章管理", tags = "ArticleController")
+@Api(description = "文章管理", tags = "文章管理")
 @Validated
 @RestController
 @RequestMapping("/article")

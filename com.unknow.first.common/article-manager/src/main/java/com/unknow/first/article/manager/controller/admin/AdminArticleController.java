@@ -41,8 +41,8 @@ public class AdminArticleController {
 
     @ApiOperation(value = "管理员获取文章或分类列表", notes = "支持模糊查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "为空或0查询分类，大于0查询对应的文章", name = "parentId", paramType = "query"),
-            @ApiImplicitParam(value = "0禁用；1启用", name = "status", paramType = "query")
+            @ApiImplicitParam(value = "为空或0查询分类，大于0查询对应的文章", name = "parentId", paramType = "query",example = "0"),
+            @ApiImplicitParam(value = "0禁用；1启用", name = "status", paramType = "query",example = "0")
     })
     @SystemResource(value = "/admin-articleList", description = "管理员获取文章或分类列表", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.GET, value = "/articleList")

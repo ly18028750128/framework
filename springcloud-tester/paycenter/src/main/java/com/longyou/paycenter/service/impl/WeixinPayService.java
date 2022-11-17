@@ -33,7 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Service(PayService._PAY_SERVICE_PRFIX + "weixin-microapp")
+@Service(PayService._PAY_SERVICE_PREFIX + "weixin-microapp")
 @SystemResource(path="微信支付")
 public class WeixinPayService implements PayService {
 

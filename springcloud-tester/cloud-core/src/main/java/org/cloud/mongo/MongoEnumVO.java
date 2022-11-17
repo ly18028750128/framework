@@ -1,10 +1,16 @@
 package org.cloud.mongo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+
 public final class MongoEnumVO {
 
     /**
      * 运算符
      */
+    @ApiModel("mongo操作符定义")
+    @AllArgsConstructor
     public enum MongoOperatorEnum {
         GTE("gte", "大于等于"),
         LTE("lte", "小于等于"),
@@ -21,35 +27,34 @@ public final class MongoEnumVO {
         type("type", "类型"),  // int型，参考mongodb的字段编码
         ELEMMATCH("elemMatch", "按行匹配，如果数据有多行"),  // int型，参考mongodb的字段编码
         ;
+        @ApiModelProperty("操作符名称")
+        public final String name;
+        @ApiModelProperty("操作符描述")
+        public final String description;
 
-        private String name;
-        private String description;
-
-        MongoOperatorEnum(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
     }
 
     /**
      * 关系运算符，先定义着，暂时不支持
      */
+    @ApiModel("条件连接方式")
+    @AllArgsConstructor
     public enum RelationalOperator {
         AND("and", "并且"),
         OR("or", "或者"),
         NOR("nor", "或者取反");
-        private String name;
-        private String description;
 
-        RelationalOperator(String name, String description) {
-            this.name = name;
-            this.description = description;
-        }
+        @ApiModelProperty("连接方式名称")
+        public final String name;
+        @ApiModelProperty("连接方式描述")
+        public final String description;
     }
 
     /**
      * 数据类型
      */
+    @ApiModel("数据类型")
+    @AllArgsConstructor
     public enum DataType {
         Double("Double", 1, ""),
         String("String", 2, ""),
@@ -71,26 +76,12 @@ public final class MongoEnumVO {
         MinKey("Min key", 255, "Query with -1."),
         MaxKey("Max key", 127, "");
 
-        private String name;
-        private int id;
-        private String description;
-
-        DataType(String name, int typeId, String description) {
-            this.name = name;
-            this.description = description;
-        }
-
-        public int id() {
-            return id;
-        }
-
-        public String value() {
-            return name;
-        }
-
-        public String description() {
-            return description;
-        }
+        @ApiModelProperty("类型名称")
+        public final String name;
+        @ApiModelProperty("类型Id，对应mongo的id")
+        public final int id;
+        @ApiModelProperty("类型描述")
+        public final String description;
     }
 
 

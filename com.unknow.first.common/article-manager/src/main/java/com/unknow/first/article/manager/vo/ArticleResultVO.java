@@ -7,19 +7,19 @@ import lombok.Data;
 
 @Data
 public class ArticleResultVO {
-    @ApiModelProperty(value = "主键id",example = "1")
+    @ApiModelProperty(value = "主键id")
     private Integer id;
 
     @ApiModelProperty(value = "所属分类id")
     private Integer parentId;
 
-    @ApiModelProperty(value = "语言类型（1中文，2英文）",example = "1")
+    @ApiModelProperty(value = "语言类型（1中文，2英文）")
     private Integer languageType;
 
     @ApiModelProperty(value = "分类编码（当前为分类时不能为空）")
     private String classCode;
 
-    @ApiModelProperty(value = "排序号（越大越靠前）",example = "0")
+    @ApiModelProperty(value = "排序号（越大越靠前）")
     private Integer articleSort;
 
     @ApiModelProperty(value = "标题(分类名或文章标题)")
