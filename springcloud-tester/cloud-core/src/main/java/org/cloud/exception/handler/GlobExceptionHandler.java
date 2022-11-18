@@ -25,38 +25,38 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     final Logger logger = LoggerFactory.getLogger(GlobExceptionHandler.class);
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseResult handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerHttpClientErrorException(@NotNull HttpClientErrorException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response, e.getStatusCode().value());
     }
 
     @ExceptionHandler(ServletException.class)
-    public ResponseResult handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerServletException(@NotNull ServletException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(IOException.class)
-    public Map<String, Object> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerIOException(@NotNull IOException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseResult handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerHttpClientErrorException(@NotNull RuntimeException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseResult handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseResult handlerException(@NotNull Throwable e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerException(@NotNull Throwable e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseResult handlerBusinessException(@NotNull BusinessException e, @NotNull HttpServletResponse response) {
-        ResponseResult responseResult = ResponseResult.createFailResult();
+    public ResponseResult<?> handlerBusinessException(@NotNull BusinessException e, @NotNull HttpServletResponse response) {
+        ResponseResult<?> responseResult = ResponseResult.createFailResult();
         responseResult.setMessage(e.getMessage());
         responseResult.setData(e.getErrObject());
         response.setStatus(e.getHttpStatus());
@@ -65,16 +65,16 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseResult handlerSQLException(@NotNull SQLException e, @NotNull HttpServletResponse response) {
+    public ResponseResult<?> handlerSQLException(@NotNull SQLException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
 
-    private ResponseResult getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response, int httpStatus) {
+    private ResponseResult<?> getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response, int httpStatus) {
         if (e.getCause() != null && e.getCause() instanceof BusinessException) {
             return this.handlerBusinessException((BusinessException) e.getCause(), response);
         }
 
-        ResponseResult responseResult = ResponseResult.createFailResult();
+        ResponseResult<?> responseResult = ResponseResult.createFailResult();
 
         if ((e instanceof java.sql.SQLException)) {
             responseResult.setMessage(e.getMessage());
@@ -91,7 +91,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         return responseResult;
     }
 
-    private ResponseResult getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response) {
+    private ResponseResult<?> getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response, HttpStatus.BAD_REQUEST.value());
     }
 }

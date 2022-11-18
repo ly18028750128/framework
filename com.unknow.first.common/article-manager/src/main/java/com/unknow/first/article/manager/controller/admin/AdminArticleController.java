@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(description = "后台管理-文章管理", tags = "AdminArticleController")
+@Api(description = "后台管理-文章管理", tags = "admin:文档管理")
 @Validated
 @RestController
 @RequestMapping("/admin/article")

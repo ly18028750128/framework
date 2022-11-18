@@ -21,7 +21,7 @@ public class AimlController {
   @GetMapping("/askToAIML")
   public ResponseResult askToAIML(@RequestParam("keyWord") String keyWord) throws Exception {
     ResponseResult responseResult = ResponseResult.createSuccessResult();
-    responseResult.addData(askToAIML.response(keyWord));
+//    responseResult.addData(askToAIML.response(keyWord));
     return responseResult;
   }
 
@@ -31,14 +31,14 @@ public class AimlController {
   @GetMapping("/ask/{fieldName}")
   public ResponseResult askToLucene(@PathVariable("fieldName") String fieldName, @RequestParam("keyWord") String keyWord) throws Exception {
     ResponseResult responseResult = ResponseResult.createSuccessResult();
-    responseResult.addData(aimlIndexService.queryList(fieldName, keyWord, "question", "replay","label"));
+//    responseResult.addData(aimlIndexService.queryList(fieldName, keyWord, "question", "replay","label"));
     return responseResult;
   }
 
   @GetMapping("/askBot")
   public ResponseResult askBot(@RequestParam("keyWord") String keyWord) throws Exception {
     ResponseResult responseResult = ResponseResult.createSuccessResult();
-    responseResult.addData(ChartManager.getInstance().response(keyWord));
+//    responseResult.addData(ChartManager.getInstance().response(keyWord));
     return responseResult;
   }
 }

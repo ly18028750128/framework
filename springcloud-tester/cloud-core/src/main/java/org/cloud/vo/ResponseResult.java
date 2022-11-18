@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import org.cloud.constant.CoreConstant;
 
+/**
+ * 请使用CommonApiResult
+ * @param <E>
+ */
+@Deprecated
 public class ResponseResult<E> extends LinkedHashMap<String, Object> {
 
     public final static String _HTTP_STATUS_CODE_KEY = "code";
