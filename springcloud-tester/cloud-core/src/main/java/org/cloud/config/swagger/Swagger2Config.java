@@ -53,7 +53,7 @@ public class Swagger2Config {
 
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.OAS_30)
+        return new Docket(DocumentationType.SWAGGER_2)
             .enable(enabled)
             .apiInfo(this.apiInfo())
             .select()
