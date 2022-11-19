@@ -1,6 +1,11 @@
 package com.longyou.comm.admin.controller;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.cloud.annotation.SystemResource;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.mongo.MongoDBUtil;
@@ -18,6 +23,7 @@ import javax.servlet.ServletResponse;
 @RestController
 @RequestMapping(value = "/file/mongo", produces = MediaType.APPLICATION_JSON_VALUE)
 @SystemResource(path = "/resource/mongo", description = "系统资源文件管理，登录用户可以上传，任何人都可以查看，仅可上传图片，text，html文件等")
+@Api(value = "mongo：显示下载非个人文件",tags = "mongo：显示下载非个人文件")
 public class MongodbFileShowController {
 
     @Autowired
@@ -34,6 +40,8 @@ public class MongodbFileShowController {
      * @throws Exception
      */
     @GetMapping("show/{objectId}")
+    @ApiOperation("查看文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "objectId", value = "文件_id", dataType = "string", required = true, paramType = "path", example = "6378aaccca55bc6fff4f0eba")})
     public void show(@PathVariable("objectId") String _id, ServletResponse response) throws Exception {
         GridFSFile gridFSFile = MongoDBUtil.single().getGridFSFileByObjectId(_id);
         if (MongoDBUtil.single().isPersonalFile(gridFSFile)) {
@@ -50,6 +58,8 @@ public class MongodbFileShowController {
      * @throws Exception
      */
     @GetMapping("download/{objectId}")
+    @ApiOperation("下载文件")
+    @ApiImplicitParams({@ApiImplicitParam(name = "objectId", value = "文件_id", dataType = "string", required = true, paramType = "path", example = "6378aaccca55bc6fff4f0eba")})
     public void download(@PathVariable("objectId") String _id, ServletResponse response) throws Exception {
         GridFSFile gridFSFile = MongoDBUtil.single().getGridFSFileByObjectId(_id);
         if (MongoDBUtil.single().isPersonalFile(gridFSFile)) {

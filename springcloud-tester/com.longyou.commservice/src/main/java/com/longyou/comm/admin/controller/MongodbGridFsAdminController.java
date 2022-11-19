@@ -7,16 +7,15 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.ServletResponse;
 import org.bson.types.ObjectId;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.utils.mongo.MongoDBUtil;
+import org.cloud.utils.mongo.MongoGridFsQueryDTO;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.MongoDbGridFsVO;
-import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/admin/mongo/gridfs", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/admin/mongo/gridfs")
 @SystemResource(path = "/admin/mongo")
 @Api(description = "后台管理-文章管理", tags = "mongodb：管理员后台")
 public class MongodbGridFsAdminController {
@@ -44,13 +43,13 @@ public class MongodbGridFsAdminController {
     MongoTemplate mongoTemplate;
 
     @SystemResource(value = "查询上传文件", description = "管理员后台查询文件，需要授", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
-    @PostMapping("/list/{page}/{pageSize}")
+    @PostMapping(value = "/list/{page}/{pageSize}")
     @ApiOperation(value = "查询文件列表")
     @ApiImplicitParams({@ApiImplicitParam(name = "page", value = "页码", dataType = "int", required = true, paramType = "query", example = "0"),
         @ApiImplicitParam(name = "pageSize", value = "每页行数", dataType = "int", required = true, paramType = "query", example = "0"),
         @ApiImplicitParam(name = "params", value = "查询参数(filename/uploadDate/minSize/maxSize)", dataType = "json", required = true, example = "{}")})
     public CommonApiResult<PageInfo<MongoDbGridFsVO>> list(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize,
-        @RequestBody Map<String, Object> params) throws Exception {
+        @RequestBody MongoGridFsQueryDTO params) throws Exception {
         return CommonApiResult.createSuccessResult(MongoDBUtil.single().listFilePage(page, pageSize, params));
     }
 

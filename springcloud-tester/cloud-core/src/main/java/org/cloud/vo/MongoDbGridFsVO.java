@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import lombok.Data;
 import org.bson.types.ObjectId;
+import org.cloud.utils.mongo.MetadataDTO;
 
 @Data
 @ApiModel("mongo GridFs文件VO")
@@ -31,7 +32,7 @@ public class MongoDbGridFsVO {
     private Date uploadDate;
     @ApiModelProperty("md5hash值")
     private String md5;
-    @ApiModelProperty("其它属性")
-    private BasicDBObject metadata;
+    @ApiModelProperty("元数据")
+    private MetadataDTO metadata;
 
 }

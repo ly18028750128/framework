@@ -1,18 +1,41 @@
 package org.cloud.utils.mongo;
 
+import static org.cloud.utils.mongo.MongoDBEnum.metadataContentTypeKey;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangeFieldName;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataFilesSuffixFieldName;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataKey;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerFullNameKey;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerNameKey;
+
 import com.alibaba.fastjson.util.IOUtils;
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.cloud.constant.CoreConstant;
-import org.cloud.mongo.*;
+import org.cloud.constant.CoreConstant.DateTimeFormat;
+import org.cloud.mongo.MongoEnumVO;
+import org.cloud.mongo.MongoQueryOrder;
+import org.cloud.mongo.MongoQueryParam;
+import org.cloud.mongo.MongoQueryParamsDTO;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.MongoDbGridFsVO;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -21,30 +44,32 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-import java.beans.PropertyDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.stream.Collectors;
-
+@Slf4j
 public final class MongoDBUtil {
-    private Logger logger = LoggerFactory.getLogger(MongoDBUtil.class);
 
     private MongoDBUtil() {
+        setMongoTemplate();
+        setGridFsTemplate();
     }
 
-    private static MongoDBUtil instance = new MongoDBUtil();
+    private static final MongoDBUtil instance = new MongoDBUtil();
 
-    private MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
+    private MongoTemplate mongoTemplate;
 
-    private GridFsTemplate gridFsTemplate = SpringContextUtil.getBean(GridFsTemplate.class);
+    private GridFsTemplate gridFsTemplate;
+
+    @Lazy
+    private void setMongoTemplate() {
+        this.mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
+    }
+
+    @Lazy
+    private void setGridFsTemplate() {
+        this.gridFsTemplate = SpringContextUtil.getBean(GridFsTemplate.class);
+    }
 
     public static MongoDBUtil single() {
         return instance;
@@ -71,7 +96,7 @@ public final class MongoDBUtil {
         try {
             inputStream = resource.getInputStream();
         } catch (IOException e) {
-            logger.error(_id + "，获取文件流失败！");
+            log.error(_id + "，获取文件流失败！");
         }
         return inputStream;
     }
@@ -79,50 +104,78 @@ public final class MongoDBUtil {
     /**
      * 分布搜索文件
      */
-    public PageInfo<MongoDbGridFsVO> listFilePage(@NotNull int page, @NotNull int pageSize, Map<String, Object> params) throws Exception {
+    public PageInfo<MongoDbGridFsVO> listFilePage(@javax.validation.constraints.NotNull int page, @NotNull int pageSize,
+        MongoGridFsQueryDTO mongoGridFsQueryDTO) throws Exception {
+
         final Query query = new Query();
-        if (!ObjectUtils.isEmpty(params.get("filename"))) {
-            query.addCriteria(Criteria.where("filename").regex("(?i)(" + params.get("filename") + ")"));
+
+        if (!ObjectUtils.isEmpty(mongoGridFsQueryDTO.getFilename())) {
+            query.addCriteria(Criteria.where("filename").regex("(?i)(" + mongoGridFsQueryDTO.getFilename() + ")"));
         }
         Criteria lengthWhere = null;
-        if (!StringUtils.isEmpty(params.get("minSize"))) {
+        if (!ObjectUtils.isEmpty(mongoGridFsQueryDTO.getMinSize())) {
             lengthWhere = Criteria.where("length");
-            lengthWhere.gte(params.get("minSize"));
+            lengthWhere.gte(mongoGridFsQueryDTO.getMinSize());
         }
-        if (!StringUtils.isEmpty(params.get("maxSize"))) {
+        if (!ObjectUtils.isEmpty(mongoGridFsQueryDTO.getMaxSize())) {
             if (lengthWhere == null) {
                 lengthWhere = Criteria.where("length");
             }
-            lengthWhere.lte(params.get("maxSize"));
+            lengthWhere.lte(mongoGridFsQueryDTO.getMaxSize());
         }
         if (lengthWhere != null) {
             query.addCriteria(lengthWhere);
         }
 
-        if (params.get("uploadDate") != null) {
-            List<String> dateRange = (List<String>) params.get("uploadDate");
-            query.addCriteria(Criteria.where("uploadDate")
-                    .gte(CoreConstant.DateTimeFormat.ISODATE.getDateFormat().parse(dateRange.get(0)))
-                    .lte(CoreConstant.DateTimeFormat.ISODATE.getDateFormat().parse(dateRange.get(1))));
+        if (!ObjectUtils.isEmpty(mongoGridFsQueryDTO.getUploadDate())) {
+
+            query.addCriteria(Criteria.where("uploadDate").gte(mongoGridFsQueryDTO.getUploadDate().get(0)).lte(mongoGridFsQueryDTO.getUploadDate().get(1)));
         }
-        if (!StringUtils.isEmpty(params.get("_id"))) {
-            query.addCriteria(Criteria.where("_id").is(new ObjectId(params.get("_id").toString())));
-        }
-        if (!StringUtils.isEmpty(params.get(MongoDBEnum.metadataOwnerKey.value()))) {
-            query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + MongoDBEnum.metadataOwnerKey.value())
-                    .is(params.get(MongoDBEnum.metadataOwnerKey.value())));
+        if (!ObjectUtils.isEmpty(mongoGridFsQueryDTO.get_id())) {
+            query.addCriteria(Criteria.where("_id").is(new ObjectId(mongoGridFsQueryDTO.get_id())));
         }
 
-        //处理metadata参数
-        if ((params.get(MongoDBEnum.metadataKey.value()) != null) && (params.get(MongoDBEnum.metadataKey.value()) instanceof Map)) {
-            Map metaDataQuery = (Map) params.get(MongoDBEnum.metadataKey.value());
-            metaDataQuery.forEach((key, value) -> {
-                if (!StringUtils.isEmpty(value)) {
-                    query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + key).regex(value.toString()));
-                }
-            });
+        MetadataDTO metaData = mongoGridFsQueryDTO.getMetadata();
+
+//        @JsonProperty("fileAuthRange")
+//        @ApiModelProperty("文件拥有权")
+//        private List<String> fileAuthRange;
+
+        if (!ObjectUtils.isEmpty(metaData.getOwner())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + MongoDBEnum.metadataOwnerKey.value()).is(metaData.getOwner()));
         }
-        List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
+
+        if (!ObjectUtils.isEmpty(metaData.getContentType())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataContentTypeKey.value()).regex("(?i)(" + metaData.getContentType() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getOwnerName())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerNameKey.value()).regex("(?i)(" + metaData.getOwnerName() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getOwnerFullName())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerFullNameKey.value()).regex("(?i)(" + metaData.getOwnerFullName() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getSuffix())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataFilesSuffixFieldName.value()).regex("(?i)(" + metaData.getSuffix() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getRemark())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + ".remark").regex("(?i)(" + metaData.getRemark() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getTag())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + ".tag").regex("(?i)(" + metaData.getTag() + ")"));
+        }
+
+        if (!ObjectUtils.isEmpty(metaData.getFileAuthRangeList())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataFileAuthRangeFieldName.value()).in(metaData.getFileAuthRangeList()));
+        } else if (!ObjectUtils.isEmpty(metaData.getFileAuthRange())) {
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataFileAuthRangeFieldName.value()).is(metaData.getFileAuthRange()));
+        }
+
+        List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1L) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
         PageInfo<MongoDbGridFsVO> pageInfo = new PageInfo<>(listData);
         pageInfo.setPageNum(page);
         pageInfo.setPageSize(pageSize);
@@ -134,15 +187,16 @@ public final class MongoDBUtil {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            byte bs[] = new byte[1024];
+            byte[] bs = new byte[1024];
             GridFsResource resource = gridFsTemplate.getResource(gridFSFile);
             inputStream = resource.getInputStream();
             outputStream = response.getOutputStream();
             String contentType = "application/octet-stream";
-            if (gridFSFile.getMetadata().get(MongoDBEnum.metadataContentTypeKey.value()) != null) {
-                contentType = gridFSFile.getMetadata().get(MongoDBEnum.metadataContentTypeKey.value()).toString();
+            Assert.isTrue(gridFSFile.getMetadata() != null, "Metadata为空，文件格式不正确，请检查!");
+            if (gridFSFile.getMetadata().get(metadataContentTypeKey.value()) != null) {
+                contentType = gridFSFile.getMetadata().get(metadataContentTypeKey.value()).toString();
             }
-            response.setContentLength(new Long(gridFSFile.getLength()).intValue());
+            response.setContentLength(Long.valueOf(gridFSFile.getLength()).intValue());
             response.setContentType(contentType);
             if (response instanceof HttpServletResponse && isDownLoad) {
                 ((HttpServletResponse) response).setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
@@ -164,9 +218,9 @@ public final class MongoDBUtil {
      * @return
      */
     public boolean isPersonalFile(GridFSFile gridFSFile) {
-        return gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()) == null ||
-                MongoDBEnum.metadataFileAuthRangePersonal.equals(gridFSFile.getMetadata().get(MongoDBEnum.metadataFileAuthRangeFieldName.value()))
-                ;
+        Assert.isTrue(gridFSFile.getMetadata() != null, "Metadata为空，文件格式不正确，请检查!");
+        return gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()) == null || MongoDBEnum.metadataFileAuthRangePersonal.equals(
+            gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()));
     }
 
     public Query buildQuery(final List<MongoQueryParam> paramsVOS, Map<String, Boolean> fields) throws Exception {
@@ -178,14 +232,17 @@ public final class MongoDBUtil {
         for (MongoQueryParam param : paramsVOS) {
             Criteria criteria = buildCriteria(param);
             if (MongoEnumVO.RelationalOperator.AND.equals(param.getRelationalOperator())) {
-                if (criteria != null)
+                if (criteria != null) {
                     andCriteria.add(criteria);
+                }
             } else if (MongoEnumVO.RelationalOperator.OR.equals(param.getRelationalOperator())) {
-                if (criteria != null)
+                if (criteria != null) {
                     orCriteria.add(buildCriteria(param));
+                }
             } else if (MongoEnumVO.RelationalOperator.NOR.equals(param.getRelationalOperator())) {
-                if (criteria != null)
+                if (criteria != null) {
                     norCriteria.add(buildCriteria(param));
+                }
             }
         }
         // 优先级 and>or>nor ,正常情况下都是and，如果查询很复杂还是要自己编写脚本，这里只是解决一部分问题
@@ -219,11 +276,10 @@ public final class MongoDBUtil {
     }
 
     private Criteria buildCriteria(MongoQueryParam param) throws Exception {
-        Criteria criteria = new Criteria();
         if (CollectionUtil.single().isEmpty(param.getValue())) {
             return null;
         }
-        criteria = criteria.where(param.getName());
+        Criteria criteria = Criteria.where(param.getName());
         if (MongoEnumVO.MongoOperatorEnum.IS.equals(param.getOperator())) {
             criteria = criteria.is(param.getValue());
         } else if (MongoEnumVO.MongoOperatorEnum.NE.equals(param.getOperator())) {
@@ -247,13 +303,13 @@ public final class MongoDBUtil {
         } else if (MongoEnumVO.MongoOperatorEnum.type.equals(param.getOperator())) {
             criteria = criteria.type(Integer.parseInt(param.getValue().toString()));
         } else if (MongoEnumVO.MongoOperatorEnum.BETWEEN.equals(param.getOperator())) {
-            List values = (List) param.getValue();
+            List<?> values = (List<?>) param.getValue();
             if (MongoEnumVO.DataType.Date.equals(param.getDataType())) {
-                if (!StringUtils.isEmpty(values.get(0))) {
-                    criteria = criteria.gte(CoreConstant.DateTimeFormat.ISODATE.getDateFormat().parse(values.get(0).toString()));
+                if (!ObjectUtils.isEmpty(values.get(0))) {
+                    criteria = criteria.gte(DateTimeFormat.ISODATE.getDateFormat().parse(values.get(0).toString()));
                 }
-                if (!StringUtils.isEmpty(values.get(1))) {
-                    criteria = criteria.lte(CoreConstant.DateTimeFormat.ISODATE.getDateFormat().parse(values.get(1).toString()));
+                if (!ObjectUtils.isEmpty(values.get(1))) {
+                    criteria = criteria.lte(DateTimeFormat.ISODATE.getDateFormat().parse(values.get(1).toString()));
                 }
             } else {
                 criteria = criteria.gte(values.get(0)).lte(values.get(1));
@@ -261,7 +317,7 @@ public final class MongoDBUtil {
         } else if (MongoEnumVO.MongoOperatorEnum.REGEX.equals(param.getOperator())) {
             criteria = criteria.regex(param.getValue().toString());
         } else {
-            logger.info("您的操作暂时不支持");
+            log.info("您的操作暂时不支持");
         }
         if (criteria.getCriteriaObject().size() > 0) {
             return criteria;
@@ -269,16 +325,9 @@ public final class MongoDBUtil {
         return null;
     }
 
-    public <T> PageInfo<T> paged(Long pageNum, Long pageSize, MongoQueryParamsDTO queryParamsDTO, Class cls, String collectionName) throws Exception {
+    public <T> PageInfo<T> paged(Long pageNum, Long pageSize, MongoQueryParamsDTO queryParamsDTO, Class<T> cls, String collectionName) throws Exception {
         Query query = MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
         PageInfo<T> pageInfo = new PageInfo<>();
-        Long count = 0L;
-        if (collectionName == null) {
-            count = mongoTemplate.count(query, DataInterFaceVO.class);
-        } else {
-            count = mongoTemplate.count(query, collectionName);
-        }
-        pageInfo.setTotal(count);
 
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));
@@ -286,17 +335,19 @@ public final class MongoDBUtil {
         query.skip((pageNum - 1) * pageSize).limit(pageSize.intValue());
         if (collectionName == null) {
             pageInfo.setList(mongoTemplate.find(query, cls));
+            pageInfo.setTotal(mongoTemplate.count(query, cls));
         } else {
             pageInfo.setList(mongoTemplate.find(query, cls, collectionName));
+            pageInfo.setTotal(mongoTemplate.count(query, collectionName));
         }
         return pageInfo;
     }
 
-    public <T> PageInfo<T> paged(Long pageNum, Long pageSize, MongoQueryParamsDTO queryParamsDTO, Class cls) throws Exception {
+    public <T> PageInfo<T> paged(Long pageNum, Long pageSize, MongoQueryParamsDTO queryParamsDTO, Class<T> cls) throws Exception {
         return paged(pageNum, pageSize, queryParamsDTO, cls, null);
     }
 
-    public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class cls, String collectionName) throws Exception {
+    public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class<T> cls, String collectionName) throws Exception {
         Query query = new Query();
         if (!queryParamsDTO.getParams().isEmpty()) {
             query = MongoDBUtil.single().buildQuery(queryParamsDTO.getParams(), queryParamsDTO.getFields());
@@ -319,11 +370,11 @@ public final class MongoDBUtil {
     }
 
 
-    public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class cls) throws Exception {
+    public <T> List<T> list(MongoQueryParamsDTO queryParamsDTO, Class<T> cls) throws Exception {
         return list(queryParamsDTO, cls, null);
     }
 
-    public void updateByObjectIds(List<String> objectIds, Update update, Class cls, String collectionName) {
+    public void updateByObjectIds(List<String> objectIds, Update update, Class<?> cls, String collectionName) {
 
     }
 
@@ -332,7 +383,7 @@ public final class MongoDBUtil {
     }
 
     public List<ObjectId> convertStrIdsToObjectIds(String[] ids) {
-        return Arrays.asList(ids).stream().map(ObjectId::new).collect(Collectors.toList());
+        return Arrays.stream(ids).map(ObjectId::new).collect(Collectors.toList());
     }
 
     public Update buildUpdateByObject(Object value) throws InvocationTargetException, IllegalAccessException {
