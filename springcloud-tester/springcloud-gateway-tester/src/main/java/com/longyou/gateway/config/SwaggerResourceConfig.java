@@ -53,22 +53,22 @@ public class SwaggerResourceConfig {
                        if (item.contains("SPRING-GATEWAY") || item.contains("consul")) {
                            return false;
                        }
-                       try {
-                           RestTemplateUtil.single()
-                                           .getResponse("http://" + item + "/" + monitorPath + "/health", HttpMethod.GET, String.class);
-                           RestTemplateUtil.single()
-                                           .getResponse("http://" + item + "/v2/api-docs", HttpMethod.GET, String.class);
-                       } catch (Exception e) {
-                           log.warn("[{}]服务不健康或者未启用swagger", item);
-                           return false;
-                       }
                        if (StringUtils.hasLength(group)) {
                            return item.startsWith(group);
                        }
                        return servicesList.contains(item);
                    })
                    .forEach(item -> {
-                       resourceList.add(swaggerResource(item, item.replace(group, "")));
+                       try {
+                           RestTemplateUtil.single()
+                               .getResponse("http://" + item + "/" + monitorPath + "/health", HttpMethod.GET, String.class);
+                           RestTemplateUtil.single()
+                               .getResponse("http://" + item + "/v2/api-docs", HttpMethod.GET, String.class);
+
+                           resourceList.add(swaggerResource(item, item.replace(group, "")));
+                       } catch (Exception e) {
+                           log.warn("[{}]服务不健康或者未启用swagger", item);
+                       }
                    });
 
             return resourceList;
