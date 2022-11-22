@@ -2,9 +2,11 @@ package org.cloud.utils.mongo;
 
 import static org.cloud.utils.mongo.MongoDBEnum.metadataContentTypeKey;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangeFieldName;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePersonal;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataFilesSuffixFieldName;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataKey;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerFullNameKey;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerKey;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerNameKey;
 
 import com.alibaba.fastjson.util.IOUtils;
@@ -86,7 +88,18 @@ public final class MongoDBUtil {
     public GridFSFile getGridFSFileByObjectId(final String _id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(_id)));
-        return gridFsTemplate.findOne(query);
+        GridFSFile gridFSFile = gridFsTemplate.findOne(query);
+        Assert.notNull(gridFSFile, "未查询到文件");
+        return gridFSFile;
+    }
+
+    public GridFSFile getPersonalGridFSFileByObjectId(final String _id, Long userId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(_id)));
+        query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerKey.value()).is(userId));
+        GridFSFile gridFSFile = gridFsTemplate.findOne(query);
+        Assert.notNull(gridFSFile, "未查询到文件");
+        return gridFSFile;
     }
 
     public InputStream getInputStreamByObjectId(final String _id) {
@@ -142,7 +155,7 @@ public final class MongoDBUtil {
 //        private List<String> fileAuthRange;
 
         if (!ObjectUtils.isEmpty(metaData.getOwner())) {
-            query.addCriteria(Criteria.where(metadataKey.value() + "." + MongoDBEnum.metadataOwnerKey.value()).is(metaData.getOwner()));
+            query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerKey.value()).is(metaData.getOwner()));
         }
 
         if (!ObjectUtils.isEmpty(metaData.getContentType())) {
@@ -219,8 +232,8 @@ public final class MongoDBUtil {
      */
     public boolean isPersonalFile(GridFSFile gridFSFile) {
         Assert.isTrue(gridFSFile.getMetadata() != null, "Metadata为空，文件格式不正确，请检查!");
-        return gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()) == null || MongoDBEnum.metadataFileAuthRangePersonal.equals(
-            gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()));
+        return gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()) == null || metadataFileAuthRangePersonal.value()
+            .equals(gridFSFile.getMetadata().get(metadataFileAuthRangeFieldName.value()));
     }
 
     public Query buildQuery(final List<MongoQueryParam> paramsVOS, Map<String, Boolean> fields) throws Exception {
@@ -332,13 +345,18 @@ public final class MongoDBUtil {
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));
         }
+
+        if (collectionName == null) {
+            pageInfo.setTotal(mongoTemplate.count(query, cls));
+        } else {
+            pageInfo.setTotal(mongoTemplate.count(query, collectionName));
+        }
+
         query.skip((pageNum - 1) * pageSize).limit(pageSize.intValue());
         if (collectionName == null) {
             pageInfo.setList(mongoTemplate.find(query, cls));
-            pageInfo.setTotal(mongoTemplate.count(query, cls));
         } else {
             pageInfo.setList(mongoTemplate.find(query, cls, collectionName));
-            pageInfo.setTotal(mongoTemplate.count(query, collectionName));
         }
         return pageInfo;
     }

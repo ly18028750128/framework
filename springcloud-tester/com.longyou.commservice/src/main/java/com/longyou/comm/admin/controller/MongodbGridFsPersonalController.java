@@ -16,7 +16,6 @@ import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.exception.BusinessException;
 import org.cloud.utils.mongo.MetadataDTO;
 import org.cloud.utils.mongo.MongoDBEnum;
 import org.cloud.utils.mongo.MongoDBUtil;
@@ -29,7 +28,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,7 +102,7 @@ public class MongodbGridFsPersonalController {
         List<ObjectId> objectIds = ids.stream().map(ObjectId::new).collect(Collectors.toList());  //转换成新的对对象
         query.addCriteria(Criteria.where("_id").in(objectIds));
         query.addCriteria(Criteria.where(MongoDBEnum.metadataKey.value() + "." + MongoDBEnum.metadataOwnerKey.value())
-            .in(RequestContextManager.single().getRequestContext().getUser().getId()));  //
+            .is(RequestContextManager.single().getRequestContext().getUser().getId()));  //
         gridFsTemplate.delete(query);
         return ResponseResult.createSuccessResult();
     }
@@ -121,12 +119,10 @@ public class MongodbGridFsPersonalController {
     @ApiOperation(value = "下载个人文件")
     @ApiImplicitParams({@ApiImplicitParam(name = "_id", value = "文件_id", dataType = "string", required = true, paramType = "query", example = "_id1")})
     public void download(@RequestParam("_id") String _id, ServletResponse response) throws Exception {
-        GridFSFile gridFSFile = MongoDBUtil.single().getGridFSFileByObjectId(_id);
-        if (gridFSFile.getMetadata().get(MongoDBEnum.metadataOwnerKey.value()).equals(RequestContextManager.single().getRequestContext().getUser().getId())) {
-            MongoDBUtil.single().downloadOrShowFile(gridFSFile, response, true);
-        } else {
-            throw new BusinessException("您没有权限下载此文件", null, HttpStatus.UNAUTHORIZED.value());
-        }
+        GridFSFile gridFSFile = MongoDBUtil.single().getPersonalGridFSFileByObjectId(_id, RequestContextManager.single().getRequestContext().getUser().getId());
+
+        MongoDBUtil.single().downloadOrShowFile(gridFSFile, response, true);
+
     }
 
     /**
@@ -141,12 +137,8 @@ public class MongodbGridFsPersonalController {
     @ApiOperation(value = "显示个人文件")
     @ApiImplicitParams({@ApiImplicitParam(name = "_id", value = "文件_id", dataType = "string", required = true, paramType = "query", example = "_id1")})
     public void showFile(@RequestParam("_id") String _id, ServletResponse response) throws Exception {
-        GridFSFile gridFSFile = MongoDBUtil.single().getGridFSFileByObjectId(_id);
-        assert gridFSFile.getMetadata() != null;
-        if (gridFSFile.getMetadata().get(MongoDBEnum.metadataOwnerKey.value()).equals(RequestContextManager.single().getRequestContext().getUser().getId())) {
-            MongoDBUtil.single().downloadOrShowFile(gridFSFile, response, false);
-        } else {
-            throw new BusinessException("您没有权限查看此文件", null, HttpStatus.UNAUTHORIZED.value());
-        }
+        GridFSFile gridFSFile = MongoDBUtil.single().getPersonalGridFSFileByObjectId(_id, RequestContextManager.single().getRequestContext().getUser().getId());
+        MongoDBUtil.single().downloadOrShowFile(gridFSFile, response, false);
+
     }
 }
