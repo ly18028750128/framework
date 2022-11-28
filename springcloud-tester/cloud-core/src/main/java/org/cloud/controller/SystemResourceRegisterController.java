@@ -1,5 +1,6 @@
 package org.cloud.controller;
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.lang.reflect.Method;
@@ -7,10 +8,12 @@ import java.util.Date;
 import java.util.Map;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.feign.service.ISystemResourceRegisterFeignClient;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.vo.ResponseResult;
@@ -64,39 +67,29 @@ public class SystemResourceRegisterController {
             logger.info("beanName:{}", beanName);
             SystemResource beanResourceAnnotation = AnnotationUtils.findAnnotation(beans.get(beanName).getClass(), SystemResource.class);
             logger.info("beanResourceAnnotation:{}", beanResourceAnnotation);
-            if (beanResourceAnnotation != null && !SystemStringUtil.single().isEmpty(beanResourceAnnotation.menuCode())) {
-                TFrameMenu parentMenu = null;
-                if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())) {
-                    parentMenu = new TFrameMenu();
-                    parentMenu.setMenuCode(beanResourceAnnotation.parentMenuCode());
-                    parentMenu.setMenuName(beanResourceAnnotation.parentMenuName());
-                    parentMenu.setSeqNo(beanResourceAnnotation.index());
-                    parentMenu.setCreateBy("admin");
-                    parentMenu.setCreateDate(new Date());
-                    parentMenu.setUpdateBy("admin");
-                    parentMenu.setUpdateDate(new Date());
-                    parentMenu.setStatus(1);
-                    try {
-                        logger.info("parentMenu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(parentMenu));
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
+            TFrameMenu parentMenu = null;
+            if (beanResourceAnnotation == null) {
+                continue;
+            }
 
-                }
-                TFrameMenu menu = new TFrameMenu();
-                if (parentMenu != null) {
-                    menu.setParentMenuId(parentMenu.getMenuId());
-                }
-                menu.setMenuCode(beanResourceAnnotation.menuCode());
-                menu.setMenuName(beanResourceAnnotation.menuName());
-                menu.setSeqNo(beanResourceAnnotation.index());
-                menu.setCreateBy("admin");
-                menu.setCreateDate(new Date());
-                menu.setUpdateBy("admin");
-                menu.setUpdateDate(new Date());
-                menu.setStatus(1);
+            if (!SystemStringUtil.single().isEmpty(beanResourceAnnotation.parentMenuCode())) {
+                parentMenu = new TFrameMenu();
+                parentMenu.setMenuCode(beanResourceAnnotation.parentMenuCode());
+                parentMenu.setMenuName(beanResourceAnnotation.parentMenuName());
+                parentMenu.setSeqNo(beanResourceAnnotation.index());
+                parentMenu.setCreateBy("admin");
+                parentMenu.setCreateDate(new Date());
+                parentMenu.setUpdateBy("admin");
+                parentMenu.setUpdateDate(new Date());
+                parentMenu.setType(0);  // 类上注解定义为目录
+                parentMenu.setShowType(0);
+                parentMenu.setComponentPath("/layout/Layout");
+                parentMenu.setMenuUrl(beanResourceAnnotation.path());
+                parentMenu.setStatus(1);
                 try {
-                    logger.info("menu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(menu));
+                    String jsonStr = JSON.toJSONString(systemResourceRegisterFeignClient.saveOrUpdateMenu(parentMenu).getData());
+                    parentMenu = JSON.parseObject(jsonStr, TFrameMenu.class);
+                    logger.info("parentMenu:{}", parentMenu);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -105,24 +98,54 @@ public class SystemResourceRegisterController {
             Method[] methods = beans.get(beanName).getClass().getMethods();
             for (Method declaredMethod : methods) {
                 SystemResource methodResourceAnnotation = AnnotationUtils.findAnnotation(declaredMethod, SystemResource.class);
-                if (methodResourceAnnotation != null) {
-                    TFrameworkResource frameworkResource = new TFrameworkResource();
-                    frameworkResource.setResourcePath(beanResourceAnnotation.path());
-                    frameworkResource.setResourceCode(methodResourceAnnotation.value());
-                    frameworkResource.setResourceName(methodResourceAnnotation.description());
-                    frameworkResource.setBelongMicroservice(microName);
-                    frameworkResource.setMethod(methodResourceAnnotation.authMethod().value());
-                    frameworkResource.setCreateBy("admin");
-                    frameworkResource.setCreateDate(new Date());
-                    frameworkResource.setUpdateBy("admin");
-                    frameworkResource.setUpdateDate(new Date());
+                if (methodResourceAnnotation == null) {
+                    continue;
+                }
+                TFrameworkResource frameworkResource = new TFrameworkResource();
+                frameworkResource.setResourcePath(beanResourceAnnotation.path());
+                frameworkResource.setResourceCode(methodResourceAnnotation.value());
+                frameworkResource.setResourceName(methodResourceAnnotation.description());
+                frameworkResource.setBelongMicroservice(microName);
+                frameworkResource.setMethod(methodResourceAnnotation.authMethod().value());
+                frameworkResource.setCreateBy("admin");
+                frameworkResource.setCreateDate(new Date());
+                frameworkResource.setUpdateBy("admin");
+                frameworkResource.setUpdateDate(new Date());
+                try {
+                    logger.info("frameworkResource:{}", systemResourceRegisterFeignClient.saveOrUpdateResource(frameworkResource));
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                if (parentMenu != null && CollectionUtil.single().isNotEmpty(methodResourceAnnotation.menuCode())) {
+                    TFrameMenu menu = new TFrameMenu();
+                    menu.setMenuCode(methodResourceAnnotation.menuCode());
+                    menu.setMenuName(methodResourceAnnotation.menuName());
+                    menu.setSeqNo(methodResourceAnnotation.index());
+                    menu.setCreateBy("admin");
+                    menu.setParentMenuId(parentMenu.getMenuId());
+                    menu.setType(1);  //
+                    if (AuthMethod.BYUSERPERMISSION.equals(methodResourceAnnotation.authMethod())) {
+                        menu.setShowType(1);
+                        String functionResourceCode = String.format("%s::%s::%s", microName, beanResourceAnnotation.path(), methodResourceAnnotation.value());
+                        menu.setFunctionResourceCode(functionResourceCode);
+                    } else {
+                        menu.setShowType(0);
+                    }
+                    menu.setMenuUrl(methodResourceAnnotation.menuCode());
+//                    menu.setComponentPath("/layout/Layout");
+                    menu.setCreateDate(new Date());
+                    menu.setUpdateBy("admin");
+                    menu.setUpdateDate(new Date());
+                    menu.setStatus(1);
                     try {
-                        logger.info("frameworkResource:{}", systemResourceRegisterFeignClient.saveOrUpdateResource(frameworkResource));
+                        logger.info("menu:{}", systemResourceRegisterFeignClient.saveOrUpdateMenu(menu));
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
             }
+
+
         }
         return ResponseResult.createSuccessResult();
     }

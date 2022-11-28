@@ -64,6 +64,10 @@ public class ResponseResult<E> extends LinkedHashMap<String, Object> {
         put(_DATA_KEY, value);
     }
 
+    public <T> T  getData() {
+        return (T) get(_DATA_KEY);
+    }
+
     public void setMessage(Object value) {
         put(_MESSAGE_KEY, value);
     }
