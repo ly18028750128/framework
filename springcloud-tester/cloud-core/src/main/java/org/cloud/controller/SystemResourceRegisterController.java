@@ -45,7 +45,7 @@ public class SystemResourceRegisterController {
     @Autowired
     ISystemResourceRegisterFeignClient systemResourceRegisterFeignClient;
 
-    @ApiOperation(value = "注册操作资源到数据库", notes = "注册资源到数据库")
+    @ApiOperation(value = "注册操作资源到数据库", notes = "注册资源到数据库，可生成菜单")
     @PostMapping("/register/all")
     @SystemResource(path = "/system/resource", value = "/register/all", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public ResponseResult<Object> register() throws Exception {
