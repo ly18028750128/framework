@@ -61,7 +61,7 @@ public class MyBatisPlusUtil {
     }
 
 
-    public <R, Q> QueryWrapper<R> getPredicate(Class<R> obj, Q query) {
+    public <R, Q> QueryWrapper<R> getPredicate(Q query) {
         QueryWrapper<R> queryWrapper = new QueryWrapper<>();
         if (query == null) {
             return queryWrapper;
@@ -72,98 +72,102 @@ public class MyBatisPlusUtil {
                 boolean accessible = field.isAccessible();
                 field.setAccessible(true);
                 Query q = field.getAnnotation(Query.class);
-                if (q != null) {
-                    String propName = q.propName();
-                    String blurry = q.blurry();
-                    String attributeName = isBlank(propName) ? field.getName() : propName;
-                    attributeName = humpToUnderline(attributeName);
-                    Class<?> fieldType = field.getType();
-                    Object val = field.get(query);
-                    if (ObjectUtils.isEmpty(val) || "".equals(val)) {
-                        continue;
+                if (q == null) {
+                    if (CollectionUtil.single().isNotEmpty(field.get(query))) {
+                        queryWrapper.eq(humpToUnderline(field.getName()), field.get(query));
                     }
-                    // 模糊多字段
-                    if (!ObjectUtils.isEmpty(blurry)) {
-                        String[] blurrys = blurry.split(",");
-                        //queryWrapper.or();
-                        queryWrapper.and(wrapper -> {
-                            for (int i = 0; i < blurrys.length; i++) {
-                                String column = humpToUnderline(blurrys[i]);
-                                //if(i!=0){
-                                wrapper.or();
-                                //}
-                                wrapper.like(column, val.toString());
-                            }
-                        });
-                        continue;
-                    }
-                    String finalAttributeName = attributeName;
-                    switch (q.type()) {
-                        case EQUAL:
-                            //queryWrapper.and(wrapper -> wrapper.eq(finalAttributeName, val));
-                            queryWrapper.eq(attributeName, val);
-                            break;
-                        case GREATER_THAN:
-                            queryWrapper.ge(finalAttributeName, val);
-                            break;
-                        case GREATER_THAN_NQ:
-                            queryWrapper.gt(finalAttributeName, val);
-                            break;
-                        case LESS_THAN:
-                            queryWrapper.le(finalAttributeName, val);
-                            break;
-                        case LESS_THAN_NQ:
-                            queryWrapper.lt(finalAttributeName, val);
-                            break;
-                        case INNER_LIKE:
-                            queryWrapper.like(finalAttributeName, val);
-                            break;
-                        case LEFT_LIKE:
-                            queryWrapper.likeLeft(finalAttributeName, val);
-                            break;
-                        case RIGHT_LIKE:
-                            queryWrapper.likeRight(finalAttributeName, val);
-                            break;
-                        case IN:
-                            if ((val instanceof Collection) && CollectionUtil.single().isNotEmpty(val)) {
-                                queryWrapper.in(finalAttributeName, val);
-                            }
-                            break;
-                        case NOT_EQUAL:
-                            queryWrapper.ne(finalAttributeName, val);
-                            break;
-                        case NOT_NULL:
-                            queryWrapper.isNotNull(finalAttributeName);
-                            break;
-                        case BETWEEN:
-                            if ((val instanceof List) && CollectionUtil.single().isNotEmpty(val)) {
-                                List<?> between = (List<?>) val;
-                                queryWrapper.between(finalAttributeName, between.get(0), between.get(1));
-                            }
-                            break;
-                        case UNIX_TIMESTAMP:
-                            if ((val instanceof List) && CollectionUtil.single().isNotEmpty(val)) {
-                                List<?> UNIX_TIMESTAMP = (List<?>) val;
-                                if (!UNIX_TIMESTAMP.isEmpty()) {
-                                    SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                    if (UNIX_TIMESTAMP.size() == 1) {
-                                        Date time1 = fm.parse(UNIX_TIMESTAMP.get(0).toString());
-                                        queryWrapper.ge(finalAttributeName, time1);
-                                    } else if (UNIX_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(UNIX_TIMESTAMP.get(0))) {
-                                        Date time2 = fm.parse(UNIX_TIMESTAMP.get(1).toString());
-                                        queryWrapper.le(finalAttributeName, time2);
-                                    } else {
-                                        Date time1 = fm.parse(UNIX_TIMESTAMP.get(0).toString());
-                                        Date time2 = fm.parse(UNIX_TIMESTAMP.get(1).toString());
-                                        queryWrapper.between(finalAttributeName, time1, time2);
-                                    }
+                    continue;
+                }
+                String propName = q.propName();
+                String blurry = q.blurry();
+                String attributeName = isBlank(propName) ? field.getName() : propName;
+                attributeName = humpToUnderline(attributeName);
+                Object val = field.get(query);
+                if (ObjectUtils.isEmpty(val) || "".equals(val)) {
+                    continue;
+                }
+                // 模糊多字段
+                if (!ObjectUtils.isEmpty(blurry)) {
+                    String[] blurrys = blurry.split(",");
+                    //queryWrapper.or();
+                    queryWrapper.and(wrapper -> {
+                        for (String s : blurrys) {
+                            String column = humpToUnderline(s);
+                            //if(i!=0){
+                            wrapper.or();
+                            //}
+                            wrapper.like(column, val.toString());
+                        }
+                    });
+                    continue;
+                }
+                String finalAttributeName = attributeName;
+                switch (q.type()) {
+                    case EQUAL:
+                        //queryWrapper.and(wrapper -> wrapper.eq(finalAttributeName, val));
+                        queryWrapper.eq(attributeName, val);
+                        break;
+                    case GREATER_THAN:
+                        queryWrapper.ge(finalAttributeName, val);
+                        break;
+                    case GREATER_THAN_NQ:
+                        queryWrapper.gt(finalAttributeName, val);
+                        break;
+                    case LESS_THAN:
+                        queryWrapper.le(finalAttributeName, val);
+                        break;
+                    case LESS_THAN_NQ:
+                        queryWrapper.lt(finalAttributeName, val);
+                        break;
+                    case INNER_LIKE:
+                        queryWrapper.like(finalAttributeName, val);
+                        break;
+                    case LEFT_LIKE:
+                        queryWrapper.likeLeft(finalAttributeName, val);
+                        break;
+                    case RIGHT_LIKE:
+                        queryWrapper.likeRight(finalAttributeName, val);
+                        break;
+                    case IN:
+                        if ((val instanceof Collection) && CollectionUtil.single().isNotEmpty(val)) {
+                            queryWrapper.in(finalAttributeName, val);
+                        }
+                        break;
+                    case NOT_EQUAL:
+                        queryWrapper.ne(finalAttributeName, val);
+                        break;
+                    case NOT_NULL:
+                        queryWrapper.isNotNull(finalAttributeName);
+                        break;
+                    case BETWEEN:
+                        if ((val instanceof List) && CollectionUtil.single().isNotEmpty(val)) {
+                            List<?> between = (List<?>) val;
+                            queryWrapper.between(finalAttributeName, between.get(0), between.get(1));
+                        }
+                        break;
+                    case UNIX_TIMESTAMP:
+                        if ((val instanceof List) && CollectionUtil.single().isNotEmpty(val)) {
+                            List<?> UNIX_TIMESTAMP = (List<?>) val;
+                            if (!UNIX_TIMESTAMP.isEmpty()) {
+                                SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                if (UNIX_TIMESTAMP.size() == 1) {
+                                    Date time1 = fm.parse(UNIX_TIMESTAMP.get(0).toString());
+                                    queryWrapper.ge(finalAttributeName, time1);
+                                } else if (UNIX_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(UNIX_TIMESTAMP.get(0))) {
+                                    Date time2 = fm.parse(UNIX_TIMESTAMP.get(1).toString());
+                                    queryWrapper.le(finalAttributeName, time2);
+                                } else {
+                                    Date time1 = fm.parse(UNIX_TIMESTAMP.get(0).toString());
+                                    Date time2 = fm.parse(UNIX_TIMESTAMP.get(1).toString());
+                                    queryWrapper.between(finalAttributeName, time1, time2);
                                 }
                             }
-                            break;
-                        default:
-                            break;
-                    }
+                        }
+                        break;
+                    default:
+                        break;
                 }
+
                 field.setAccessible(accessible);
             }
         } catch (Exception e) {
@@ -187,7 +191,7 @@ public class MyBatisPlusUtil {
         return true;
     }
 
-    private List<Field> getAllFields(Class clazz, List<Field> fields) {
+    private List<Field> getAllFields(Class<?> clazz, List<Field> fields) {
         if (clazz != null) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             getAllFields(clazz.getSuperclass(), fields);
