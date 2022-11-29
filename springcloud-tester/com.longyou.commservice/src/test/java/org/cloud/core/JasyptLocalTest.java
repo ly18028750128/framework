@@ -17,22 +17,22 @@ public class JasyptLocalTest {
 
     final String aesKey = "";
     final String aesIV = "";
-    final String encKey = "";
+    final String encKey = "oC0dZ1mU3xI0jG6b";
 
     @Test
     public void encryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("mysql用户名：", "");
-        passwordMap.put("mysql密码：", "");
-        passwordMap.put("邮箱用户名：", "");
-        passwordMap.put("邮箱密码：", "");
-        passwordMap.put("mongodb用户名：", "");
-        passwordMap.put("mongodb密码：", "");
-        passwordMap.put("redis密码：", "");
-        passwordMap.put("md5 salt", "");
-        passwordMap.put("aesKey：", aesKey);
-        passwordMap.put("aesIV：", aesIV);
+        passwordMap.put("mysql用户名：", "Yby8zHKazx1y5Zi2knpYgCWZQcP0KZ");
+//        passwordMap.put("mysql密码：", "Yby8zHKazx1y5Zi2knpYgCWZQcP0KZ");
+//        passwordMap.put("邮箱用户名：", "");
+//        passwordMap.put("邮箱密码：", "");
+//        passwordMap.put("mongodb用户名：", "");
+//        passwordMap.put("mongodb密码：", "");
+//        passwordMap.put("redis密码：", "");
+//        passwordMap.put("md5 salt", "");
+//        passwordMap.put("aesKey：", aesKey);
+//        passwordMap.put("aesIV：", aesIV);
         for (String key : passwordMap.keySet()) {
             String encryptStr = encrypt(passwordMap.get(key));
             Assert.assertEquals(passwordMap.get(key), decrypt(encryptStr));
@@ -59,7 +59,7 @@ public class JasyptLocalTest {
     public void decryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("aaa", "");
+        passwordMap.put("aaa", "4eaugIcddVdWrTJvK36tEXOTGHVhkK155BwYRJyimlEjnpsKnUrMjz4eWK6dA81BOpDgHO5bgPFIMb1nGg3h2g==");
 //        passwordMap.put("bbb","");
 //        passwordMap.put("mongo","");
 //        passwordMap.put("salt","");

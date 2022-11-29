@@ -76,13 +76,13 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
         WebRequest request) {
-        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status,
         WebRequest request) {
-        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @NotNull
