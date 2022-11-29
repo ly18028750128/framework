@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "system.route.cors")
 public class CorsConfigVO {
     private String allowHeaders;
-    private String allowMethods;
+    private String allowMethods="*";
     private String allowOrgins;
     private String allowEpose;
 

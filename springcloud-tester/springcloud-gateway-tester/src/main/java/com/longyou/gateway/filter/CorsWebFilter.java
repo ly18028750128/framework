@@ -2,9 +2,12 @@ package com.longyou.gateway.filter;
 
 import com.longyou.gateway.config.vo.CorsConfigVO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
@@ -97,8 +100,15 @@ public class CorsWebFilter implements WebFilter {
 
     private void setCorsHeader(ServerWebExchange swe) {
         if (CorsUtils.isCorsRequest(swe.getRequest())) {
+
+            if(HttpMethod.OPTIONS.equals(swe.getRequest().getMethod())){
+                String allMethods = Arrays.stream(HttpMethod.values()).map(HttpMethod::name).collect(Collectors.joining(","));
+                swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", allMethods);
+            }else{
+                swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", Objects.requireNonNull(swe.getRequest().getMethod()).name());
+            }
+
             swe.getResponse().getHeaders().add("Access-Control-Allow-Origin", swe.getRequest().getHeaders().getOrigin());
-            swe.getResponse().getHeaders().add("Access-Control-Allow-Methods", corsConfigVO.getAllowMethods());
             swe.getResponse().getHeaders().add("Access-Control-Max-Age", "3600");
             swe.getResponse().getHeaders().add("Access-Control-Allow-Headers", corsConfigVO.getAllowHeaders());
             swe.getResponse().getHeaders().add("Access-Control-Allow-Credentials", "true");
