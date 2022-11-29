@@ -18,6 +18,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -69,6 +71,18 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         response.setStatus(e.getHttpStatus());
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
+        WebRequest request) {
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, HttpHeaders headers, HttpStatus status,
+        WebRequest request) {
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(ex.getMessage()), headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @NotNull
