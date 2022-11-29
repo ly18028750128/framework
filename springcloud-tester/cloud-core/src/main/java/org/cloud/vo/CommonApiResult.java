@@ -52,6 +52,13 @@ public class CommonApiResult<T> {
         return responseResult;
     }
 
+    public static <T> CommonApiResult<T> createFailResult(T data) {
+        CommonApiResult<T> responseResult = new CommonApiResult<>(CoreConstant.RestStatus.FAIL.value());
+        responseResult.setMessage("rest.failed.running");
+        responseResult.setData(data);
+        return responseResult;
+    }
+
     public static <T> CommonApiResult<T> createSuccessResult() {
         CommonApiResult<T> responseResult = new CommonApiResult<>(CoreConstant.RestStatus.SUCCESS.value());
         responseResult.setMessage("rest.success.running");

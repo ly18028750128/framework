@@ -1,23 +1,30 @@
 package org.cloud.exception.handler;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.CommonUtil;
+import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.ResponseResult;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
@@ -63,6 +70,24 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error(CommonUtil.single().getStackTrace(e));
         return responseResult;
     }
+
+    @NotNull
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @NotNull HttpHeaders headers, @NotNull HttpStatus status,
+        @NotNull WebRequest request) {
+        List<?> errorList = ex.getBindingResult().getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(errorList), headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @NotNull
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex, @NotNull HttpHeaders headers, @NotNull HttpStatus status,
+        @NotNull WebRequest request) {
+        ex.getAllErrors();
+        List<?> errorList = ex.getBindingResult().getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+        return handleExceptionInternal(ex, CommonApiResult.createFailResult(errorList), headers, HttpStatus.BAD_REQUEST, request);
+    }
+
 
     @ExceptionHandler(SQLException.class)
     public ResponseResult<?> handlerSQLException(@NotNull SQLException e, @NotNull HttpServletResponse response) {
