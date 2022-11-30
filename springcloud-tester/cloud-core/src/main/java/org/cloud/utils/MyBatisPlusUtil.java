@@ -150,7 +150,7 @@ public class MyBatisPlusUtil {
                             List<?> UNIX_TIMESTAMP = (List<?>) val;
                             if (!UNIX_TIMESTAMP.isEmpty()) {
                                 SimpleDateFormat fm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                if (UNIX_TIMESTAMP.size() == 1) {
+                                if (UNIX_TIMESTAMP.size() == 1 || (UNIX_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(UNIX_TIMESTAMP.get(1)))) {
                                     Date time1 = fm.parse(UNIX_TIMESTAMP.get(0).toString());
                                     queryWrapper.ge(finalAttributeName, time1);
                                 } else if (UNIX_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(UNIX_TIMESTAMP.get(0))) {
@@ -164,6 +164,25 @@ public class MyBatisPlusUtil {
                             }
                         }
                         break;
+                    case LONG_TIMESTAMP:
+                        if ((val instanceof List) && CollectionUtil.single().isNotEmpty(val)) {
+                            List<?> LONG_TIMESTAMP = (List<?>) val;
+                            if (!LONG_TIMESTAMP.isEmpty()) {
+                                if (LONG_TIMESTAMP.size() == 1 || (LONG_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(LONG_TIMESTAMP.get(1)))) {
+                                    Date time1 = new Date(new Long(LONG_TIMESTAMP.get(0).toString()));
+                                    queryWrapper.ge(finalAttributeName, time1);
+                                } else if (LONG_TIMESTAMP.size() == 2 && ObjectUtils.isEmpty(LONG_TIMESTAMP.get(0))) {
+                                    Date time2 = new Date(new Long(LONG_TIMESTAMP.get(1).toString()));
+                                    queryWrapper.le(finalAttributeName, time2);
+                                } else {
+                                    Date time1 = new Date(new Long(LONG_TIMESTAMP.get(0).toString()));
+                                    Date time2 = new Date(new Long(LONG_TIMESTAMP.get(1).toString()));
+                                    queryWrapper.between(finalAttributeName, time1, time2);
+                                }
+                            }
+                        }
+                        break;
+
                     default:
                         break;
                 }

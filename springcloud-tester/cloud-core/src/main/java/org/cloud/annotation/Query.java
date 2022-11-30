@@ -65,7 +65,12 @@ public @interface Query {
         NOT_NULL
         // 查询时间
         ,
-        UNIX_TIMESTAMP;
+        UNIX_TIMESTAMP
+        ,
+        LONG_TIMESTAMP
+        ;
+
+
     }
 
 }
