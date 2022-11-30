@@ -1,7 +1,10 @@
 package org.cloud.mybatis.interceptor;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -57,28 +60,27 @@ public class UserInterceptor implements Interceptor {
      * @return 返回执行结果
      */
     private Object executeInsert(final Executor executor, final MappedStatement ms, final Object paramObj) throws Exception {
-        final Field[] fields = paramObj.getClass().getDeclaredFields();
+        if (paramObj == null) {
+            return executor.update(ms, null);
+        }
 
         LoginUserDetails currentUser = RequestContextManager.single().getRequestContext().getUser();
-
         if (currentUser == null) {
             return executor.update(ms, paramObj);
         }
 
-        for (final Field field : fields) {
+        final Field[] fields = paramObj.getClass().getDeclaredFields();
+
+        List<Field> updateOrCreateField = Arrays.stream(fields).filter(
+            item -> item.getName().equals("createBy") || item.getName().equals("createdBy") || item.getName().equals("updateBy") || item.getName()
+                .equals("updatedBy")).collect(Collectors.toList());
+
+        for (final Field field : updateOrCreateField) {
             field.setAccessible(true);
-            final String fieldName = field.getName();
-            switch (fieldName) {
-                case "createBy":
-                case "updateBy":
-                    if (field.get(paramObj) instanceof String) {
-                        field.set(paramObj, currentUser.getUsername());
-                    } else if (field.get(paramObj) instanceof Long) {
-                        field.set(paramObj, currentUser.getId());
-                    }
-                    break;
-                default:
-                    break;
+            if (field.getType().equals(String.class)) {
+                field.set(paramObj, currentUser.getUsername());
+            } else {
+                field.set(paramObj, currentUser.getId());
             }
         }
         return executor.update(ms, paramObj);
@@ -94,26 +96,26 @@ public class UserInterceptor implements Interceptor {
      */
     private Object executeUpdate(final Executor executor, final MappedStatement ms, final Object paramObj) throws Exception {
 
-        LoginUserDetails currentUser = RequestContextManager.single().getRequestContext().getUser();
+        if (paramObj == null) {
+            return executor.update(ms, null);
+        }
 
+        LoginUserDetails currentUser = RequestContextManager.single().getRequestContext().getUser();
         if (currentUser == null) {
             return executor.update(ms, paramObj);
         }
 
         final Field[] fields = paramObj.getClass().getDeclaredFields();
-        for (final Field field : fields) {
+
+        List<Field> updateField = Arrays.stream(fields).filter(item -> item.getName().equals("updateBy") || item.getName().equals("updatedBy"))
+            .collect(Collectors.toList());
+
+        for (final Field field : updateField) {
             field.setAccessible(true);
-            final String fieldName = field.getName();
-            switch (fieldName) {
-                case "updateBy":
-                    if (field.getDeclaringClass().equals(String.class)) {
-                        field.set(paramObj, currentUser.getUsername());
-                    } else if (field.getDeclaringClass().equals(Long.class)) {
-                        field.set(paramObj, currentUser.getId());
-                    }
-                    break;
-                default:
-                    break;
+            if (field.getType().equals(String.class)) {
+                field.set(paramObj, currentUser.getUsername());
+            } else {
+                field.set(paramObj, currentUser.getId());
             }
         }
         return executor.update(ms, paramObj);
@@ -128,19 +130,17 @@ public class UserInterceptor implements Interceptor {
      * @return 返回执行结果
      */
     private Object executeDelete(final Executor executor, final MappedStatement ms, final Object paramObj) throws Exception {
-        final Field[] fields = paramObj.getClass().getDeclaredFields();
-        for (final Field field : fields) {
-            field.setAccessible(true);
-            final String fieldName = field.getName();
-            switch (fieldName) {
-                case "status":
 
-                    if (field.getDeclaringClass().equals(Integer.class)) {
-                        field.set(paramObj, -1);
-                    }
-                    break;
-                default:
-                    break;
+        if (paramObj == null) {
+            return executor.update(ms, null);
+        }
+
+        final Field[] fields = paramObj.getClass().getDeclaredFields();
+        List<Field> statusField = Arrays.stream(fields).filter(item -> item.getName().equals("status")).collect(Collectors.toList());
+        for (final Field field : statusField) {
+            field.setAccessible(true);
+            if (field.getType().equals(Integer.class)) {
+                field.set(paramObj, -1);
             }
         }
         return executor.update(ms, paramObj);
