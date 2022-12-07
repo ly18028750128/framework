@@ -1,18 +1,15 @@
 package org.cloud.vo;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import lombok.Data;
 import org.cloud.constant.CoreConstant;
 
 @Data
 public class CommonApiResult<T> {
 
-    //    public final static String _HTTP_STATUS_CODE_KEY = "code";
-//    public final static String _STATUS_CODE_KEY = "status";
-//    public final static String _MESSAGE_KEY = "message";
-//    public final static String _ERROR_RESULT_DATA_KEY = "errResultData";   //用来保存错误时的错误数据
-//    public final static String _DATA_KEY = "data";
+    private HashMap<String,Object> otherInfo = new LinkedHashMap<>(2);
 
     private int status;
 
@@ -78,7 +75,6 @@ public class CommonApiResult<T> {
         responseResult.setData((T) data);
         return responseResult;
     }
-
 
 
     public void setErrResultData(Object value) {
