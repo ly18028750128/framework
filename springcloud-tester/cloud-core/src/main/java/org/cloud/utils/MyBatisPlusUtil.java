@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class MyBatisPlusUtil {
 
 
     public <R, Q> QueryWrapper<R> getPredicate(Q query) {
-        QueryWrapper<R> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<R> queryWrapper =new QueryWrapper<>();
         if (query == null) {
             return queryWrapper;
         }
@@ -129,8 +130,9 @@ public class MyBatisPlusUtil {
                         queryWrapper.likeRight(finalAttributeName, val);
                         break;
                     case IN:
-                        if ((val instanceof Collection) && CollectionUtil.single().isNotEmpty(val)) {
-                            queryWrapper.in(finalAttributeName, val);
+                        if (CollectionUtil.single().isNotEmpty(val)) {
+                            Collection<?> collectionIn = (Collection<?>) val;
+                            queryWrapper.in(finalAttributeName, collectionIn);
                         }
                         break;
                     case NOT_EQUAL:
