@@ -17,49 +17,59 @@ public class JasyptLocalTest {
 
     final String aesKey = "";
     final String aesIV = "";
-    final String encKey = "oC0dZ1mU3xI0jG6b";
+    final String encKey = "";
+
+//    mysql 10002 user:root  passwd:pAdmXZWUpRxj6oTz
+//    redis 10004 user:none  passwd:HnTZAfefn4IPnJNS
+//    mongo  10003 user:admin passwd:eZXZej7W0nXJhR8ZC4B1
+//    mysqld_exporter 10122 user:exporter passwd:7iMY5S9LHecnI3Ef
+
 
     @Test
     public void encryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("mysql用户名：", "Yby8zHKazx1y5Zi2knpYgCWZQcP0KZ");
-//        passwordMap.put("mysql密码：", "Yby8zHKazx1y5Zi2knpYgCWZQcP0KZ");
+        passwordMap.put("mysql用户名：", "");
+        passwordMap.put("mysql密码：", "");
 //        passwordMap.put("邮箱用户名：", "");
 //        passwordMap.put("邮箱密码：", "");
-//        passwordMap.put("mongodb用户名：", "");
-//        passwordMap.put("mongodb密码：", "");
-//        passwordMap.put("redis密码：", "");
-//        passwordMap.put("md5 salt", "");
-//        passwordMap.put("aesKey：", aesKey);
-//        passwordMap.put("aesIV：", aesIV);
+        passwordMap.put("mongodb用户名：", "");
+        passwordMap.put("mongodb密码：", "");
+        passwordMap.put("redis密码：", "");
+        passwordMap.put("md5 salt", "");
+        passwordMap.put("aesKey：", aesKey);
+        passwordMap.put("aesIV：", aesIV);
+
+        // 双重加密
+        Map<String, String> passwordMapAesAndEnc = new LinkedHashMap<>();
+        passwordMapAesAndEnc.put("withdraw.private-key","");
+
         for (String key : passwordMap.keySet()) {
             String encryptStr = encrypt(passwordMap.get(key));
             Assert.assertEquals(passwordMap.get(key), decrypt(encryptStr));
             log.info("{}\tENC(\"{}\")", key, encryptStr);
         }
+
+
+        passwordMap.putAll(encrypAesAndEnctTest(passwordMapAesAndEnc));
     }
 
-    @Test
-    public void encrypAesAndEnctTest() throws Exception {
-        pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
-        Map<String, String> passwordMap = new LinkedHashMap<>();
-//        passwordMap.put("withdraw.private-key","");
-        passwordMap.put("harvest-private-key", "");
-        passwordMap.put("block.signPrivateKey", "");
-        for (String key : passwordMap.keySet()) {
-            String encryptStr = AES128Util.single().encrypt(passwordMap.get(key), aesKey, aesIV);
+//    @Test
+    public  Map<String, String> encrypAesAndEnctTest(Map<String, String> passwordMapAesAndEnc) throws Exception {
+        for (String key : passwordMapAesAndEnc.keySet()) {
+            String encryptStr = AES128Util.single().encrypt(passwordMapAesAndEnc.get(key), aesKey, aesIV);
             encryptStr = encrypt(encryptStr);
-            Assert.assertEquals(passwordMap.get(key), AES128Util.single().decrypt(decrypt(encryptStr), aesKey, aesIV));
-            log.info("{}\t{}", key, encryptStr);
+            Assert.assertEquals(passwordMapAesAndEnc.get(key), AES128Util.single().decrypt(decrypt(encryptStr), aesKey, aesIV));
+            log.info("{}\tENC(\"{}\")", key, encryptStr);
         }
+        return passwordMapAesAndEnc;
     }
 
     @Test
     public void decryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("aaa", "4eaugIcddVdWrTJvK36tEXOTGHVhkK155BwYRJyimlEjnpsKnUrMjz4eWK6dA81BOpDgHO5bgPFIMb1nGg3h2g==");
+        passwordMap.put("aaa", "");
 //        passwordMap.put("bbb","");
 //        passwordMap.put("mongo","");
 //        passwordMap.put("salt","");

@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,29 +46,29 @@ public class SwaggerResourceConfig {
             List<SwaggerResource> resourceList = new ArrayList<>();
             final List<String> servers = discoveryClient.getServices();
 
-            servers.stream()
-                   .filter(item -> {
+            servers.stream().filter(item -> {
 
-                       if (item.contains("SPRING-GATEWAY") || item.contains("consul")) {
-                           return false;
-                       }
-                       if (StringUtils.hasLength(group)) {
-                           return item.startsWith(group);
-                       }
-                       return servicesList.contains(item);
-                   })
-                   .forEach(item -> {
-                       try {
-                           RestTemplateUtil.single()
-                               .getResponse("http://" + item + "/" + monitorPath + "/health", HttpMethod.GET, String.class);
-                           RestTemplateUtil.single()
-                               .getResponse("http://" + item + "/v2/api-docs", HttpMethod.GET, String.class);
+                if (item.contains("SPRING-GATEWAY") || item.contains("consul")) {
+                    return false;
+                }
+                if (StringUtils.hasLength(group)) {
+                    return item.startsWith(group);
+                }
+                return servicesList.contains(item);
+            }).forEach(item -> {
+                try {
+                    RestTemplateUtil.single().getResponse("http://" + item + "/" + monitorPath + "/health", HttpMethod.GET, String.class);
+                    RestTemplateUtil.single().getResponse("http://" + item + "/v2/api-docs", HttpMethod.GET, String.class);
+                    if (StringUtils.hasLength(group)) {
+                        resourceList.add(swaggerResource(item, item.replace(group, "")));
+                    } else {
+                        resourceList.add(swaggerResource(item, item));
+                    }
 
-                           resourceList.add(swaggerResource(item, item.replace(group, "")));
-                       } catch (Exception e) {
-                           log.warn("[{}]服务不健康或者未启用swagger", item);
-                       }
-                   });
+                } catch (Exception e) {
+                    log.warn("[{}]服务不健康或者未启用swagger", item);
+                }
+            });
 
             return resourceList;
         };

@@ -132,7 +132,7 @@ public class SystemResourceRegisterController {
                         menu.setShowType(0);
                     }
                     menu.setMenuUrl(methodResourceAnnotation.menuCode());
-//                    menu.setComponentPath("/layout/Layout");
+                    menu.setComponentPath(methodResourceAnnotation.menuCode());
                     menu.setCreateDate(new Date());
                     menu.setUpdateBy("admin");
                     menu.setUpdateDate(new Date());
