@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.Data;
  */
 @TableName(value ="t_email_template")
 @Data
+@ApiModel("邮件模板信息")
 public class EmailTemplate implements Serializable {
     /**
      * 

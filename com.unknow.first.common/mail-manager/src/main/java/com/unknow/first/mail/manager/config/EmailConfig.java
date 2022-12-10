@@ -3,16 +3,21 @@ package com.unknow.first.mail.manager.config;
 
 import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.service.impl.EmailSenderServiceImpl;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 @Configuration
-@ConditionalOnProperty(prefix = "system.email", name = "enable", havingValue = "true")
+@ConditionalOnProperty(prefix = "system.email", name = "enable",matchIfMissing = true)
+@ComponentScan({"com.unknow.first.mail.manager.*"})
+@MapperScan({"com.unknow.first.mail.manager.mapper"})
 public class EmailConfig {
 
     @Bean

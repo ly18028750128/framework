@@ -15,9 +15,9 @@ import org.junit.Test;
 @Slf4j
 public class JasyptLocalTest {
 
-    final String aesKey = "";
-    final String aesIV = "";
-    final String encKey = "";
+    final String aesKey="";
+    final String aesIV="";
+    final String encKey="";
 
 //    mysql 10002 user:root  passwd:pAdmXZWUpRxj6oTz
 //    redis 10004 user:none  passwd:HnTZAfefn4IPnJNS
@@ -31,8 +31,8 @@ public class JasyptLocalTest {
         Map<String, String> passwordMap = new LinkedHashMap<>();
         passwordMap.put("mysql用户名：", "");
         passwordMap.put("mysql密码：", "");
-//        passwordMap.put("邮箱用户名：", "");
-//        passwordMap.put("邮箱密码：", "");
+        passwordMap.put("邮箱用户名：", "");
+        passwordMap.put("邮箱密码：", "");
         passwordMap.put("mongodb用户名：", "");
         passwordMap.put("mongodb密码：", "");
         passwordMap.put("redis密码：", "");

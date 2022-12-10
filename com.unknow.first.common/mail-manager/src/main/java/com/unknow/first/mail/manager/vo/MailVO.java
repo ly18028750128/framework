@@ -1,5 +1,6 @@
 package com.unknow.first.mail.manager.vo;
 
+import io.swagger.annotations.ApiModel;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
