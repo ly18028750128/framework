@@ -13,11 +13,11 @@ class AES128UtilTest {
     @Test
     void encrypt() throws Exception {
 
-        final String aesKey = "";
-        final String aesIV = "";
+        final String aesKey = "TW=>3S.z:9/;p5Im";
+        final String aesIV = "I)LNx.wf:2zM'sZ(";
 
         Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("trx-操作地址私钥", "");
+        valuesMap.put("trx-操作地址私钥", "WBLRNZMEXGASLQDF");
         for (String key : valuesMap.keySet()) {
             final String str = valuesMap.get(key);
             final String encStr = AES128Util.single().encrypt(str, aesKey, aesIV);

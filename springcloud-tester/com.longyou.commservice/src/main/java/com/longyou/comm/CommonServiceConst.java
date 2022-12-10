@@ -8,7 +8,9 @@ public final class CommonServiceConst {
 
     }
 
-    public static enum userStatus implements BasicEnum {
+
+
+    public  enum userStatus implements BasicEnum {
 
         Active(1, "生效", "active"),
         Inactive(-1, "失效", "active"),
@@ -23,9 +25,9 @@ public final class CommonServiceConst {
             this.i18nValue = i18nValue;
         }
 
-        private Integer value;
-        private String description;
-        private String i18nValue;
+        private final Integer value;
+        private final String description;
+        private final String i18nValue;
 
         @Override
         public Integer value() {

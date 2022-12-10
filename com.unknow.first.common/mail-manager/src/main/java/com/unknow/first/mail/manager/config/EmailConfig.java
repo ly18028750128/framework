@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
@@ -18,7 +17,10 @@ import org.thymeleaf.templateresolver.StringTemplateResolver;
 @ConditionalOnProperty(prefix = "system.email", name = "enable",matchIfMissing = true)
 @ComponentScan({"com.unknow.first.mail.manager.*"})
 @MapperScan({"com.unknow.first.mail.manager.mapper"})
+//@EnableFeignClients(basePackages = {"com.unknow.first.mail.manager.feign"})
 public class EmailConfig {
+
+
 
     @Bean
     public StringTemplateResolver stringTemplateResolver() {

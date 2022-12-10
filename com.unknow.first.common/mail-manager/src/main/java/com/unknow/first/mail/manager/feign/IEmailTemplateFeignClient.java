@@ -1,6 +1,8 @@
 package com.unknow.first.mail.manager.feign;
 
+import com.unknow.first.mail.manager.domain.EmailSenderConfig;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,5 +14,10 @@ public interface IEmailTemplateFeignClient {
     EmailTemplate getEmailTemplateByCode(@RequestParam("templateCode") String templateCode,
         @RequestParam(value = "language", defaultValue = "zh_CN") String language);
 
+    @GetMapping(value = "/inner/email/getAllSenderConfig")
+    List<EmailSenderConfig> getAllSenderConfig();
+
+    @GetMapping(value = "/inner/email/getSenderConfigByUserName")
+    EmailSenderConfig getSenderConfigByUserName(@RequestParam("userName") String userName);
 
 }
