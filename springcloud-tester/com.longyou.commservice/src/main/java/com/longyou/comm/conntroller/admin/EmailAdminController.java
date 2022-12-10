@@ -14,6 +14,7 @@ import com.unknow.first.mail.manager.domain.EmailSenderConfig;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.service.EmailTemplateService;
 import com.unknow.first.mail.manager.service.IEmailSenderConfigService;
+import com.unknow.first.mail.manager.util.EmailUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
@@ -67,7 +68,9 @@ public class EmailAdminController {
     public CommonApiResult<Boolean> createConfig(@RequestBody EmailSenderConfig emailSenderConfig) throws Exception {
         emailSenderConfig.setEmailSenderId(null);
         emailSenderConfig.setPassword(AES128Util.single().encrypt(emailSenderConfig.getPassword()));
-        return CommonApiResult.createSuccessResult(emailSenderConfigService.save(emailSenderConfig));
+        emailSenderConfigService.save(emailSenderConfig);
+        EmailUtil.single().refreshJavaMailSender(emailSenderConfig.getUserName());
+        return CommonApiResult.createSuccessResult(true);
     }
 
     @SystemResource(value = "/config/update", description = "管理员更新邮件配置", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
@@ -75,7 +78,9 @@ public class EmailAdminController {
     @ApiOperation("管理员更新邮件配置")
     public CommonApiResult<Boolean> updateConfig(@RequestBody EmailSenderConfig emailSenderConfig) throws Exception {
         emailSenderConfig.setPassword(AES128Util.single().encrypt(emailSenderConfig.getPassword()));
-        return CommonApiResult.createSuccessResult(emailSenderConfigService.updateById(emailSenderConfig));
+        EmailUtil.single().refreshJavaMailSender(emailSenderConfig.getUserName());
+        emailSenderConfigService.updateById(emailSenderConfig);
+        return CommonApiResult.createSuccessResult(true);
     }
 
     @Autowired
