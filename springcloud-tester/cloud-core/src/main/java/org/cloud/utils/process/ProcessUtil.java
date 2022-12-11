@@ -23,7 +23,7 @@ public final class ProcessUtil {
         private Handler() {
         }
 
-        private static ProcessUtil handler = new ProcessUtil();
+        private static final ProcessUtil handler = new ProcessUtil();
     }
 
     public static ProcessUtil single() {
@@ -51,7 +51,7 @@ public final class ProcessUtil {
                         listResult.add(future.get());
                     } catch (Exception e) {
                         listResult.add(null);
-                        logger.error("future.get() err:", e.getMessage());
+                        logger.error("future.get() err:{}", e.getMessage());
                     }
                 }
             } catch (InterruptedException e) {
