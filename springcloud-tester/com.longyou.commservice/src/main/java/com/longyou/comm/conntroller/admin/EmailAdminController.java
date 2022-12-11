@@ -81,6 +81,7 @@ public class EmailAdminController {
     @ApiOperation("管理员更新邮件配置")
     public CommonApiResult<Boolean> updateConfig(@RequestBody EmailSenderConfig emailSenderConfig) throws Exception {
         emailSenderConfig.setPassword(AES128Util.single().encrypt(emailSenderConfig.getPassword()));
+        emailSenderConfig.setUserName(null);// username不能更新
         emailSenderConfigService.updateById(emailSenderConfig);
         EmailUtil.single().refreshJavaMailSender(emailSenderConfig.getUserName());
         return CommonApiResult.createSuccessResult(true);
