@@ -8,7 +8,7 @@ public interface IEmailSenderService {
 
     public Future<String> sendEmail(MailVO mailVO) throws Exception;
 
-    public void sendEmail(String templateCode, EmailParams params) throws Exception;
+    public Future<String> sendEmail(String templateCode, EmailParams params) throws Exception;
 
-    public void sendEmail(String templateCode, EmailParams params,String language) throws Exception;
+    public Future<String> sendEmail(String templateCode, EmailParams params,String language) throws Exception;
 }

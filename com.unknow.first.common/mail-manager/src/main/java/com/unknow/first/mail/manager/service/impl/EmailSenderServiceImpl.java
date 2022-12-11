@@ -121,12 +121,12 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
 
 
     @Override
-    public void sendEmail(String templateCode, @NotNull EmailParams params) throws Exception {
-        this.sendEmail(templateCode, params, "zh_CN");
+    public Future<String> sendEmail(String templateCode, @NotNull EmailParams params) throws Exception {
+        return this.sendEmail(templateCode, params, "zh_CN");
     }
 
     @Override
-    public void sendEmail(String templateCode, @NotNull EmailParams params, String language) throws Exception {
+    public Future<String> sendEmail(String templateCode, @NotNull EmailParams params, String language) throws Exception {
         MailVO mailVO = new MailVO();
         EmailTemplate emailTemplate = emailTemplateFeignClient.getEmailTemplateByCode(templateCode, language);
         mailVO.setTo(emailTemplate.getToAddress().split(","));
@@ -139,7 +139,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
         mailVO.setTemplateText(emailTemplate.getTemplateText());
         mailVO.setParams(params);
         mailVO.setSubject(emailTemplate.getSubject());
-        this.sendEmail(mailVO);
+        return this.sendEmail(mailVO);
     }
 
     private void setMessageBaseInfo(MailMessage message, MailVO mailVO) throws Exception {

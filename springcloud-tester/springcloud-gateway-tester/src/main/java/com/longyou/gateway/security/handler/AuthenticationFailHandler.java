@@ -8,7 +8,6 @@ import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import com.longyou.gateway.util.IPUtils;
 import com.unknow.first.mail.manager.service.IEmailSenderService;
-import com.unknow.first.mail.manager.vo.MailVO;
 import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
 import java.util.Arrays;
 import java.util.Date;
@@ -78,18 +77,16 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             redisUtil.set(ipAddressLockerCountKey, 0);
 
             if (emailSenderService != null) {
-                new Thread(() -> {
-                    EmailParams emailParams = new EmailParams();
-                    emailParams.getSubjectParams().put("ip", ipAddress);
-                    emailParams.getEmailParams().put("ip", ipAddress);
-                    emailParams.getEmailParams()
-                        .put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-                    try {
-                        emailSenderService.sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
-                    } catch (Exception ex) {
-                        log.error("ip锁定邮件发送异常", ex);
-                    }
-                }).start();
+                EmailParams emailParams = new EmailParams();
+                emailParams.getSubjectParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+                try {
+                    emailSenderService.sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
+                } catch (Exception ex) {
+                    log.error("登录异常预警发送失败，{}", ex.getMessage());
+                }
+
             } else {
                 log.error("邮件功能未开启，将不会发送登录异常预警！");
             }
@@ -117,20 +114,17 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
             redisUtil.set(LoginError.USER_LOCK_KEY.value + userNameKey, true, userLoginErrorLimitTime);
             redisUtil.set(userLoginCountKey, 0);
             if (emailSenderService != null) {
-                new Thread(() -> {
-                    EmailParams emailParams = new EmailParams();
-                    emailParams.getSubjectParams().put("userName", username);
-                    emailParams.getEmailParams().put("userName", username);
-                    emailParams.getEmailParams().put("ip", ipAddress);
-                    emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
-                    emailParams.getEmailParams()
-                        .put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-                    try {
-                        emailSenderService.sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
-                    } catch (Exception ex) {
-                        log.error("用户锁定邮件发送异常", ex);
-                    }
-                }).start();
+                EmailParams emailParams = new EmailParams();
+                emailParams.getSubjectParams().put("userName", username);
+                emailParams.getEmailParams().put("userName", username);
+                emailParams.getEmailParams().put("ip", ipAddress);
+                emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
+                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+                try {
+                    emailSenderService.sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
+                } catch (Exception ex) {
+                    log.error("用户锁定邮件发送异常", ex);
+                }
             } else {
                 log.error("邮件功能未开启，将不会发送登录异常预警！");
             }
