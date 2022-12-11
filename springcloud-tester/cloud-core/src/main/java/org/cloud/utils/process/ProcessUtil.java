@@ -39,7 +39,7 @@ public final class ProcessUtil {
         }
     }
 
-    public <E> List<E> runCablles(List<Callable<E>> callables, int poolSize, long timeout) {
+    public <E> List<E> runCallables(List<Callable<E>> callables, int poolSize, long timeout) {
         List<E> listResult = new ArrayList<E>();
         List<List<Callable<E>>> spitCallableList = CollectionUtil.single().spitList(callables, poolSize);
         for (List<Callable<E>> runCallableList : spitCallableList) {
@@ -63,19 +63,19 @@ public final class ProcessUtil {
         return listResult;
     }
 
-    public <E> List<E> runCablles(List<Callable<E>> callables, int poolSize) {
-        return this.runCablles(callables, poolSize, 60L);
+    public <E> List<E> runCallables(List<Callable<E>> callables, int poolSize) {
+        return this.runCallables(callables, poolSize, 60L);
     }
 
-    public <E> List<E> runCablles(List<Callable<E>> callables) {
-        return this.runCablles(callables, 10);
+    public <E> List<E> runCallables(List<Callable<E>> callables) {
+        return this.runCallables(callables, 20, 60L);
     }
 
     /**
      *
      */
-    public void submitRunnable(List<Runnable> runables) {
-        for (Runnable runnable : runables) {
+    public void submitRunnable(List<Runnable> runnableList) {
+        for (Runnable runnable : runnableList) {
             ExecutorService executor = Executors.newSingleThreadExecutor();
             try {
                 executor.execute(runnable);
@@ -90,4 +90,30 @@ public final class ProcessUtil {
         runables.add(runable);
         this.submitRunnable(runables);
     }
+
+    /**
+     * 请使用runCallables
+     */
+    @Deprecated
+    public <E> List<E> runCablles(List<Callable<E>> callables, int poolSize, long timeout) {
+        return runCallables(callables, poolSize, timeout);
+    }
+
+    /**
+     * 请使用runCallables
+     */
+    @Deprecated
+    public <E> List<E> runCablles(List<Callable<E>> callables, int poolSize) {
+        return this.runCallables(callables, poolSize, 60L);
+    }
+
+    /**
+     * 请使用runCallables
+     */
+    @Deprecated
+    public <E> List<E> runCablles(List<Callable<E>> callables) {
+        return this.runCablles(callables, 10);
+    }
+
+
 }
