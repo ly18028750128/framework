@@ -8,7 +8,15 @@ public interface IEmailSenderService {
 
     public Future<String> sendEmail(MailVO mailVO) throws Exception;
 
-    public Future<String> sendEmail(String templateCode, EmailParams params) throws Exception;
+    default Future<String> sendEmail(String templateCode, EmailParams params) throws Exception {
+        return sendEmail(templateCode, params, "zh_CN");
+    }
 
-    public Future<String> sendEmail(String templateCode, EmailParams params,String language) throws Exception;
+    default Future<String> sendEmail(String templateCode, EmailParams params, String language) throws Exception {
+        MailVO mailVO = new MailVO();
+        mailVO.setParams(params);
+        return sendEmail(templateCode, mailVO, language);
+    }
+
+    public Future<String> sendEmail(String templateCode, MailVO mailVO, String language) throws Exception;
 }

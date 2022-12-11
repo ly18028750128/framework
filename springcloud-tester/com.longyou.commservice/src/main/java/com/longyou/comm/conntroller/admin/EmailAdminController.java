@@ -93,7 +93,7 @@ public class EmailAdminController {
 
         MailVO mailVO = new MailVO();
         mailVO.setSubject("邮件发送测试！");
-        mailVO.setTo(to.toArray(new String[]{}));
+        mailVO.setTo(to);
         mailVO.setText(String.format("来自【%s】的测试邮件", userName));
 
         Future<String> future = EmailUtil.single().sendEmail(userName, mailVO);
