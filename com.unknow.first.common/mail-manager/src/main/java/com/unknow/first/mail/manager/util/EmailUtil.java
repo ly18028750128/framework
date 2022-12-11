@@ -57,6 +57,7 @@ public final class EmailUtil {
         EmailSenderConfig emailSenderConfig = emailTemplateFeignClient.getSenderConfigByUserName(userName);
         if (emailSenderConfig.getStatus()) {
             try {
+                log.info("重新刷新{}的配置", userName);
                 JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
                 javaMailSender.setUsername(emailSenderConfig.getUserName());
                 javaMailSender.setPassword(AES128Util.single().decrypt(emailSenderConfig.getPassword()));
@@ -75,6 +76,7 @@ public final class EmailUtil {
                     javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.port", emailSenderConfig.getPort());
                     javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.class", "com.sun.mail.util.MailSSLSocketFactory");
                 }
+                javaMailSenderMap.remove(userName);
                 javaMailSenderMap.put(userName, new EmailSenderServiceImpl(javaMailSender, templateEngine));
             } catch (Exception e) {
                 log.error("{}配置信息错误{}", userName, e.getMessage());
