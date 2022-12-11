@@ -100,16 +100,15 @@ public final class EmailUtil {
     }
 
     public IEmailSenderService getSendService(final String userName) {
-        EmailSenderConfig emailSenderConfig = redisUtil.hashGet(MAIL_SENDER_MAP_KEY, userName);
-        if (emailSenderConfig == null) {
-            return this.emailSenderService;
-        }
         try {
+            EmailSenderConfig emailSenderConfig = redisUtil.hashGet(MAIL_SENDER_MAP_KEY, userName);
+            if (emailSenderConfig == null) {
+                return this.emailSenderService;
+            }
             return new EmailSenderServiceImpl(this.getJavaMailSender(emailSenderConfig), this.templateEngine, userName);
         } catch (Exception e) {
             return this.emailSenderService;
         }
-
     }
 
     public Future<String> sendEmail(MailVO mailVO) throws Exception {
