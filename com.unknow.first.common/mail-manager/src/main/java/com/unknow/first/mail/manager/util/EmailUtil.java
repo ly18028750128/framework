@@ -18,7 +18,6 @@ import org.cloud.utils.AES128Util;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -91,8 +90,8 @@ public final class EmailUtil {
         return javaMailSenderMap.get(userName);
     }
 
-    public void sendEmail(MailVO mailVO) throws Exception {
-        sendEmail(DEFAULT_SENDER, mailVO);
+    public Future<String> sendEmail(MailVO mailVO) throws Exception {
+        return sendEmail(DEFAULT_SENDER, mailVO);
     }
 
     public Future<String> sendEmail(String userName, MailVO mailVO) throws Exception {
@@ -103,7 +102,7 @@ public final class EmailUtil {
         return senderService.sendEmail(mailVO);
     }
 
-    public void sendEmail(String templateCode, EmailParams params, String language) throws Exception {
+    public Future<String> sendEmail(String templateCode, EmailParams params, String language) throws Exception {
         EmailTemplate emailTemplate = emailTemplateFeignClient.getEmailTemplateByCode(templateCode, language);
         if (emailTemplate == null) {
             throw new BusinessException(String.format("邮件模板【%s】未找到！", templateCode));
@@ -117,10 +116,10 @@ public final class EmailUtil {
         } else {
             senderService = javaMailSenderMap.get(DEFAULT_SENDER);
         }
-        senderService.sendEmail(templateCode, params, language);
+        return senderService.sendEmail(templateCode, params, language);
     }
 
-    public void sendEmail(String templateCode, EmailParams params) throws Exception {
-        sendEmail(templateCode, params, "zh_CN");
+    public Future<String> sendEmail(String templateCode, EmailParams params) throws Exception {
+        return sendEmail(templateCode, params, "zh_CN");
     }
 }
