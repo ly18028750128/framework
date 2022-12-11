@@ -1,6 +1,13 @@
 package org.cloud.core.redis;
 
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +18,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
 
 /**
  * 此类将在未来的过程中不再维护，相关功能请用RedissonUtil
  */
 @Component
 public class RedisUtil {
+
     @Getter
     @Autowired
     private RedisTemplate redisTemplate;
@@ -39,7 +43,6 @@ public class RedisUtil {
             remove(cacheName + key);
         }
     }
-
 
 
     /**
@@ -161,6 +164,10 @@ public class RedisUtil {
         return true;
     }
 
+    public boolean hashSet(final String key, Map<String, Object> value) {
+        return hashSet(key, value, 0L);
+    }
+
     public boolean hashSet(final String key, String field, Object value, Long expireTime) {
         HashOperations<String, String, Object> operations = redisTemplate.opsForHash();
         operations.put(cacheName + key, field, value);
@@ -168,6 +175,10 @@ public class RedisUtil {
             redisTemplate.expire(cacheName + key, expireTime, TimeUnit.SECONDS);
         }
         return true;
+    }
+
+    public boolean hashSet(final String key, String field, Object value) {
+        return hashSet(key, field, value, 0L);
     }
 
     public Long hashDel(final String key, String... fields) {
@@ -264,7 +275,9 @@ public class RedisUtil {
                 result.add(value);
             }
         } finally {
-            if(isLock) this.releaseLock(lockKey);
+            if (isLock) {
+                this.releaseLock(lockKey);
+            }
         }
         return result;
     }
@@ -295,7 +308,9 @@ public class RedisUtil {
                 result.add(value);
             }
         } finally {
-            if(isLock) this.releaseLock(lockKey);
+            if (isLock) {
+                this.releaseLock(lockKey);
+            }
         }
         return result;
     }
@@ -325,26 +340,28 @@ public class RedisUtil {
 
     /**
      * 根据列表起始结束为止获取数据
+     *
      * @param key
      * @param start
      * @param end
      * @param <V>
      * @return
      */
-    public <V> List<V> listRange(final String key, int start, int end){
+    public <V> List<V> listRange(final String key, int start, int end) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         List<V> list = operations.range(key, start, end);
         return list;
     }
 
     /**
-     *  根据索引获取集合中的元素
+     * 根据索引获取集合中的元素
+     *
      * @param key
      * @param index
      * @param <V>
      * @return
      */
-    public <V> V listIndex(final String key, int index){
+    public <V> V listIndex(final String key, int index) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         V value = operations.index(key, index);
         return value;
@@ -352,20 +369,21 @@ public class RedisUtil {
 
 
     /**
-     *  向集合中指定索引下添加一个新元素，并覆盖当前集合中指定位置的值
+     * 向集合中指定索引下添加一个新元素，并覆盖当前集合中指定位置的值
+     *
      * @param key
      * @param index
      * @param value
      * @param <V>
      */
-    public <V> void listSet(final String key, int index, V value){
+    public <V> void listSet(final String key, int index, V value) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
         operations.set(key, index, value);
     }
 
 
-
     private final String locker_prefix_name = "system:locker:";
+
     /**
      * 获得锁
      */
@@ -383,8 +401,8 @@ public class RedisUtil {
         redisTemplate.delete(locker_prefix_name + lockId);
     }
 
-    public String getMd5Key(String key){
-       return MD5Encoder.encode(key);
+    public String getMd5Key(String key) {
+        return MD5Encoder.encode(key);
     }
 
 }

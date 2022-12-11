@@ -36,23 +36,34 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 @Slf4j
 public class EmailSenderServiceImpl implements IEmailSenderService {
 
+    private static final long serialVersionUID = 1412048124719274197L;
+
     private final JavaMailSender javaMailSender;
 
     private final SpringTemplateEngine templateEngine;
 
     private final IEmailTemplateFeignClient emailTemplateFeignClient;
 
+    private final String userName;
+
     @Lazy
-    public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
+    public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, String userName) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailTemplateFeignClient = SpringContextUtil.getBean(IEmailTemplateFeignClient.class);
+        this.userName = userName;
     }
 
     public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, IEmailTemplateFeignClient emailTemplateFeignClient) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailTemplateFeignClient = emailTemplateFeignClient;
+
+        if (this.javaMailSender instanceof JavaMailSenderImpl) {
+            this.userName = Objects.requireNonNull(((JavaMailSenderImpl) this.javaMailSender).getUsername());
+        } else {
+            this.userName = CommonUtil.single().getEnv("spring.mail.username", "");
+        }
     }
 
     @Override
@@ -101,16 +112,10 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     }
 
     private void setMessageBaseInfo(MailMessage message, MailVO mailVO) throws Exception {
-        if (this.javaMailSender instanceof JavaMailSenderImpl) {
-            message.setFrom(Objects.requireNonNull(((JavaMailSenderImpl) this.javaMailSender).getUsername()));
-        } else {
-            message.setFrom(CommonUtil.single().getEnv("spring.mail.username", ""));
-        }
-
+        message.setFrom(this.userName);
         message.setTo(mailVO.getTo().toArray(new String[]{}));
         message.setCc(mailVO.getCc().toArray(new String[]{}));
         message.setBcc(mailVO.getBcc().toArray(new String[]{}));
-
         if (CollectionUtil.single().isNotEmpty(mailVO.getParams().getSubjectParams())) {
             String subject = getSubject(mailVO);
             message.setSubject(subject);
@@ -133,11 +138,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     @NotNull
     private MimeMessage getMimeMessage(MailVO mailVO) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        if (this.javaMailSender instanceof JavaMailSenderImpl) {
-            mimeMessage.setFrom(Objects.requireNonNull(((JavaMailSenderImpl) this.javaMailSender).getUsername()));
-        } else {
-            mimeMessage.setFrom(CommonUtil.single().getEnv("spring.mail.username", ""));
-        }
+        mimeMessage.setFrom(this.userName);
         mimeMessage.addRecipients(RecipientType.TO, convertToAddressList(mailVO.getTo().toArray(new String[]{})));
         if (CollectionUtil.single().isNotEmpty((mailVO.getBcc()))) {
             mimeMessage.addRecipients(RecipientType.BCC, convertToAddressList(mailVO.getBcc().toArray(new String[]{})));

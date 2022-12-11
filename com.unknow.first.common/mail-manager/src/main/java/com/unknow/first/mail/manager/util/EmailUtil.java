@@ -1,6 +1,9 @@
 package com.unknow.first.mail.manager.util;
 
 
+import static constant.MailConstants.MAIL_SENDER_MAP_KEY;
+
+import com.unknow.first.mail.manager.JavaMailSenderSerializable;
 import com.unknow.first.mail.manager.domain.EmailSenderConfig;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.feign.IEmailTemplateFeignClient;
@@ -8,17 +11,16 @@ import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.service.impl.EmailSenderServiceImpl;
 import com.unknow.first.mail.manager.vo.MailVO;
 import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.AES128Util;
 import org.cloud.utils.SpringContextUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.util.StringUtils;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Slf4j
@@ -28,9 +30,10 @@ public final class EmailUtil {
 
     private final IEmailSenderService emailSenderService;
 
-    private Map<String, IEmailSenderService> javaMailSenderMap = new LinkedHashMap<>();
 
     private final IEmailTemplateFeignClient emailTemplateFeignClient;
+
+    private final RedisUtil redisUtil;
 
     private final String DEFAULT_SENDER = "DEFAULT_SENDER";
 
@@ -39,10 +42,14 @@ public final class EmailUtil {
         this.templateEngine = SpringContextUtil.getBean(SpringTemplateEngine.class);
         this.emailSenderService = SpringContextUtil.getBean(IEmailSenderService.class);
         this.emailTemplateFeignClient = SpringContextUtil.getBean(IEmailTemplateFeignClient.class);
-        javaMailSenderMap.put(DEFAULT_SENDER, this.emailSenderService);
-        List<EmailSenderConfig> emailSenderConfigList = emailTemplateFeignClient.getAllSenderConfig();
-        for (EmailSenderConfig emailSenderConfig : emailSenderConfigList) {
-            this.refreshJavaMailSender(emailSenderConfig.getUserName());
+        this.redisUtil = SpringContextUtil.getBean(RedisUtil.class);
+        try {
+            List<EmailSenderConfig> emailSenderConfigList = emailTemplateFeignClient.getAllSenderConfig();
+            for (EmailSenderConfig emailSenderConfig : emailSenderConfigList) {
+                this.refreshJavaMailSender(emailSenderConfig.getUserName());
+            }
+        } catch (Exception e) {
+            log.error("从数据库中初始化邮件发送者失败{}", e.getMessage());
         }
     }
 
@@ -58,38 +65,51 @@ public final class EmailUtil {
         if (emailSenderConfig.getStatus()) {
             try {
                 log.info("重新刷新{}的配置", userName);
-                JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-                javaMailSender.setUsername(emailSenderConfig.getUserName());
-                javaMailSender.setPassword(AES128Util.single().decrypt(emailSenderConfig.getPassword()));
-                javaMailSender.setProtocol(emailSenderConfig.getProtocol());
-                javaMailSender.setHost(emailSenderConfig.getHost());
-                javaMailSender.setPort(emailSenderConfig.getPort());
-                javaMailSender.getJavaMailProperties().put("mail.smtp.auth", true);
-                javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.fallback", false);
-                if (emailSenderConfig.getTlsEnabled()) {
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.ssl.enable", true);
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.port", emailSenderConfig.getPort());
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-                }
-                if (emailSenderConfig.getTlsEnabled()) {
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", true);
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.port", emailSenderConfig.getPort());
-                    javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.class", "com.sun.mail.util.MailSSLSocketFactory");
-                }
-                javaMailSenderMap.remove(userName);
-                javaMailSenderMap.put(userName, new EmailSenderServiceImpl(javaMailSender, templateEngine));
+                redisUtil.hashSet(MAIL_SENDER_MAP_KEY, userName, emailSenderConfig);
             } catch (Exception e) {
                 log.error("{}配置信息错误{}", userName, e.getMessage());
-                javaMailSenderMap.remove(userName);
+                redisUtil.hashDel(userName);
             }
 
         } else {
-            javaMailSenderMap.remove(userName);
+            redisUtil.hashDel(userName);
         }
     }
 
-    public IEmailSenderService get(final String userName) {
-        return javaMailSenderMap.get(userName);
+    @NotNull
+    private JavaMailSenderImpl getJavaMailSender(EmailSenderConfig emailSenderConfig) throws Exception {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderSerializable();
+        javaMailSender.setUsername(emailSenderConfig.getUserName());
+        javaMailSender.setPassword(AES128Util.single().decrypt(emailSenderConfig.getPassword()));
+        javaMailSender.setProtocol(emailSenderConfig.getProtocol());
+        javaMailSender.setHost(emailSenderConfig.getHost());
+        javaMailSender.setPort(emailSenderConfig.getPort());
+        javaMailSender.getJavaMailProperties().put("mail.smtp.auth", true);
+        javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.fallback", false);
+        if (emailSenderConfig.getTlsEnabled()) {
+            javaMailSender.getJavaMailProperties().put("mail.smtp.ssl.enable", true);
+            javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.port", emailSenderConfig.getPort());
+            javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
+        if (emailSenderConfig.getTlsEnabled()) {
+            javaMailSender.getJavaMailProperties().put("mail.smtp.starttls.enable", true);
+            javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.port", emailSenderConfig.getPort());
+            javaMailSender.getJavaMailProperties().put("mail.smtp.socketFactory.class", "com.sun.mail.util.MailSSLSocketFactory");
+        }
+        return javaMailSender;
+    }
+
+    public IEmailSenderService getSendService(final String userName) {
+        EmailSenderConfig emailSenderConfig = redisUtil.hashGet(MAIL_SENDER_MAP_KEY, userName);
+        if (emailSenderConfig == null) {
+            return this.emailSenderService;
+        }
+        try {
+            return new EmailSenderServiceImpl(this.getJavaMailSender(emailSenderConfig), this.templateEngine, userName);
+        } catch (Exception e) {
+            return this.emailSenderService;
+        }
+
     }
 
     public Future<String> sendEmail(MailVO mailVO) throws Exception {
@@ -97,10 +117,7 @@ public final class EmailUtil {
     }
 
     public Future<String> sendEmail(String userName, MailVO mailVO) throws Exception {
-        IEmailSenderService senderService = javaMailSenderMap.get(userName);
-        if (senderService == null) {
-            senderService = javaMailSenderMap.get(DEFAULT_SENDER);
-        }
+        IEmailSenderService senderService = getSendService(userName);
         return senderService.sendEmail(mailVO);
     }
 
@@ -109,15 +126,7 @@ public final class EmailUtil {
         if (emailTemplate == null) {
             throw new BusinessException(String.format("邮件模板【%s】未找到！", templateCode));
         }
-        IEmailSenderService senderService;
-        if (StringUtils.hasLength(emailTemplate.getFromAddress())) {
-            senderService = javaMailSenderMap.get(emailTemplate.getFromAddress());
-            if (senderService == null) {
-                senderService = javaMailSenderMap.get(DEFAULT_SENDER);
-            }
-        } else {
-            senderService = javaMailSenderMap.get(DEFAULT_SENDER);
-        }
+        IEmailSenderService senderService = getSendService(emailTemplate.getFromAddress());
         return senderService.sendEmail(templateCode, params, language);
     }
 
