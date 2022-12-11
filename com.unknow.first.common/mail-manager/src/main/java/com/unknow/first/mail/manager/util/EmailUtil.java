@@ -11,12 +11,14 @@ import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.AES128Util;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -93,12 +95,12 @@ public final class EmailUtil {
         sendEmail(DEFAULT_SENDER, mailVO);
     }
 
-    public void sendEmail(String userName, MailVO mailVO) throws Exception {
+    public Future<String> sendEmail(String userName, MailVO mailVO) throws Exception {
         IEmailSenderService senderService = javaMailSenderMap.get(userName);
         if (senderService == null) {
             senderService = javaMailSenderMap.get(DEFAULT_SENDER);
         }
-        senderService.sendEmail(mailVO);
+        return senderService.sendEmail(mailVO);
     }
 
     public void sendEmail(String templateCode, EmailParams params, String language) throws Exception {

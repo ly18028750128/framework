@@ -15,9 +15,11 @@ import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.service.EmailTemplateService;
 import com.unknow.first.mail.manager.service.IEmailSenderConfigService;
 import com.unknow.first.mail.manager.util.EmailUtil;
+import com.unknow.first.mail.manager.vo.MailVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -82,6 +85,21 @@ public class EmailAdminController {
         EmailUtil.single().refreshJavaMailSender(emailSenderConfig.getUserName());
         return CommonApiResult.createSuccessResult(true);
     }
+
+    @SystemResource(value = "/config/test", description = "管理员发送测试邮件", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @GetMapping("/config/test")
+    @ApiOperation("管理员发送测试邮件")
+    public CommonApiResult<String> configTest(@RequestParam("userName") String userName,@RequestParam("to") List<String> to) throws Exception {
+
+        MailVO mailVO = new MailVO();
+        mailVO.setSubject("邮件发送测试！");
+        mailVO.setTo(to.toArray(new String[]{}));
+        mailVO.setText(String.format("来自【%s】的测试邮件", userName));
+
+        Future<String> future = EmailUtil.single().sendEmail(userName, mailVO);
+        return CommonApiResult.createSuccessResult(future.get());
+    }
+
 
     @Autowired
     EmailTemplateService emailTemplateService;

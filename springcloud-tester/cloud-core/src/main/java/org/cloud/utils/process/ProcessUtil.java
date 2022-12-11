@@ -1,12 +1,15 @@
 package org.cloud.utils.process;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.cloud.utils.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 
 public final class ProcessUtil {
 
@@ -16,6 +19,7 @@ public final class ProcessUtil {
     }
 
     private static class Handler {
+
         private Handler() {
         }
 
@@ -24,6 +28,15 @@ public final class ProcessUtil {
 
     public static ProcessUtil single() {
         return Handler.handler;
+    }
+
+    public <V> Future<V> runCallable(Callable<V> callable) {
+        final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(1);
+        try {
+            return fixedThreadPool.submit(callable);
+        } finally {
+            fixedThreadPool.shutdown();
+        }
     }
 
     public <E> List<E> runCablles(List<Callable<E>> callables, int poolSize, long timeout) {

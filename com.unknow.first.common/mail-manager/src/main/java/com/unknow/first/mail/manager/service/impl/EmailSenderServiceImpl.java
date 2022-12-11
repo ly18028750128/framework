@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -16,51 +18,71 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
+import org.cloud.utils.SpringContextUtil;
+import org.cloud.utils.process.ProcessUtil;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+@Slf4j
 public class EmailSenderServiceImpl implements IEmailSenderService {
 
     private final JavaMailSender javaMailSender;
 
     private final SpringTemplateEngine templateEngine;
 
+    private final IEmailTemplateFeignClient emailTemplateFeignClient;
+
+    @Lazy
     public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+        this.emailTemplateFeignClient = SpringContextUtil.getBean(IEmailTemplateFeignClient.class);
+    }
+
+    public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, IEmailTemplateFeignClient emailTemplateFeignClient) {
+        this.javaMailSender = javaMailSender;
+        this.templateEngine = templateEngine;
+        this.emailTemplateFeignClient = emailTemplateFeignClient;
     }
 
     @Override
-    @Async
-    public void sendEmail(MailVO mailVO) throws Exception {
-        if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            this.setMessageBaseInfo(simpleMailMessage, mailVO);
-            simpleMailMessage.setText(mailVO.getText());
-            javaMailSender.send(simpleMailMessage);
-        } else {
-            MimeMessage mimeMessage = getMimeMessage(mailVO);
-            Context ctx = new Context();
-            ctx.setVariables(mailVO.getParams().getEmailParams());
-            String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
-            mimeMessage.setContent(emailText, "text/html;charset=GBK");
-            if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                for (File file : mailVO.getFiles()) {
-                    helper.addAttachment(file.getName(), file);
+    public Future<String> sendEmail(MailVO mailVO) throws Exception {
+
+        return ProcessUtil.single().runCallable(() -> {
+            try {
+                if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
+                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+                    setMessageBaseInfo(simpleMailMessage, mailVO);
+                    simpleMailMessage.setText(mailVO.getText());
+                    javaMailSender.send(simpleMailMessage);
+                } else {
+                    MimeMessage mimeMessage = getMimeMessage(mailVO);
+                    Context ctx = new Context();
+                    ctx.setVariables(mailVO.getParams().getEmailParams());
+                    String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
+                    mimeMessage.setContent(emailText, "text/html;charset=GBK");
+                    if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
+                        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+                        for (File file : mailVO.getFiles()) {
+                            helper.addAttachment(file.getName(), file);
+                        }
+                    }
+                    javaMailSender.send(mimeMessage);
                 }
+                return "邮件发送成功！";
+            } catch (Exception e) {
+                return String.format("邮件发送失败！%s", e.getMessage());
             }
-            javaMailSender.send(mimeMessage);
-        }
+        });
     }
 
     @NotNull
@@ -102,9 +124,6 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     public void sendEmail(String templateCode, @NotNull EmailParams params) throws Exception {
         this.sendEmail(templateCode, params, "zh_CN");
     }
-
-    @Autowired
-    IEmailTemplateFeignClient emailTemplateFeignClient;
 
     @Override
     public void sendEmail(String templateCode, @NotNull EmailParams params, String language) throws Exception {
