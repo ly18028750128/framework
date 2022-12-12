@@ -68,7 +68,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
 
     @Lazy
     public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, IEmailTemplateFeignClient emailTemplateFeignClient,
-        ICommonServiceMessageLogFeign serviceMessageLogFeign,Tracer tracer) {
+        ICommonServiceMessageLogFeign serviceMessageLogFeign, Tracer tracer) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailTemplateFeignClient = emailTemplateFeignClient;
@@ -129,6 +129,8 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
             ScopedSpan span = tracer.startScopedSpan(UUID.randomUUID().toString());
             try {
                 serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
+            } catch (Exception e) {
+                log.error("邮件日志保存失败{}", e.getMessage());
             } finally {
                 span.finish(); // clean up after yourself
             }

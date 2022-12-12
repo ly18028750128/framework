@@ -7,7 +7,7 @@ import com.longyou.gateway.security.UserLoginService;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import com.longyou.gateway.util.IPUtils;
-import com.unknow.first.mail.manager.service.IEmailSenderService;
+import com.unknow.first.mail.manager.util.EmailUtil;
 import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
 import java.util.Arrays;
 import java.util.Date;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
-import org.cloud.utils.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -63,7 +62,6 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
     public Mono<Void> onAuthenticationFailure(WebFilterExchange webFilterExchange, AuthenticationException e) {
         ServerWebExchange exchange = webFilterExchange.getExchange();
         ServerHttpResponse response = exchange.getResponse();
-        IEmailSenderService emailSenderService = SpringContextUtil.getBean("emailSenderService");
         final String ipAddress = IPUtils.getIpAddress(exchange.getRequest());
         final String ipAddressLockerCountKey = LoginError.IP_ERROR_COUNT_KEY.value + ipAddress;
         Integer ipLoginErrorCount = redisUtil.get(ipAddressLockerCountKey);
@@ -75,20 +73,14 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
         if (ipLoginErrorCount > ipLoginErrorLimit) {
             redisUtil.set(ipLockerKey, true, ipLoginErrorLimitTime);
             redisUtil.set(ipAddressLockerCountKey, 0);
-
-            if (emailSenderService != null) {
-                EmailParams emailParams = new EmailParams();
-                emailParams.getSubjectParams().put("ip", ipAddress);
-                emailParams.getEmailParams().put("ip", ipAddress);
-                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-                try {
-                    emailSenderService.sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
-                } catch (Exception ex) {
-                    log.error("登录异常预警发送失败，{}", ex.getMessage());
-                }
-
-            } else {
-                log.error("邮件功能未开启，将不会发送登录异常预警！");
+            EmailParams emailParams = new EmailParams();
+            emailParams.getSubjectParams().put("ip", ipAddress);
+            emailParams.getEmailParams().put("ip", ipAddress);
+            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+            try {
+                EmailUtil.single().sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
+            } catch (Exception ex) {
+                log.error("登录异常预警发送失败，{}", ex.getMessage());
             }
         } else if (!ipIsLocked) {
             redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount, 24 * 60 * 60L);
@@ -113,20 +105,16 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
         if (userLoginErrorCount > userLoginErrorLimit) {
             redisUtil.set(LoginError.USER_LOCK_KEY.value + userNameKey, true, userLoginErrorLimitTime);
             redisUtil.set(userLoginCountKey, 0);
-            if (emailSenderService != null) {
-                EmailParams emailParams = new EmailParams();
-                emailParams.getSubjectParams().put("userName", username);
-                emailParams.getEmailParams().put("userName", username);
-                emailParams.getEmailParams().put("ip", ipAddress);
-                emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
-                emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-                try {
-                    emailSenderService.sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
-                } catch (Exception ex) {
-                    log.error("用户锁定邮件发送异常", ex);
-                }
-            } else {
-                log.error("邮件功能未开启，将不会发送登录异常预警！");
+            EmailParams emailParams = new EmailParams();
+            emailParams.getSubjectParams().put("userName", username);
+            emailParams.getEmailParams().put("userName", username);
+            emailParams.getEmailParams().put("ip", ipAddress);
+            emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
+            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+            try {
+                EmailUtil.single().sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
+            } catch (Exception ex) {
+                log.error("用户锁定邮件发送异常", ex);
             }
         } else if (!userIsLocked) {
             redisUtil.set(userLoginCountKey, userLoginErrorCount);
