@@ -111,6 +111,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
                     String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
                     mimeMessage.setContent(emailText, "text/html;charset=GBK");
                     logBuilder.templateCode(mailVO.getTemplateCode());
+                    logBuilder.subject(mailVO.getSubject());
                     logBuilder.content(emailText);
                     if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
                         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -128,7 +129,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
             }
             ScopedSpan span = tracer.startScopedSpan(UUID.randomUUID().toString());
             try {
-                serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
+               Boolean result = serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
             } catch (Exception e) {
                 log.error("邮件日志保存失败{}", e.getMessage());
             } finally {
