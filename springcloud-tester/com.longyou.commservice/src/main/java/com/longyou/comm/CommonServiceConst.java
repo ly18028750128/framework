@@ -8,7 +8,7 @@ public final class CommonServiceConst {
 
     }
 
-
+    public final static String MESSAGE_LOG_COLLECTION = "message_logs";
 
     public  enum userStatus implements BasicEnum {
 

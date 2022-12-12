@@ -32,6 +32,8 @@ public class MailVO {
     private List<String> bcc = new ArrayList<>(); // 密送
     @ApiModelProperty("发送时间")
     private Date sendDate;
+    @ApiModelProperty("模板")
+    private String templateCode; //thymeleaf模板
     @ApiModelProperty("thymeleaf模板")
     private String templateText; //thymeleaf模板
     @ApiModelProperty("邮件参数")

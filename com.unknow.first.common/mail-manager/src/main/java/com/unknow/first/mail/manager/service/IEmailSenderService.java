@@ -7,7 +7,7 @@ import java.util.concurrent.Future;
 
 public interface IEmailSenderService extends Serializable {
 
-    public Future<String> sendEmail(MailVO mailVO) throws Exception;
+    Future<String> sendEmail(MailVO mailVO) throws Exception;
 
     default Future<String> sendEmail(String templateCode, EmailParams params) throws Exception {
         return sendEmail(templateCode, params, "zh_CN");
@@ -19,5 +19,5 @@ public interface IEmailSenderService extends Serializable {
         return sendEmail(templateCode, mailVO, language);
     }
 
-    public Future<String> sendEmail(String templateCode, MailVO mailVO, String language) throws Exception;
+    Future<String> sendEmail(String templateCode, MailVO mailVO, String language) throws Exception;
 }

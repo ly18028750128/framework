@@ -1,9 +1,11 @@
 package com.unknow.first.mail.manager.config;
 
 
+import brave.Tracer;
 import com.unknow.first.mail.manager.feign.IEmailTemplateFeignClient;
 import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.service.impl.EmailSenderServiceImpl;
+import org.cloud.feign.service.ICommonServiceMessageLogFeign;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -39,8 +41,8 @@ public class EmailConfig {
 
     @Bean
     public IEmailSenderService emailSenderService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine,
-        IEmailTemplateFeignClient emailTemplateFeignClient) {
-        return new EmailSenderServiceImpl(javaMailSender, springTemplateEngine, emailTemplateFeignClient);
+        IEmailTemplateFeignClient emailTemplateFeignClient, ICommonServiceMessageLogFeign serviceMessageLogFeign, Tracer tracer) {
+        return new EmailSenderServiceImpl(javaMailSender, springTemplateEngine, emailTemplateFeignClient, serviceMessageLogFeign, tracer);
     }
 
 }

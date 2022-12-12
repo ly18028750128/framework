@@ -1,5 +1,7 @@
 package com.unknow.first.mail.manager.service.impl;
 
+import brave.ScopedSpan;
+import brave.Tracer;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.feign.IEmailTemplateFeignClient;
 import com.unknow.first.mail.manager.service.IEmailSenderService;
@@ -9,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.mail.Address;
@@ -18,10 +21,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.feign.service.ICommonServiceMessageLogFeign;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.utils.process.ProcessUtil;
+import org.cloud.vo.MessageLogVO;
+import org.cloud.vo.MessageLogVO.MessageLogVOBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.MailMessage;
@@ -44,21 +50,30 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
 
     private final IEmailTemplateFeignClient emailTemplateFeignClient;
 
+    private final ICommonServiceMessageLogFeign serviceMessageLogFeign;
+
     private final String userName;
+
+    private final Tracer tracer;
 
     @Lazy
     public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, String userName) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailTemplateFeignClient = SpringContextUtil.getBean(IEmailTemplateFeignClient.class);
+        this.serviceMessageLogFeign = SpringContextUtil.getBean(ICommonServiceMessageLogFeign.class);
+        this.tracer = SpringContextUtil.getBean(Tracer.class);
         this.userName = userName;
     }
 
-    public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, IEmailTemplateFeignClient emailTemplateFeignClient) {
+    @Lazy
+    public EmailSenderServiceImpl(JavaMailSender javaMailSender, SpringTemplateEngine templateEngine, IEmailTemplateFeignClient emailTemplateFeignClient,
+        ICommonServiceMessageLogFeign serviceMessageLogFeign,Tracer tracer) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailTemplateFeignClient = emailTemplateFeignClient;
-
+        this.serviceMessageLogFeign = serviceMessageLogFeign;
+        this.tracer = tracer;
         if (this.javaMailSender instanceof JavaMailSenderImpl) {
             this.userName = Objects.requireNonNull(((JavaMailSenderImpl) this.javaMailSender).getUsername());
         } else {
@@ -69,11 +84,25 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     @Override
     public Future<String> sendEmail(MailVO mailVO) throws Exception {
         return ProcessUtil.single().runCallable(() -> {
+            MessageLogVOBuilder logBuilder = MessageLogVO.builder();
+
+            logBuilder.serviceName(CommonUtil.single().getEnv("spring.application.name", "").toLowerCase());
+            logBuilder.sender(this.userName);
+            logBuilder.subject(mailVO.getSubject());
+            logBuilder.to(String.join(",", mailVO.getTo()));
+            logBuilder.bcc(String.join(",", mailVO.getBcc()));
+            logBuilder.cc(String.join(",", mailVO.getCc()));
+            logBuilder.type("EMAIL");
+            logBuilder.sendDate(new Date());
+
+            String resultMsg = "邮件发送成功！";
+
             try {
                 if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
                     SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
                     setMessageBaseInfo(simpleMailMessage, mailVO);
                     simpleMailMessage.setText(mailVO.getText());
+                    logBuilder.content(mailVO.getText());
                     javaMailSender.send(simpleMailMessage);
                 } else {
                     MimeMessage mimeMessage = getMimeMessage(mailVO);
@@ -81,6 +110,8 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
                     ctx.setVariables(mailVO.getParams().getEmailParams());
                     String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
                     mimeMessage.setContent(emailText, "text/html;charset=GBK");
+                    logBuilder.templateCode(mailVO.getTemplateCode());
+                    logBuilder.content(emailText);
                     if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
                         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
                         for (File file : mailVO.getFiles()) {
@@ -89,10 +120,19 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
                     }
                     javaMailSender.send(mimeMessage);
                 }
-                return "邮件发送成功！";
+                logBuilder.result("success");
             } catch (Exception e) {
-                return String.format("邮件发送失败！%s", e.getMessage());
+                logBuilder.result("fail");
+                resultMsg = String.format("邮件发送失败！%s", e.getMessage());
+                logBuilder.content(resultMsg);
             }
+            ScopedSpan span = tracer.startScopedSpan(UUID.randomUUID().toString());
+            try {
+                serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
+            } finally {
+                span.finish(); // clean up after yourself
+            }
+            return resultMsg;
         });
     }
 
@@ -107,6 +147,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
             mailVO.getCc().addAll(Arrays.asList(emailTemplate.getCc().split(",")));
         }
         mailVO.setTemplateText(emailTemplate.getTemplateText());
+        mailVO.setTemplateCode(templateCode);
         mailVO.setSubject(emailTemplate.getSubject());
         return this.sendEmail(mailVO);
     }

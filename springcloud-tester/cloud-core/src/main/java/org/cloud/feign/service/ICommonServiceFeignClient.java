@@ -4,9 +4,13 @@ import org.cloud.feign.FeignTracerConfiguration;
 import org.cloud.model.TFrameMenu;
 import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
+import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.FrameUserRefVO;
+import org.cloud.vo.MessageLogVO;
 import org.cloud.vo.ResponseResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 

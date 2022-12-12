@@ -83,14 +83,14 @@ public class EmailAdminController {
         emailSenderConfig.setPassword(AES128Util.single().encrypt(emailSenderConfig.getPassword()));
         emailSenderConfig.setUserName(null);// username不能更新
         emailSenderConfigService.updateById(emailSenderConfig);
-        EmailUtil.single().refreshJavaMailSender(emailSenderConfig.getUserName());
+        EmailUtil.single().refreshJavaMailSender(emailSenderConfigService.getById(emailSenderConfig.getEmailSenderId()).getUserName());
         return CommonApiResult.createSuccessResult(true);
     }
 
     @SystemResource(value = "/config/test", description = "管理员发送测试邮件", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @GetMapping("/config/test")
     @ApiOperation("管理员发送测试邮件")
-    public CommonApiResult<String> configTest(@RequestParam("userName") String userName,@RequestParam("to") List<String> to) throws Exception {
+    public CommonApiResult<String> configTest(@RequestParam("userName") String userName, @RequestParam("to") List<String> to) throws Exception {
 
         MailVO mailVO = new MailVO();
         mailVO.setSubject("邮件发送测试！");

@@ -25,17 +25,10 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Slf4j
 public final class EmailUtil {
-
     private final SpringTemplateEngine templateEngine;
-
     private final IEmailSenderService emailSenderService;
-
-
     private final IEmailTemplateFeignClient emailTemplateFeignClient;
-
     private final RedisUtil redisUtil;
-
-    private final String DEFAULT_SENDER = "DEFAULT_SENDER";
 
     @Lazy
     private EmailUtil() {
@@ -70,7 +63,6 @@ public final class EmailUtil {
                 log.error("{}配置信息错误{}", userName, e.getMessage());
                 redisUtil.hashDel(userName);
             }
-
         } else {
             redisUtil.hashDel(userName);
         }
@@ -112,6 +104,7 @@ public final class EmailUtil {
     }
 
     public Future<String> sendEmail(MailVO mailVO) throws Exception {
+        String DEFAULT_SENDER = "DEFAULT_SENDER";
         return sendEmail(DEFAULT_SENDER, mailVO);
     }
 

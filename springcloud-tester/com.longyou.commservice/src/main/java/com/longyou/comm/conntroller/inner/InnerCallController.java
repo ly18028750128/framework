@@ -1,5 +1,7 @@
 package com.longyou.comm.conntroller.inner;
 
+import static com.longyou.comm.CommonServiceConst.MESSAGE_LOG_COLLECTION;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -13,7 +15,9 @@ import org.cloud.annotation.SystemResource;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.FrameUserRefVO;
+import org.cloud.vo.MessageLogVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -87,5 +91,13 @@ public class InnerCallController {
         return emailSenderConfigService.getBaseMapper().selectOne(query);
     }
 
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @PostMapping("/message/log/save")
+    public Boolean saveMessageLogs(@RequestBody MessageLogVO messageLogVO) {
+        mongoTemplate.save(messageLogVO, MESSAGE_LOG_COLLECTION);
+        return true;
+    }
 
 }
