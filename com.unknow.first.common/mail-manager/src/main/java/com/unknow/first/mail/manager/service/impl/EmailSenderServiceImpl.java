@@ -88,7 +88,6 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
 
             logBuilder.serviceName(CommonUtil.single().getEnv("spring.application.name", "").toLowerCase());
             logBuilder.sender(this.userName);
-            logBuilder.subject(mailVO.getSubject());
             logBuilder.to(String.join(",", mailVO.getTo()));
             logBuilder.bcc(String.join(",", mailVO.getBcc()));
             logBuilder.cc(String.join(",", mailVO.getCc()));
@@ -102,6 +101,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
                     SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
                     setMessageBaseInfo(simpleMailMessage, mailVO);
                     simpleMailMessage.setText(mailVO.getText());
+                    logBuilder.subject(simpleMailMessage.getSubject());
                     logBuilder.content(mailVO.getText());
                     javaMailSender.send(simpleMailMessage);
                 } else {
@@ -111,7 +111,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
                     String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
                     mimeMessage.setContent(emailText, "text/html;charset=GBK");
                     logBuilder.templateCode(mailVO.getTemplateCode());
-                    logBuilder.subject(mailVO.getSubject());
+                    logBuilder.subject(mimeMessage.getSubject());
                     logBuilder.content(emailText);
                     if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
                         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
