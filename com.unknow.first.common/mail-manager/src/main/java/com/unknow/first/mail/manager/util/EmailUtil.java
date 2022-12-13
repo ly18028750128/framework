@@ -64,7 +64,7 @@ public final class EmailUtil {
                 redisUtil.hashDel(userName);
             }
         } else {
-            redisUtil.hashDel(userName);
+            redisUtil.hashDel(MAIL_SENDER_MAP_KEY,userName);
         }
     }
 

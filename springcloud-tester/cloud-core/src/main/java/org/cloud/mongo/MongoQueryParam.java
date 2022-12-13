@@ -2,14 +2,20 @@ package org.cloud.mongo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Objects;
+import lombok.NoArgsConstructor;
 
 /**
  * mongo db查询VO
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @ApiModel("mongodb查询参数")
 public class MongoQueryParam {
 

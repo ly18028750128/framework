@@ -52,21 +52,25 @@ public class EmailTemplate implements Serializable {
     /**
      * 默认接收人（多个请用,号分割）
      */
+    @ApiModelProperty(value = "默认接收人（多个请用,号分割）")
     private String toAddress;
 
     /**
      * 模板内容（thymeleaf模板）
      */
+    @ApiModelProperty(value = "模板内容（thymeleaf模板）")
     private String templateText;
 
     /**
      * 抄送
      */
+    @ApiModelProperty(value = "抄送")
     private String cc;
 
     /**
      * 密送
      */
+    @ApiModelProperty(value = "密送")
     private String bcc;
 
     /**
@@ -90,5 +94,5 @@ public class EmailTemplate implements Serializable {
     private Date updatedDate;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 154656498113271L;
 }

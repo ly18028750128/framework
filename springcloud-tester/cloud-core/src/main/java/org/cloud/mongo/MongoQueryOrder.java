@@ -2,12 +2,18 @@ package org.cloud.mongo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * mongo db排序VO
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @ApiModel("mongo查询排序项")
 public class MongoQueryOrder {
 

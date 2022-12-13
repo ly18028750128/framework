@@ -20,7 +20,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.ServletResponse;
@@ -30,9 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.mongo.MongoEnumVO;
+import org.cloud.mongo.MongoEnumVO.DataType;
+import org.cloud.mongo.MongoEnumVO.MongoOperatorEnum;
+import org.cloud.mongo.MongoEnumVO.RelationalOperator;
+import org.cloud.mongo.MongoPagedParam;
 import org.cloud.mongo.MongoQueryOrder;
 import org.cloud.mongo.MongoQueryParam;
 import org.cloud.mongo.MongoQueryParamsDTO;
+import org.cloud.mongo.annotation.MongoQuery;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.MongoDbGridFsVO;
@@ -48,6 +55,7 @@ import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 public final class MongoDBUtil {
@@ -321,7 +329,7 @@ public final class MongoDBUtil {
                 if (!ObjectUtils.isEmpty(values.get(0))) {
                     criteria = criteria.gte(DateTimeFormat.ISODATE.getDateFormat().parse(values.get(0).toString()));
                 }
-                if (!ObjectUtils.isEmpty(values.get(1))) {
+                if (values.size() > 1 && !ObjectUtils.isEmpty(values.get(1))) {
                     criteria = criteria.lte(DateTimeFormat.ISODATE.getDateFormat().parse(values.get(1).toString()));
                 }
             } else {
@@ -417,5 +425,74 @@ public final class MongoDBUtil {
 
         return update;
     }
+
+    public <T> MongoQueryParamsDTO buildQueryParamsDTO(T query, MongoPagedParam mongoPagedParam) {
+        if (query == null) {
+            return new MongoQueryParamsDTO();
+        }
+
+        MongoQueryParamsDTO queryParams = new MongoQueryParamsDTO();
+
+        PropertyDescriptor[] properties = BeanUtils.getPropertyDescriptors(query.getClass());
+
+        for (PropertyDescriptor propertyDescriptor : properties) {
+            String proName = propertyDescriptor.getName();
+
+            if ("class".equals(proName)) {
+                continue;
+            }
+            try {
+                MongoQuery mongoQuery = query.getClass().getDeclaredField(propertyDescriptor.getName()).getAnnotation(MongoQuery.class);
+                MongoOperatorEnum operator = MongoOperatorEnum.IS;
+                if (mongoQuery != null && mongoQuery.operator() != null) {
+                    operator = mongoQuery.operator();
+                }
+                if (mongoQuery != null && StringUtils.hasLength(mongoQuery.propName())) {
+                    proName = mongoQuery.propName();
+                }
+                DataType dataType = DataType.String;
+                if (mongoQuery != null && mongoQuery.dateType() != null) {
+                    dataType = mongoQuery.dateType();
+                }
+                Object value = propertyDescriptor.getReadMethod().invoke(query);
+                if (CollectionUtil.single().isNotEmpty(value)) {
+                    queryParams.getParams().add(
+                        MongoQueryParam.builder().relationalOperator(RelationalOperator.AND).name(proName).dataType(dataType).operator(operator).value(value)
+                            .build());
+                }
+            } catch (Exception e) {
+                log.error("{}生成查询条件时失败。{}", proName, e);
+            }
+        }
+
+        if (CollectionUtil.single().isNotEmpty(mongoPagedParam.getSorts())) {
+            queryParams.setOrders(buildSort(mongoPagedParam.getSorts()));
+        }
+
+        if (CollectionUtil.single().isNotEmpty(mongoPagedParam.getColumns())) {
+            queryParams.setFields(buildShowColumn(mongoPagedParam.getColumns()));
+        }
+        return queryParams;
+    }
+
+    public Map<String, Boolean> buildShowColumn(String columns) {
+        Map<String, Boolean> columnsMap = new LinkedHashMap<>();
+        Arrays.stream(columns.split(",")).forEach(item -> columnsMap.put(item, true));
+        return columnsMap;
+    }
+
+    public List<MongoQueryOrder> buildSort(String orderStr) {
+        List<MongoQueryOrder> orders = new ArrayList<>();
+        Arrays.stream(orderStr.split(",")).forEach(item -> {
+            String[] colOrderArray = item.split(" ");
+            if (colOrderArray.length == 1) {
+                orders.add(MongoQueryOrder.builder().direction("ASC").property(colOrderArray[0]).build());
+            } else {
+                orders.add(MongoQueryOrder.builder().direction(colOrderArray[1].toUpperCase(Locale.ROOT)).property(colOrderArray[0]).build());
+            }
+        });
+        return orders;
+    }
+
 
 }
