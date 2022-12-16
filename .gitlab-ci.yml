@@ -1,53 +1,42 @@
-# stages:
-# - build
-# - deploy_master
-# - deploy_dev
-# 
-# build_maven:
-#   stage: build
-#   script:
-#   - echo "build maven....."
-#   - cd springcloud-tester
-#   - mvn clean test -U
-# deploy_dev:
-#   stage: deploy_dev
-#   script:
-#   - echo "deploy_dev"
-#   - echo "done"
-#   - cd springcloud-tester
-#   - cd cloud-core
-#   -  mvn clean -U deploy
-#   - cd ../springcloud-eureka-tester
-#   -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
-#   - cd ../springcloud-config-tester
-#   -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
-#   - cd ../com.longyou.commservice
-#   -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
-#   - cd ../springcloud-gateway-tester
-#   -  mvn clean -U package docker:build  -Dsssversion='dev' -DpushImage
-#   only:
-#   - dev
-# 
-# 
-# deploy_master:
-#   stage: deploy_master
-#   script:
-#   - echo "run java test....."
-#   - cd springcloud-tester
-#   - cd cloud-core
-#   -  mvn clean -U deploy
-#   - cd ../springcloud-eureka-tester
-#   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
-#   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_19999 "
-#   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_eureka_20000 "
-#   - cd ../springcloud-config-tester
-#   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
-#   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_config_20001 "
-#   - cd ../com.longyou.commservice
-#   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
-#   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_commservice_20002 "
-#   - cd ../springcloud-gateway-tester
-#   -  mvn clean -U deploy docker:build  -Dsssversion='test' -DpushImage
-#   -  ssh  -p 52112 caojie@172.16.4.22 "sudo sh  /scripts/restart_build_docker_contanier.sh springcloud_gateway_20003 "
-#   only:
-#     - master
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  #- deploy
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  tags:
+    - cd
+  script:
+    - echo "mvn package  and  docker build image to harbor "\
+    -  echo `date +%F-%H-%M-%S`  > image_tag
+    - cd com.unknow.first.common/
+    - /opt/apache-maven-3.8.1/bin/mvn clean  deploy package -Dmaven.test.skip=true
+    - cd ..
+    - cd springcloud-tester
+    - /opt/apache-maven-3.8.1/bin/mvn clean  deploy package -Dmaven.test.skip=true
+    - cd  springcloud-gateway-tester/
+    - docker build -t app.lianziyou.tech:5000/framework/spring-gateway:`cat ../../image_tag` .
+    - docker tag  app.lianziyou.tech:5000/framework/spring-gateway:`cat ../../image_tag` app.lianziyou.tech:5000/framework/spring-gateway:latest
+    - docker push app.lianziyou.tech:5000/framework/spring-gateway:latest
+    - echo "Compile complete."
+  only:
+    - master
+
+build-job-dev:       # This job runs in the build stage, which runs first.
+  stage: build
+  tags:
+    - cd
+  script:
+    - echo "mvn package  and  docker build image to harbor "\
+    -  echo `date +%F-%H-%M-%S`  > image_tag
+    - cd com.unknow.first.common/
+    - /opt/apache-maven-3.8.1/bin/mvn clean  deploy package -Dmaven.test.skip=true
+    - cd ..
+    - cd springcloud-tester
+    - /opt/apache-maven-3.8.1/bin/mvn clean  deploy package -Dmaven.test.skip=true
+    - cd  springcloud-gateway-tester/
+    - docker build -t app.lianziyou.tech:5000/framework/spring-gateway_dev:`cat ../../image_tag` .
+    - docker tag  app.lianziyou.tech:5000/framework/spring-gateway_dev:`cat ../../image_tag` app.lianziyou.tech:5000/framework/spring-gateway_dev:latest
+    - docker push app.lianziyou.tech:5000/framework/spring-gateway_dev:latest
+    - echo "Compile complete."
+  only:
+    - dev
