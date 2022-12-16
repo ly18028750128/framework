@@ -1,20 +1,23 @@
 package org.cloud.utils.http;
 
 import com.alibaba.fastjson.util.IOUtils;
-import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.*;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
 
+@Slf4j
 public final class OKHttpClientBuilder {
-    Logger logger = LoggerFactory.getLogger(OKHttpClientBuilder.class);
 
     private OKHttpClientBuilder() {
     }
@@ -29,43 +32,36 @@ public final class OKHttpClientBuilder {
         try {
             TrustManager[] trustAllCerts = buildTrustManagers();
             final SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            sslContext.init(null, trustAllCerts, new SecureRandom());
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             return buildOKHttpClient(sslSocketFactory);
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return new OkHttpClient.Builder();
         }
     }
 
     private TrustManager[] buildTrustManagers() {
-        return new TrustManager[]{
-                new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                    }
+        return new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+            }
 
-                    @Override
-                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-                    }
+            @Override
+            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+            }
 
-                    @Override
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return new java.security.cert.X509Certificate[]{};
-                    }
-                }
-        };
+            @Override
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[]{};
+            }
+        }};
     }
 
-    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCertsPath, final String trustCertsPassword) throws Exception {
-        return this.buildOKHttpClient(trustCertsType, trustCertsPath, trustCertsPassword, "TLSv1");
-    }
-
-    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCertsPath, final String trustCertsPassword, final String tlsVersion) throws Exception {
-        InputStream inputStream = null;
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, InputStream inputStream, final String trustCertsPassword,
+        final String tlsVersion) throws Exception {
         try {
             KeyStore keyStore = KeyStore.getInstance(trustCertsType);
-            inputStream = getClass().getClassLoader().getResourceAsStream(trustCertsPath);
             keyStore.load(inputStream, trustCertsPassword.toCharArray());
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, trustCertsPassword.toCharArray());
@@ -78,6 +74,31 @@ public final class OKHttpClientBuilder {
         } finally {
             IOUtils.close(inputStream);
         }
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, InputStream inputStream, final String trustCertsPassword) throws Exception {
+        return this.buildOKHttpClient(trustCertsType, inputStream, trustCertsPassword, "TLSv1");
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, byte[] bytes, final String trustCertsPassword, final String tlsVersion)
+        throws Exception {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        return this.buildOKHttpClient(trustCertsType, inputStream, trustCertsPassword, tlsVersion);
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, byte[] bytes, final String trustCertsPassword) throws Exception {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+        return this.buildOKHttpClient(trustCertsType, bytes, trustCertsPassword, "TLSv1");
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCerts, final String trustCertsPassword,
+        final String tlsVersion) throws Exception {
+        return this.buildOKHttpClient(trustCertsType, trustCerts.getBytes(), trustCertsPassword, tlsVersion);
+
+    }
+
+    public OkHttpClient.Builder buildOKHttpClient(final String trustCertsType, final String trustCerts, final String trustCertsPassword) throws Exception {
+        return this.buildOKHttpClient(trustCertsType, trustCerts, trustCertsPassword, "TLSv1");
     }
 
     public OkHttpClient.Builder buildOKHttpClient(SSLSocketFactory sslSocketFactory) {

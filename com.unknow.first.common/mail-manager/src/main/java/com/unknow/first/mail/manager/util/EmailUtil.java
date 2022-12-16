@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.AES128Util;
+import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Lazy;
@@ -25,6 +26,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Slf4j
 public final class EmailUtil {
+
     private final SpringTemplateEngine templateEngine;
     private final IEmailSenderService emailSenderService;
     private final IEmailTemplateFeignClient emailTemplateFeignClient;
@@ -64,7 +66,7 @@ public final class EmailUtil {
                 redisUtil.hashDel(userName);
             }
         } else {
-            redisUtil.hashDel(MAIL_SENDER_MAP_KEY,userName);
+            redisUtil.hashDel(MAIL_SENDER_MAP_KEY, userName);
         }
     }
 
@@ -113,16 +115,67 @@ public final class EmailUtil {
         return senderService.sendEmail(mailVO);
     }
 
-    public Future<String> sendEmail(String templateCode, EmailParams params, String language) throws Exception {
+
+    public Future<String> sendEmail(String templateCode, MailVO mailVO, String language) throws Exception {
         EmailTemplate emailTemplate = emailTemplateFeignClient.getEmailTemplateByCode(templateCode, language);
         if (emailTemplate == null) {
             throw new BusinessException(String.format("邮件模板【%s】未找到！", templateCode));
         }
         IEmailSenderService senderService = getSendService(emailTemplate.getFromAddress());
-        return senderService.sendEmail(templateCode, params, language);
+        return senderService.sendEmail(templateCode, mailVO, language);
+    }
+
+    /**
+     * @param templateCode 模板编码
+     * @param tos          接收人列表，如果不传将会发给模板配置的默认接收人
+     * @param params
+     * @param language
+     * @return
+     * @throws Exception
+     * @
+     */
+    public Future<String> sendEmail(String templateCode, List<String> tos, List<String> ccs, List<String> bccs, EmailParams params, String language)
+        throws Exception {
+        MailVO mailVO = new MailVO();
+        if (CollectionUtil.single().isNotEmpty(tos)) {
+            mailVO.setTo(tos);
+        }
+        if (CollectionUtil.single().isNotEmpty(ccs)) {
+            mailVO.setCc(ccs);
+        }
+        if (CollectionUtil.single().isNotEmpty(bccs)) {
+            mailVO.setBcc(bccs);
+        }
+        mailVO.setParams(params);
+        return this.sendEmail(templateCode, mailVO, language);
+    }
+
+    public Future<String> sendEmail(String templateCode, List<String> tos, List<String> ccs, List<String> bccs, EmailParams params) throws Exception {
+        return this.sendEmail(templateCode, tos, ccs, bccs, params, "zh_CN");
+    }
+
+    public Future<String> sendEmail(String templateCode, List<String> tos, List<String> ccs, EmailParams params, String language) throws Exception {
+        return this.sendEmail(templateCode, tos, ccs,null, params, language);
+    }
+
+    public Future<String> sendEmail(String templateCode, List<String> tos, List<String> ccs, EmailParams params) throws Exception {
+        return this.sendEmail(templateCode, tos, ccs,null, params, "zh_CN");
+    }
+
+    public Future<String> sendEmail(String templateCode, List<String> tos, EmailParams params, String language) throws Exception {
+        return this.sendEmail(templateCode, tos, null,null, params, language);
+    }
+
+    public Future<String> sendEmail(String templateCode, List<String> tos, EmailParams params) throws Exception {
+        return this.sendEmail(templateCode, tos,null,null, params, "zh_CN");
+    }
+
+    public Future<String> sendEmail(String templateCode, EmailParams params, String language) throws Exception {
+        return this.sendEmail(templateCode, null,null,null, params, language);
     }
 
     public Future<String> sendEmail(String templateCode, EmailParams params) throws Exception {
-        return sendEmail(templateCode, params, "zh_CN");
+        return this.sendEmail(templateCode,null,null,null, params, "zh_CN");
     }
+
 }

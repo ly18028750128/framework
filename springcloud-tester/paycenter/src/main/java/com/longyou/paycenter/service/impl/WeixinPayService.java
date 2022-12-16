@@ -7,7 +7,21 @@ import com.github.wxpay.sdk.WXPayUtil;
 import com.longyou.paycenter.configuration.PayAppConfig;
 import com.longyou.paycenter.constant.WeixinPayConstants;
 import com.longyou.paycenter.service.PayService;
-import okhttp3.*;
+import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import okhttp3.Call;
+import okhttp3.ConnectionSpec;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
@@ -25,19 +39,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-
 @Service(PayService._PAY_SERVICE_PREFIX + "weixin-microapp")
-@SystemResource(path="微信支付")
+@SystemResource(path = "微信支付")
 public class WeixinPayService implements PayService {
 
-    Logger logger= LoggerFactory.getLogger(WeixinPayService.class);
+    Logger logger = LoggerFactory.getLogger(WeixinPayService.class);
 
     @Override
     public ResponseResult unifiedorder(final Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> params) throws Exception {
@@ -68,7 +74,7 @@ public class WeixinPayService implements PayService {
 
         final Map<String, String> weixinReturnResult = WXPayUtil.xmlToMap(bodyStr);
         if (!"SUCCESS".equalsIgnoreCase(weixinReturnResult.get("result_code"))) {
-            throw new BusinessException("微信支付失败",weixinReturnResult, HttpStatus.BAD_REQUEST.value());
+            throw new BusinessException("微信支付失败", weixinReturnResult, HttpStatus.BAD_REQUEST.value());
         } else {
             Map<String, String> returnData = new LinkedHashMap<>();
             returnData.put("appId", payAppConfig.getAppid());
@@ -87,21 +93,22 @@ public class WeixinPayService implements PayService {
     RabbitTemplate rabbitTemplate;
 
     @Override
-    @SystemResource(index = 1 , value = "微信退款",description = "微信退款程序，仅财务人员可以用",authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(index = 1, value = "微信退款", description = "微信退款程序，仅财务人员可以用", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult refund(Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> params) throws Exception {
 
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         params.put(WeixinPayConstants.ColumnRefund.APPID.value(), payAppConfig.getAppid());
         params.put(WeixinPayConstants.ColumnRefund.MCH_ID.value(), payAppConfig.getMchId());
         params.put(WeixinPayConstants.ColumnRefund.NONCE_STR.value(), WXPayUtil.generateNonceStr());
-        params.put(WeixinPayConstants.ColumnRefund.NOTIFY_URL.value(),payAppConfig.getRefundCallbackUrl()+payPlatformIndex);
+        params.put(WeixinPayConstants.ColumnRefund.NOTIFY_URL.value(), payAppConfig.getRefundCallbackUrl() + payPlatformIndex);
         final Map<String, String> mapStr = MapUtil.single().toStringMap(params);
-        OkHttpClient.Builder builder = OKHttpClientBuilder.single().buildOKHttpClient("PKCS12", payAppConfig.getTrustCertsPath(), payAppConfig.getMchId());
+        OkHttpClient.Builder builder = OKHttpClientBuilder.single()
+            .buildOKHttpClient("PKCS12", getClass().getResourceAsStream(payAppConfig.getTrustCertsPath()), payAppConfig.getMchId());
         builder = builder.connectionSpecs(Arrays.asList(
-                ConnectionSpec.MODERN_TLS,
-                ConnectionSpec.COMPATIBLE_TLS,
-                ConnectionSpec.CLEARTEXT,
-                ConnectionSpec.RESTRICTED_TLS));
+            ConnectionSpec.MODERN_TLS,
+            ConnectionSpec.COMPATIBLE_TLS,
+            ConnectionSpec.CLEARTEXT,
+            ConnectionSpec.RESTRICTED_TLS));
         OkHttpClient httpClient = builder.build();
         Request.Builder request = new Request.Builder();
         request.url(HttpUrl.parse(WXPayConstants.REFUND_URL).newBuilder().build());
@@ -110,13 +117,13 @@ public class WeixinPayService implements PayService {
 
         String bodyStr = body.string();
         body.close();
-        final Map<String,String> weixinReturnResult = WXPayUtil.xmlToMap(bodyStr);
+        final Map<String, String> weixinReturnResult = WXPayUtil.xmlToMap(bodyStr);
         responseResult.setData(weixinReturnResult);
 
         if (!"SUCCESS".equalsIgnoreCase(weixinReturnResult.get("result_code"))) {
             responseResult = ResponseResult.createFailResult();
             responseResult.setData(weixinReturnResult);
-        }else{
+        } else {
             // 发送退款成功消息
             rabbitTemplate.convertAndSend(payAppConfig.getTopicExchange(), payAppConfig.getRefundTopicName(), responseResult);
         }
@@ -125,14 +132,15 @@ public class WeixinPayService implements PayService {
     }
 
 
-    public ResponseResult receiver(final Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseResult receiver(final Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request,
+        HttpServletResponse response) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.put("messageId", String.valueOf(UUID.randomUUID()));
         responseResult.put("createTime", System.currentTimeMillis());
         responseResult.setMessage(payAppConfig.getAppName() + ":" + payAppConfig.getAppid() + ":" + payAppConfig.getMchId() + ":微信支付返回！");
         responseResult.setData(payResult);
         rabbitTemplate.convertAndSend(payAppConfig.getTopicExchange(), payAppConfig.getPayTopicName(), responseResult);
-        logger.info("微信支付回调返回结果："+ JSON.toJSONString(responseResult) );
+        logger.info("微信支付回调返回结果：" + JSON.toJSONString(responseResult));
         return responseResult;
     }
 }

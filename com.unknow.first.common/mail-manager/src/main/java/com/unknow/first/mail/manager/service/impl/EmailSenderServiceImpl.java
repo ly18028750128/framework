@@ -142,13 +142,22 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     @Override
     public Future<String> sendEmail(String templateCode, MailVO mailVO, String language) throws Exception {
         EmailTemplate emailTemplate = emailTemplateFeignClient.getEmailTemplateByCode(templateCode, language);
-        mailVO.getTo().addAll(Arrays.asList(emailTemplate.getToAddress().split(",")));
-        if (StringUtils.hasLength(emailTemplate.getBcc())) {
+
+        if (mailVO == null) {
+            mailVO = new MailVO();
+        }
+
+        if (CollectionUtil.single().isEmpty(mailVO.getTo())) {
+            mailVO.getTo().addAll(Arrays.asList(emailTemplate.getToAddress().split(",")));
+        }
+        if (StringUtils.hasLength(emailTemplate.getBcc()) && CollectionUtil.single().isEmpty(mailVO.getBcc())) {
             mailVO.getBcc().addAll(Arrays.asList(emailTemplate.getBcc().split(",")));
         }
-        if (StringUtils.hasLength(emailTemplate.getCc())) {
+
+        if (StringUtils.hasLength(emailTemplate.getCc()) && CollectionUtil.single().isEmpty(mailVO.getCc())) {
             mailVO.getCc().addAll(Arrays.asList(emailTemplate.getCc().split(",")));
         }
+
         mailVO.setTemplateText(emailTemplate.getTemplateText());
         mailVO.setTemplateCode(templateCode);
         mailVO.setSubject(emailTemplate.getSubject());
