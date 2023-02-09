@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknow.first.imexport.mapper.FrameImportExportTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.unknow.first.imexport.domain.FrameImportExportTask">
+            <id property="taskId" column="task_id" jdbcType="BIGINT"/>
+            <result property="taskType" column="task_type" jdbcType="TINYINT"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="errorFileName" column="error_file_name" jdbcType="VARCHAR"/>
+            <result property="errorFileId" column="error_file_id" jdbcType="VARCHAR"/>
+            <result property="dataCount" column="data_count" jdbcType="BIGINT"/>
+            <result property="dataErrorCount" column="data_error_count" jdbcType="BIGINT"/>
+            <result property="dataCorrectCount" column="data_correct_count" jdbcType="BIGINT"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="message" column="message" jdbcType="VARCHAR"/>
+            <result property="taskStatus" column="task_status" jdbcType="TINYINT"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createByName" column="create_by_name" jdbcType="VARCHAR"/>
+            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateByName" column="update_by_name" jdbcType="VARCHAR"/>
+            <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
+            <result property="excuteSeconds" column="excute_seconds" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_id,task_type,file_name,
+        file_id,error_file_name,error_file_id,
+        data_count,data_error_count,data_correct_count,
+        start_time,end_time,message,
+        task_status,create_by,create_by_name,
+        create_date,update_by,update_by_name,
+        update_date,excute_seconds
+    </sql>
+</mapper>
