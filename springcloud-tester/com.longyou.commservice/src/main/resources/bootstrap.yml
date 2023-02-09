@@ -1,4 +1,10 @@
 spring:
+  excel:
+    datasource:
+      url: ${spring.datasource.url}
+      driver-class-name: ${spring.datasource.driver-class-name}
+      password: ${spring.datasource.password}
+      username: ${spring.datasource.username}
   application:
     #group: 'LONGYOU' #这里写在启动参数里
     noGroupName: common-service

@@ -240,6 +240,16 @@
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
+        <artifactId>export-import-manager</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>export-import-api</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
         <artifactId>photo-manager</artifactId>
         <version>0.0.1-SNAPSHOT</version>
       </dependency>
@@ -263,6 +273,11 @@
         <artifactId>knife4j-spring-boot-starter</artifactId>
         <version>3.0.3</version>
       </dependency>
+<!--      <dependency>-->
+<!--        <groupId>com.asyncexcel</groupId>-->
+<!--        <artifactId>async-excel-springboot-starter</artifactId>-->
+<!--        <version>3.2.0-SNAPSHOT</version>-->
+<!--      </dependency>-->
     </dependencies>
 
   </dependencyManagement>
