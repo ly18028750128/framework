@@ -83,6 +83,18 @@ public class UserInterceptor implements Interceptor {
                 field.set(paramObj, currentUser.getId());
             }
         }
+
+        List<Field> updateOrCreateNameField = Arrays.stream(fields).filter(
+            item -> item.getName().equals("createByName") || item.getName().equals("createdByName") || item.getName().equals("updateByName") || item.getName()
+                .equals("updatedByName")).collect(Collectors.toList());
+
+        for (final Field field : updateOrCreateNameField) {
+            field.setAccessible(true);
+            if (field.getType().equals(String.class)) {
+                field.set(paramObj, currentUser.getUsername());
+            }
+        }
+
         return executor.update(ms, paramObj);
     }
 

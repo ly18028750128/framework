@@ -1,0 +1,40 @@
+package com.unknow.first.imexport.callable;
+
+import com.unknow.first.imexport.domain.FrameImportExportTask;
+import java.util.concurrent.Callable;
+
+public abstract class ImexportCallableService implements Callable<FrameImportExportTask> {
+
+    protected FrameImportExportTask frameImportExportTask;
+
+    public ImexportCallableService(FrameImportExportTask frameImportExportTask) {
+        this.frameImportExportTask = frameImportExportTask;
+    }
+
+    /**
+     * 初始化相关内容，调用服务生成任务，然后返回对应的执行任务，初始化内容并返回对象，可以没有。
+     */
+    public abstract void init() throws RuntimeException;
+
+    /**
+     * 执行导入导出任务，记录导出及导入成功或者失败的文件。
+     *
+     * @throws RuntimeException
+     */
+    public abstract void process() throws RuntimeException;
+
+    /**
+     * 执行完后的操作
+     *
+     * @throws RuntimeException
+     */
+    public abstract void after() throws RuntimeException;
+
+    @Override
+    public FrameImportExportTask call() {
+        this.init();
+        this.process();
+        this.after();
+        return frameImportExportTask;
+    }
+}

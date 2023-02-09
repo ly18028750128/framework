@@ -136,6 +136,14 @@
             <groupId>com.unknow.first</groupId>
             <artifactId>photo-manager</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.unknow.first</groupId>
+            <artifactId>export-import-manager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.unknow.first</groupId>
+            <artifactId>export-import-api</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
