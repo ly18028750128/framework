@@ -22,6 +22,7 @@
     <module>mail-manager</module>
     <module>photo-manager</module>
     <module>export-import-manager</module>
+    <module>export-import-api</module>
   </modules>
 
   <dependencyManagement>

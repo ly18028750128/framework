@@ -8,7 +8,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.servlet.ServletResponse;
 import org.bson.types.ObjectId;
@@ -68,22 +67,7 @@ public class MongodbGridFsPersonalController {
     @ApiImplicitParams({})
     public CommonApiResult<Serializable> upload(@RequestPart("file") MultipartFile file, MetadataDTO params) throws Exception {
         LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
-        if (user != null) {
-            params.setOwner(user.getId());
-            params.setOwnerName(user.getUsername());
-            params.setOwnerFullName(user.getFullName());
-        } else {
-            params.setOwner(MongoDBEnum.defaultFileOwnerId.getLong());
-        }
-        final int suffixIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
-        if (suffixIndex > -1) {
-            params.setSuffix(file.getOriginalFilename().substring(suffixIndex));
-        }
-        String contentType = file.getContentType() == null ? "unknown" : file.getContentType();
-        params.setContentType(contentType);
-        return CommonApiResult.createSuccessResult(gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, params).toString());
-
-//        return CommonApiResult.createSuccessResult("true");
+        return CommonApiResult.createSuccessResult(MongoDBUtil.single().storeFile(user, file).toString());
     }
 
     /**

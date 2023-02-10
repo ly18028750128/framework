@@ -1,9 +1,12 @@
 package com.unknow.first.imexport.job;
 
+import static com.unknow.first.imexport.callable.ImexportCallableService._TEMP_FILE_PATH;
+
 import com.unknow.first.imexport.callable.ImexportCallableService;
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,9 @@ public class ImexportTaskJob extends BaseQuartzJobBean {
         this.jobName = "导入导出任务";
         jobData.put("description", "导入导出任务，10秒执行一次");
         this.jobTime = "0/10 * * * * ? ";
+        if (!new File(_TEMP_FILE_PATH).exists()) {
+            new File(_TEMP_FILE_PATH).mkdirs();
+        }
         setMisfire(MisfireEnum.CronScheduleMisfireEnum.MISFIRE_INSTRUCTION_DO_NOTHING);
     }
 

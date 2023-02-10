@@ -5,27 +5,38 @@ import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
+import com.unknow.first.imexport.constant.ImexportConstants.TaskType;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.dto.FrameImportExportTaskQueryDTO;
+import com.unknow.first.imexport.dto.ImportExportTaskCreateDTO;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import java.util.Date;
 import java.util.List;
+import org.bson.types.ObjectId;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
+import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.context.RequestContextManager;
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MyBatisPlusUtil;
+import org.cloud.utils.mongo.MongoDBUtil;
 import org.cloud.vo.CommonApiResult;
 import org.common.CommonPage;
 import org.common.CommonParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user/imexport/task")
@@ -39,10 +50,25 @@ public class ImexportUserController {
     @ApiOperation(value = "创建任务", notes = "创建任务")
     @PostMapping(value = "/")
     @SystemResource(value = "/create", description = "创建任务", authMethod = AuthMethod.ALLSYSTEMUSER)
-    public FrameImportExportTask create(@RequestBody FrameImportExportTask frameImportExportTask) throws Exception {
-        frameImportExportTask.setBelongMicroservice(CommonUtil.single().getEnv("spring.application.name",""));
-        if (importExportTaskService.save(frameImportExportTask)) {
-            return importExportTaskService.getById(frameImportExportTask.getTaskId());
+    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO,
+        @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
+
+        LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
+        FrameImportExportTask importExportTaskCreate = new FrameImportExportTask();
+        if (TaskType.IMPORT.value == exportTaskCreateDTO.getTaskType()) {
+            Assert.notNull(file, "system.error.import.file.notEmpty");
+            ObjectId fileId = MongoDBUtil.single().storeFile(userDetails, file);
+            importExportTaskCreate.setFileId(fileId.toString());
+        }
+        exportTaskCreateDTO.setBelongMicroservice(CommonUtil.single().getEnv("spring.application.name", ""));
+
+        BeanUtils.copyProperties(exportTaskCreateDTO, importExportTaskCreate);
+        String fileName = String.format("%s-%s-%d-%s-%s.%s", (exportTaskCreateDTO.getTaskType() == TaskType.EXPORT.value ? "EXPORT" : "IMPORT"),
+            exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
+            DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()), "xlsx");
+        importExportTaskCreate.setFileName(fileName);
+        if (importExportTaskService.save(importExportTaskCreate)) {
+            return importExportTaskService.getById(importExportTaskCreate.getTaskId());
         }
         return null;
     }

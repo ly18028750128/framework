@@ -1,9 +1,12 @@
 package com.unknow.first.imexport.job;
 
+import static com.unknow.first.imexport.callable.ImexportCallableService._TEMP_FILE_PATH;
+
 import com.unknow.first.imexport.callable.ImexportCallableService;
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.feign.ImexportTaskFeignClient;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,11 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
         this.jobName = "导入导出任务";
         jobData.put("description", "导入导出任务，10秒执行一次");
         this.jobTime = "0/10 * * * * ? ";
+
+        if (!new File(_TEMP_FILE_PATH).exists()) {
+            new File(_TEMP_FILE_PATH).mkdirs();
+        }
+
         setMisfire(MisfireEnum.CronScheduleMisfireEnum.MISFIRE_INSTRUCTION_DO_NOTHING);
     }
 
@@ -56,9 +64,14 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
             List<Callable<FrameImportExportTask>> callables = new ArrayList<>();
             for (FrameImportExportTask importExportTask : noProcessTaskList) {
                 try {
+                    FrameImportExportTask updateTaskVO = FrameImportExportTask.builder().taskId(importExportTask.getTaskId())
+                        .taskStatus(ProcessStatus.processing.value).build();
+                    imexportTaskFeignClient.update(updateTaskVO);
+
                     Constructor constructor = Class.forName(importExportTask.getProcessClass()).getConstructor(FrameImportExportTask.class);
                     ImexportCallableService imexportCallableService = (ImexportCallableService) constructor.newInstance(importExportTask);
                     callables.add(imexportCallableService);
+
                 } catch (Exception e) {
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
                     importExportTask.setMessage(e.getMessage());
