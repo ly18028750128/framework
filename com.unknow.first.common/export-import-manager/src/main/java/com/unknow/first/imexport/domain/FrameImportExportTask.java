@@ -1,5 +1,6 @@
 package com.unknow.first.imexport.domain;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -37,6 +38,9 @@ public class FrameImportExportTask implements Serializable {
      */
     @ApiModelProperty(value = "任务类型：1(导入) 2(导出)")
     private Integer taskType;
+
+    @ApiModelProperty(value = "任务名称")
+    private String taskName;
 
     /**
      * 导入或者导出的文件名
@@ -146,6 +150,7 @@ public class FrameImportExportTask implements Serializable {
     /**
      *
      */
+    @TableField(updateStrategy = FieldStrategy.NEVER, insertStrategy = FieldStrategy.NEVER)
     private Long executeSeconds;
 
     /**

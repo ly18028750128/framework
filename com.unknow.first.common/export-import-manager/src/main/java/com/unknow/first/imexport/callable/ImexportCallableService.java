@@ -1,11 +1,18 @@
 package com.unknow.first.imexport.callable;
 
+import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
+import java.io.File;
+import java.util.Date;
 import java.util.concurrent.Callable;
+import org.bson.types.ObjectId;
+import org.cloud.utils.mongo.MongoDBUtil;
 
 public abstract class ImexportCallableService implements Callable<FrameImportExportTask> {
 
-    protected FrameImportExportTask frameImportExportTask;
+    public final static String _TEMP_FILE_PATH = "/temp/imexport/";
+
+    public final FrameImportExportTask frameImportExportTask;
 
     public ImexportCallableService(FrameImportExportTask frameImportExportTask) {
         this.frameImportExportTask = frameImportExportTask;
@@ -21,7 +28,7 @@ public abstract class ImexportCallableService implements Callable<FrameImportExp
      *
      * @throws RuntimeException
      */
-    public abstract void process() throws RuntimeException;
+    public abstract void process(String fileName) throws RuntimeException;
 
     /**
      * 执行完后的操作
@@ -32,9 +39,24 @@ public abstract class ImexportCallableService implements Callable<FrameImportExp
 
     @Override
     public FrameImportExportTask call() {
-        this.init();
-        this.process();
-        this.after();
+        frameImportExportTask.setStartTime(new Date());
+        final String fileName = _TEMP_FILE_PATH + frameImportExportTask.getFileName();
+        try {
+            this.init();
+            this.process(fileName);
+            ObjectId fileId = MongoDBUtil.single()
+                .storePersonFile(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", frameImportExportTask.getCreateBy(),
+                    frameImportExportTask.getCreateByName());
+            this.after();
+            frameImportExportTask.setFileId(fileId.toString());
+            frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
+        } catch (Exception e) {
+            frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
+            frameImportExportTask.setMessage(e.getMessage());
+        } finally {
+            frameImportExportTask.setEndTime(new Date());
+            new File(fileName).delete();
+        }
         return frameImportExportTask;
     }
 }

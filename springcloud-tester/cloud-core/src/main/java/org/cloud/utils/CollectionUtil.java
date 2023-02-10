@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
+import org.apache.commons.beanutils.BeanUtils;
 
 public final class CollectionUtil {
 
@@ -86,18 +88,14 @@ public final class CollectionUtil {
     public <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         Map<K, V> result = new LinkedHashMap<>();
 
-        map.entrySet().stream()
-            .sorted(Map.Entry.<K, V>comparingByValue()
-                .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByValue().reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
 
     public <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
         Map<K, V> result = new LinkedHashMap<>();
 
-        map.entrySet().stream()
-            .sorted(Map.Entry.<K, V>comparingByKey()
-                .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByKey().reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         return result;
     }
 
@@ -121,6 +119,23 @@ public final class CollectionUtil {
             map.put(set.getKey(), set.getValue());
         }
         return map;
+    }
+
+    public <T> List<T> convertListToBean(Class<?> cls, List<? extends Map> mapList) {
+        return (List<T>) mapList.stream().map(value -> {
+            try {
+                Object val = cls.newInstance();
+                BeanUtils.populate(val, value);
+                return val;
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).collect(Collectors.toList());
     }
 
 }

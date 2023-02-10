@@ -18,4 +18,14 @@ public interface ImexportConstants {
 
     }
 
+    @AllArgsConstructor
+    enum TaskType{
+        IMPORT(1,"导入"),
+        EXPORT(2,"导出"),
+        ;
+        public final int value;
+        public final String name;
+
+    }
+
 }
