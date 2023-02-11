@@ -156,8 +156,9 @@ public class FrameImportExportTask implements Serializable {
     private Long executeSeconds;
 
     /**
-     * 线程执行类的名称，继承ImexportRunnableService
+     * 线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService
      */
+    @ApiModelProperty(value = "线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService")
     private String processClass;
     @ApiModelProperty("执行参数（JSON）")
     private String params;
