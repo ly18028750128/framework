@@ -63,9 +63,12 @@ public class ImexportUserController {
         exportTaskCreateDTO.setBelongMicroservice(CommonUtil.single().getEnv("spring.application.name", ""));
 
         BeanUtils.copyProperties(exportTaskCreateDTO, importExportTaskCreate);
-        String fileName = String.format("%s-%s-%d-%s-%s.%s", (exportTaskCreateDTO.getTaskType() == TaskType.EXPORT.value ? "EXPORT" : "IMPORT"),
-            exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
-            DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()), "xlsx");
+        String fileName = String.format("%s-%s-%d-%s-%s", "IMPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
+            file.getOriginalFilename());
+        if (exportTaskCreateDTO.getTaskType() == TaskType.EXPORT.value) {
+            String.format("%s-%s-%d-%s-%s", "EXPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
+                DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()));
+        }
         importExportTaskCreate.setFileName(fileName);
         if (importExportTaskService.save(importExportTaskCreate)) {
             return importExportTaskService.getById(importExportTaskCreate.getTaskId());
