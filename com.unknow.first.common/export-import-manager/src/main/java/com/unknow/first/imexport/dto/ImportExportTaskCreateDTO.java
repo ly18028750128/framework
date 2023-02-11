@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @ApiModel("导入导出任务创建DTO")
 public class ImportExportTaskCreateDTO {
-    @ApiModelProperty(value = "任务类型：1(导入) 2(导出)")
-    private Integer taskType;
+
+//    @ApiModelProperty(value = "任务类型：1(导入) 2(导出)")
+//    private Integer taskType;
 
     @ApiModelProperty(value = "任务名称")
     private String taskName;
@@ -27,4 +28,7 @@ public class ImportExportTaskCreateDTO {
 
     @ApiModelProperty("执行参数（JSON）")
     private String params;
+
+    @ApiModelProperty(value = "文件类型",example = "xlsx")
+    private String extension = "xlsx";
 }
