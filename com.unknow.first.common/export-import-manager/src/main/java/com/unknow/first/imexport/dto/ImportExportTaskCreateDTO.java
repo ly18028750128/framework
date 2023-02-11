@@ -17,7 +17,7 @@ public class ImportExportTaskCreateDTO {
     /**
      * 线程执行类的名称，导出继承ImportCallableService，导出继承ExportCallableService
      */
-    @ApiModelProperty(value = "线程执行类的名称，导出继承ImportCallableService，导出继承ExportCallableService")
+    @ApiModelProperty(value = "线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService")
     private String processClass;
 
     @ApiModelProperty(value = "所属服务", hidden = true)
