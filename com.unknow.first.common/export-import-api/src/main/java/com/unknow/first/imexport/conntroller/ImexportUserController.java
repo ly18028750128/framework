@@ -50,26 +50,30 @@ public class ImexportUserController {
     @ApiOperation(value = "创建任务", notes = "创建任务")
     @PostMapping(value = "/")
     @SystemResource(value = "/create", description = "创建任务", authMethod = AuthMethod.ALLSYSTEMUSER)
-    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO,
+    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
         @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
 
         LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
         FrameImportExportTask importExportTaskCreate = new FrameImportExportTask();
-        if (TaskType.IMPORT.value == exportTaskCreateDTO.getTaskType()) {
+        String fileName = null;
+        if (TaskType.IMPORT.value == taskType.value) {
             Assert.notNull(file, "system.error.import.file.notEmpty");
             ObjectId fileId = MongoDBUtil.single().storeFile(userDetails, file);
             importExportTaskCreate.setFileId(fileId.toString());
+
+            fileName = String.format("%s-%s-%d-%s-%s", "IMPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
+                file.getOriginalFilename());
         }
         exportTaskCreateDTO.setBelongMicroservice(CommonUtil.single().getEnv("spring.application.name", ""));
 
         BeanUtils.copyProperties(exportTaskCreateDTO, importExportTaskCreate);
-        String fileName = String.format("%s-%s-%d-%s-%s", "IMPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
-            file.getOriginalFilename());
-        if (exportTaskCreateDTO.getTaskType() == TaskType.EXPORT.value) {
-            String.format("%s-%s-%d-%s-%s", "EXPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
-                DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()));
+
+        if (TaskType.EXPORT.value == taskType.value) {
+            fileName = String.format("%s-%s-%d-%s-%s.%s", "EXPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
+                DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()), exportTaskCreateDTO.getExtension());
         }
         importExportTaskCreate.setFileName(fileName);
+        importExportTaskCreate.setTaskType(taskType.value);
         if (importExportTaskService.save(importExportTaskCreate)) {
             return importExportTaskService.getById(importExportTaskCreate.getTaskId());
         }
