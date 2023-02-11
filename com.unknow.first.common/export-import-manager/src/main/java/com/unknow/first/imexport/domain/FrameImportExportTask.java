@@ -163,6 +163,11 @@ public class FrameImportExportTask implements Serializable {
     @ApiModelProperty("执行参数（JSON）")
     private String params;
 
+
+    @ApiModelProperty("数据权限，记录当时登录用户的数据权限，方便代码中控制权限（JSON）")
+    @JsonIgnore
+    private String dataDimension;
+
     /**
      * 模板编码，导出时有效，对应模板表里的编码
      */

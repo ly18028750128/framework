@@ -11,7 +11,7 @@
  Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 11/02/2023 09:38:51
+ Date: 11/02/2023 16:58:08
 */
 
 SET NAMES utf8mb4;
@@ -59,7 +59,7 @@ CREATE TABLE `t_frame_import_export_task`  (
   `template_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '模板编码',
   `task_status` tinyint NOT NULL DEFAULT 1 COMMENT '任务状态：1(未执行) 2(执行中)3(执行成功)-1(执行失败)',
   `belong_microservice` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT 'common' COMMENT '所属微服务',
-  `process_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '线程执行类的名称，导出继承ImportCallableService，导出继承ExportCallableService',
+  `process_class` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService',
   `params` json NULL COMMENT '任务参数',
   `create_by` bigint NOT NULL COMMENT '创建人ID',
   `create_by_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '创建人名称',
@@ -67,7 +67,8 @@ CREATE TABLE `t_frame_import_export_task`  (
   `update_by` bigint NOT NULL COMMENT '更新人ID',
   `update_by_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '创建人名称',
   `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日期',
+  `data_dimension` json NULL COMMENT '数据权限，记录当时登录用户的数据权限，方便代码中控制权限',
   PRIMARY KEY (`task_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
