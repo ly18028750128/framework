@@ -4,7 +4,7 @@ package com.longyou.comm.service.imexport;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.longyou.comm.dto.imexport.UserExportDTO;
-import com.unknow.first.imexport.callable.ImexportCallableService;
+import com.unknow.first.imexport.callable.ExportCallableService;
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import java.io.OutputStream;
@@ -23,7 +23,7 @@ import org.cloud.vo.JavaBeanResultMap;
  * 用户导出类，此类不受spring的管理，请不要用注解导入类
  */
 @Slf4j
-public class UserExportService extends ImexportCallableService {
+public class UserExportService extends ExportCallableService {
 
 
     public UserExportService(FrameImportExportTask frameImportExportTask) {
@@ -44,6 +44,9 @@ public class UserExportService extends ImexportCallableService {
         OutputStream outputStream = Files.newOutputStream(Paths.get(fileName));
         try {
             ExcelWriterBuilder excelWriter = EasyExcel.write(outputStream, UserExportDTO.class);
+            if (frameImportExportTask.getTemplateIn() != null) {
+                excelWriter.withTemplate(frameImportExportTask.getTemplateIn());
+            }
             excelWriter.sheet("用户信息").doWrite(userExportDTOList);
             this.frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
         } finally {

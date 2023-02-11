@@ -1,5 +1,6 @@
 package com.unknow.first.imexport.feign;
 
+import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import java.io.Serializable;
 import java.util.List;
@@ -18,5 +19,8 @@ public interface ImexportTaskFeignClient extends Serializable {
 
     @GetMapping(value = "/inner/imexport/task")
     List<FrameImportExportTask> listNoProcessTaskByMicroservice(@RequestParam("microservice") String microservice) throws Exception;
+
+    @GetMapping("/inner/export/template")
+    FrameExportTemplate getExportTemplate(@RequestParam("templateCode") String templateCode) throws Exception;
 
 }

@@ -139,6 +139,7 @@ public final class MongoDBUtil {
         params.setOwner(userId);
         params.setOwnerName(userName);
         params.setOwnerFullName(userName);
+        params.setContentType(contextType);
         if (!StringUtils.hasLength(suffix)) {
             final int suffixIndex = Objects.requireNonNull(fileName).lastIndexOf(".");
             if (suffixIndex > -1) {

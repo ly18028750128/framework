@@ -1,12 +1,14 @@
 package com.unknow.first.imexport.job;
 
-import static com.unknow.first.imexport.callable.ImexportCallableService._TEMP_FILE_PATH;
+import static com.unknow.first.imexport.callable.ExportCallableService._TEMP_FILE_PATH;
 
-import com.unknow.first.imexport.callable.ImexportCallableService;
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
+import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
+import com.unknow.first.imexport.service.FrameExportTemplateService;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +18,12 @@ import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
 import org.cloud.utils.CommonUtil;
+import org.cloud.utils.mongo.MongoDBUtil;
 import org.cloud.utils.process.ProcessUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 public class ImexportTaskJob extends BaseQuartzJobBean {
 
@@ -27,9 +31,10 @@ public class ImexportTaskJob extends BaseQuartzJobBean {
     private final RedisUtil redisUtil;
     private final FrameImportExportTaskService importExportTaskService;
 
-
-    public ImexportTaskJob(FrameImportExportTaskService importExportTaskService, RedisUtil redisUtil) {
+    private final FrameExportTemplateService exportTemplateService;
+    public ImexportTaskJob(FrameImportExportTaskService importExportTaskService, FrameExportTemplateService exportTemplateService, RedisUtil redisUtil) {
         this.importExportTaskService = importExportTaskService;
+        this.exportTemplateService = exportTemplateService;
         this.redisUtil = redisUtil;
     }
 
@@ -62,15 +67,26 @@ public class ImexportTaskJob extends BaseQuartzJobBean {
             List<Callable<FrameImportExportTask>> callables = new ArrayList<>();
             for (FrameImportExportTask importExportTask : noProcessTaskList) {
                 try {
+                    FrameImportExportTask updateTaskVO = FrameImportExportTask.builder().taskId(importExportTask.getTaskId())
+                        .taskStatus(ProcessStatus.processing.value).build();
+                    importExportTaskService.updateById(updateTaskVO);
+
+                    if (StringUtils.hasLength(importExportTask.getTemplateCode())) {
+                        FrameExportTemplate exportTemplate = exportTemplateService.getTemplateByCode(importExportTask.getTemplateCode());
+                        if (exportTemplate != null && StringUtils.hasLength(exportTemplate.getFileId())) {
+                            InputStream in = MongoDBUtil.single().getInputStreamByObjectId(exportTemplate.getFileId());
+                            importExportTask.setTemplateIn(in);
+                        } else {
+                            throw new JobExecutionException(String.format("模板[%s]不存在或者模板文件不存在", exportTemplate.getTemplateCode()));
+                        }
+                    }
                     Constructor constructor = Class.forName(importExportTask.getProcessClass()).getConstructor(FrameImportExportTask.class);
-                    ImexportCallableService imexportCallableService = (ImexportCallableService) constructor.newInstance(importExportTask);
-                    callables.add(imexportCallableService);
+                    callables.add((Callable<FrameImportExportTask>) constructor.newInstance(importExportTask));
                 } catch (Exception e) {
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
                     importExportTask.setMessage(e.getMessage());
                     importExportTaskService.updateById(importExportTask);
                 }
-
             }
             if (!callables.isEmpty()) {
                 List<FrameImportExportTask> importExportTaskList = ProcessUtil.single().runCallables(callables);
