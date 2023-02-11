@@ -3,6 +3,7 @@ package com.unknow.first.imexport.conntroller;
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_IMEXPORT_TASK_PAGE;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.unknow.first.imexport.constant.ImexportConstants.TaskType;
@@ -15,6 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
@@ -22,6 +25,7 @@ import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CommonUtil;
+import org.cloud.utils.DataDimensionUtil;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.utils.mongo.MongoDBUtil;
 import org.cloud.vo.CommonApiResult;
@@ -74,6 +78,10 @@ public class ImexportUserController {
         }
         importExportTaskCreate.setFileName(fileName);
         importExportTaskCreate.setTaskType(taskType.value);
+        Map<String, Set<String>> dataDimension = DataDimensionUtil.single().getCurrentUserAllDataDimension();
+        if (dataDimension != null) {
+            importExportTaskCreate.setDataDimension(JSON.toJSONString(dataDimension));
+        }
         if (importExportTaskService.save(importExportTaskCreate)) {
             return importExportTaskService.getById(importExportTaskCreate.getTaskId());
         }
