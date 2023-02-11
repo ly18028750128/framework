@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -159,6 +161,16 @@ public class FrameImportExportTask implements Serializable {
     private String processClass;
     @ApiModelProperty("执行参数（JSON）")
     private String params;
+
+    /**
+     * 模板编码，导出时有效，对应模板表里的编码
+     */
+    @ApiModelProperty("模板编码，导出时有效，对应模板表里的编码")
+    private String templateCode;
+
+    @TableField(exist = false)
+    @JsonIgnore
+    private InputStream templateIn;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -9,5 +9,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2023-02-08 14:52:06
 */
 public interface FrameExportTemplateService extends IService<FrameExportTemplate> {
-
+    FrameExportTemplate getTemplateByCode(String templateCode) throws Exception;
 }

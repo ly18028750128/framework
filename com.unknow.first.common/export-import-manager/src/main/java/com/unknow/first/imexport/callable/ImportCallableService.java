@@ -2,19 +2,22 @@ package com.unknow.first.imexport.callable;
 
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
-import java.io.File;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.concurrent.Callable;
-import org.bson.types.ObjectId;
+import lombok.Getter;
+import org.apache.commons.io.IOUtils;
 import org.cloud.utils.mongo.MongoDBUtil;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-public abstract class ImexportCallableService implements Callable<FrameImportExportTask> {
-
-    public final static String _TEMP_FILE_PATH = "/temp/imexport/";
+public abstract class ImportCallableService implements Callable<FrameImportExportTask> {
 
     public final FrameImportExportTask frameImportExportTask;
+    @Getter
+    private InputStream fileInputStream;
 
-    public ImexportCallableService(FrameImportExportTask frameImportExportTask) {
+    public ImportCallableService(FrameImportExportTask frameImportExportTask) {
         this.frameImportExportTask = frameImportExportTask;
     }
 
@@ -28,7 +31,7 @@ public abstract class ImexportCallableService implements Callable<FrameImportExp
      *
      * @throws RuntimeException
      */
-    public abstract void process(String fileName) throws RuntimeException;
+    public abstract void process() throws RuntimeException;
 
     /**
      * 执行完后的操作
@@ -40,22 +43,21 @@ public abstract class ImexportCallableService implements Callable<FrameImportExp
     @Override
     public FrameImportExportTask call() {
         frameImportExportTask.setStartTime(new Date());
-        final String fileName = _TEMP_FILE_PATH + frameImportExportTask.getFileName();
         try {
+            Assert.isTrue(StringUtils.hasLength(frameImportExportTask.getFileId()), "system.error.import.file.null");
+            this.fileInputStream = MongoDBUtil.single().getInputStreamByObjectId(frameImportExportTask.getFileId());
             this.init();
-            this.process(fileName);
-            ObjectId fileId = MongoDBUtil.single()
-                .storePersonFile(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", frameImportExportTask.getCreateBy(),
-                    frameImportExportTask.getCreateByName());
+            this.process();
             this.after();
-            frameImportExportTask.setFileId(fileId.toString());
             frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
         } catch (Exception e) {
             frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
             frameImportExportTask.setMessage(e.getMessage());
         } finally {
             frameImportExportTask.setEndTime(new Date());
-            new File(fileName).delete();
+            if (fileInputStream != null) {
+                IOUtils.closeQuietly(fileInputStream);
+            }
         }
         return frameImportExportTask;
     }

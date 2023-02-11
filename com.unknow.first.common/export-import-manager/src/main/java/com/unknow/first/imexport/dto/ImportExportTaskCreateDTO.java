@@ -21,4 +21,10 @@ public class ImportExportTaskCreateDTO {
 
     @ApiModelProperty(value = "所属服务", hidden = true)
     private String belongMicroservice;
+
+    @ApiModelProperty("模板编码，导出时有效，对应模板表里的编码")
+    private String templateCode;
+
+    @ApiModelProperty("执行参数（JSON）")
+    private String params;
 }
