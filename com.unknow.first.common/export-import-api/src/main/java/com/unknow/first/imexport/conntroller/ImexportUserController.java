@@ -24,7 +24,6 @@ import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.CommonUtil;
 import org.cloud.utils.DataDimensionUtil;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.utils.mongo.MongoDBUtil;
@@ -34,6 +33,7 @@ import org.common.CommonParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,11 +51,13 @@ public class ImexportUserController {
     @Autowired
     FrameImportExportTaskService importExportTaskService;
 
-    @ApiOperation(value = "创建任务", notes = "创建任务")
-    @PostMapping(value = "/")
-    @SystemResource(value = "/create", description = "创建任务", authMethod = AuthMethod.ALLSYSTEMUSER)
+    @ApiOperation(value = "创建导入导出任务", notes = "创建导入导出任务")
+    @PostMapping()
+    @SystemResource(value = "/create", description = "创建导入导出任务", authMethod = AuthMethod.BYUSERPERMISSION)
     public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
         @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
+
+        Assert.isTrue(StringUtils.hasLength(exportTaskCreateDTO.getBelongMicroservice()), "system.error.imexport.task.belongService.notEmpty");
 
         LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
         FrameImportExportTask importExportTaskCreate = new FrameImportExportTask();
@@ -68,10 +70,7 @@ public class ImexportUserController {
             fileName = String.format("%s-%s-%d-%s-%s", "IMPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
                 file.getOriginalFilename());
         }
-        exportTaskCreateDTO.setBelongMicroservice(CommonUtil.single().getEnv("spring.application.name", ""));
-
         BeanUtils.copyProperties(exportTaskCreateDTO, importExportTaskCreate);
-
         if (TaskType.EXPORT.value == taskType.value) {
             fileName = String.format("%s-%s-%d-%s-%s.%s", "EXPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
                 DateTimeFormat.FULLDATETIME_NO_SPLIT.getDateFormat().format(new Date()), exportTaskCreateDTO.getExtension());
@@ -89,7 +88,7 @@ public class ImexportUserController {
     }
 
     @ApiOperation(value = "查询导入导出任务列表", notes = "查询导入导出任务列表")
-    @GetMapping(value = "/")
+    @GetMapping()
     @SystemResource(value = "/list", description = "查询导入导出任务列表", authMethod = AuthMethod.ALLSYSTEMUSER, menuName = "我的导入导出", menuCode = MENU_USER_IMEXPORT_TASK_PAGE)
     public CommonApiResult<CommonPage<FrameImportExportTask>> list(FrameImportExportTaskQueryDTO queryDTO, @Validated CommonParam pageParam) {
         queryDTO.setCreateBy(RequestContextManager.single().getRequestContext().getUser().getId());
