@@ -77,11 +77,16 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
                             InputStream in = MongoDBUtil.single().getInputStreamByObjectId(exportTemplate.getFileId());
                             importExportTask.setTemplateIn(in);
                         } else {
-                            throw new JobExecutionException(String.format("模板[%s]不存在或者模板文件不存在", exportTemplate.getTemplateCode()));
+                            throw new RuntimeException(String.format("模板[%s]不存在或者模板文件不存在", importExportTask.getTemplateCode()));
                         }
                     }
                     Constructor constructor = Class.forName(importExportTask.getProcessClass()).getConstructor(FrameImportExportTask.class);
-                    callables.add((Callable<FrameImportExportTask>) constructor.newInstance(importExportTask));
+                    Callable<FrameImportExportTask> callable = (Callable<FrameImportExportTask>) constructor.newInstance(importExportTask);
+                    callables.add(callable);
+                } catch (ClassNotFoundException notFoundException) {
+                    importExportTask.setTaskStatus(ProcessStatus.fail.value);
+                    importExportTask.setMessage(String.format("class [%s] not found", importExportTask.getProcessClass()));
+                    imexportTaskFeignClient.update(importExportTask);
                 } catch (Exception e) {
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
                     importExportTask.setMessage(e.getMessage());

@@ -2,9 +2,15 @@ package com.unknow.first.imexport.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @ApiModel("导入导出任务创建DTO")
 public class ImportExportTaskCreateDTO {
 
@@ -20,7 +26,7 @@ public class ImportExportTaskCreateDTO {
     @ApiModelProperty(value = "线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService")
     private String processClass;
 
-    @ApiModelProperty(value = "所属服务", hidden = true)
+    @ApiModelProperty(value = "所属服务")
     private String belongMicroservice;
 
     @ApiModelProperty("模板编码，导出时有效，对应模板表里的编码")
