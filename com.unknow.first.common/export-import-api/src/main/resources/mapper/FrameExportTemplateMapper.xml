@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknow.first.imexport.mapper.FrameExportTemplateMapper">
+
+    <resultMap id="BaseResultMap" type="com.unknow.first.imexport.domain.FrameExportTemplate">
+            <id property="templateId" column="template_id" jdbcType="INTEGER"/>
+            <result property="templateCode" column="template_code" jdbcType="VARCHAR"/>
+            <result property="templateType" column="template_type" jdbcType="TINYINT"/>
+            <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+            <result property="createByName" column="create_by_name" jdbcType="VARCHAR"/>
+            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+            <result property="updateByName" column="update_by_name" jdbcType="VARCHAR"/>
+            <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        template_id,template_code,template_type,
+        file_id,status,create_by,
+        create_by_name,create_date,update_by,
+        update_by_name,update_date
+    </sql>
+</mapper>

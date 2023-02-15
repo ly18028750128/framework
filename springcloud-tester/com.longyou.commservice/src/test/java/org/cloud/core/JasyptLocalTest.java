@@ -19,11 +19,6 @@ public class JasyptLocalTest {
     final String aesIV="";
     final String encKey="";
 
-//    mysql 10002 user:root  passwd:pAdmXZWUpRxj6oTz
-//    redis 10004 user:none  passwd:HnTZAfefn4IPnJNS
-//    mongo  10003 user:admin passwd:eZXZej7W0nXJhR8ZC4B1
-//    mysqld_exporter 10122 user:exporter passwd:7iMY5S9LHecnI3Ef
-
 
     @Test
     public void encryptTest() throws Exception {

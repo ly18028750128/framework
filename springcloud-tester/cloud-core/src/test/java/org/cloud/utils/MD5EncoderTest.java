@@ -1,6 +1,7 @@
 package org.cloud.utils;
 
 
+import java.math.BigDecimal;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +21,19 @@ public class MD5EncoderTest {
 
     @Test
     public void encode() {
-        logger.debug(MD5Encoder.encode("tina30112009@JET", "adv8kI1jhai51kxS"));
-        logger.debug(MD5Encoder.encode("123456"));
+//        logger.debug(MD5Encoder.encode("abcd1234", "gyV4klmOaVoHRUDv"));
+//        logger.debug(MD5Encoder.encode("123456"));
+
+        BigDecimal bigDecimal= BigDecimal.ZERO;
+
+        BigDecimal bigDecimal1= BigDecimal.ONE;
+
+        bigDecimal = bigDecimal1;
+
+        bigDecimal1 = bigDecimal1.add(new BigDecimal(10));
+
+        logger.info("{},{}",bigDecimal,bigDecimal1);
+
     }
 
 

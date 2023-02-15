@@ -136,6 +136,22 @@
             <groupId>com.unknow.first</groupId>
             <artifactId>photo-manager</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.unknow.first</groupId>
+            <artifactId>export-import-manager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.unknow.first</groupId>
+            <artifactId>export-import-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

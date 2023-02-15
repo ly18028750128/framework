@@ -9,14 +9,16 @@ import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerFullNameKey;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerKey;
 import static org.cloud.utils.mongo.MongoDBEnum.metadataOwnerNameKey;
 
-import com.alibaba.fastjson.util.IOUtils;
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import java.beans.PropertyDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,13 +26,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.cloud.constant.CoreConstant.DateTimeFormat;
+import org.cloud.entity.LoginUserDetails;
 import org.cloud.mongo.MongoEnumVO;
 import org.cloud.mongo.MongoEnumVO.DataType;
 import org.cloud.mongo.MongoEnumVO.MongoOperatorEnum;
@@ -56,6 +61,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 public final class MongoDBUtil {
@@ -120,6 +126,52 @@ public final class MongoDBUtil {
             log.error(_id + "，获取文件流失败！");
         }
         return inputStream;
+    }
+
+    public ObjectId storePersonFile(String fileName, String contextType, Long userId, String userName) throws Exception {
+
+        return this.storePersonFile(fileName, contextType, null, userId, userName);
+    }
+
+    public ObjectId storePersonFile(String fileName, String contextType, String suffix, Long userId, String userName) throws Exception {
+
+        MetadataDTO params = new MetadataDTO();
+        params.setOwner(userId);
+        params.setOwnerName(userName);
+        params.setOwnerFullName(userName);
+        params.setContentType(contextType);
+        if (!StringUtils.hasLength(suffix)) {
+            final int suffixIndex = Objects.requireNonNull(fileName).lastIndexOf(".");
+            if (suffixIndex > -1) {
+                params.setSuffix(fileName.substring(suffixIndex));
+            }
+        }
+        InputStream in = new FileInputStream(fileName);
+        try {
+            String storeFileName = Paths.get(fileName).getFileName().toString();
+            return gridFsTemplate.store(in, storeFileName, contextType, params);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+
+    public ObjectId storeFile(LoginUserDetails user, MultipartFile file) throws IOException {
+        MetadataDTO params = new MetadataDTO();
+        if (user != null) {
+            params.setOwner(user.getId());
+            params.setOwnerName(user.getUsername());
+            params.setOwnerFullName(user.getFullName());
+        } else {
+            params.setOwner(MongoDBEnum.defaultFileOwnerId.getLong());
+        }
+        final int suffixIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
+        if (suffixIndex > -1) {
+            params.setSuffix(file.getOriginalFilename().substring(suffixIndex));
+        }
+        String contentType = file.getContentType() == null ? "unknown" : file.getContentType();
+        params.setContentType(contentType);
+
+        return gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, params);
     }
 
     /**
@@ -227,8 +279,8 @@ public final class MongoDBUtil {
             }
             outputStream.flush();
         } finally {
-            IOUtils.close(inputStream);
-            IOUtils.close(outputStream);
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outputStream);
         }
     }
 

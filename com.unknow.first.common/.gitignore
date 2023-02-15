@@ -6,3 +6,6 @@
 */.idea/*
 *.log
 *.iml
+/export-import-api/target/classes/
+/export-import-manager/target/
+/export-import-api/target/

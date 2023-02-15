@@ -21,6 +21,8 @@
     <module>article-manager</module>
     <module>mail-manager</module>
     <module>photo-manager</module>
+    <module>export-import-manager</module>
+    <module>export-import-api</module>
   </modules>
 
   <dependencyManagement>
@@ -35,6 +37,11 @@
         <artifactId>mybatis-plus-extension</artifactId>
         <version>3.5.2</version>
         <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>export-import-manager</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
