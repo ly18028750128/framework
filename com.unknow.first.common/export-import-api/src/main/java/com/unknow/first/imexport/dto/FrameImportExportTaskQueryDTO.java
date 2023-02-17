@@ -38,6 +38,9 @@ public class FrameImportExportTaskQueryDTO implements Serializable {
     @Query(type = Type.INNER_LIKE)
     private String fileName;
 
+    @ApiModelProperty(value = "任务名称")
+    private String taskName;
+
     /**
      * 文件id，用于存储导入或者导出的文件objectId
      */
@@ -61,14 +64,14 @@ public class FrameImportExportTaskQueryDTO implements Serializable {
      * 开始执行时间
      */
     @ApiModelProperty("开始执行时间(范围)")
-    @Query(type = Type.UNIX_TIMESTAMP)
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> startTime;
 
     /**
      * 结束执行时间
      */
     @ApiModelProperty("结束执行时间(范围)")
-    @Query(type = Type.UNIX_TIMESTAMP)
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> endTime;
 
     /**
@@ -101,7 +104,7 @@ public class FrameImportExportTaskQueryDTO implements Serializable {
     /**
      * 创建日期
      */
-    @Query(type = Type.UNIX_TIMESTAMP)
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> createDate;
 
 
@@ -114,7 +117,7 @@ public class FrameImportExportTaskQueryDTO implements Serializable {
     /**
      * 更新日期
      */
-    @Query(type = Type.UNIX_TIMESTAMP)
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> updateDate;
 
 

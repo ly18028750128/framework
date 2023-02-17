@@ -67,7 +67,7 @@ public class MongodbGridFsPersonalController {
     @ApiImplicitParams({})
     public CommonApiResult<Serializable> upload(@RequestPart("file") MultipartFile file, MetadataDTO params) throws Exception {
         LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
-        return CommonApiResult.createSuccessResult(MongoDBUtil.single().storeFile(user, file).toString());
+        return CommonApiResult.createSuccessResult(MongoDBUtil.single().storeFile(user, params.getFileAuthRange(), file).toString());
     }
 
     /**

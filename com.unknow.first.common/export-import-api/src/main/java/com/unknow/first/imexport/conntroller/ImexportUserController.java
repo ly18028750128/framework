@@ -2,6 +2,7 @@ package com.unknow.first.imexport.conntroller;
 
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_IMEXPORT_TASK_PAGE;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePersonal;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -64,7 +65,7 @@ public class ImexportUserController {
         String fileName = null;
         if (TaskType.IMPORT.value == taskType.value) {
             Assert.notNull(file, "system.error.import.file.notEmpty");
-            ObjectId fileId = MongoDBUtil.single().storeFile(userDetails, file);
+            ObjectId fileId = MongoDBUtil.single().storeFile(userDetails, metadataFileAuthRangePersonal.value(), file);
             importExportTaskCreate.setFileId(fileId.toString());
 
             fileName = String.format("%s-%s-%d-%s-%s", "IMPORT", exportTaskCreateDTO.getTaskName(), userDetails.getId(), userDetails.getUsername(),
