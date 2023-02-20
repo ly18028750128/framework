@@ -133,7 +133,8 @@ public class SystemResourceRegisterController {
                     } else {
                         menu.setShowType(0);
                     }
-                    menu.setMenuUrl(methodResourceAnnotation.menuCode());
+//                    menu.setMenuUrl(methodResourceAnnotation.menuCode());
+                    menu.setMenuUrl("/"+methodResourceAnnotation.menuCode());  // 新版本的后台管理，加上/
                     menu.setComponentPath(methodResourceAnnotation.menuCode());
                     menu.setCreateDate(new Date());
                     menu.setUpdateBy("admin");
