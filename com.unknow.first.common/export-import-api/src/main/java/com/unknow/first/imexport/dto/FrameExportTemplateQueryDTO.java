@@ -55,6 +55,7 @@ public class FrameExportTemplateQueryDTO {
      * 创建日期
      */
     @ApiModelProperty("创建日期")
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> createDate;
 
 
@@ -69,5 +70,6 @@ public class FrameExportTemplateQueryDTO {
      * 更新日期
      */
     @ApiModelProperty("更新日期")
+    @Query(type = Type.LONG_TIMESTAMP)
     private List<Long> updateDate;
 }

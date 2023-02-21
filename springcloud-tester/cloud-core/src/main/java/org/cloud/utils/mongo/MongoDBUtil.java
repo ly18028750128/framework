@@ -217,10 +217,6 @@ public final class MongoDBUtil {
 
         MetadataDTO metaData = mongoGridFsQueryDTO.getMetadata();
 
-//        @JsonProperty("fileAuthRange")
-//        @ApiModelProperty("文件拥有权")
-//        private List<String> fileAuthRange;
-
         if (!ObjectUtils.isEmpty(metaData.getOwner())) {
             query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerKey.value()).is(metaData.getOwner()));
         }
