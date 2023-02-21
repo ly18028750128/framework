@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +139,7 @@ public final class MongoDBUtil {
         params.setOwnerName(userName);
         params.setOwnerFullName(userName);
         params.setContentType(contextType);
+        params.setFileAuthRange(metadataFileAuthRangePersonal.value());
         if (!StringUtils.hasLength(suffix)) {
             final int suffixIndex = Objects.requireNonNull(fileName).lastIndexOf(".");
             if (suffixIndex > -1) {
@@ -155,8 +155,16 @@ public final class MongoDBUtil {
         }
     }
 
-    public ObjectId storeFile(LoginUserDetails user, MultipartFile file) throws IOException {
-        MetadataDTO params = new MetadataDTO();
+    public ObjectId storeFile(LoginUserDetails user, String fileAuthRange, MultipartFile file) throws IOException {
+        return storeFile(user, MetadataDTO.builder().fileAuthRange(fileAuthRange).build(), file);
+    }
+
+    public ObjectId storeFile(MetadataDTO params, MultipartFile file) throws IOException {
+
+        return storeFile(null, params, file);
+    }
+
+    public ObjectId storeFile(LoginUserDetails user, MetadataDTO params, MultipartFile file) throws IOException {
         if (user != null) {
             params.setOwner(user.getId());
             params.setOwnerName(user.getUsername());
@@ -170,7 +178,6 @@ public final class MongoDBUtil {
         }
         String contentType = file.getContentType() == null ? "unknown" : file.getContentType();
         params.setContentType(contentType);
-
         return gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, params);
     }
 
@@ -209,10 +216,6 @@ public final class MongoDBUtil {
         }
 
         MetadataDTO metaData = mongoGridFsQueryDTO.getMetadata();
-
-//        @JsonProperty("fileAuthRange")
-//        @ApiModelProperty("文件拥有权")
-//        private List<String> fileAuthRange;
 
         if (!ObjectUtils.isEmpty(metaData.getOwner())) {
             query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataOwnerKey.value()).is(metaData.getOwner()));

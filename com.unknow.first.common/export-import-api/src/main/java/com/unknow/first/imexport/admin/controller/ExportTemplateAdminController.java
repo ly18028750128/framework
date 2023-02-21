@@ -54,9 +54,9 @@ public class ExportTemplateAdminController {
         return CommonApiResult.createSuccessResult(CommonPage.restPage(frameExportTemplates));
     }
 
-    @ApiOperation(value = "管理员：创建导出模板", notes = "管理员：创建导出模板")
+    @ApiOperation(value = "管理员：创建或更新导出模板", notes = "管理员：创建或更新导出模板")
     @PostMapping(value = "/")
-    @SystemResource(value = "/create", description = "创建导出模板", authMethod = AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "/createOrUpdate", description = "创建或更新导出模板", authMethod = AuthMethod.BYUSERPERMISSION)
     public CommonApiResult<FrameExportTemplate> create(FrameExportTemplate frameExportTemplate,
         @ApiParam(value = "模板文件", required = true) @RequestPart("file") MultipartFile file) throws Exception {
         MetadataDTO metadataDTO = new MetadataDTO();
@@ -72,7 +72,7 @@ public class ExportTemplateAdminController {
         metadataDTO.setContentType(contentType);
         String templateFileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, metadataDTO).toString();
         frameExportTemplate.setFileId(templateFileId);
-        exportTemplateService.save(frameExportTemplate);
+        exportTemplateService.saveOrUpdate(frameExportTemplate);
         return CommonApiResult.createSuccessResult(frameExportTemplate);
 
     }
