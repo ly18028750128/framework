@@ -24,6 +24,7 @@ import org.common.CommonPage;
 import org.common.CommonParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,21 +58,27 @@ public class ExportTemplateAdminController {
     @ApiOperation(value = "管理员：创建或更新导出模板", notes = "管理员：创建或更新导出模板")
     @PostMapping(value = "/")
     @SystemResource(value = "/createOrUpdate", description = "创建或更新导出模板", authMethod = AuthMethod.BYUSERPERMISSION)
-    public CommonApiResult<FrameExportTemplate> create(FrameExportTemplate frameExportTemplate,
-        @ApiParam(value = "模板文件", required = true) @RequestPart("file") MultipartFile file) throws Exception {
-        MetadataDTO metadataDTO = new MetadataDTO();
-        LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
-        metadataDTO.setOwner(user.getId());
-        metadataDTO.setOwnerName(user.getUsername());
-        metadataDTO.setOwnerFullName(user.getFullName());
-        final int suffixIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
-        if (suffixIndex > -1) {
-            metadataDTO.setSuffix(file.getOriginalFilename().substring(suffixIndex));
+    public CommonApiResult<FrameExportTemplate> createOrUpdate(FrameExportTemplate frameExportTemplate,
+        @ApiParam(value = "模板文件", required = true) @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+
+        if (frameExportTemplate.getTemplateId() == null) {
+            Assert.notNull(file, "请上传文件！");
         }
-        String contentType = file.getContentType() == null ? "unknown" : file.getContentType();
-        metadataDTO.setContentType(contentType);
-        String templateFileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, metadataDTO).toString();
-        frameExportTemplate.setFileId(templateFileId);
+        if (file != null) {
+            final int suffixIndex = Objects.requireNonNull(file.getOriginalFilename()).lastIndexOf(".");
+            MetadataDTO metadataDTO = new MetadataDTO();
+            LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
+            metadataDTO.setOwner(user.getId());
+            metadataDTO.setOwnerName(user.getUsername());
+            metadataDTO.setOwnerFullName(user.getFullName());
+            if (suffixIndex > -1) {
+                metadataDTO.setSuffix(file.getOriginalFilename().substring(suffixIndex));
+            }
+            String contentType = file.getContentType() == null ? "unknown" : file.getContentType();
+            metadataDTO.setContentType(contentType);
+            String templateFileId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, metadataDTO).toString();
+            frameExportTemplate.setFileId(templateFileId);
+        }
         exportTemplateService.saveOrUpdate(frameExportTemplate);
         return CommonApiResult.createSuccessResult(frameExportTemplate);
 
