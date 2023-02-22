@@ -84,13 +84,13 @@ CREATE TABLE `t_frame_import_export_task`
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 数据字典
-INSERT INTO `framework`.`t_system_dic_master` (`dic_master_id`, `dic_code`, `dic_name`, `remark`,
+INSERT INTO `t_system_dic_master` (`dic_master_id`, `dic_code`, `dic_name`, `remark`,
                                                `belong_micro_service`, `parent_master_id`, `status`,
                                                `create_by`, `create_date`, `update_by`,
                                                `update_date`)
 VALUES (-51, '导出模板类型', '导出模板类型', '导出模板类型', 'General', NULL, 1, 1,
         '2023-02-21 15:52:03', 1, '2023-02-21 17:31:47');
-INSERT INTO `framework`.`t_system_dic_master` (`dic_master_id`, `dic_code`, `dic_name`, `remark`,
+INSERT INTO `t_system_dic_master` (`dic_master_id`, `dic_code`, `dic_name`, `remark`,
                                                `belong_micro_service`, `parent_master_id`, `status`,
                                                `create_by`, `create_date`, `update_by`,
                                                `update_date`)
@@ -98,49 +98,49 @@ VALUES (-52, '导入导出任务状态', '导入导出任务状态', '导入导�
         '2023-02-22 14:28:38', 1, '2023-02-22 14:28:38');
 
 
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-51, 'code_10', 'xls', '10', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-02-21 15:52:03', 1,
         '2023-02-21 17:31:47', 'zh_CN', 5);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-51, 'code_20', 'pdf', '20', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-02-21 15:52:03', 1,
         '2023-02-21 17:31:47', 'zh_CN', 10);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-51, 'code_30', 'word', '30', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-02-21 15:52:03', 1,
         '2023-02-21 17:31:47', 'zh_CN', 15);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-52, 'taskStatus1', '未执行', '1', NULL, NULL, NULL, NULL, NULL, 1, 1,
         '2023-02-22 14:28:38', 1, '2023-02-22 14:28:38', 'zh_CN', 5);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-52, 'taskStatus2', '执行中', '2', NULL, NULL, NULL, NULL, NULL, 1, 1,
         '2023-02-22 14:28:38', 1, '2023-02-22 14:28:38', 'zh_CN', 10);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
                                              `update_date`, `language`, `seq`)
 VALUES (-52, 'taskStatus3', '执行成功', '3', NULL, NULL, NULL, NULL, NULL, 1, 1,
         '2023-02-22 14:28:38', 1, '2023-02-22 14:28:38', 'zh_CN', 15);
-INSERT INTO `framework`.`t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`,
                                              `dic_item_value`, `ext_attribut1`, `ext_attribut3`,
                                              `ext_attribut2`, `ext_attribut4`, `ext_attribut5`,
                                              `status`, `create_by`, `create_date`, `update_by`,
