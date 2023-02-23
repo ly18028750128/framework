@@ -52,7 +52,7 @@ public class ImexportUserController {
     @ApiOperation(value = "创建导入导出任务", notes = "创建导入导出任务")
     @PostMapping()
     @SystemResource(value = "/create", description = "创建导入导出任务", authMethod = AuthMethod.BYUSERPERMISSION)
-    public CommonApiResult<FrameImportExportTask> create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
+    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
         @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
 
         Assert.isTrue(StringUtils.hasLength(exportTaskCreateDTO.getBelongMicroservice()), "system.error.imexport.task.belongService.notEmpty");
@@ -80,9 +80,9 @@ public class ImexportUserController {
             importExportTaskCreate.setDataDimension(JSON.toJSONString(dataDimension));
         }
         if (importExportTaskService.save(importExportTaskCreate)) {
-            return CommonApiResult.createSuccessResult(importExportTaskService.getById(importExportTaskCreate.getTaskId()));
+            return importExportTaskService.getById(importExportTaskCreate.getTaskId());
         }
-        return CommonApiResult.createFailResult();
+        return null;
     }
 
     @ApiOperation(value = "查询导入导出任务列表", notes = "查询导入导出任务列表")
