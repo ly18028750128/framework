@@ -1,9 +1,5 @@
 package com.unknow.first.imexport.conntroller;
 
-import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
-import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_IMEXPORT_TASK_PAGE;
-import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePersonal;
-
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
@@ -15,10 +11,6 @@ import com.unknow.first.imexport.service.FrameImportExportTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.bson.types.ObjectId;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
@@ -36,12 +28,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
+import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_IMEXPORT_TASK_PAGE;
+import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePersonal;
 
 @RestController
 @RequestMapping("/user/imexport/task")
@@ -55,7 +52,7 @@ public class ImexportUserController {
     @ApiOperation(value = "创建导入导出任务", notes = "创建导入导出任务")
     @PostMapping()
     @SystemResource(value = "/create", description = "创建导入导出任务", authMethod = AuthMethod.BYUSERPERMISSION)
-    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
+    public CommonApiResult<FrameImportExportTask> create(ImportExportTaskCreateDTO exportTaskCreateDTO, TaskType taskType,
         @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
 
         Assert.isTrue(StringUtils.hasLength(exportTaskCreateDTO.getBelongMicroservice()), "system.error.imexport.task.belongService.notEmpty");
@@ -83,9 +80,9 @@ public class ImexportUserController {
             importExportTaskCreate.setDataDimension(JSON.toJSONString(dataDimension));
         }
         if (importExportTaskService.save(importExportTaskCreate)) {
-            return importExportTaskService.getById(importExportTaskCreate.getTaskId());
+            return CommonApiResult.createSuccessResult(importExportTaskService.getById(importExportTaskCreate.getTaskId()));
         }
-        return null;
+        return CommonApiResult.createFailResult();
     }
 
     @ApiOperation(value = "查询导入导出任务列表", notes = "查询导入导出任务列表")
