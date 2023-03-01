@@ -5,10 +5,11 @@ import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
 import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
+import com.longyou.comm.dto.UserOperatorCheckDTO;
 import com.longyou.comm.service.IUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.Arrays;
+import io.swagger.annotations.ApiParam;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,10 +27,10 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TFrameRole;
 import org.cloud.userinfo.LoginUserGetInterface;
 import org.cloud.utils.SpringContextUtil;
+import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -119,16 +120,16 @@ public class UserInfoController {
      * @throws Exception
      */
     @ApiOperation(value = "校验当前用户的操作权限列表", notes = "校验当前用户的操作权限列表，所有的登录用户都可以调用,用于控制按钮")
-    @PostMapping(value = "/checkCurrentUserOperater")
+    @PostMapping(value = "/checkCurrentUserOperator")
     @SystemResource(value = "checkCurrentUserOperator", description = "校验当前用户的操作权限列表", authMethod = AuthMethod.ALLSYSTEMUSER)
-    public ResponseResult<Map<String, Boolean>> checkCurrentUserOperator(@RequestBody List<String> operateAuthList) throws Exception {
+    public CommonApiResult<UserOperatorCheckDTO> checkCurrentUserOperator(@ApiParam("权限点列表，例如：common-service::/admin/user::saveOrUpdateUser") @RequestBody List<String> operateAuthList) throws Exception {
         Map<String, Boolean> checkResult = new LinkedHashMap<>(1);
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         Set<String> currentUserOperateAuthSet = redisUtil.hashGet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), UserCacheKey.FUNCTION.value());
         for (String operateAuth : operateAuthList) {
             checkResult.put(operateAuth, currentUserOperateAuthSet.contains(operateAuth));
         }
-        return ResponseResult.createSuccessResult(checkResult);
+        return CommonApiResult.createSuccessResult(UserOperatorCheckDTO.builder().userId(loginUserDetails.getId()).checkResult(checkResult).build());
     }
 
 }
