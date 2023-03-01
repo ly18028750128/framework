@@ -39,7 +39,7 @@ public class FrameDataDimensionController {
      * @return
      * @throws Exception
      */
-    @ApiOperation(value = "查询用户的操作权限点")
+    @ApiOperation(value = "查询用户的数据权限点")
     @SystemResource(value = "queryDataDimensionListByTypeAndId", description = "按类型查询数据权限", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping("/queryDataDimensionListByTypeAndId")
     public ResponseResult<FrameDataDimension> queryDataDimensionListByTypeAndId(@RequestParam("dataDimensionType") String dataDimensionType,
@@ -47,7 +47,7 @@ public class FrameDataDimensionController {
         return ResponseResult.createSuccessResult(frameDataDimensionService.selectDataDimensionByUserId(dataDimensionType, referId, status));
     }
 
-    @ApiOperation(value = "查询用户的操作权限点")
+    @ApiOperation(value = "批量更新数据权限")
     @SystemResource(value = "insertOrUpdateBatch", description = "批量更新数据权限", authMethod = AuthMethod.BYUSERPERMISSION)
     @PostMapping("/insertOrUpdateBatch")
     public ResponseResult<Integer> insertOrUpdateBatch(@RequestBody List<FrameDataDimension> records)
