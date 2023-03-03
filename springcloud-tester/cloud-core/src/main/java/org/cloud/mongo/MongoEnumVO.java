@@ -65,6 +65,7 @@ public final class MongoEnumVO {
         ObjectId("Object id", 7, ""),
         Boolean("Boolean", 8, ""),
         Date("Date", 9, ""),
+        UNIX_TIMESTAMP("Date", 9, ""),
         Null("Null", 10, ""),
         RegularExpression("Regular Expression", 11, "正则表达式"),
         JavaScript("JavaScript", 13, ""),

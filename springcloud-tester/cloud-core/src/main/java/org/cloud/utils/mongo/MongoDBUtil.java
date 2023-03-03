@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -386,6 +387,13 @@ public final class MongoDBUtil {
                 }
                 if (values.size() > 1 && !ObjectUtils.isEmpty(values.get(1))) {
                     criteria = criteria.lte(DateTimeFormat.ISODATE.getDateFormat().parse(values.get(1).toString()));
+                }
+            } else if (DataType.UNIX_TIMESTAMP.equals(param.getDataType())) {
+                if (!ObjectUtils.isEmpty(values.get(0))) {
+                    criteria = criteria.gte(new Date(Long.parseLong(values.get(0).toString())));
+                }
+                if (values.size() > 1 && !ObjectUtils.isEmpty(values.get(1))) {
+                    criteria = criteria.lte(new Date(Long.parseLong(values.get(1).toString())));
                 }
             } else {
                 criteria = criteria.gte(values.get(0)).lte(values.get(1));

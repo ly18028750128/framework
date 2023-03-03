@@ -17,5 +17,8 @@ public final class CommonMenuConst {
     public final static String MENU_MESSAGE_LOG_MANAGER = "common_menu_message_log_manager";
 
 
+    public final static String MENU_JOB_LOG_MANAGER = "common_menu_job_log_manager";
+
+
 
 }
