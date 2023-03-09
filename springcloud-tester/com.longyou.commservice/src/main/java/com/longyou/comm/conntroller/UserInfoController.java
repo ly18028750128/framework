@@ -83,7 +83,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "admin-管理员修改指定用户密码", notes = "admin-管理员修改指定用户密码")
     @GetMapping(value = "/updatePassWordByAdmin")
-    @SystemResource(value = "updatePassWordByAdmin", description = "管理员修改指定用户密码", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
+    @SystemResource(value = "updatePassWordByAdmin", description = "管理员修改指定用户密码", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult updatePassWordByAdmin(@RequestParam("id") Long id, @RequestParam("newPassword") String newPassword)
             throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
