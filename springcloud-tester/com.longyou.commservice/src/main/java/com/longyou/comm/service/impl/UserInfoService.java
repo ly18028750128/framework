@@ -1,10 +1,5 @@
 package com.longyou.comm.service.impl;
 
-import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
-import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY;
-import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
-import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_KEY;
-
 import com.longyou.comm.CommonServiceConst.userStatus;
 import com.longyou.comm.mapper.TFrameRoleDao;
 import com.longyou.comm.mapper.TFrameRoleResourceDao;
@@ -12,29 +7,14 @@ import com.longyou.comm.mapper.TFrameUserRoleDao;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.FrameDataDimensionService;
 import com.longyou.comm.service.IUserInfoService;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
-import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
-import org.cloud.model.FrameDataDimension;
-import org.cloud.model.TFrameRole;
-import org.cloud.model.TFrameRoleData;
-import org.cloud.model.TFrameRoleDataInterface;
-import org.cloud.model.TFrameRoleMenu;
-import org.cloud.model.TFrameRoleResource;
-import org.cloud.model.TFrameUserRole;
+import org.cloud.model.*;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
@@ -43,6 +23,12 @@ import org.cloud.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.cloud.constant.CoreConstant.*;
+import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_KEY;
 
 @Service
 @Slf4j
@@ -211,6 +197,18 @@ public class UserInfoService implements IUserInfoService {
         } else {
             throw new BusinessException("原密码错误，请重新输入!");
         }
+        return 1;
+    }
+
+    @Override
+    public int updatePasswordByAdmin(Long id, String password) throws Exception {
+        LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+        LoginUserGetParamsDTO getParamsDTO = new LoginUserGetParamsDTO();
+        getParamsDTO.setUserId(id);
+        LoginUserDetails user = userInfoMapper.getUserByNameForAuth(getParamsDTO);
+        final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+        user.setPassword(MD5Encoder.encode(password, salt));
+        userInfoMapper.updateLoginUserById(user);
         return 1;
     }
 

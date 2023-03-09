@@ -1,7 +1,5 @@
 package com.longyou.comm.conntroller;
 
-import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
-
 import brave.Tracer;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
@@ -10,12 +8,6 @@ import com.longyou.comm.service.IUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
@@ -31,14 +23,12 @@ import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
 
 @Api(value = "UserInfoController", tags = "用户管理")
 @RestController
@@ -88,6 +78,16 @@ public class UserInfoController {
         throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(userInfoService.updatePassword(oldPassword, newPassword));
+        return responseResult;
+    }
+
+    @ApiOperation(value = "admin-管理员修改指定用户密码", notes = "admin-管理员修改指定用户密码")
+    @GetMapping(value = "/updatePassWordByAdmin")
+    @SystemResource(value = "updatePassWordByAdmin", description = "管理员修改指定用户密码", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    public ResponseResult updatePassWordByAdmin(@RequestParam("id") Long id, @RequestParam("newPassword") String newPassword)
+            throws Exception {
+        ResponseResult responseResult = ResponseResult.createSuccessResult();
+        responseResult.setData(userInfoService.updatePasswordByAdmin(id, newPassword));
         return responseResult;
     }
 
