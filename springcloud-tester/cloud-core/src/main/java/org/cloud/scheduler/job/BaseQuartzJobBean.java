@@ -1,9 +1,13 @@
 package org.cloud.scheduler.job;
 
 
+import lombok.Getter;
+import org.cloud.scheduler.annotation.JobTaskLog;
 import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.service.QuartzService;
 import org.jetbrains.annotations.NotNull;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class BaseQuartzJobBean extends QuartzJobBean {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     protected final Map<String, Object> jobData = new LinkedHashMap<String, Object>();
+
+    @Getter
     protected String jobName = getClass().getSimpleName();
     protected String groupName = getClass().getPackage().getName();
     @NotNull
@@ -62,4 +68,8 @@ public abstract class BaseQuartzJobBean extends QuartzJobBean {
             logger.error(e.getMessage(), e);
         }
     }
+
+    @Override
+    @JobTaskLog
+    protected abstract void executeInternal(JobExecutionContext context) throws JobExecutionException;
 }

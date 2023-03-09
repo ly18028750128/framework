@@ -1,20 +1,36 @@
 package org.cloud.scheduler.service;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.controller.QuartzController;
-import org.quartz.*;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.DateBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @DS("quartz")
@@ -319,9 +335,14 @@ public class QuartzService {
         for (JobKey jobKey : jobKeys) {
             List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
             for (Trigger trigger : triggers) {
-                Map<String, Object> map = new LinkedHashMap<>();
-                putPublicAttr(trigger, jobKey, map);
-                jobList.add(map);
+                try {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    putPublicAttr(trigger, jobKey, map);
+                    jobList.add(map);
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+
             }
         }
         return jobList;

@@ -2,31 +2,31 @@ package com.longyou.comm.conntroller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
-import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SystemStringUtil;
-import org.cloud.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.ResponseResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 @Api(value = "QuartzClientController", tags = "定时任务查询")
 @SystemResource(path = "/quartz/client")
@@ -48,7 +48,7 @@ public class QuartzClientController {
         List<Callable<Boolean>> callables = new ArrayList<>();
         List<String> services = discoveryClient.getServices();
         for (String serviceId : services) {
-            if (!"".equals(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)) {
+            if (StringUtils.hasLength(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)) {
                 continue;
             }
             callables.add(() -> {
@@ -64,14 +64,12 @@ public class QuartzClientController {
                 return true;
             });
         }
-        ProcessUtil.single().runCablles(callables, 10, 180L);
+        ProcessUtil.single().runCablles(callables, 20, 180L);
 
         Map<String, List<Map>> sortResults = quartzJobs.entrySet().stream().sorted(Entry.comparingByKey((v1, v2) -> {
-            if (SystemStringUtil.single().isNotEmpty(applicationGroup) && (!v1.startsWith(applicationGroup)) && v2.startsWith(
-                applicationGroup)) {
+            if (SystemStringUtil.single().isNotEmpty(applicationGroup) && (!v1.startsWith(applicationGroup)) && v2.startsWith(applicationGroup)) {
                 return 100;
-            } else if (SystemStringUtil.single().isNotEmpty(applicationGroup) && v1.startsWith(applicationGroup) && (!v2.startsWith(
-                applicationGroup))) {
+            } else if (SystemStringUtil.single().isNotEmpty(applicationGroup) && v1.startsWith(applicationGroup) && (!v2.startsWith(applicationGroup))) {
                 return -100;
             } else {
                 return v1.compareTo(v2);

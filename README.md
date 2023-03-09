@@ -41,6 +41,12 @@ git clone https://gitee.com/longyou/springcloud-tester.git
    1. -Dserver.port=8085 -Dsystem.config.consul.host=192.168.30.239（自行更改） -Dsystem.config.consul.port=10050 -Dsystem_config_consul_instance_ip=192.168.30.192 -Dsystem.validate.check=true -Dsystem.mfa.enabled=true -Dfastjson.parser.autoTypeSupport=true -Xms256m -Xmx512m -Xss512K
    2. spring.application.group=YANSHI-LONGYOU-;sys.curr_profile=yanshi;spring.profiles.active=yanshi;system.rabbitmq.enabled=fasle;system.rabbitmq.receive.enabled=fasle
 6. 配置中心参考配置请参考```doc/配置中心配置示例``` 
+7. docker启动参数，请参考各项目下的配置
+8. SWAGGER配置中心地址 http://网关IP:端口号/doc.html
+## 系统模块介绍
+### 个人中心
+### 系统管理
+### 系统设置
 ## 演示环境及定制
 24小时咨询电话：18028750128（微信同号）18926015545（微信同号）。
 ## 反馈交流
