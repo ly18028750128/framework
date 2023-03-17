@@ -1,0 +1,17 @@
+version: '3'
+services:
+  spring-gateway-10000:
+    build: .
+    image: app.lianziyou.tech:5000/framework/spring-gateway_dev:latest
+    container_name: spring-gateway-10000
+    restart: always
+    ports:
+      - "10000:9000"
+    environment:
+      - jasypt_encryptor_password
+      - "JAVA_OPTS=-Dfile.encoding=UTF-8 -Dserver.port=9000 -Dsys.curr_profile=yanshi -Dspring.application.group= \
+                  -Dsystem.config.consul.host=192.168.30.239 -Dsystem.config.consul.port=10050 \
+                  -Dsystem_config_consul_instance_ip=192.168.30.239 -Dsystem_config_consul_instance_port=10000 \
+                  -Dsystem.validate.check=true -Dfastjson.parser.autoTypeSupport=true -Xms512m -Xmx2048m "
+      - "ENV_OPTS=--system.eth.sign.expire.time=300000 --spring.profiles.active=yanshi \
+                  --system.rabbitmq.receive.enabled=false --system.rabbitmq.enabled=false --system.mfa.enabled=true --management.endpoint.gateway.enabled=false"
