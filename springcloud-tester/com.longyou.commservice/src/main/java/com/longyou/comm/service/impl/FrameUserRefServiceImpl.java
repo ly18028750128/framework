@@ -116,12 +116,12 @@ public class FrameUserRefServiceImpl implements FrameUserRefService {
         if (vo.getAttributeValue() == null) {
             throw new BusinessException("属性值不能为空");
         }
-        if (vo.getCreateBy() == null) {
-            throw new BusinessException("创建人不能为空");
-        }
-        if (vo.getUpdateBy() == null) {
-            throw new BusinessException("更新人不能为空");
-        }
+//        if (vo.getCreateBy() == null) {
+//            throw new BusinessException("创建人不能为空");
+//        }
+//        if (vo.getUpdateBy() == null) {
+//            throw new BusinessException("更新人不能为空");
+//        }
     }
 
 }

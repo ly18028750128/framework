@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.unknow.first</groupId>
     <artifactId>common-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>export-import-manager</artifactId>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>com.longyou</groupId>
       <artifactId>cloud-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.longyou</groupId>
   <artifactId>springcloud-tester</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <springboot.version>2.7.0</springboot.version>
@@ -141,7 +141,7 @@
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>1.18.24</version>
-<!--        <scope>provided</scope>-->
+        <!--        <scope>provided</scope>-->
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -158,11 +158,6 @@
         <artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
         <version>1.4.2</version>
       </dependency>
-      <!--      <dependency>-->
-      <!--        <groupId>de.codecentric</groupId>-->
-      <!--        <artifactId>spring-boot-admin-starter-client</artifactId>-->
-      <!--        <version>2.6.3</version>-->
-      <!--      </dependency>-->
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
@@ -236,22 +231,22 @@
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>article-manager</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>export-import-manager</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>export-import-api</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>photo-manager</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>io.springfox</groupId>
@@ -284,11 +279,6 @@
         <artifactId>commons-beanutils</artifactId>
         <version>1.9.4</version>
       </dependency>
-<!--      <dependency>-->
-<!--        <groupId>com.asyncexcel</groupId>-->
-<!--        <artifactId>async-excel-springboot-starter</artifactId>-->
-<!--        <version>3.2.0-SNAPSHOT</version>-->
-<!--      </dependency>-->
     </dependencies>
 
   </dependencyManagement>
@@ -317,19 +307,4 @@
       </plugin>
     </plugins>
   </build>
-  <!--    <distributionManagement>-->
-  <!--        &lt;!&ndash; 两个ID必须与 setting.xml中的<server><id>nexus-releases</id></server>保持一致&ndash;&gt;-->
-  <!--        <repository>-->
-  <!--            <id>nexus-releases</id>-->
-  <!--            <name>Nexus Release Repository</name>-->
-  <!--            <url>http://172.16.4.24:10000/repository/maven-releases/</url>-->
-  <!--        </repository>-->
-  <!--        <snapshotRepository>-->
-  <!--            <id>nexus-snapshots</id>-->
-  <!--            <name>Nexus Snapshot Repository</name>-->
-  <!--            <url>http://172.16.4.24:10000/repository/maven-snapshots/</url>-->
-  <!--        </snapshotRepository>-->
-  <!--    </distributionManagement>-->
-
-
 </project>
