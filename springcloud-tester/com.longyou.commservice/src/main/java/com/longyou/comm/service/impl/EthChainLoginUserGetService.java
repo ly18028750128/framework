@@ -37,6 +37,10 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
     @Value("${system.eth.sign.expire.time:3600000}")
     private Long signValueExpireTime; // 默认60分钟过过期,也就是说60分钟内可以用同一个密钥登录
 
+    @Value("${system.eth.sign.isFormat:true}")
+    private Boolean isFormat; // 登录消息是否为EthSignMessageDto的格式
+
+
     @Autowired
     private RedisUtil redisUtil;
 
@@ -44,19 +48,12 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
     private static final String MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
 
     /**
-     *
      * @param loginUserGetParamsDTO
      * @return
-     * @throws Exception
-     * 示例代码
-     *             const loginMessage = {
-     *                 address: that.address,
-     *                 webUrl: "http://app.meta-utopia.com",
-     *                 loginTime: new Date().getTime(),
-     *                 message: "login in meta-utopia",
-     *             }
-     *
-     *             const signValue = JSON.stringify(loginMessage);
+     * @throws Exception 示例代码 const loginMessage = { address: that.address, webUrl: "http://app.meta-utopia.com", loginTime: new Date().getTime(), message:
+     *                   "login in meta-utopia", }
+     *                   <p>
+     *                   const signValue = JSON.stringify(loginMessage);
      */
     @Override
     @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
@@ -67,16 +64,25 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
         final String addressSignKey = ADDRESS_SIGN_MAP_KEY + address;
         loginUserGetParamsDTO.setUserName(address.toLowerCase(Locale.ROOT));
         final String message = loginUserGetParamsDTO.getParamMap().get("signValue").toString();
-        EthSignMessageDto ethSignMessageDto = JSON.parseObject(message, EthSignMessageDto.class);
-        // 如果登录时间戳不在有效期内，那么提示他重新签名，防止签名被重复利用
-        if (System.currentTimeMillis() > ethSignMessageDto.getLoginTime() + signValueExpireTime) {
-            throw new BusinessException("eth.login.error.time.expire");
+
+        if (isFormat) {
+            EthSignMessageDto ethSignMessageDto = JSON.parseObject(message, EthSignMessageDto.class);
+            // 如果登录时间戳不在有效期内，那么提示他重新签名，防止签名被重复利用
+            if (System.currentTimeMillis() > ethSignMessageDto.getLoginTime() + signValueExpireTime) {
+                throw new BusinessException("eth.login.error.time.expire");
+            }
+        } else {
+            // 用户签名会在redis里记录有效期，如果过期将不在受理这个签名
+            Long expireEndTime = redisUtil.hashGet(addressSignKey, message);
+            if (expireEndTime != null && System.currentTimeMillis() > expireEndTime) {
+                throw new BusinessException("eth.login.error.sign.message.expire");
+            }
+            // 如果24小时内没有登录过，将所有的签名重置
+            if (redisUtil.hashGet(addressSignKey, message) == null) {
+                redisUtil.hashSet(addressSignKey, message, System.currentTimeMillis() + signValueExpireTime, 24 * 3600L);
+            }
         }
-        // 用户签名会在redis里记录有效期，如果过期将不在受理这个签名
-        Long expireEndTime = redisUtil.hashGet(addressSignKey, message);
-        if (expireEndTime != null && System.currentTimeMillis() > expireEndTime) {
-            throw new BusinessException("eth.login.error.sign.message.expire");
-        }
+
         String prefix = MESSAGE_PREFIX + message.length();
         byte[] msgHash = (prefix + message).getBytes(StandardCharsets.UTF_8);
         byte[] signatureBytes = Numeric.hexStringToByteArray(loginUserGetParamsDTO.getPassword());
@@ -88,10 +94,6 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
         BigInteger recoveredKey = Sign.signedMessageToKey(msgHash, sd);
         String addressRecovered = "0x" + Keys.getAddress(recoveredKey);
         Assert.isTrue(addressRecovered.equalsIgnoreCase(address), "eth.login.error.address.wrong"); // 地址解析错误
-        if (redisUtil.hashGet(addressSignKey, message) == null) {
-            redisUtil.hashSet(addressSignKey, message, System.currentTimeMillis() + signValueExpireTime, signValueExpireTime / 1000L);
-        }
-
         return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
     }
 }
