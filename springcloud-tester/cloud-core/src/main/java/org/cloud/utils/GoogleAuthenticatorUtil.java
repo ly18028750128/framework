@@ -1,5 +1,15 @@
 package org.cloud.utils;
 
+import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
+
+import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base32;
@@ -14,17 +24,6 @@ import org.cloud.exception.BusinessException;
 import org.cloud.feign.service.ICommonServiceFeignClient;
 import org.cloud.vo.FrameUserRefVO;
 import org.springframework.http.HttpStatus;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
 
 /**
  * google身份验证器，java服务端实现
@@ -55,8 +54,8 @@ public final class GoogleAuthenticatorUtil {
     int window_size = 3; // default 3 - max 17
 
     /**
-     * set the windows size. This is an integer value representing the number of 30 second windows we allow The bigger the window, the more
-     * tolerant of clock skew we are.
+     * set the windows size. This is an integer value representing the number of 30 second windows we allow The bigger the window, the more tolerant of clock
+     * skew we are.
      *
      * @param s window size - must be >=1 and <=17. Other values are ignored
      */
@@ -67,8 +66,8 @@ public final class GoogleAuthenticatorUtil {
     }
 
     /**
-     * Generate a random secret key. This must be saved by the server and associated with the users account to verify the code displayed by
-     * Google Authenticator. The user must register this secret on their device. 生成一个随机秘钥
+     * Generate a random secret key. This must be saved by the server and associated with the users account to verify the code displayed by Google
+     * Authenticator. The user must register this secret on their device. 生成一个随机秘钥
      *
      * @return secret key
      */
@@ -89,8 +88,8 @@ public final class GoogleAuthenticatorUtil {
     }
 
     /**
-     * Return a URL that generates and displays a QR barcode. The user scans this bar code with the Google Authenticator application on
-     * their smartphone to register the auth code. They can also manually enter the secret if desired
+     * Return a URL that generates and displays a QR barcode. The user scans this bar code with the Google Authenticator application on their smartphone to
+     * register the auth code. They can also manually enter the secret if desired
      *
      * @param user   user id (e.g. fflinstone)
      * @param host   host or system that the code is for (e.g. myapp.com)
@@ -196,8 +195,7 @@ public final class GoogleAuthenticatorUtil {
         verifyCurrentUserBindGoogleKey();
         FrameUserRefVO frameUserRefVO;
 
-        frameUserRefVO =
-            getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
+        frameUserRefVO = getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_ATTR_NAME.value());
         //  如果未绑定谷歌验证那么插入谷歌验证属性
         if (CollectionUtil.single().isEmpty(frameUserRefVO)) {
             frameUserRefVO = this.createNewUserRefVO(user);
@@ -208,8 +206,7 @@ public final class GoogleAuthenticatorUtil {
             exceptionObject.put("secretQRBarcode", this.getQRBarcode(user.getUsername(), frameUserRefVO.getAttributeValue()));
             exceptionObject.put("secretQRBarcodeURL", this.getQRBarcodeURL(user.getUsername(), "", frameUserRefVO.getAttributeValue()));
             getRedisUtil().set(__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY + user.getId(), frameUserRefVO.getAttributeValue(), -1L);
-            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), exceptionObject,
-                HttpStatus.BAD_REQUEST.value()); //
+            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), exceptionObject, HttpStatus.BAD_REQUEST.value()); //
             // 谷歌key
         }
         googleSecret = frameUserRefVO.getAttributeValue();
@@ -221,12 +218,11 @@ public final class GoogleAuthenticatorUtil {
      * 校验当前用户是否已经绑定谷歌验证码
      */
     public void verifyCurrentUserBindGoogleKey() throws BusinessException {
-        FrameUserRefVO frameUserRefVO =
-            getCommonServiceFeignClient().getCurrentUserRefByAttributeName(MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
+        FrameUserRefVO frameUserRefVO = getCommonServiceFeignClient().getCurrentUserRefByAttributeName(
+            MfaConstant._GOOGLE_MFA_USER_SECRET_REF_FlAG_ATTR_NAME.value());
 
         if (frameUserRefVO == null || "false".equals(frameUserRefVO.getAttributeValue())) {
-            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(),
-                MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description(),
+            throw new BusinessException(MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.value(), MfaConstant.CORRELATION_YOUR_GOOGLE_KEY.description(),
                 HttpStatus.BAD_REQUEST.value());
         }
     }
@@ -256,12 +252,11 @@ public final class GoogleAuthenticatorUtil {
                 MfaConstant.CORRELATION_GOOGLE_VERIFY_CODE_NOT_NUMERIC.description(), HttpStatus.BAD_REQUEST.value());
         }
 
-        boolean isVerifyPass = GoogleAuthenticatorUtil.single().checkCode(googleSecret, Long.parseLong(mfaValue),
-            System.currentTimeMillis());
+        boolean isVerifyPass = GoogleAuthenticatorUtil.single().checkCode(googleSecret, Long.parseLong(mfaValue), System.currentTimeMillis());
 
         if (!isVerifyPass) {
-            throw new BusinessException(MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.value(),
-                MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.description(), HttpStatus.BAD_REQUEST.value());
+            throw new BusinessException(MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.value(), MfaConstant.CORRELATION_GOOGLE_VERIFY_FAILED.description(),
+                HttpStatus.BAD_REQUEST.value());
         }
         return true;
     }

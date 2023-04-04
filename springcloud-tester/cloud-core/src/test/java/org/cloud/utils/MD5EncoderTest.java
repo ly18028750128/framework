@@ -21,19 +21,7 @@ public class MD5EncoderTest {
 
     @Test
     public void encode() {
-//        logger.debug(MD5Encoder.encode("abcd1234", "gyV4klmOaVoHRUDv"));
-//        logger.debug(MD5Encoder.encode("123456"));
-
-        BigDecimal bigDecimal= BigDecimal.ZERO;
-
-        BigDecimal bigDecimal1= BigDecimal.ONE;
-
-        bigDecimal = bigDecimal1;
-
-        bigDecimal1 = bigDecimal1.add(new BigDecimal(10));
-
-        logger.info("{},{}",bigDecimal,bigDecimal1);
-
+        logger.debug("encodePassword = {}",MD5Encoder.encode("abcd1234", "盐值"));
     }
 
 

@@ -3,7 +3,7 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>photo-manager</artifactId>
-       <version>0.0.1-SNAPSHOT</version>
+       <version>0.0.2-SNAPSHOT</version>
     </dependency>
 3:springboot启动类中增加
   @MapperScan： "com.unkow.first.photo.manager.mapper"

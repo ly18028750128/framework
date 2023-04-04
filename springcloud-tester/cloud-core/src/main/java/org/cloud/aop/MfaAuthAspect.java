@@ -1,5 +1,6 @@
 package org.cloud.aop;
 
+import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -19,8 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -48,14 +47,14 @@ public class MfaAuthAspect {
 
         // 如果不校验双因子验证那么直接不拦截，此处为url强校验开关，每次都要校验。
         TSystemDicItem dicItem = SystemDicUtil.single().getDicItem("systemConfig", "isMfaVerify");
-        if (dicItem != null && !StringUtils.isEmpty(dicItem.getDicItemValue()) && "false".equals(dicItem.getDicItemValue())) {
+        if (dicItem != null && StringUtils.hasLength(dicItem.getDicItemValue()) && "false".equals(dicItem.getDicItemValue())) {
             return joinPoint.proceed();
         }
 
         if (CoreConstant.MfaAuthType.GOOGLE.equals(mfaAuthAnnotation.mfaAuthType())) {
             checkGoogleValidCode();
         } else {
-            // todo 其它方式暂时不处理
+            throw new BusinessException(String.format("MFA validate [%s],is not support!", mfaAuthAnnotation.mfaAuthType()));
         }
         return joinPoint.proceed();
     }
