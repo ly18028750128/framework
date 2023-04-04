@@ -1,19 +1,12 @@
 package com.unknow.first.imexport.job;
 
-import static com.unknow.first.imexport.callable.ExportCallableService._TEMP_FILE_PATH;
-
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.service.FrameExportTemplateService;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
@@ -25,6 +18,16 @@ import org.quartz.JobExecutionException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import static com.unknow.first.imexport.callable.ExportCallableService._TEMP_FILE_PATH;
+
+@Slf4j
 public class ImexportTaskJob extends BaseQuartzJobBean {
 
     final public static String redisLockerName = "com.unknow.first.imexport.job.ImexportTaskRemoteJob.locker";
@@ -83,8 +86,9 @@ public class ImexportTaskJob extends BaseQuartzJobBean {
                     Constructor constructor = Class.forName(importExportTask.getProcessClass()).getConstructor(FrameImportExportTask.class);
                     callables.add((Callable<FrameImportExportTask>) constructor.newInstance(importExportTask));
                 } catch (Exception e) {
+                    e.printStackTrace();
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
-                    importExportTask.setMessage(e.getMessage());
+                    importExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " +e.getCause().getMessage());
                     importExportTaskService.updateById(importExportTask);
                 }
             }

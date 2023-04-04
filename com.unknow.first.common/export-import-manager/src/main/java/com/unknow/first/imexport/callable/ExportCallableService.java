@@ -2,14 +2,17 @@ package com.unknow.first.imexport.callable;
 
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
-import java.io.File;
-import java.util.Date;
-import java.util.concurrent.Callable;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.cloud.constant.MimeTypeEnum;
 import org.cloud.utils.mongo.MongoDBUtil;
 
+import java.io.File;
+import java.util.Date;
+import java.util.concurrent.Callable;
+
+@Slf4j
 public abstract class ExportCallableService implements Callable<FrameImportExportTask> {
 
     public final static String _TEMP_FILE_PATH = "/temp/imexport/";
@@ -52,8 +55,9 @@ public abstract class ExportCallableService implements Callable<FrameImportExpor
             frameImportExportTask.setFileId(fileId.toString());
             frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
         } catch (Exception e) {
+            e.printStackTrace();
             frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
-            frameImportExportTask.setMessage(e.getMessage());
+            frameImportExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " +e.getCause().getMessage());
         } finally {
             frameImportExportTask.setEndTime(new Date());
             new File(fileName).delete();
