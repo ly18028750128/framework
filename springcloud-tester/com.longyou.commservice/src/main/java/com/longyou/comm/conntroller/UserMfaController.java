@@ -163,6 +163,7 @@ public class UserMfaController {
     @ApiOperation("重置自己的谷歌验证码")
     @GetMapping("/resetMyGoogleSecretFlag")
     @SystemResource(value = "resetMyGoogleSecretFlag", description = "重置自己的谷歌验证码", authMethod = AuthMethod.ALLSYSTEMUSER)
+    @MfaAuth
     public ResponseResult resetMyGoogleSecretFlag() throws Exception {
         return resetUserGoogle(RequestContextManager.single().getRequestContext().getUser().getId());
     }
