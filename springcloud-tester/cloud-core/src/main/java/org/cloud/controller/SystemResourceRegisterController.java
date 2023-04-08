@@ -135,7 +135,7 @@ public class SystemResourceRegisterController {
                     }
 //                    menu.setMenuUrl(methodResourceAnnotation.menuCode());
                     menu.setMenuUrl("/"+methodResourceAnnotation.menuCode());  // 新版本的后台管理，加上/
-                    menu.setComponentPath(methodResourceAnnotation.menuCode());
+                    menu.setComponentPath(methodResourceAnnotation.menuCode()+"/index");
                     menu.setCreateDate(new Date());
                     menu.setUpdateBy("admin");
                     menu.setUpdateDate(new Date());

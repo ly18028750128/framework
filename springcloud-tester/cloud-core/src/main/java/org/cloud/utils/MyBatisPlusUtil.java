@@ -94,9 +94,7 @@ public class MyBatisPlusUtil {
                     queryWrapper.and(wrapper -> {
                         for (String s : blurrys) {
                             String column = humpToUnderline(s);
-                            //if(i!=0){
                             wrapper.or();
-                            //}
                             wrapper.like(column, val.toString());
                         }
                     });
