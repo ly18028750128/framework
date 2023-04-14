@@ -1,16 +1,20 @@
 package org.cloud.utils;
 
 
-import org.cloud.core.redis.RedisUtil;
-import org.cloud.model.TSystemDicItem;
-import org.cloud.model.TSystemDicMaster;
-import org.jetbrains.annotations.NotNull;
+import static org.cloud.constant.CoreConstant.SystemSupportLanguage;
+import static org.cloud.constant.CoreConstant._GENERAL_SYSDIC_NAME;
+import static org.cloud.constant.CoreConstant._SYSTEM_DIC_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.cloud.constant.CoreConstant.*;
+import lombok.SneakyThrows;
+import org.cloud.core.redis.RedisUtil;
+import org.cloud.model.TSystemDicItem;
+import org.cloud.model.TSystemDicMaster;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.util.StringUtils;
 
 /**
  * 从缓存中获取数据字典
@@ -46,14 +50,12 @@ public final class SystemDicUtil {
      * @return
      */
     public List<TSystemDicItem> getDicItemList(String microServiceName, String dicCode, String language) {
-
         List<TSystemDicItem> result = new ArrayList<>();
-        Map<String, List<TSystemDicItem>> itemsMap = getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName, dicCode + _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT);
-
+        Map<String, List<TSystemDicItem>> itemsMap = getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + microServiceName,
+            dicCode + _SYSTEM_DIC_ITEMS_CACHE_KEY_WHIT_DOT);
         if (itemsMap == null) {
             return result;
         }
-
         return itemsMap.get(language);
     }
 
@@ -106,4 +108,32 @@ public final class SystemDicUtil {
     public TSystemDicMaster getDic(String dicCode) {
         return getRedisUtilService().hashGet(_SYSTEM_DIC_CACHE_KEY + _GENERAL_SYSDIC_NAME, dicCode);
     }
+
+    @SneakyThrows
+    public <T> T getValue(String microServiceName, String dicCode, String language, @NotNull String dicItemCode, String defaultValue, Class<?> cls) {
+        TSystemDicItem systemDicItem = this.getDicItem(microServiceName, dicCode, language, dicItemCode);
+
+        if (systemDicItem == null) {
+            if (StringUtils.hasLength(defaultValue)) {
+                return (T) cls.getConstructor(String.class).newInstance(defaultValue);
+            }
+            return null;
+        }
+
+        return (T) cls.getConstructor(String.class).newInstance(systemDicItem.getDicItemValue());
+
+    }
+
+    public <T> T getValue(String dicCode, String language, @NotNull String dicItemCode, String defaultValue, Class<?> cls) {
+        return this.getValue(_GENERAL_SYSDIC_NAME, dicCode, language, dicItemCode, defaultValue, cls);
+    }
+
+    public <T> T getValue(String dicCode, @NotNull String dicItemCode, String defaultValue, Class<?> cls) {
+        return this.getValue(_GENERAL_SYSDIC_NAME, dicCode, SystemSupportLanguage.ZH_CN.value(), dicItemCode, defaultValue, cls);
+    }
+
+    public <T> T getValue(String dicCode, @NotNull String dicItemCode, Class<?> cls) {
+        return this.getValue(_GENERAL_SYSDIC_NAME, dicCode, SystemSupportLanguage.ZH_CN.value(), dicItemCode, null, cls);
+    }
+
 }

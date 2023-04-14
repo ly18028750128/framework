@@ -18,6 +18,7 @@ public class SpringContextUtil implements ApplicationContextAware {
         if (SpringContextUtil.applicationContext == null) {
             SpringContextUtil.applicationContext = applicationContext;
         }
+
     }
 
     //获取applicationContext
@@ -55,4 +56,5 @@ public class SpringContextUtil implements ApplicationContextAware {
             return null;
         }
     }
+
 }
