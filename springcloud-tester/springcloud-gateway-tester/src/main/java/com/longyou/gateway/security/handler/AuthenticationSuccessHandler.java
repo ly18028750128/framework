@@ -6,17 +6,14 @@ import static com.longyou.gateway.security.response.MessageCode.COMMON_SUCCESS;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
-import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants;
 import org.cloud.constant.LoginConstants.LoginError;
@@ -25,7 +22,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
 import org.cloud.utils.MD5Encoder;
-import org.cloud.utils.RedissonUtil;
+import org.cloud.utils.process.ProcessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +40,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.Base64;
 
 
 @Component
@@ -75,8 +70,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             final String userBasic64Random = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(), "天下无双");
             final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
-            long timeSaltChangeInterval = Long.parseLong(
-                CommonUtil.single().getEnv("system.auth_basic_expire_time", Long.toString(120 * 24 * 60 * 60L)));
+            long timeSaltChangeInterval = CommonUtil.single().getEnv("system.auth_basic_expire_time", 120 * 24 * 60 * 60L, Long.class);
             // 获取解密分隔符的处理
             final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
 
@@ -94,8 +88,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
 
                 // 如果是后台管理用户，那么超时时间为60分钟
                 if (LoginConstants.REGIST_SOURCE_BACKGROUND.equals(loginUserDetails.getUserRegistSource())) {
-                    timeSaltChangeInterval = Long.parseLong(
-                        CommonUtil.single().getEnv("system.auth_basic_background_expire_time", Long.toString(60 * 60L)));
+                    timeSaltChangeInterval = CommonUtil.single().getEnv("system.auth_basic_background_expire_time", 60 * 60L, Long.class);
                 }
                 // 缓存当前登录用户的登录信息
                 final String successKey = MD5Encoder.encode("basic " + token);
@@ -103,27 +96,9 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
 
                 // 缓存已经登录的信息
                 final Long expireTime = System.currentTimeMillis() + timeSaltChangeInterval * 1000L;
+                // 先清理过期的数据再增加防止，更改过期时间的情况，会导致登录不成功的问题
+                cleanUserLogin(loginUserDetails);
                 redisUtil.hashSet(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), successKey, expireTime, -1L);
-
-                HashOperations<String, String, Long> opsForHash = redisUtil.getRedisTemplate().opsForHash();
-                Map<String, Long> userLoginTokenTokeMap = opsForHash.entries(
-                    _BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
-
-                // 每个用户最大的登录客户端，默认为5个
-                final int maxSingleUserLoginCount = Integer.parseInt(
-                    CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", "5"));
-
-                if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
-                    LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
-                    userLoginTokenTokeMap.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                        .forEachOrdered(s -> sortedMap.put(s.getKey(), s.getValue()));
-                    LinkedHashMap<String, Long> willRemoveMaps = CollectionUtil.single()
-                        .subMap(sortedMap, maxSingleUserLoginCount, userLoginTokenTokeMap.size());
-                    for (Entry<String, Long> entry : willRemoveMaps.entrySet()) {
-                        redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), entry.getKey());
-                        redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + entry.getKey());
-                    }
-                }
                 loginUserDetails.setPassword("***********");
                 loginUserDetails.setToken(token);
             }
@@ -141,5 +116,32 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
         }
         DataBuffer bodyDataBuffer = response.bufferFactory().wrap(dataBytes);
         return response.writeWith(Mono.just(bodyDataBuffer));
+    }
+
+    private void cleanUserLogin(LoginUserDetails loginUserDetails) {
+        // 每个用户最大的登录客户端，默认为5个
+        final int maxSingleUserLoginCount = CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", 5, Integer.class) - 1;
+
+        HashOperations<String, String, Long> opsForHash = redisUtil.getRedisTemplate().opsForHash();
+        Map<String, Long> userLoginTokenTokeMap = opsForHash.entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
+
+        if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
+            ProcessUtil.single().runCallable(() -> {
+                try {
+                    LinkedHashMap<String, Long> sortedMap = new LinkedHashMap<>();
+                    userLoginTokenTokeMap.entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder()))
+                        .forEachOrdered(s -> sortedMap.put(s.getKey(), s.getValue()));
+                    LinkedHashMap<String, Long> willRemoveMaps = CollectionUtil.single()
+                        .subMap(sortedMap, maxSingleUserLoginCount, userLoginTokenTokeMap.size());
+                    for (Entry<String, Long> entry : willRemoveMaps.entrySet()) {
+                        redisUtil.hashDel(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), entry.getKey());
+                        redisUtil.remove(CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY + entry.getKey());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
+            });
+        }
     }
 }
