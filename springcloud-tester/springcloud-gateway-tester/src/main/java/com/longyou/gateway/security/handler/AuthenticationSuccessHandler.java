@@ -121,10 +121,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
     private void cleanUserLogin(LoginUserDetails loginUserDetails) {
         // 每个用户最大的登录客户端，默认为5个
         final int maxSingleUserLoginCount = CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", 5, Integer.class) - 1;
-
         HashOperations<String, String, Long> opsForHash = redisUtil.getRedisTemplate().opsForHash();
         Map<String, Long> userLoginTokenTokeMap = opsForHash.entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
-
         if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {
             ProcessUtil.single().runCallable(() -> {
                 try {
