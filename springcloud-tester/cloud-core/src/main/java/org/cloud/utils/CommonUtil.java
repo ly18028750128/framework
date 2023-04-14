@@ -2,23 +2,24 @@ package org.cloud.utils;
 
 
 import feign.FeignException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
 
 public final class CommonUtil {
 
@@ -26,6 +27,7 @@ public final class CommonUtil {
     IGatewayFeignClient gatewayFeignClient;
     Environment env;
 
+    @Lazy
     private CommonUtil() {
         env = SpringContextUtil.getBean(Environment.class);
         gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
@@ -54,8 +56,31 @@ public final class CommonUtil {
         if (env == null) {
             env = SpringContextUtil.getBean(Environment.class);
         }
-        return env.getProperty(key, defaultValue);
+        String value = env.getProperty(key, defaultValue);
+        return value == null ? value : defaultValue;
     }
+
+    public String getEnv(String key) {
+        return getEnv(key, (String) null);
+    }
+
+    public <T> T getEnv(String key, T defaultValue, Class cls) {
+        final String value = getEnv(key);
+        if (value == null) {
+            return defaultValue;
+        }
+
+        try {
+            return (T) cls.getConstructor(String.class).newInstance(value);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> T getEnv(String key, Class cls) {
+        return getEnv(key, null, cls);
+    }
+
 
     /**
      * 获取当前登录用户
