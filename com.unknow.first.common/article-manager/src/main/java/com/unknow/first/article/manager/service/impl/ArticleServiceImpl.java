@@ -1,33 +1,33 @@
 package com.unknow.first.article.manager.service.impl;
 
 
-import com.unknow.first.article.manager.constants.ArticleConstants;
-import com.unknow.first.article.manager.mapper.Article;
-import com.unknow.first.article.manager.mapper.ArticleMapper;
-import com.unknow.first.article.manager.service.ArticleService;
-import com.unknow.first.article.manager.vo.ArticleParamVO;
-import com.unknow.first.article.manager.vo.ArticleResultVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.juna.ruiqi.api.CommonPage;
 import com.juna.ruiqi.api.CommonParam;
 import com.juna.ruiqi.api.CommonResult;
 import com.juna.ruiqi.constants.CommonConstants;
-import java.util.Date;
-
-import java.util.List;
+import com.unknow.first.article.manager.constants.ArticleConstants;
+import com.unknow.first.article.manager.mapper.Article;
+import com.unknow.first.article.manager.mapper.ArticleMapper;
+import com.unknow.first.article.manager.service.ArticleService;
+import com.unknow.first.article.manager.vo.ArticleParamVO;
+import com.unknow.first.article.manager.vo.ArticleResultVO;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
     @Override
-    public CommonPage<ArticleResultVO> getArticleListByParentCode(String code, Integer languageType, CommonParam param) {
+    public CommonPage<ArticleResultVO> getArticleListByParentCode(Integer id, String code, Integer languageType, CommonParam param) {
         PageHelper.startPage(param.getPage(), param.getLimit());
-        List<ArticleResultVO> list = getBaseMapper().selectArticleListByParentCode(code, languageType);
+        List<ArticleResultVO> list = getBaseMapper().selectArticleListByParentCode(id, code, languageType);
         return CommonPage.restPage(list);
     }
 
