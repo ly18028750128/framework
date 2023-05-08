@@ -23,9 +23,9 @@ import org.springframework.web.client.HttpClientErrorException;
 
 public final class CommonUtil {
 
-    Logger logger = LoggerFactory.getLogger(CommonUtil.class);
-    IGatewayFeignClient gatewayFeignClient;
-    Environment env;
+    final Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+    final IGatewayFeignClient gatewayFeignClient;
+    final Environment env;
 
     @Lazy
     private CommonUtil() {
@@ -53,15 +53,11 @@ public final class CommonUtil {
      * @return
      */
     public String getEnv(String key, String defaultValue) {
-        if (env == null) {
-            env = SpringContextUtil.getBean(Environment.class);
-        }
-        String value = env.getProperty(key, defaultValue);
-        return value == null ? value : defaultValue;
+        return env.getProperty(key, defaultValue);
     }
 
     public String getEnv(String key) {
-        return getEnv(key, (String) null);
+        return env.getProperty(key);
     }
 
     public <T> T getEnv(String key, T defaultValue, Class cls) {
@@ -89,9 +85,6 @@ public final class CommonUtil {
      */
     public LoginUserDetails getLoginUser() {
         try {
-            if (gatewayFeignClient == null) {
-                gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
-            }
             return gatewayFeignClient.getAuthentication();
         } catch (HttpClientErrorException.Unauthorized e) {
             logger.debug("rest请求无权限");
