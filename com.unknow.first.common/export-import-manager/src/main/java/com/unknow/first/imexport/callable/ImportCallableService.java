@@ -56,7 +56,7 @@ public abstract class ImportCallableService implements Callable<FrameImportExpor
         } catch (Exception e) {
             e.printStackTrace();
             frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
-            frameImportExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " +e.getCause().getMessage());
+            frameImportExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " + (e.getCause() == null ? "空" : e.getCause().getMessage()));
         } finally {
             frameImportExportTask.setEndTime(new Date());
             if (fileInputStream != null) {

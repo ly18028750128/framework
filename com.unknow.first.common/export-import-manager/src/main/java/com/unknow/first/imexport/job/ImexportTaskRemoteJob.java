@@ -95,7 +95,7 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
                 } catch (Exception e) {
                     e.printStackTrace();
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
-                    importExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " +e.getCause().getMessage());
+                    importExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " + (e.getCause() == null ? "空" : e.getCause().getMessage()));
                     imexportTaskFeignClient.update(importExportTask);
                 }
             }
