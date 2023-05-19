@@ -79,6 +79,11 @@ public class MyBatisPlusUtil {
                     }
                     continue;
                 }
+
+                if(q.ignore()){  // 如果为忽略状态，那么跳过
+                    continue;
+                }
+
                 String propName = q.propName();
                 String blurry = q.blurry();
                 String attributeName = isBlank(propName) ? field.getName() : propName;
