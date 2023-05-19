@@ -27,6 +27,8 @@ public @interface Query {
      */
     String blurry() default "";
 
+    boolean ignore() default false;
+
     enum Type {
         // jie 2019/6/4 相等
         EQUAL
@@ -65,10 +67,8 @@ public @interface Query {
         NOT_NULL
         // 查询时间
         ,
-        UNIX_TIMESTAMP
-        ,
-        LONG_TIMESTAMP
-        ;
+        UNIX_TIMESTAMP,
+        LONG_TIMESTAMP;
 
 
     }
