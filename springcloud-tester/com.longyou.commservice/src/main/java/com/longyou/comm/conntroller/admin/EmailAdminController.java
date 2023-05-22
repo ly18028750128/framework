@@ -1,15 +1,11 @@
 package com.longyou.comm.conntroller.admin;
 
-import static com.longyou.comm.CommonMenuConst.MENU_MAIL_MANGER;
-import static com.longyou.comm.CommonMenuConst.MENU_MAIL_SENDER_CONFIG;
-import static com.longyou.comm.CommonMenuConst.MENU_MAIL_TEMPLATE_CONFIG;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
 import com.longyou.comm.dto.EmailSenderConfigQueryDTO;
 import com.longyou.comm.dto.EmailTemplateQueryDTO;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
 import com.unknow.first.mail.manager.domain.EmailSenderConfig;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.service.EmailTemplateService;
@@ -18,8 +14,6 @@ import com.unknow.first.mail.manager.util.EmailUtil;
 import com.unknow.first.mail.manager.vo.MailVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
-import java.util.concurrent.Future;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
@@ -27,13 +21,12 @@ import org.cloud.utils.AES128Util;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.Future;
+
+import static com.longyou.comm.CommonMenuConst.*;
 
 
 @RestController

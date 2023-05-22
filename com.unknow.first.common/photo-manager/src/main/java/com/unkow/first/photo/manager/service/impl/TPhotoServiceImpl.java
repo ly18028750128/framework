@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.juna.ruiqi.api.CommonPage;
+import com.unknow.first.api.common.CommonPage;
 import com.unkow.first.photo.manager.mapper.TPhoto;
 import com.unkow.first.photo.manager.mapper.TPhotoMapper;
 import com.unkow.first.photo.manager.service.TPhotoService;
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * <p>

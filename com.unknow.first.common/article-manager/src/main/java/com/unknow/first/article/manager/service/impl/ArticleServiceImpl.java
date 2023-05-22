@@ -3,10 +3,9 @@ package com.unknow.first.article.manager.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
-import com.juna.ruiqi.api.CommonResult;
-import com.juna.ruiqi.constants.CommonConstants;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
+import com.unknow.first.api.common.CommonResult;
 import com.unknow.first.article.manager.constants.ArticleConstants;
 import com.unknow.first.article.manager.mapper.Article;
 import com.unknow.first.article.manager.mapper.ArticleMapper;
@@ -33,8 +32,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public CommonResult addArticle(ArticleParamVO vo) throws BusinessException {
-        if (vo.getStatus() != CommonConstants.StatusEnum.NORMAL.getStatus()
-                && vo.getStatus() != CommonConstants.StatusEnum.FORBIDDEN.getStatus()) {
+        if (vo.getStatus() != 1
+                && vo.getStatus() != 0) {
             throw new BusinessException("状态不合法");
         }
         Article article = new Article();
@@ -95,7 +94,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             throw new BusinessException("文章不存在");
         }
         if (vo.getStatus() != ArticleConstants.StatusEnum.NORMAL.getStatus()
-                && vo.getStatus() != CommonConstants.StatusEnum.FORBIDDEN.getStatus()) {
+                && vo.getStatus() != 0) {
             throw new BusinessException("状态不合法");
         }
         Article article = new Article();

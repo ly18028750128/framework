@@ -2,16 +2,13 @@ package com.unkow.first.photo.manager.controller.admin;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
-import com.juna.ruiqi.api.CommonResult;
-import com.juna.ruiqi.constants.CommonConstants;
-import com.juna.ruiqi.constants.OperationLogConstants;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
+import com.unknow.first.api.common.CommonResult;
 import com.unkow.first.photo.manager.mapper.TPhoto;
 import com.unkow.first.photo.manager.service.TPhotoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javax.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.AuthLog;
 import org.cloud.annotation.SystemResource;
@@ -25,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.constraints.NotNull;
 
 @Api(description = "后台管理-图片管理", tags = "AdminPhotoController")
 @Validated
@@ -48,7 +47,7 @@ public class AdminPhotoController {
         return CommonResult.success(photoService.findListByPage(param.getPage(), param.getLimit(), "sort desc", where));
     }
 
-    @AuthLog(bizType = OperationLogConstants.OPERATE_LOG_BIZ_TYPE_SYSTEM, desc = "添加图片")
+    @AuthLog(bizType = "system", desc = "添加图片")
     @ApiOperation(value = "添加图片")
     @SystemResource(value = "/admin-addPhoto", description = "添加图片", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/addPhoto")
@@ -62,7 +61,7 @@ public class AdminPhotoController {
         return CommonResult.failed();
     }
 
-    @AuthLog(bizType = OperationLogConstants.OPERATE_LOG_BIZ_TYPE_SYSTEM, desc = "修改图片")
+    @AuthLog(bizType = "system", desc = "修改图片")
     @ApiOperation(value = "修改图片")
     @SystemResource(value = "/admin-updatePhoto", description = "修改图片", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/updatePhoto")
@@ -76,12 +75,12 @@ public class AdminPhotoController {
         return CommonResult.failed();
     }
 
-    @AuthLog(bizType = OperationLogConstants.OPERATE_LOG_BIZ_TYPE_SYSTEM, desc = "修改图片状态")
+    @AuthLog(bizType = "system", desc = "修改图片状态")
     @ApiOperation(value = "修改图片状态")
     @SystemResource(value = "/admin-updatePhotoStatus", description = "修改图片状态", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/updatePhotoStatus")
     public CommonResult<?> updatePhoto(@NotNull Integer id, @NotNull Integer status) throws BusinessException {
-        if (status != CommonConstants.StatusEnum.FORBIDDEN.getStatus() && status != CommonConstants.StatusEnum.NORMAL.getStatus()) {
+        if (status != 0 && status != 1) {
             throw new BusinessException("非系统状态");
         }
         TPhoto photo = photoService.findById(id);

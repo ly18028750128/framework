@@ -1,8 +1,8 @@
 package com.unknow.first.article.manager.controller;
 
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
-import com.juna.ruiqi.api.CommonResult;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
+import com.unknow.first.api.common.CommonResult;
 import com.unknow.first.article.manager.service.ArticleService;
 import com.unknow.first.article.manager.vo.ArticleResultVO;
 import io.swagger.annotations.Api;

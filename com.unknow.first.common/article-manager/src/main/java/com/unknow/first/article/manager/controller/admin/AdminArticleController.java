@@ -1,20 +1,18 @@
 package com.unknow.first.article.manager.controller.admin;
 
 
-import com.unknow.first.article.manager.service.ArticleService;
-import com.unknow.first.article.manager.vo.ArticleParamVO;
-import com.unknow.first.article.manager.mapper.Article;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
-import com.juna.ruiqi.api.CommonResult;
-import com.juna.ruiqi.constants.OperationLogConstants;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
+import com.unknow.first.api.common.CommonResult;
+import com.unknow.first.article.manager.mapper.Article;
+import com.unknow.first.article.manager.service.ArticleService;
+import com.unknow.first.article.manager.vo.ArticleParamVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.AuthLog;
 import org.cloud.annotation.SystemResource;
@@ -27,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Api(description = "后台管理-文章管理", tags = "admin:文档管理")
 @Validated
@@ -68,7 +68,7 @@ public class AdminArticleController {
         return CommonResult.success(articleService.getById(id));
     }
 
-    @AuthLog(bizType = OperationLogConstants.OPERATE_LOG_BIZ_TYPE_SYSTEM, desc = "添加文章或分类")
+    @AuthLog(bizType = "system", desc = "添加文章或分类")
     @ApiOperation(value = "添加文章或分类")
     @SystemResource(value = "/admin-addArticle", description = "添加文章或分类", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/addArticle")
@@ -76,7 +76,7 @@ public class AdminArticleController {
         return articleService.addArticle(vo);
     }
 
-    @AuthLog(bizType = OperationLogConstants.OPERATE_LOG_BIZ_TYPE_SYSTEM, desc = "修改文章或分类")
+    @AuthLog(bizType = "system", desc = "修改文章或分类")
     @ApiOperation(value = "修改文章或分类")
     @SystemResource(value = "/admin-updateArticle", description = "修改文章或分类", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @RequestMapping(method = RequestMethod.POST, value = "/updateArticle")
