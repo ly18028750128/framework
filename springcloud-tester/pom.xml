@@ -279,6 +279,11 @@
         <artifactId>commons-beanutils</artifactId>
         <version>1.9.4</version>
       </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>api-common</artifactId>
+        <version>0.0.2-SNAPSHOT</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

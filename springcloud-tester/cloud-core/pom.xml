@@ -232,6 +232,10 @@
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>api-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

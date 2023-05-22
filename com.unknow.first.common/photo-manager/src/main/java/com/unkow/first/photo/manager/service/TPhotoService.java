@@ -3,8 +3,9 @@ package com.unkow.first.photo.manager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.juna.ruiqi.api.CommonPage;
+import com.unknow.first.api.common.CommonPage;
 import com.unkow.first.photo.manager.mapper.TPhoto;
+
 import java.util.List;
 
 /**
