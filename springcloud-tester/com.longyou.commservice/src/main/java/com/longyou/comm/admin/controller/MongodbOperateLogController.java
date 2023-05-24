@@ -57,11 +57,12 @@ public class MongodbOperateLogController {
                     Criteria.where("desc").regex(pattern));
         }
         if (!StringUtils.isEmpty(queryParams.get("startTime"))){
-            criteria.and("createDate").gte(strToDateLong(queryParams.get("startTime").toString()));
+            criteria.and("createDate").gte(strToDateLong(queryParams.get("startTime").toString())).lt(strToDateLong(queryParams.get("endTime").toString()));
+
         }
-        if (!StringUtils.isEmpty(queryParams.get("endTime"))){
-            criteria.and("createDate").lt(strToDateLong(queryParams.get("endTime").toString()));
-        }
+//        if (!StringUtils.isEmpty(queryParams.get("endTime"))){
+//            criteria.and("createDate").lt(strToDateLong(queryParams.get("endTime").toString()));
+//        }
         Query query = new Query(criteria);
         //排序
         Sort.Order createTimeDesc = new Sort.Order(Sort.Direction.DESC, "createDate");

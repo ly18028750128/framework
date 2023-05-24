@@ -353,11 +353,16 @@
 
   <select id="selectArticleListByParentCode" resultType="com.unknow.first.article.manager.vo.ArticleResultVO">
     select * from t_article
-    where parent_id in
-    (
-    select id from t_article where class_code = #{code} and language_type = #{languageType} and status = 1 and (parent_id is null or parent_id = 0)
-    )
-    and status = 1
+    <where>
+      <if test="id != null">
+        id = #{id}
+      </if>
+       and parent_id in
+      (
+      select id from t_article where class_code = #{code} and language_type = #{languageType} and status = 1 and (parent_id is null or parent_id = 0)
+      )
+      and status = 1
+    </where>
     order by article_sort desc
   </select>
 </mapper>

@@ -2,15 +2,18 @@ package com.unknow.first.imexport.callable;
 
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.concurrent.Callable;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.cloud.utils.mongo.MongoDBUtil;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.io.InputStream;
+import java.util.Date;
+import java.util.concurrent.Callable;
+
+@Slf4j
 public abstract class ImportCallableService implements Callable<FrameImportExportTask> {
 
     public final FrameImportExportTask frameImportExportTask;
@@ -51,8 +54,9 @@ public abstract class ImportCallableService implements Callable<FrameImportExpor
             this.after();
             frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
         } catch (Exception e) {
+            e.printStackTrace();
             frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
-            frameImportExportTask.setMessage(e.getMessage());
+            frameImportExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " + (e.getCause() == null ? "空" : e.getCause().getMessage()));
         } finally {
             frameImportExportTask.setEndTime(new Date());
             if (fileInputStream != null) {

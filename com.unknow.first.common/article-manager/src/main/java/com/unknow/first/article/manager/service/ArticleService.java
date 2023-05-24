@@ -1,12 +1,12 @@
 package com.unknow.first.article.manager.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
+import com.unknow.first.api.common.CommonResult;
+import com.unknow.first.article.manager.mapper.Article;
 import com.unknow.first.article.manager.vo.ArticleParamVO;
 import com.unknow.first.article.manager.vo.ArticleResultVO;
-import com.unknow.first.article.manager.mapper.Article;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.juna.ruiqi.api.CommonPage;
-import com.juna.ruiqi.api.CommonParam;
-import com.juna.ruiqi.api.CommonResult;
 import org.cloud.exception.BusinessException;
 
 public interface ArticleService extends IService<Article> {
@@ -31,7 +31,7 @@ public interface ArticleService extends IService<Article> {
      *
      * @return
      */
-    public CommonPage<ArticleResultVO> getArticleListByParentCode(/**CommonConstants.ArticleClassCodeEnum classCodeEnum**/String code, Integer languageType, CommonParam param);
+    public CommonPage<ArticleResultVO> getArticleListByParentCode(/**CommonConstants.ArticleClassCodeEnum classCodeEnum**/Integer id, String code, Integer languageType, CommonParam param);
 
 //    /**
 //     * 根据parentid获取文章列表

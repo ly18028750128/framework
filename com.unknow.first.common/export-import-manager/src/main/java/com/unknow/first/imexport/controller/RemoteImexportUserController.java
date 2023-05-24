@@ -1,7 +1,5 @@
 package com.unknow.first.imexport.controller;
 
-import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
-
 import com.unknow.first.imexport.constant.ImexportConstants.TaskType;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.feign.ImexportTaskFeignClient;
@@ -11,14 +9,13 @@ import io.swagger.annotations.ApiParam;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.CommonUtil;
+import org.cloud.vo.CommonApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
 
 @RestController
 @RequestMapping("/remot/imexport/task")
@@ -32,7 +29,7 @@ public class RemoteImexportUserController {
     @ApiOperation(value = "创建任务(调用commonService)", notes = "创建任务(调用commonService)")
     @PostMapping(value = "")
     @SystemResource(value = "/create", description = "创建导入导出任务", authMethod = AuthMethod.BYUSERPERMISSION)
-    public FrameImportExportTask create(
+    public CommonApiResult<FrameImportExportTask> create(
         @ApiParam("任务名称") @RequestParam(value = "taskName") String taskName,
         @ApiParam("线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService") @RequestParam(value = "processClass") String processClass,
         @ApiParam("模板编码，导出时有效，对应模板表里的编码") @RequestParam(value = "templateCode", required = false) String templateCode,
@@ -44,6 +41,6 @@ public class RemoteImexportUserController {
             Assert.notNull(file, "system.error.import.file.notEmpty");
         }
         String belongService = CommonUtil.single().getEnv("spring.application.name", "");
-        return imexportTaskFeignClient.create(taskName, processClass, templateCode, params, extension, belongService, taskType, file);
+        return CommonApiResult.createSuccessResult(imexportTaskFeignClient.create(taskName, processClass, templateCode, params, extension, belongService, taskType, file));
     }
 }
