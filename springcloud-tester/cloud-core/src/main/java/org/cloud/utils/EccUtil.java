@@ -17,11 +17,13 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import javax.crypto.Cipher;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.cloud.core.redis.RedisUtil;
 
+@Slf4j
 public final class EccUtil {
 
     private EccUtil() {
@@ -59,7 +61,6 @@ public final class EccUtil {
         ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(CURVE_NAME);
         keyGen.initialize(ecSpec, new SecureRandom());
         return keyGen.generateKeyPair();
-
     }
 
     public List<String> getKeyFromRedis() throws Exception {
@@ -81,7 +82,7 @@ public final class EccUtil {
     }
 
     public String encrypt(String str, String publicKeyStr) throws Exception {
-        return Base64.getEncoder().encodeToString(this.encrypt(str.getBytes("UTF-8"), convertStringToPublicKey(publicKeyStr)));
+        return Base64.getEncoder().encodeToString(this.encrypt(str.getBytes(), convertStringToPublicKey(publicKeyStr)));
     }
 
     public String decryptFromRedis(String str) throws Exception {
@@ -97,7 +98,6 @@ public final class EccUtil {
     public String decrypt(String str, String privateKeyStr) throws Exception {
         return new String(decrypt(Base64.getDecoder().decode(str), convertStringToPrivateKey(privateKeyStr)));
     }
-
 
     public String signFromRedis(String str) throws Exception {
         return this.sign(str, getKeyFromRedis().get(1));
@@ -118,7 +118,7 @@ public final class EccUtil {
         return verifySignature(str, signature, getKeyFromRedis().get(0));
     }
 
-    public static boolean verifySignature(byte[] data, byte[] signature, PublicKey publicKey) throws Exception {
+    public boolean verifySignature(byte[] data, byte[] signature, PublicKey publicKey) throws Exception {
         Signature signatureAlgorithm = Signature.getInstance("SHA256withECDSA", PROVIDER);
         signatureAlgorithm.initVerify(publicKey);
         signatureAlgorithm.update(data);
@@ -144,6 +144,7 @@ public final class EccUtil {
     public PrivateKey convertStringToPrivateKey(String privateKeyString) throws Exception {
         return convertStringToPrivateKey(Base64.getDecoder().decode(privateKeyString));
     }
+
     public PrivateKey convertStringToPrivateKey(byte[] privateKeyBytes) throws Exception {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("EC");
