@@ -12,6 +12,7 @@ class EccUtilTest {
     void single() throws Exception {
         EccUtil eccUtil = EccUtil.single();
         List<String> keys = eccUtil.getEccKey();
+//        log.info("{}", keys);
         String str = "其实中国才是最厉害的";
         String encStr = eccUtil.encrypt(str, keys.get(0));
         Assertions.assertEquals(eccUtil.decrypt(encStr, keys.get(1)), str);
@@ -29,6 +30,6 @@ class EccUtilTest {
             single();
         }
 
-        log.info("call.time={}",System.nanoTime() - start);
+        log.info("call.time={}", System.nanoTime() - start);
     }
 }
