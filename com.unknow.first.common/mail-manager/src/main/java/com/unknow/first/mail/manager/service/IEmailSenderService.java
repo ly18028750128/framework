@@ -9,6 +9,8 @@ import org.cloud.utils.CollectionUtil;
 
 public interface IEmailSenderService extends Serializable {
 
+    String RETRY_QUEUE_KEY = "system:email:RETRY_QUEUE";
+
     Future<String> sendEmail(MailVO mailVO) throws Exception;
 
     default Future<String> sendEmail(String templateCode, EmailParams params) throws Exception {

@@ -21,6 +21,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.core.redis.RedisUtil;
 import org.cloud.feign.service.ICommonServiceMessageLogFeign;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.CommonUtil;
@@ -82,61 +83,66 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     }
 
     @Override
-    public Future<String> sendEmail(MailVO mailVO) throws Exception {
-        return ProcessUtil.single().runCallable(() -> {
-            MessageLogVOBuilder logBuilder = MessageLogVO.builder();
+    public Future<String> sendEmail(final MailVO mailVO) throws Exception {
+        return ProcessUtil.single().runCallable(() -> sentEmailFinal(mailVO));
+    }
 
-            logBuilder.serviceName(CommonUtil.single().getEnv("spring.application.name", "").toLowerCase());
-            logBuilder.sender(this.userName);
-            logBuilder.to(String.join(",", mailVO.getTo()));
-            logBuilder.bcc(String.join(",", mailVO.getBcc()));
-            logBuilder.cc(String.join(",", mailVO.getCc()));
-            logBuilder.type("EMAIL");
-            logBuilder.sendDate(new Date());
-
-            String resultMsg = "邮件发送成功！";
-
-            try {
-                if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
-                    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-                    setMessageBaseInfo(simpleMailMessage, mailVO);
-                    simpleMailMessage.setText(mailVO.getText());
-                    logBuilder.subject(simpleMailMessage.getSubject());
-                    logBuilder.content(mailVO.getText());
-                    javaMailSender.send(simpleMailMessage);
-                } else {
-                    MimeMessage mimeMessage = getMimeMessage(mailVO);
-                    Context ctx = new Context();
-                    ctx.setVariables(mailVO.getParams().getEmailParams());
-                    String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
-                    mimeMessage.setContent(emailText, "text/html;charset=GBK");
-                    logBuilder.templateCode(mailVO.getTemplateCode());
-                    logBuilder.subject(mimeMessage.getSubject());
-                    logBuilder.content(emailText);
-                    if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
-                        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                        for (File file : mailVO.getFiles()) {
-                            helper.addAttachment(file.getName(), file);
-                        }
+    private String sentEmailFinal(final MailVO mailVO) {
+        final String currentServiceName = CommonUtil.single().getEnv("spring.application.name", "").toLowerCase();
+        MessageLogVOBuilder logBuilder = MessageLogVO.builder();
+        logBuilder.serviceName(StringUtils.hasLength(mailVO.getServiceName()) ? mailVO.getServiceName() : currentServiceName);
+        logBuilder.sender(this.userName);
+        logBuilder.to(String.join(",", mailVO.getTo()));
+        logBuilder.bcc(String.join(",", mailVO.getBcc()));
+        logBuilder.cc(String.join(",", mailVO.getCc()));
+        logBuilder.type("EMAIL");
+        logBuilder.sendDate(new Date());
+        String resultMsg = "邮件发送成功！";
+        try {
+            if (CollectionUtil.single().isEmpty(mailVO.getTemplateText())) {
+                SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+                setMessageBaseInfo(simpleMailMessage, mailVO);
+                simpleMailMessage.setText(mailVO.getText());
+                logBuilder.subject(simpleMailMessage.getSubject());
+                logBuilder.content(mailVO.getText());
+                javaMailSender.send(simpleMailMessage);
+            } else {
+                MimeMessage mimeMessage = getMimeMessage(mailVO);
+                Context ctx = new Context();
+                ctx.setVariables(mailVO.getParams().getEmailParams());
+                String emailText = templateEngine.process(mailVO.getTemplateText(), ctx);
+                mimeMessage.setContent(emailText, "text/html;charset=GBK");
+                logBuilder.templateCode(mailVO.getTemplateCode());
+                logBuilder.subject(mimeMessage.getSubject());
+                logBuilder.content(emailText);
+                if (CollectionUtil.single().isNotEmpty(mailVO.getFiles())) {
+                    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+                    for (File file : mailVO.getFiles()) {
+                        helper.addAttachment(file.getName(), file);
                     }
-                    javaMailSender.send(mimeMessage);
                 }
-                logBuilder.result("success");
-            } catch (Exception e) {
-                logBuilder.result("fail");
-                resultMsg = String.format("邮件发送失败！%s", e.getMessage());
-                logBuilder.content(resultMsg);
+                javaMailSender.send(mimeMessage);
             }
-            ScopedSpan span = tracer.startScopedSpan(UUID.randomUUID().toString());
-            try {
-               Boolean result = serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
-            } catch (Exception e) {
-                log.error("邮件日志保存失败{}", e.getMessage());
-            } finally {
-                span.finish(); // clean up after yourself
+            logBuilder.result("success");
+        } catch (Exception e) {
+            logBuilder.result("fail");
+            resultMsg = String.format("邮件发送失败！%s", e.getMessage());
+            logBuilder.content(resultMsg);
+            if (mailVO.getRetryCount() < 3) {
+                mailVO.increaseRetryCount();
+                mailVO.setServiceName(currentServiceName);
+                RedisUtil.single().listLeftPush(RETRY_QUEUE_KEY, mailVO);
             }
-            return resultMsg;
-        });
+        }
+        ScopedSpan span = tracer.startScopedSpan(UUID.randomUUID().toString());
+        try {
+            Boolean result = serviceMessageLogFeign.saveMessageLogs(logBuilder.build());
+        } catch (Exception e) {
+            log.error("邮件日志保存失败{}", e.getMessage());
+        } finally {
+            span.finish(); // clean up after yourself
+        }
+        return resultMsg;
     }
 
     @Override

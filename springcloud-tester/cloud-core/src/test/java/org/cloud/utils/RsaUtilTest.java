@@ -29,12 +29,12 @@ public class RsaUtilTest {
 
         Assert.assertFalse(RsaUtil.single().verifySignature(testStr, signStr, keys.get(0)));
     }
-    @Test
-    public void test1() throws Exception {
-        Long start = System.nanoTime();
-        for (int idx = 0; idx < 10000; idx++) {
-            encryptAndDecrypt();
-        }
-        log.info("call.time={}",System.nanoTime() - start);
-    }
+//    @Test
+//    public void test1() throws Exception {
+//        Long start = System.nanoTime();
+//        for (int idx = 0; idx < 10000; idx++) {
+//            encryptAndDecrypt();
+//        }
+//        log.info("call.time={}",System.nanoTime() - start);
+//    }
 }

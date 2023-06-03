@@ -19,6 +19,8 @@ import javax.crypto.Cipher;
 import org.apache.commons.codec.binary.Base64;
 import org.cloud.core.redis.RedisUtil;
 
+// 请使用ecc加密
+@Deprecated
 public final class RsaUtil {
 
     private RsaUtil() {
