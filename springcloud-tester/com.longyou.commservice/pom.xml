@@ -152,6 +152,13 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.unknow.first</groupId>
+            <artifactId>telegram-message</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
