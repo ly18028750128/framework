@@ -1,2 +1,1 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.unkow.first.telegram.TelegramBotsConfig
