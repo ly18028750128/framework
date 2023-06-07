@@ -4,14 +4,12 @@ import com.unkow.first.telegram.MyBot;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.AuthLog;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-//@Component
-@Service
+@Component
 @Slf4j
 public class DemoBoot extends MyBot {
 
@@ -28,7 +26,7 @@ public class DemoBoot extends MyBot {
         log.info("收到一个消息{},chat_id:{}", messageText, chatId.toString());
 
         int lastIdx = messageText.lastIndexOf("@");
-        int idx = messageText.startsWith("/")?1:0;
+        int idx = messageText.startsWith("/") ? 1 : 0;
 
         if (lastIdx < 0) {
             messageText = messageText.substring(idx);
