@@ -2,18 +2,17 @@ package com.longyou.comm.scheduler;
 
 import static com.unknow.first.mail.manager.service.IEmailSenderService.RETRY_QUEUE_KEY;
 
-import com.longyou.comm.admin.service.IDicService;
 import com.unknow.first.mail.manager.util.EmailUtil;
 import com.unknow.first.mail.manager.vo.MailVO;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
-import org.cloud.utils.SpringContextUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailRetryJob extends BaseQuartzJobBean {
+
     @Override
     protected void init() {
         this.jobName = "Email失败邮件重试";
@@ -29,10 +28,10 @@ public class EmailRetryJob extends BaseQuartzJobBean {
     private static void retry() {
         final MailVO mailVO = RedisUtil.single().listRightPop(RETRY_QUEUE_KEY);
         try {
-            if(mailVO ==null){
+            if (mailVO == null) {
                 return;
             }
-            EmailUtil.single().sendEmail(mailVO);
+            EmailUtil.single().sendEmail(mailVO.getFrom(), mailVO);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
