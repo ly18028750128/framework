@@ -130,6 +130,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
             logBuilder.content(resultMsg);
             if (mailVO.getRetryCount() < 3) {
                 mailVO.increaseRetryCount();
+                mailVO.setFrom(userName);
                 mailVO.setServiceName(currentServiceName);
                 RedisUtil.single().listLeftPush(RETRY_QUEUE_KEY, mailVO);
             }
