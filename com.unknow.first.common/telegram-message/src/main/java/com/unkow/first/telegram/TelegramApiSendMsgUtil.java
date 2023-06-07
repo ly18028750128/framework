@@ -53,12 +53,15 @@ public final class TelegramApiSendMsgUtil {
         return 200;
     }
 
-    public static void main(String[] args) {
-        TelegramApiSendMsgUtil.single()
-            .sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "MarkdownV2：*测试消息\n测试消息*", "MarkdownV2");
-
-        TelegramApiSendMsgUtil.single().sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "*测试消息\n\n\n测试消息*");
-    }
+//    public static void main(String[] args) {
+//        TelegramApiSendMsgUtil.single()
+//            .sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "【提现】\n"
+//                + "【用户】 [jz000001.mpc](https://app.nav.ltd/#/userStatic?username=jz000001.mpc)\n"
+//                + "【金额】 0.90USDT\n"
+//                + "【团队】 B3", "Markdown");
+//
+////        TelegramApiSendMsgUtil.single().sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "*测试消息\n\n\n测试消息*");
+//    }
 }
 
 
