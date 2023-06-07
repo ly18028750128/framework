@@ -23,6 +23,7 @@ import org.cloud.utils.CommonUtil;
 import org.cloud.utils.HttpServletUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
@@ -72,7 +73,7 @@ public class OperateLogAspect {
     }
 
     // 环绕切面持久化日志
-    @Around("authLog()")
+    @Around(value = "authLog()")
     public Object aroundMethod(ProceedingJoinPoint pjd) throws Throwable {
         final HttpServletRequest request = HttpServletUtil.signle().getHttpServlet();
         final LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();

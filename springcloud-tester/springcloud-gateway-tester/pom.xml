@@ -153,6 +153,12 @@
       <artifactId>lombok</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.68</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
