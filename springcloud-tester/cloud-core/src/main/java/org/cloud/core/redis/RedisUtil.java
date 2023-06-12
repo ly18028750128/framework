@@ -368,8 +368,7 @@ public class RedisUtil {
      */
     public <V> List<V> listRange(final String key, int start, int end) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
-        List<V> list = operations.range(key, start, end);
-        return list;
+        return operations.range(key, start, end);
     }
 
     /**
@@ -382,8 +381,7 @@ public class RedisUtil {
      */
     public <V> V listIndex(final String key, int index) {
         ListOperations<String, V> operations = redisTemplate.opsForList();
-        V value = operations.index(key, index);
-        return value;
+        return operations.index(key, index);
     }
 
 

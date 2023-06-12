@@ -43,9 +43,21 @@ public class MailVO {
     @ApiModelProperty("资源ID，发送文件时会用到，现在暂时没用")
     private String[] resId; // 资源ID
 
+
+    @ApiModelProperty("服务名称,重试的时候用于保存日志用的")
+    private String serviceName;
+
+    @ApiModelProperty("重试次数")
+    private int retryCount = 0;
+
+    public void increaseRetryCount() {
+        retryCount += 1;
+    }
+
     @Getter
     @ApiModel("邮件参数")
     public static class EmailParams {
+
         @ApiModelProperty("标题参数，示例：{{param1}}")
         final private Map<String, Object> emailParams = new HashMap<>(10);
         @ApiModelProperty("标题参数，请参考thymeleaf")

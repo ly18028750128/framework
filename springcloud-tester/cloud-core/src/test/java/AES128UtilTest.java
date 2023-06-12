@@ -17,7 +17,7 @@ class AES128UtilTest {
         final String aesIV = "I)LNx.wf:2zM'sZ(";
 
         Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("trx-操作地址私钥", "WBLRNZMEXGASLQDF");
+        valuesMap.put("trx-操作地址私钥", "ef345894aa6d5285ce410ea87e9566aa0f408916ad3aeebadd5ac7289d5daa70");
         for (String key : valuesMap.keySet()) {
             final String str = valuesMap.get(key);
             final String encStr = AES128Util.single().encrypt(str, aesKey, aesIV);

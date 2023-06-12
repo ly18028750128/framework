@@ -24,6 +24,7 @@
     <module>export-import-manager</module>
     <module>export-import-api</module>
       <module>api-common</module>
+    <module>telegram-message</module>
   </modules>
 
   <dependencyManagement>
