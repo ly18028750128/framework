@@ -32,7 +32,7 @@ public class PhotoController {
                                                     @RequestParam("photoType") String photoType) {
         QueryWrapper<TPhoto> where = new QueryWrapper<>();
         where.select("image_url,jump_url,photo_desc");
-        where.eq("status", 0);
+        where.eq("status", 1);
         where.eq("photo_type", photoType);
         where.eq("language_type", languageType);
         List<TPhoto> photos = photoService.findListByPage(1, 200, "sort desc", where).getList();
