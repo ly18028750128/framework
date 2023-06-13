@@ -48,19 +48,34 @@ public final class TelegramApiSendMsgUtil {
             bot.execute(messageBuilder.build());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+            e.printStackTrace();
             return 500;
         }
         return 200;
     }
 
 //    public static void main(String[] args) {
-//        TelegramApiSendMsgUtil.single()
-//            .sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "【提现】\n"
-//                + "【用户】 [jz000001.mpc](https://app.nav.ltd/#/userStatic?username=jz000001.mpc)\n"
-//                + "【金额】 0.90USDT\n"
-//                + "【团队】 B3", "Markdown");
+////        TelegramApiSendMsgUtil.single()
+////            .sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "*【提现】*\n"
+////                + "【用户】 [jz000001.mpc](https://app.nav.ltd/#/userStatic?username=jz000001.mpc)\n"
+////                + "【金额】 0.90USDT\n"
+////                + "【团队】 B3", "Markdown");
 //
-////        TelegramApiSendMsgUtil.single().sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "*测试消息\n\n\n测试消息*");
+//        TelegramApiSendMsgUtil.single().sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "*JS神技能*\n"
+//            + "[悟空的日常](https://www.youtube.com/channel/UCii04BCvYIdQvshrdNDAcww)\n"
+//            + "[*YuFeng Deng*](https://www.youtube.com/channel/UCG6xoef2xU86hnrCsS5m5Cw)\n"
+//            + "_YuFeng Deng_\n"
+//            + "`01|" + "UCii04BCvYIdQvshrdNDAcww" + " | `\n"
+//            + "`02|" + "UCG6xoef2xU86hnrCsS5m5Cw" + " | `\n"
+//            + "```javascript\n"
+//            + "payload = {\n"
+//            + "    \"method\": \"sendMessage\",\n"
+//            + "   \"chat_id\": body.message.chat.id,\n"
+//            + "    \"text\": body.message.text,\n"
+//            + "}"
+//            + "```","MarkdownV2");
+//
+////        TelegramApiSendMsgUtil.single().sendMessage("5986336559:AAHmtU24bvCLztKPwHzSjKjJ7skAjQRokgc", "-664903553", "<html><body><table><tr><td>111111</td></tr></table></body></html>","html");
 //    }
 }
 
