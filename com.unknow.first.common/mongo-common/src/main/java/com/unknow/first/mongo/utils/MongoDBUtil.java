@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -295,7 +296,8 @@ public final class MongoDBUtil {
                 if (isDownLoad) {
                     ssResponse.setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
                 }
-                ssResponse.setHeader("Cache-Control", "public,max-age=31536000");
+//                ssResponse.setHeader("Cache-Control", "public,max-age=31536000");
+                setCacheTime(ssResponse);
             }
             byte[] buffer = new byte[4096];
             int bytesRead;
@@ -589,6 +591,18 @@ public final class MongoDBUtil {
         MongoDBUtil.mongoTemplate = mongoTemplate;
         MongoDBUtil.gridFsTemplate = gridFsTemplate;
         MongoDBUtil.instance = this;
+    }
+
+    private void setCacheTime(HttpServletResponse response) {
+        // 设置缓存过期时间为1天（单位为秒）
+        long cacheExpiration = TimeUnit.DAYS.toSeconds(1) * 365;
+        response.setHeader("Cache-Control", "public, max-age=" + cacheExpiration);
+        // 设置最后修改时间为当前时间
+        long currentTime = System.currentTimeMillis();
+        response.setDateHeader("Last-Modified", currentTime);
+        // 设置响应的过期时间为1天后
+        long expirationTime = currentTime + cacheExpiration * 1000;
+        response.setDateHeader("Expires", expirationTime);
     }
 
     public static MongoDBUtil single() {

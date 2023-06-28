@@ -46,6 +46,7 @@ import org.cloud.mongo.MongoQueryParam;
 import org.cloud.mongo.MongoQueryParamsDTO;
 import org.cloud.mongo.annotation.MongoQuery;
 import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.HttpServletUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.MongoDbGridFsVO;
 import org.springframework.beans.BeanUtils;
@@ -280,7 +281,7 @@ public final class MongoDBUtil {
                 if (isDownLoad) {
                     ssResponse.setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
                 }
-                ssResponse.setHeader("Cache-Control", "public,max-age=31536000");
+                HttpServletUtil.signle().setCacheTime(ssResponse);
             }
             while (inputStream.read(bs) > 0) {
                 outputStream.write(bs);
