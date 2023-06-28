@@ -279,7 +279,7 @@ public final class MongoDBUtil {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            byte[] bs = new byte[1024];
+
             GridFsResource resource = gridFsTemplate.getResource(gridFSFile);
             inputStream = resource.getInputStream();
             outputStream = response.getOutputStream();
@@ -293,8 +293,10 @@ public final class MongoDBUtil {
             if (response instanceof HttpServletResponse && isDownLoad) {
                 ((HttpServletResponse) response).setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
             }
-            while (inputStream.read(bs) > 0) {
-                outputStream.write(bs);
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
             }
             outputStream.flush();
         } finally {
