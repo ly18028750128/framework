@@ -290,14 +290,19 @@ public final class MongoDBUtil {
             }
             response.setContentLength(Long.valueOf(gridFSFile.getLength()).intValue());
             response.setContentType(contentType);
-            if (response instanceof HttpServletResponse && isDownLoad) {
-                ((HttpServletResponse) response).setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
+            if (response instanceof HttpServletResponse) {
+                HttpServletResponse ssResponse = ((HttpServletResponse) response);
+                if (isDownLoad) {
+                    ssResponse.setHeader("Content-disposition", "attachment;filename=" + resource.getFilename());
+                }
+                ssResponse.setHeader("Cache-Control", "public,max-age=31536000");
             }
             byte[] buffer = new byte[4096];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
+
             outputStream.flush();
         } finally {
             IOUtils.closeQuietly(inputStream);
