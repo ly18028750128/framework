@@ -27,11 +27,12 @@ import com.unknow.first.mongo.vo.MongoQueryOrder;
 import com.unknow.first.mongo.vo.MongoQueryParam;
 import com.unknow.first.mongo.vo.MongoQueryParamsDTO;
 import java.beans.PropertyDescriptor;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,9 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
@@ -62,16 +60,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
-@Component
-public final class MongoDBUtil implements BeanFactoryPostProcessor {
+public final class MongoDBUtil {
 
     public List<ObjectId> convertIdsToObjectId(List<String> ids) {
         return ids.stream().map(ObjectId::new).collect(Collectors.toList());
@@ -110,18 +105,17 @@ public final class MongoDBUtil implements BeanFactoryPostProcessor {
         return inputStream;
     }
 
-    public ObjectId storePersonFile(String fileName, String contextType, Long userId, String userName) throws Exception {
-
-        return this.storePersonFile(fileName, contextType, null, userId, userName);
+    public ObjectId storePersonFile(String fileName, Long userId, String userName) throws Exception {
+        return this.storePersonFile(fileName, null, userId, userName);
     }
 
-    public ObjectId storePersonFile(String fileName, String contextType, String suffix, Long userId, String userName) throws Exception {
-
+    public ObjectId storePersonFile(String fileName, String suffix, Long userId, String userName) throws Exception {
         MetadataDTO params = new MetadataDTO();
         params.setOwner(userId);
         params.setOwnerName(userName);
         params.setOwnerFullName(userName);
-        params.setContentType(contextType);
+        final Path path = Paths.get(fileName);
+        params.setContentType(Files.probeContentType(path));
         params.setFileAuthRange(metadataFileAuthRangePersonal.value());
         if (!StringUtils.hasLength(suffix)) {
             final int suffixIndex = Objects.requireNonNull(fileName).lastIndexOf(".");
@@ -129,30 +123,26 @@ public final class MongoDBUtil implements BeanFactoryPostProcessor {
                 params.setSuffix(fileName.substring(suffixIndex));
             }
         }
-        InputStream in = new FileInputStream(fileName);
+        InputStream in = Files.newInputStream(path);
         try {
-            String storeFileName = Paths.get(fileName).getFileName().toString();
-            return gridFsTemplate.store(in, storeFileName, contextType, params);
+            String storeFileName = path.getFileName().toString();
+            return gridFsTemplate.store(in, storeFileName, Files.probeContentType(path), params);
         } finally {
             IOUtils.closeQuietly(in);
         }
     }
 
-    public ObjectId storeFile(UserDetails user, String fileAuthRange, MultipartFile file) throws IOException {
+    public ObjectId storeFile(Object user, String fileAuthRange, MultipartFile file) throws IOException {
         return storeFile(user, MetadataDTO.builder().fileAuthRange(fileAuthRange).build(), file);
     }
 
     public ObjectId storeFile(MetadataDTO params, MultipartFile file) throws IOException {
-
         return storeFile(null, params, file);
     }
 
-    public ObjectId storeFile(UserDetails user, MetadataDTO params, MultipartFile file) throws IOException {
+    public ObjectId storeFile(Object user, MetadataDTO params, MultipartFile file) throws IOException {
         if (user != null) {
-
-            params.setOwnerName(user.getUsername());
-
-            setIdOrFullName(user, params);
+            setUserInfo(user, params);
         } else {
             params.setOwner(MongoDBEnum.defaultFileOwnerId.getLong());
         }
@@ -165,7 +155,26 @@ public final class MongoDBUtil implements BeanFactoryPostProcessor {
         return gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), contentType, params);
     }
 
-    private static void setIdOrFullName(UserDetails user, MetadataDTO params) {
+    public ObjectId storeFile(Object user, MetadataDTO params, String filePath) throws IOException {
+        if (user != null) {
+            setUserInfo(user, params);
+        } else {
+            params.setOwner(MongoDBEnum.defaultFileOwnerId.getLong());
+        }
+        final int suffixIndex = Objects.requireNonNull(filePath).lastIndexOf(".");
+        if (suffixIndex > -1) {
+            params.setSuffix(filePath.substring(suffixIndex));
+        }
+        Path path = Paths.get(filePath);
+        String contentType = Files.probeContentType(path);
+        if (contentType == null) {
+            contentType = "unknown";
+        }
+        params.setContentType(contentType);
+        return gridFsTemplate.store(Files.newInputStream(path), path.getFileName().toString(), contentType, params);
+    }
+
+    private static void setUserInfo(Object user, MetadataDTO params) {
         try {
             params.setOwner((Long) BeanUtil.getFieldValue(user, "id"));
         } catch (Exception ignored) {
@@ -173,6 +182,17 @@ public final class MongoDBUtil implements BeanFactoryPostProcessor {
         }
         try {
             params.setOwnerFullName((String) BeanUtil.getFieldValue(user, "fullName"));
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+            params.setOwner((Long) BeanUtil.getFieldValue(user, "id"));
+        } catch (Exception ignored) {
+
+        }
+        try {
+            params.setOwnerName((String) BeanUtil.getFieldValue(user, "username"));
         } catch (Exception ignored) {
 
         }
@@ -552,22 +572,15 @@ public final class MongoDBUtil implements BeanFactoryPostProcessor {
         return orders;
     }
 
-    ConfigurableListableBeanFactory beanFactory;
-
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        this.beanFactory = beanFactory;
-    }
-
     private static MongoDBUtil instance;
 
     private static MongoTemplate mongoTemplate;
 
     private static GridFsTemplate gridFsTemplate;
 
-    public MongoDBUtil() {
-        MongoDBUtil.mongoTemplate = beanFactory.getBean(MongoTemplate.class);
-        MongoDBUtil.gridFsTemplate = beanFactory.getBean(GridFsTemplate.class);
+    public MongoDBUtil(MongoTemplate mongoTemplate, GridFsTemplate gridFsTemplate) {
+        MongoDBUtil.mongoTemplate = mongoTemplate;
+        MongoDBUtil.gridFsTemplate = gridFsTemplate;
         MongoDBUtil.instance = this;
     }
 
