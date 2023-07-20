@@ -236,21 +236,14 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>api-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redisson-start-config</artifactId>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
-      <!--            <plugin>-->
-      <!--                <groupId>org.springframework.boot</groupId>-->
-      <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-      <!--                <configuration>-->
-      <!--                    <excludes>-->
-      <!--                        <exclude>-->
-      <!--                            <groupId>org.springframework.boot</groupId>-->
-      <!--                            <artifactId>spring-boot-configuration-processor</artifactId>-->
-      <!--                        </exclude>-->
-      <!--                    </excludes>-->
-      <!--                </configuration>-->
-      <!--            </plugin>-->
     </plugins>
     <resources>
       <resource>

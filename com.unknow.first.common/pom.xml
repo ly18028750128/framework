@@ -26,6 +26,7 @@
       <module>api-common</module>
     <module>telegram-message</module>
     <module>mongo-common</module>
+    <module>redisson-start-config</module>
   </modules>
 
   <dependencyManagement>
@@ -65,6 +66,12 @@
         <groupId>cn.hutool</groupId>
         <artifactId>hutool-all</artifactId>
         <version>4.0.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.redisson</groupId>
+        <artifactId>redisson</artifactId>
+        <version>3.9.0</version>
+        <scope>compile</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

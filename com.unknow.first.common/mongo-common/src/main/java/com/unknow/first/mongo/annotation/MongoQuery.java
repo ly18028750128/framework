@@ -1,4 +1,4 @@
-package com.unknow.first.mongo.vo;
+package com.unknow.first.mongo.annotation;
 
 import com.unknow.first.mongo.vo.MongoEnumVO.DataType;
 import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;

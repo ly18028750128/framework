@@ -1,12 +1,14 @@
 package org.cloud.utils;
 
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.redisson.api.*;
+import org.redisson.api.RBucket;
+import org.redisson.api.RList;
+import org.redisson.api.RLock;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.util.Assert;
-
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public final class RedissonUtil {
@@ -23,7 +25,7 @@ public final class RedissonUtil {
     @Getter
     private static RedissonClient redissonClient;
 
-    public void initRedissonClient(@NotNull final RedissonClient redissonClient) {
+    public void initRedissonClient(final RedissonClient redissonClient) {
         Assert.isNull(RedissonUtil.redissonClient, "已经初始化，不能再次初始");
         RedissonUtil.redissonClient = redissonClient;
     }

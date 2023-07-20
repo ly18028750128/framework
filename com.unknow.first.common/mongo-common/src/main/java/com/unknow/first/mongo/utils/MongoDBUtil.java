@@ -22,7 +22,7 @@ import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;
 import com.unknow.first.mongo.vo.MongoEnumVO.RelationalOperator;
 import com.unknow.first.mongo.vo.MongoGridFsQueryDTO;
 import com.unknow.first.mongo.vo.MongoPagedParam;
-import com.unknow.first.mongo.vo.MongoQuery;
+import com.unknow.first.mongo.annotation.MongoQuery;
 import com.unknow.first.mongo.vo.MongoQueryOrder;
 import com.unknow.first.mongo.vo.MongoQueryParam;
 import com.unknow.first.mongo.vo.MongoQueryParamsDTO;

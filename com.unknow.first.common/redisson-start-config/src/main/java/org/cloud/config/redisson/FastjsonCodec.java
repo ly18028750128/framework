@@ -6,11 +6,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
+import java.io.IOException;
 import org.redisson.client.codec.BaseCodec;
 import org.redisson.client.protocol.Decoder;
 import org.redisson.client.protocol.Encoder;
-
-import java.io.IOException;
 
 public class FastjsonCodec extends BaseCodec {
 
