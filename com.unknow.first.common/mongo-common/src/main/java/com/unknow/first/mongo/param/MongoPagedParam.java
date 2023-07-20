@@ -1,10 +1,9 @@
-package org.cloud.mongo;
+package com.unknow.first.mongo.param;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.Min;
 import lombok.Data;
-import springfox.documentation.annotations.ApiIgnore;
 
 @Data
 public class MongoPagedParam implements Serializable {
@@ -26,7 +25,6 @@ public class MongoPagedParam implements Serializable {
      *
      * @return
      */
-    @ApiIgnore
     public Integer getStart() {
         return (page - 1) * limit;
     }

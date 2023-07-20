@@ -1,5 +1,6 @@
 package com.unknow.first.mongo.vo;
 
+import com.unknow.first.mongo.dto.MetadataDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;

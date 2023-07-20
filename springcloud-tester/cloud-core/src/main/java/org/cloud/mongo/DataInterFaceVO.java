@@ -1,6 +1,7 @@
 package org.cloud.mongo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.unknow.first.mongo.vo.MongoEnumVO;
 import lombok.Data;
 import org.cloud.constant.CoreConstant;
 import org.cloud.utils.CollectionUtil;

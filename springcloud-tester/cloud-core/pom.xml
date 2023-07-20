@@ -240,7 +240,10 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>redisson-start-config</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mongo-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

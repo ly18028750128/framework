@@ -1,12 +1,14 @@
-package org.cloud.mongo;
+package com.unknow.first.mongo.param;
 
+import com.unknow.first.mongo.vo.MongoEnumVO.DataType;
+import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;
+import com.unknow.first.mongo.vo.MongoEnumVO.RelationalOperator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Objects;
 import lombok.NoArgsConstructor;
 
 /**
@@ -22,11 +24,11 @@ public class MongoQueryParam {
     @ApiModelProperty("查询字段名称")
     private String name;
     @ApiModelProperty("操作类型")
-    private MongoEnumVO.MongoOperatorEnum operator;
+    private MongoOperatorEnum operator;
     @ApiModelProperty("参数类型")
-    private MongoEnumVO.DataType dataType;
+    private DataType dataType;
     @ApiModelProperty("条件连接方式")
-    private MongoEnumVO.RelationalOperator relationalOperator;
+    private RelationalOperator relationalOperator;
     private Object value;
 
     @Override

@@ -1,14 +1,13 @@
 package com.longyou.comm.admin.controller;
 
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.unknow.first.mongo.utils.MongoDBUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.cloud.annotation.SystemResource;
 import org.cloud.exception.BusinessException;
-import org.cloud.utils.mongo.MongoDBUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;

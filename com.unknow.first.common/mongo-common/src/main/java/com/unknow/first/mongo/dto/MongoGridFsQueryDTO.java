@@ -2,7 +2,7 @@
  * Copyright (C) 2019-2022 All rights reserved, Designed By www.lianziyou.com
  */
 
-package com.unknow.first.mongo.vo;
+package com.unknow.first.mongo.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

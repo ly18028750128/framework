@@ -13,19 +13,19 @@ import static com.unknow.first.mongo.vo.MongoDBEnum.metadataOwnerNameKey;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.unknow.first.mongo.vo.MetadataDTO;
+import com.unknow.first.mongo.dto.MetadataDTO;
 import com.unknow.first.mongo.vo.MongoDBEnum;
 import com.unknow.first.mongo.vo.MongoDbGridFsVO;
 import com.unknow.first.mongo.vo.MongoEnumVO;
 import com.unknow.first.mongo.vo.MongoEnumVO.DataType;
 import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;
 import com.unknow.first.mongo.vo.MongoEnumVO.RelationalOperator;
-import com.unknow.first.mongo.vo.MongoGridFsQueryDTO;
-import com.unknow.first.mongo.vo.MongoPagedParam;
+import com.unknow.first.mongo.dto.MongoGridFsQueryDTO;
+import com.unknow.first.mongo.param.MongoPagedParam;
 import com.unknow.first.mongo.annotation.MongoQuery;
 import com.unknow.first.mongo.vo.MongoQueryOrder;
-import com.unknow.first.mongo.vo.MongoQueryParam;
-import com.unknow.first.mongo.vo.MongoQueryParamsDTO;
+import com.unknow.first.mongo.param.MongoQueryParam;
+import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -188,11 +188,6 @@ public final class MongoDBUtil {
         }
 
         try {
-            params.setOwner((Long) BeanUtil.getFieldValue(user, "id"));
-        } catch (Exception ignored) {
-
-        }
-        try {
             params.setOwnerName((String) BeanUtil.getFieldValue(user, "username"));
         } catch (Exception ignored) {
 
@@ -268,11 +263,13 @@ public final class MongoDBUtil {
             query.addCriteria(Criteria.where(metadataKey.value() + "." + metadataFileAuthRangeFieldName.value()).is(metaData.getFileAuthRange()));
         }
 
-        List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1L) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
-        PageInfo<MongoDbGridFsVO> pageInfo = new PageInfo<>(listData);
+        PageInfo<MongoDbGridFsVO> pageInfo = new PageInfo<>();
         pageInfo.setPageNum(page);
         pageInfo.setPageSize(pageSize);
         pageInfo.setTotal(mongoTemplate.getCollection("fs.files").countDocuments(query.getQueryObject()));
+        query.with(Sort.by(Sort.Order.desc("uploadDate")));
+        List<MongoDbGridFsVO> listData = mongoTemplate.find(query.skip((page - 1L) * pageSize).limit(pageSize), MongoDbGridFsVO.class, "fs.files");
+        pageInfo.setList(listData);
         return pageInfo;
     }
 

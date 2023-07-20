@@ -2,10 +2,10 @@ package com.unknow.first.imexport.callable;
 
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
+import com.unknow.first.mongo.utils.MongoDBUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.cloud.utils.mongo.MongoDBUtil;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -53,8 +53,8 @@ public abstract class ImportCallableService implements Callable<FrameImportExpor
             this.process();
             this.after();
             frameImportExportTask.setTaskStatus(ProcessStatus.success.value);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            log.error(e.getMessage(),e);
             frameImportExportTask.setTaskStatus(ProcessStatus.fail.value);
             frameImportExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " + (e.getCause() == null ? "空" : e.getCause().getMessage()));
         } finally {

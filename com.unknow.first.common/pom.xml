@@ -73,6 +73,11 @@
         <version>3.9.0</version>
         <scope>compile</scope>
       </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>mongo-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

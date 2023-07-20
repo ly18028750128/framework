@@ -8,6 +8,7 @@ import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.dto.FrameImportExportTaskQueryDTO;
 import com.unknow.first.imexport.dto.ImportExportTaskCreateDTO;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
+import com.unknow.first.mongo.utils.MongoDBUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,7 +20,6 @@ import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.DataDimensionUtil;
 import org.cloud.utils.MyBatisPlusUtil;
-import org.cloud.utils.mongo.MongoDBUtil;
 import org.cloud.vo.CommonApiResult;
 import org.common.CommonPage;
 import org.common.CommonParam;
@@ -38,7 +38,7 @@ import java.util.Set;
 
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_EXCEL_PARENT;
 import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER_IMEXPORT_TASK_PAGE;
-import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePersonal;
+import static com.unknow.first.mongo.vo.MongoDBEnum.metadataFileAuthRangePersonal;
 
 @RestController
 @RequestMapping("/user/imexport/task")

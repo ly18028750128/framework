@@ -36,5 +36,9 @@
       <groupId>com.baomidou</groupId>
       <artifactId>mybatis-plus-extension</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mongo-common</artifactId>
+    </dependency>
   </dependencies>
 </project>

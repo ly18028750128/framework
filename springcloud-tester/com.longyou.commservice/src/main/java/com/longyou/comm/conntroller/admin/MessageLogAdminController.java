@@ -5,14 +5,14 @@ import static com.longyou.comm.CommonMenuConst.MENU_SYSTEM_MANAGER;
 
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.dto.MessageLogQueryDTO;
+import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
+import com.unknow.first.mongo.param.MongoPagedParam;
+import com.unknow.first.mongo.utils.MongoDBUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
-import org.cloud.mongo.MongoPagedParam;
-import org.cloud.mongo.MongoQueryParamsDTO;
-import org.cloud.utils.mongo.MongoDBUtil;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.MessageLogVO;
 import org.springframework.web.bind.annotation.GetMapping;

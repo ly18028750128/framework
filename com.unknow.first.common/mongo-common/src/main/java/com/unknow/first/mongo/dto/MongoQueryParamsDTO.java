@@ -1,13 +1,14 @@
-package org.cloud.mongo;
+package com.unknow.first.mongo.dto;
 
+import com.unknow.first.mongo.vo.MongoQueryOrder;
+import com.unknow.first.mongo.param.MongoQueryParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
 
 /**
  * mongo db查询VO
