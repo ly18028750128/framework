@@ -5,7 +5,7 @@
   <parent>
     <artifactId>springcloud-tester</artifactId>
     <groupId>com.longyou</groupId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -14,6 +14,7 @@
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
+    <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>
   <dependencies>
     <dependency>
@@ -24,7 +25,7 @@
     <dependency>
       <groupId>com.longyou</groupId>
       <artifactId>cloud-core</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>${core.jar.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

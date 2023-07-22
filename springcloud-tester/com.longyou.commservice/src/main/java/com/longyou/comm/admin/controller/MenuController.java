@@ -3,7 +3,6 @@ package com.longyou.comm.admin.controller;
 import static com.longyou.comm.admin.service.IMenuService._ALL_MENUS_CACHE_KEY;
 
 import com.longyou.comm.admin.service.IMenuService;
-import org.cloud.annotation.MfaAuth;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;

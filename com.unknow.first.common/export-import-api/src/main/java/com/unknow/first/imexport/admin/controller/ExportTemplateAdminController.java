@@ -5,6 +5,8 @@ import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.dto.FrameExportTemplateQueryDTO;
 import com.unknow.first.imexport.service.FrameExportTemplateService;
@@ -20,8 +22,7 @@ import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
-import org.common.CommonPage;
-import org.common.CommonParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.Assert;

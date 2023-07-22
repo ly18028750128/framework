@@ -31,7 +31,7 @@
 //    private String group;
 //
 //
-//    @Pointcut("@annotation(org.cloud.scheduler.annotation.JobTaskLog)")
+//    @Pointcut("@annotation(org.cloud.annotation.scheduler.JobTaskLog)")
 //    public void authLog() {
 //    }
 //

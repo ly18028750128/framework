@@ -3,6 +3,8 @@ package com.unknow.first.imexport.conntroller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
 import com.unknow.first.imexport.constant.ImexportConstants.TaskType;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.dto.FrameImportExportTaskQueryDTO;
@@ -21,8 +23,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.DataDimensionUtil;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
-import org.common.CommonPage;
-import org.common.CommonParam;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;

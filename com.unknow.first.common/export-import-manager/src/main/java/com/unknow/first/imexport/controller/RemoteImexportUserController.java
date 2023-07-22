@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.cloud.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.vo.CommonApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -40,7 +40,7 @@ public class RemoteImexportUserController {
         if (TaskType.IMPORT.value == taskType.value) {
             Assert.notNull(file, "system.error.import.file.notEmpty");
         }
-        String belongService = CommonUtil.single().getEnv("spring.application.name", "");
+        String belongService = EnvUtil.single().getEnv("spring.application.name", "");
         return CommonApiResult.createSuccessResult(imexportTaskFeignClient.create(taskName, processClass, templateCode, params, extension, belongService, taskType, file));
     }
 }

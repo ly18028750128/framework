@@ -10,12 +10,14 @@
   </parent>
   <groupId>com.longyou</groupId>
   <artifactId>springcloud-tester</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
     <springboot.version>2.7.0</springboot.version>
     <lucene.version>8.9.0</lucene.version>
     <skipTests>true</skipTests>
+    <common.jar.version>0.0.3-SNAPSHOT</common.jar.version>
+    <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>
   <dependencies>
     <dependency>
@@ -231,22 +233,22 @@
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>article-manager</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>${core.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>export-import-manager</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>${core.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>export-import-api</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>${core.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>photo-manager</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>${core.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>io.springfox</groupId>
@@ -282,19 +284,63 @@
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>api-common</artifactId>
-        <version>${project.version}</version>
+        <version>${common.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>redisson-start-config</artifactId>
-        <version>${project.version}</version>
+        <version>${core.jar.version}</version>
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>mongo-common</artifactId>
-        <version>${project.version}</version>
+        <version>${core.jar.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>redis-start-config</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>utils-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>mybatisplus-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>auth-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>enc-dec-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>model-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>constant-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>quartz-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.longyou</groupId>
+        <artifactId>cloud-core</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

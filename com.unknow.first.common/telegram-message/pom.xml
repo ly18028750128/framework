@@ -5,9 +5,10 @@
   <parent>
     <groupId>com.unknow.first</groupId>
     <artifactId>common-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>telegram-message</artifactId>
+  <name>telegram消息组件</name>
 
   <dependencies>
     <dependency>

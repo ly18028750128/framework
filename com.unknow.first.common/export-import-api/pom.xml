@@ -6,10 +6,11 @@
   <parent>
     <groupId>com.unknow.first</groupId>
     <artifactId>common-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>export-import-api</artifactId>
+  <name>导入导出API服务包</name>
 
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
@@ -18,11 +19,7 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.longyou</groupId>
-      <artifactId>cloud-core</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-    </dependency>
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -43,6 +40,28 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>mongo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mybatisplus-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.73</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>auth-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>api-common</artifactId>
     </dependency>
   </dependencies>
 </project>

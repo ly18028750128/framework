@@ -5,21 +5,23 @@
   <parent>
     <groupId>com.unknow.first</groupId>
     <artifactId>common-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>mail-manager</artifactId>
+  <name>邮件组件包</name>
 
   <properties>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
+    <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>com.longyou</groupId>
       <artifactId>cloud-core</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>${core.jar.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

@@ -5,7 +5,6 @@ import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_
 import com.alibaba.fastjson.JSON;
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
