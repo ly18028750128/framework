@@ -58,20 +58,20 @@ public class GatewayApplication {
     /**
      * 配置Quartz独立数据源的配置
      */
-    @Bean
-    @QuartzDataSource
-    @ConfigurationProperties(prefix = "spring.datasource.quartz")
-    public DataSource quartzDataSource() {
-        return new DruidDataSource();
-    }
+//    @Bean
+//    @QuartzDataSource
+//    @ConfigurationProperties(prefix = "spring.datasource.quartz")
+//    public DataSource quartzDataSource() {
+//        return new DruidDataSource();
+//    }
 
     /**
      * 如果使用了注册中心（如：Eureka），进行控制则需要增加如下配置
      */
-    @Bean
-    @ConditionalOnBean(ReactiveDiscoveryClient.class)
-    @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
-    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
-        return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
-    }
+//    @Bean
+//    @ConditionalOnBean(ReactiveDiscoveryClient.class)
+//    @ConditionalOnProperty(name = "spring.cloud.gateway.discovery.locator.enabled")
+//    public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(ReactiveDiscoveryClient discoveryClient, DiscoveryLocatorProperties properties) {
+//        return new DiscoveryClientRouteDefinitionLocator(discoveryClient, properties);
+//    }
 }

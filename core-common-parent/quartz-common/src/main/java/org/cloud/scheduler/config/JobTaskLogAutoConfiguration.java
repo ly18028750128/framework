@@ -1,6 +1,8 @@
 package org.cloud.scheduler.config;
 
 
+import com.alibaba.druid.pool.DruidDataSource;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.cloud.scheduler.annotation.JobTaskLog;
@@ -21,6 +23,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -33,7 +37,6 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 @AutoConfiguration
-//@EnableConfigurationProperties(MybatisProperties.class)
 @ConditionalOnProperty(prefix = "system.jobTask.log", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Slf4j
 public class JobTaskLogAutoConfiguration implements BeanFactoryPostProcessor, InitializingBean, DisposableBean {
@@ -93,5 +96,15 @@ public class JobTaskLogAutoConfiguration implements BeanFactoryPostProcessor, In
     @Override
     public void afterPropertiesSet() throws Exception {
         log.info("==> 【初始化--自动化配置】----定时任务日志拦截组件【JobTaskLogAutoConfiguration】");
+    }
+
+    /**
+     * 配置Quartz独立数据源的配置
+     */
+    @Bean
+    @QuartzDataSource
+    @ConfigurationProperties(prefix = "spring.datasource.quartz")
+    public DataSource quartzDataSource() {
+        return new DruidDataSource();
     }
 }

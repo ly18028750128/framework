@@ -76,13 +76,13 @@ public class AiHelperApplication {
     return new DruidDataSource();
   }
 
-  /**
-   * 配置Quartz独立数据源的配置
-   */
-  @Bean
-  @QuartzDataSource
-  @ConfigurationProperties(prefix = "spring.datasource.quartz")
-  public DataSource quartzDataSource() {
-    return new DruidDataSource();
-  }
+//  /**
+//   * 配置Quartz独立数据源的配置
+//   */
+//  @Bean
+//  @QuartzDataSource
+//  @ConfigurationProperties(prefix = "spring.datasource.quartz")
+//  public DataSource quartzDataSource() {
+//    return new DruidDataSource();
+//  }
 }
