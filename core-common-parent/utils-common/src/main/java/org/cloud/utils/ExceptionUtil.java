@@ -1,5 +1,8 @@
 package org.cloud.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * 异常处理类
  */
@@ -21,6 +24,18 @@ public final class ExceptionUtil {
             return e;
         } else {
             return getFinalCause(e.getCause());
+        }
+    }
+
+    public String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        try {
+            throwable.printStackTrace(pw);
+            return sw.toString();
+        } finally {
+            pw.close();
         }
     }
 

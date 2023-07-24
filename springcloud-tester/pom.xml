@@ -337,6 +337,11 @@
         <version>${core.jar.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>feign-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.longyou</groupId>
         <artifactId>cloud-core</artifactId>
         <version>${core.jar.version}</version>

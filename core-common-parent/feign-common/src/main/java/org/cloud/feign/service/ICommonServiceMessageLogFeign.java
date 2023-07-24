@@ -1,7 +1,7 @@
 package org.cloud.feign.service;
 
-import org.cloud.feign.FeignTracerConfiguration;
-import org.cloud.vo.CommonApiResult;
+
+import org.cloud.feign.config.FeignTracerConfiguration;
 import org.cloud.vo.MessageLogVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

@@ -2,24 +2,28 @@ package com.unknow.first.api.common;
 
 
 import com.github.pagehelper.PageInfo;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 分页数据封装类
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 public class CommonPage<T> {
+
     private Integer pageNum;
     private Integer pageSize;
     private Integer totalPage;
     private Long total;
     private List<T> list;
     private Object value;
-
-    public CommonPage() {
-    }
-
 
     /**
      * 将PageHelper分页后的list转为分页信息
@@ -73,53 +77,5 @@ public class CommonPage<T> {
     public CommonPage(Integer pageNum, Integer pageSize) {
         this.pageNum = pageNum;
         this.pageSize = pageSize;
-    }
-
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public Integer getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(Integer totalPage) {
-        this.totalPage = totalPage;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
-
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 }

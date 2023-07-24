@@ -102,7 +102,7 @@ public final class HttpServletUtil {
         responseResult.setMessage(businessException.getMessage());
         responseResult.setData(businessException.getErrObject());
         httpServletResponse.setStatus(businessException.getHttpStatus());
-        log.error(CommonUtil.single().getStackTrace(e));
+        log.error(ExceptionUtil.single().getStackTrace(e));
         httpServletResponse.setContentType("application/json;charset=utf8");
         httpServletResponse.getWriter().write(JSON.toJSONString(responseResult));
     }

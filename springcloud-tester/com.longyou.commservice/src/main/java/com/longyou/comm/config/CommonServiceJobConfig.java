@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CommonServiceJobConfig {
 
-
     @Bean
     public ImexportTaskRemoteJob imexportTaskRemoteJob( ImexportTaskFeignClient imexportTaskFeignClient,RedisUtil redisUtil) {
         return new ImexportTaskRemoteJob(imexportTaskFeignClient, redisUtil);

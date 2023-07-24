@@ -276,6 +276,10 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>quartz-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>feign-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
