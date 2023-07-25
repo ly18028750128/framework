@@ -1,10 +1,10 @@
-package org.cloud.controller;
+package org.cloud.encdec.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.annotation.PostConstruct;
 import org.cloud.annotation.SystemResource;
-import org.cloud.common.service.AESService;
+import org.cloud.encdec.service.AESService;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.ResponseResult;

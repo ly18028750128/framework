@@ -2,6 +2,7 @@ package org.cloud.utils;
 
 import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
 
+import cn.hutool.core.codec.Base64;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -16,7 +17,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 import javax.crypto.Cipher;
-import org.apache.commons.codec.binary.Base64;
 import org.cloud.core.redis.RedisUtil;
 
 // 请使用ecc加密
@@ -51,13 +51,12 @@ public final class RsaUtil {
      */
     public String encrypt(String str, String publicKey) throws Exception {
         //base64编码的公钥
-        byte[] decoded = Base64.decodeBase64(publicKey);
+        byte[] decoded = Base64.decode(publicKey);
         RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded));
         //RSA加密
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-        String outStr = Base64.encodeBase64String(cipher.doFinal(str.getBytes("UTF-8")));
-        return outStr;
+        return Base64.encode(cipher.doFinal(str.getBytes("UTF-8")));
     }
 
     /**
@@ -70,9 +69,9 @@ public final class RsaUtil {
      */
     public String decrypt(String str, String privateKey) throws Exception {
         //64位解码加密后的字符串
-        byte[] inputByte = Base64.decodeBase64(str.getBytes("UTF-8"));
+        byte[] inputByte = Base64.decode(str.getBytes("UTF-8"));
         //base64编码的私钥
-        byte[] decoded = Base64.decodeBase64(privateKey);
+        byte[] decoded = Base64.decode(privateKey);
         RSAPrivateKey priKey = (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(decoded));
         //RSA解密
         Cipher cipher = Cipher.getInstance("RSA");
@@ -94,9 +93,9 @@ public final class RsaUtil {
         KeyPair keyPair = keyPairGen.generateKeyPair();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();   // 得到私钥
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();  // 得到公钥
-        String publicKeyString = new String(Base64.encodeBase64(publicKey.getEncoded()));
+        String publicKeyString = Base64.encode(publicKey.getEncoded());
         // 得到私钥字符串
-        String privateKeyString = new String(Base64.encodeBase64((privateKey.getEncoded())));
+        String privateKeyString = Base64.encode((privateKey.getEncoded()));
 
         List<String> keys = new ArrayList<>();
 

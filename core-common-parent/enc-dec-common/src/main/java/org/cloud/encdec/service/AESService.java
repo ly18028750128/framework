@@ -1,7 +1,7 @@
-package org.cloud.common.service;
+package org.cloud.encdec.service;
 
 
-import org.cloud.config.AESConfig;
+import org.cloud.encdec.config.AESConfig;
 import org.cloud.utils.AES128Util;
 
 

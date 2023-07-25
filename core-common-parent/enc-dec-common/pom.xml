@@ -40,6 +40,10 @@
       <version>1.68</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>auth-common</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

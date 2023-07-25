@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.cloud.annotation.MfaAuth;
 import org.cloud.annotation.SystemResource;
-import org.cloud.common.service.AESService;
+import org.cloud.encdec.service.AESService;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.MfaConstant;

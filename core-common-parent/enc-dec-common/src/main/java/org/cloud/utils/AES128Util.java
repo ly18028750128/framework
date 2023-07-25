@@ -6,7 +6,7 @@ import java.security.Security;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.cloud.common.service.AESService;
+import org.cloud.encdec.service.AESService;
 import org.springframework.context.annotation.Lazy;
 
 public final class AES128Util {

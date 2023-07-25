@@ -15,7 +15,7 @@ public final class LoginUtil {
     private LoginUtil() {
     }
 
-    private static LoginUtil instance = new LoginUtil();
+    private static final LoginUtil instance = new LoginUtil();
 
     public static LoginUtil single() {
         return instance;
@@ -23,7 +23,7 @@ public final class LoginUtil {
 
     public Map<String, Object> login(MultiValueMap<String, String> params) {
         RestTemplate restTemplate = SpringContextUtil.getBean(RestTemplate.class);
-        final String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
+        final String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         String url = "http://" + applicationGroup + "SPRING-GATEWAY/auth/login";
         HttpHeaders headers = new HttpHeaders();
 
@@ -35,8 +35,7 @@ public final class LoginUtil {
                 ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);//  执行HTTP请求
                 return response.getBody();
             } catch (Exception e) {
-                log.error("{}", e);
-                continue;
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -50,7 +49,7 @@ public final class LoginUtil {
      */
     public LoginUserDetails getUserByToken(String token) {
         RestTemplate restTemplate = SpringContextUtil.getBean(RestTemplate.class);
-        final String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
+        final String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         String url = "http://" + applicationGroup + "SPRING-GATEWAY/user/info/authentication";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

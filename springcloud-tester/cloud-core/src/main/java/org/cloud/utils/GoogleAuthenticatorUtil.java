@@ -14,7 +14,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Base64;
-import org.cloud.common.service.AESService;
+import org.cloud.encdec.service.AESService;
 import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;

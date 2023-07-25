@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.cloud.config.AESConfig
+org.cloud.encdec.config.AESConfig,org.cloud.encdec.config.DesConfig

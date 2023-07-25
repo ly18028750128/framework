@@ -4,7 +4,7 @@ import com.longyou.paycenter.mapper.PayMerchantMapper;
 import com.longyou.paycenter.model.PayMerchant;
 import com.longyou.paycenter.service.PayMerchantService;
 import java.util.List;
-import org.cloud.common.service.AESService;
+import org.cloud.encdec.service.AESService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
