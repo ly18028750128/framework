@@ -1,9 +1,9 @@
-package org.cloud.config;
+package org.cloud.validator.config;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import org.cloud.utils.ValidateUtil;
+import org.cloud.validator.utils.ValidateUtil;
 import org.hibernate.validator.HibernateValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

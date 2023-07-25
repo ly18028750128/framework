@@ -1,9 +1,10 @@
 package org.cloud.mybatisplus.mybatis.dynamic;
 
 import com.github.pagehelper.Page;
-import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.cloud.mybatisplus.vo.JavaBeanResultMap;
+
+import java.util.Map;
 
 public interface DynamicSqlMapper {
 

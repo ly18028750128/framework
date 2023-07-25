@@ -157,6 +157,12 @@
             <artifactId>telegram-message</artifactId>
             <version>${core.jar.version}</version>
         </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>validator-common</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+        <scope>compile</scope>
+      </dependency>
 
 
     </dependencies>

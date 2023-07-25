@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SystemResource(path = "/admin/job/logs", parentMenuCode = MENU_SYSTEM_MANAGER, parentMenuName = "系统管理")
 @Slf4j
 public class JobLogAdminController {
-    @SystemResource(value = "/list", description = "管理员查询消息日志", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION, menuName = "定时任务日志", menuCode = MENU_JOB_LOG_MANAGER)
+    @SystemResource(value = "/list", description = "管理员查询定时任务日志", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION, menuName = "定时任务日志", menuCode = MENU_JOB_LOG_MANAGER)
     @GetMapping
     @ApiOperation("管理员查询定时任务日志")
     public CommonApiResult<PageInfo<JobTaskLog>> list(JobLogQueryDTO jobLogQueryDTO, MongoPagedParam mongoPagedParam) throws Exception {

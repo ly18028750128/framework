@@ -1,4 +1,4 @@
-package org.cloud.utils;
+package org.cloud.validator.utils;
 
 
 import java.util.ArrayList;
@@ -13,15 +13,21 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.groups.Default;
 import org.cloud.vo.ValidateResultVO;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 public final class ValidateUtil {
+
     private ValidateUtil() {
     }
+
     private final static ValidateUtil instance = new ValidateUtil();
+
     public static ValidateUtil single() {
         return instance;
     }
+
     private Validator validator;
+
     public void setValidator(Validator validator) {
         Assert.isNull(this.validator, "已经设置过不能重复设置");
         this.validator = validator;
@@ -37,7 +43,7 @@ public final class ValidateUtil {
      */
     public <T> List<ValidateResultVO> validate(T value, Class<?> groupCls) {
         Set<ConstraintViolation<T>> validateResult = validator.validate(value, groupCls);
-        if (CollectionUtil.single().isEmpty(validateResult)) {
+        if (CollectionUtils.isEmpty(validateResult)) {
             return null;
         }
         List<ValidateResultVO> resultVOS = new ArrayList<>();
@@ -65,7 +71,7 @@ public final class ValidateUtil {
         Map<Integer, List<ValidateResultVO>> result = new LinkedHashMap<>(10);
         for (int idx = 0; idx < values.size(); idx++) {
             List<ValidateResultVO> singleValidateResult = validate(values.get(idx), groupCls);
-            if (CollectionUtil.single().isNotEmpty(singleValidateResult)) {
+            if (!CollectionUtils.isEmpty(singleValidateResult)) {
                 result.put(idx, singleValidateResult);
             }
         }
