@@ -53,5 +53,9 @@
       <version>2.0.7</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redis-start-config</artifactId>
+    </dependency>
   </dependencies>
 </project>

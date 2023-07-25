@@ -4,7 +4,7 @@ import com.longyou.comm.admin.service.IUserAdminService;
 import com.longyou.comm.mapper.TFrameUserDao;
 import com.longyou.comm.mapper.TFrameUserRoleDao;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.AuthLog;
+import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;

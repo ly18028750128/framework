@@ -3,7 +3,7 @@
 //
 //import com.unkow.first.telegram.MyBot;
 //import lombok.extern.slf4j.Slf4j;
-//import org.cloud.annotation.AuthLog;
+//import org.cloud.logs.annotation.AuthLog;
 //import org.springframework.stereotype.Component;
 //import org.telegram.telegrambots.meta.api.methods.ParseMode;
 //import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

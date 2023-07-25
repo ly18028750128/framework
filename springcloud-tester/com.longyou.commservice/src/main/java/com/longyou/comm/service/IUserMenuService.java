@@ -1,6 +1,6 @@
 package com.longyou.comm.service;
 
-import org.cloud.vo.JavaBeanResultMap;
+import org.cloud.mybatisplus.vo.JavaBeanResultMap;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ import java.util.List;
  * @since 2020-05-05
  */
 public interface IUserMenuService {
-    public List<JavaBeanResultMap<Object>> listUserTreeMenu() throws Exception;
+    List<JavaBeanResultMap> listUserTreeMenu() throws Exception;
 }

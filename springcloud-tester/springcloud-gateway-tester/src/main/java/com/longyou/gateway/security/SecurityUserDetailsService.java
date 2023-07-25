@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;

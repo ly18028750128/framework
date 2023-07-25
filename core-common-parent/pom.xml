@@ -30,6 +30,7 @@
     <module>model-common</module>
     <module>quartz-common</module>
     <module>feign-common</module>
+    <module>logs-common</module>
   </modules>
 
   <properties>

@@ -20,7 +20,7 @@ import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.MyBatisPlusUtil;
+import org.cloud.mybatisplus.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
 
 import org.springframework.beans.factory.annotation.Autowired;

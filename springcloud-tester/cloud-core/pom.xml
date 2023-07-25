@@ -234,10 +234,6 @@
     </dependency>
     <dependency>
       <groupId>com.unknow.first</groupId>
-      <artifactId>api-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.unknow.first</groupId>
       <artifactId>redisson-start-config</artifactId>
     </dependency>
     <dependency>
@@ -279,6 +275,10 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>feign-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>logs-common</artifactId>
     </dependency>
   </dependencies>
   <build>

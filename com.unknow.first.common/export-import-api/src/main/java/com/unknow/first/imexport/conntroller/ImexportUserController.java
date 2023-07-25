@@ -21,7 +21,7 @@ import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.dimension.utils.DataDimensionUtil;
-import org.cloud.utils.MyBatisPlusUtil;
+import org.cloud.mybatisplus.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
 
 import org.springframework.beans.BeanUtils;

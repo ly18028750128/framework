@@ -1,20 +1,16 @@
 package com.unknow.first.imexport.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.cloud.annotation.Query;
-import org.cloud.annotation.Query.Type;
+import org.cloud.mybatisplus.annotation.Query;
+import org.cloud.mybatisplus.annotation.Query.Type;
 
 @ApiModel("导入导出任务查询DTO")
 @Data

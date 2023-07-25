@@ -1,7 +1,7 @@
 package com.longyou.gateway.security;
 
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
