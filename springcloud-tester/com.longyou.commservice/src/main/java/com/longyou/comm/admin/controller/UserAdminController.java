@@ -2,7 +2,7 @@ package com.longyou.comm.admin.controller;
 
 import com.longyou.comm.CommonServiceConst;
 import com.longyou.comm.admin.service.IUserAdminService;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.model.TFrameUser;
 import org.cloud.utils.CommonUtil;

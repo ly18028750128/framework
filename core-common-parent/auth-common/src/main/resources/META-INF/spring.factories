@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.cloud.config.SecurityFilterConfig
+  org.cloud.dimension.config.SecurityFilterConfig,org.cloud.dimension.config.DataDimensionConfig

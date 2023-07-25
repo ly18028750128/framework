@@ -8,7 +8,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.cloud.constant.CoreConstant;
 import org.cloud.mongo.AppLogger;
-import org.cloud.mongo.DataInterFaceVO;
+import com.unknow.first.mongo.vo.DataInterFaceVO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

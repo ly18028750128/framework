@@ -1,7 +1,7 @@
 package com.longyou.comm.admin.controller;
 
 import com.longyou.comm.admin.service.IRoleAdminService;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.model.TFrameRole;
 import org.cloud.vo.ResponseResult;

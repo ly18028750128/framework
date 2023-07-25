@@ -7,7 +7,7 @@ import com.unknow.first.mongo.utils.MongoDBUtil;
 import org.bson.types.ObjectId;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.mongo.DataInterFaceVO;
+import com.unknow.first.mongo.vo.DataInterFaceVO;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

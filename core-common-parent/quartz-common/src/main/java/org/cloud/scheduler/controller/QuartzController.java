@@ -1,7 +1,7 @@
 package org.cloud.scheduler.controller;
 
 
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.scheduler.service.QuartzService;
 import org.cloud.utils.CollectionUtil;

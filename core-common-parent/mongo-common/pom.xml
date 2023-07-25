@@ -52,6 +52,18 @@
       <groupId>cn.hutool</groupId>
       <artifactId>hutool-all</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>constant-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>utils-common</artifactId>
+    </dependency>
   </dependencies>
 
 

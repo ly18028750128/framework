@@ -4,6 +4,8 @@ import com.longyou.comm.admin.service.IUserAdminService;
 import com.longyou.comm.mapper.TFrameUserDao;
 import com.longyou.comm.mapper.TFrameUserRoleDao;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.annotation.AuthLog;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TFrameUser;
@@ -25,17 +27,13 @@ public class UserAdminService implements IUserAdminService {
     @Autowired
     TFrameUserDao frameUserDao;
 
-
     @Override
+    @AuthLog(bizType = "user.admin.saveOrUpdate", desc = "修改用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public long saveOrUpdate(TFrameUser frameUser) throws Exception {
-
         LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
-
         long result = 0;
-
         frameUser.setUpdateBy(userDetails.getUsername());
         frameUser.setUpdateDate(new Date());
-
         if (StringUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
@@ -49,7 +47,6 @@ public class UserAdminService implements IUserAdminService {
                 result = frameUser.getId();
             }
         }
-
         if (frameUser.isUpdated()) {
             saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
         }

@@ -2,7 +2,7 @@ package org.cloud.core.redis;
 
 import com.alibaba.fastjson.JSON;
 import com.longyou.comm.starter.CommonServiceApplication;
-import org.cloud.utils.process.ProcessCallable;
+import org.cloud.dimension.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
 import org.junit.Assert;
 import org.junit.Test;

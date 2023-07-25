@@ -1,7 +1,7 @@
 package com.longyou.comm.admin.controller;
 
 import com.github.pagehelper.PageInfo;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,7 @@ import java.util.regex.Pattern;
 public class MongodbOperateLogController {
     @Autowired
     MongoTemplate mongoTemplate;
-    @Value("${spring.application.group:}")
-    String appGroup;
+
 
     @SystemResource(value = "获取操作日志", description = "管理员后台查询日志，需要授权", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @PostMapping("/list/{page}/{pageSize}")
@@ -38,7 +37,7 @@ public class MongodbOperateLogController {
         if (StringUtils.isEmpty(queryParams.get("microName"))){
             return result;
         }
-        String collectionName = appGroup + queryParams.get("microName") + CoreConstant.MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value();
+        String collectionName = queryParams.get("microName") + CoreConstant.MongoDbLogConfig.MONGODB_OPERATE_LOG_SUFFIX.value();
         Criteria criteria = new Criteria();
         if (!StringUtils.isEmpty(queryParams.get("userName"))){
             Pattern pattern= Pattern.compile("^.*"+ queryParams.get("userName") +".*$");

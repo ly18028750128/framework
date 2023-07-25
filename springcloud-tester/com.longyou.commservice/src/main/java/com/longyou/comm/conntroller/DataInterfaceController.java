@@ -3,7 +3,7 @@ package com.longyou.comm.conntroller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.service.DataInterfaceService;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.vo.QueryParamVO;
 import org.springframework.beans.factory.annotation.Autowired;

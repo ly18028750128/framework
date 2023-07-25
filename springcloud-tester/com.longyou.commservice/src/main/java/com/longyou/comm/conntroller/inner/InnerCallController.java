@@ -11,7 +11,7 @@ import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.service.EmailTemplateService;
 import com.unknow.first.mail.manager.service.IEmailSenderConfigService;
 import java.util.List;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.FrameUserRefVO;

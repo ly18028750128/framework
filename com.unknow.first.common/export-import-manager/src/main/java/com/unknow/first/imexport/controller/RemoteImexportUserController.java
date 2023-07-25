@@ -6,7 +6,7 @@ import com.unknow.first.imexport.feign.ImexportTaskFeignClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.EnvUtil;
 import org.cloud.vo.CommonApiResult;

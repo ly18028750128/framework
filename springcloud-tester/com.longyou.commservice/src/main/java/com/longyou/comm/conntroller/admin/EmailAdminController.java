@@ -15,7 +15,7 @@ import com.unknow.first.mail.manager.vo.MailVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.utils.AES128Util;
 import org.cloud.utils.MyBatisPlusUtil;

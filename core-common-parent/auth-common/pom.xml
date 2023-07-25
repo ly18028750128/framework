@@ -65,6 +65,10 @@
       <version>0.0.3-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

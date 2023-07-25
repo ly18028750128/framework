@@ -19,18 +19,18 @@ public class DESUtilTest {
     @Test
     public void encrypt() {
         String noEnStr = "Huangtushengtai20190708huangtuly";
-        String enStr = DESUtil.encrypt(noEnStr);
+        String enStr = DESUtil.single().encrypt(noEnStr);
         logger.info("加密后的密码为：" + enStr);
     }
 
     @Test
     public void decrypt() {
         String noEnStr = "12312213123123131";
-        String enStr = DESUtil.encrypt(_COMMON_DES_PASSWORD, noEnStr);
-        Assert.assertTrue(noEnStr.equals(DESUtil.decrypt(_COMMON_DES_PASSWORD, enStr)));
+        String enStr = DESUtil.single().encrypt(_COMMON_DES_PASSWORD, noEnStr);
+        Assert.assertTrue(noEnStr.equals(DESUtil.single().decrypt(_COMMON_DES_PASSWORD, enStr)));
 
-        enStr = DESUtil.encrypt(noEnStr);
-        Assert.assertTrue(noEnStr.equals(DESUtil.decrypt(enStr)));
+        enStr = DESUtil.single().encrypt(noEnStr);
+        Assert.assertTrue(noEnStr.equals(DESUtil.single().decrypt(enStr)));
     }
 
 }

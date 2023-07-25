@@ -23,9 +23,9 @@ public final class DESUtil {
     /**
      * 偏移变量，固定占8位字节
      */
-    private String IV_PARAMETER = "ynxfekge";
+    private static String IV_PARAMETER = "ynxfekge";
 
-    private String _COMMON_DES_PASSWORD = "sdvfwvxnfjsldxwzycklhi189412sdn123%%&^/232";  //全局的des加密的密码，也可以在各个应用中，对需要进行加密的数据进行加密，比如说数据字典
+    private static String _COMMON_DES_PASSWORD = "sdvfwvxnfjsldxwzycklhi189412sdn123%%&^/232";  //全局的des加密的密码，也可以在各个应用中，对需要进行加密的数据进行加密，比如说数据字典
     /**
      * 加密/解密算法-工作模式-填充模式
      */
@@ -191,14 +191,14 @@ public final class DESUtil {
     }
 
 
-    private static DESUtil desUtil;
+    private static DESUtil desUtil=new DESUtil(IV_PARAMETER,_COMMON_DES_PASSWORD);
 
     public DESUtil(String ivParameter, String commonDesPassword) {
         if (SystemStringUtil.single().isNotEmpty(ivParameter)) {
-            this.IV_PARAMETER = ivParameter;
+            DESUtil.IV_PARAMETER = ivParameter;
         }
         if (SystemStringUtil.single().isNotEmpty(commonDesPassword)) {
-            this._COMMON_DES_PASSWORD = commonDesPassword;
+            DESUtil._COMMON_DES_PASSWORD = commonDesPassword;
         }
         desUtil = this;
     }

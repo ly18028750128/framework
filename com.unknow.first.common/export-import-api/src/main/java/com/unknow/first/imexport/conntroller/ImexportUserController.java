@@ -15,12 +15,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.bson.types.ObjectId;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.CoreConstant.DateTimeFormat;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.DataDimensionUtil;
+import org.cloud.dimension.utils.DataDimensionUtil;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
 

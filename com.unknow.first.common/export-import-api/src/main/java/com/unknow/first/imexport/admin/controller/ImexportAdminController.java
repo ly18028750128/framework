@@ -13,7 +13,7 @@ import com.unknow.first.imexport.service.FrameImportExportTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.cloud.utils.process.ProcessUtil;
+import org.cloud.dimension.utils.LoginUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

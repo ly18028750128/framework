@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.cloud.context.RequestContextManager;
-import org.cloud.mongo.DataInterFaceVO;
+import com.unknow.first.mongo.vo.DataInterFaceVO;
 import org.cloud.mybatis.dynamic.DynamicSqlUtil;
 import org.cloud.utils.AuthCheckUtils;
 import org.cloud.vo.DynamicSqlQueryParamsVO;
