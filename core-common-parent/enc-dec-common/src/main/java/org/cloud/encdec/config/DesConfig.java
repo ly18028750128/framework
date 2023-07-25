@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "system.des")
 @ConditionalOnProperty(prefix = "system.des", name = "enabled", matchIfMissing = true)
+@ComponentScan({"org.cloud.encdec"})
 public class DesConfig {
 
     @Setter
