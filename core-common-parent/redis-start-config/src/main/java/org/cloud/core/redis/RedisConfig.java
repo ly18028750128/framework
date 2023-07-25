@@ -1,5 +1,6 @@
 package org.cloud.core.redis;
 
+import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public CacheManager cacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(lettuceConnectionFactory);
-        @SuppressWarnings("serial") Set<String> cacheNames = new HashSet<String>() {
+        Set<String> cacheNames = new HashSet<String>() {
             {
                 add("codeNameCache");
             }
@@ -58,13 +59,8 @@ public class RedisConfig extends CachingConfigurerSupport {
         // 配置redisTemplate
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory);
-        RedisSerializer<?> stringSerializer = new StringRedisSerializer();
-        redisTemplate.setKeySerializer(stringSerializer);// key序列化
-        redisTemplate.setHashKeySerializer(stringSerializer);// Hash key序列化
-        FastJsonRedisSerializer<Object> fastJsonRedisSerializer = new FastJsonRedisSerializer<>(Object.class);
-        redisTemplate.setValueSerializer(fastJsonRedisSerializer);// value序列化
-        redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);// Hash value序列化
-        redisTemplate.afterPropertiesSet();
+        GenericFastJsonRedisSerializer fastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
+        redisTemplate.setDefaultSerializer(fastJsonRedisSerializer);
         return redisTemplate;
     }
 
