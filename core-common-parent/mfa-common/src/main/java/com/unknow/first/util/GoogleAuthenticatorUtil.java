@@ -1,6 +1,8 @@
-package org.cloud.utils;
+package com.unknow.first.util;
 
-import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
+
+
+import static com.unknow.first.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
 
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
@@ -22,6 +24,10 @@ import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.feign.service.ICommonServiceFeignClient;
+import org.cloud.utils.CollectionUtil;
+import org.cloud.utils.HttpServletUtil;
+import org.cloud.utils.NumericUtil;
+import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.FrameUserRefVO;
 import org.springframework.http.HttpStatus;
 

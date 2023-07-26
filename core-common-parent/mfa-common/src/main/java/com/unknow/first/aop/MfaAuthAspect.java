@@ -1,5 +1,7 @@
-package org.cloud.aop;
+package com.unknow.first.aop;
 
+import com.unknow.first.annotation.MfaAuth;
+import com.unknow.first.util.GoogleAuthenticatorUtil;
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,12 +10,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.cloud.annotation.MfaAuth;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicItem;
-import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.utils.SystemDicUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class MfaAuthAspect {
     @Autowired
     RedisUtil redisUtil;
 
-    @Pointcut("@annotation(org.cloud.annotation.MfaAuth)")
+    @Pointcut("@annotation(com.unknow.first.annotation.MfaAuth)")
     public void mfaAuth() {
     }
 

@@ -1,4 +1,4 @@
-package org.cloud.config.swagger;
+package com.unknow.first.swagger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

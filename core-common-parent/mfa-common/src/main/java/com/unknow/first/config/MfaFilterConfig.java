@@ -1,5 +1,6 @@
-package org.cloud.config;
+package com.unknow.first.config;
 
+import com.unknow.first.util.GoogleAuthenticatorUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,9 +19,8 @@ import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicItem;
-import org.cloud.utils.CommonUtil;
-import org.cloud.utils.GoogleAuthenticatorUtil;
 import org.cloud.utils.HttpServletUtil;
+import org.cloud.utils.IPUtil;
 import org.cloud.utils.SystemDicUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -95,7 +95,7 @@ public class MfaFilterConfig {
                 HttpServletUtil.signle().handlerBusinessException(businessException, httpServletResponse);
                 return;
             }
-            final String ipHash = redisUtil.getMd5Key(CommonUtil.single().getIpAddress(httpServletRequest));
+            final String ipHash = redisUtil.getMd5Key(IPUtil.single().getIpAddress(httpServletRequest));
             Boolean isValidatePass = redisUtil.get(__MFA_TOKEN_USER_CACHE_KEY + user.getId() + ":" + ipHash);
             // 如果规定时间内校验过并且未过期，那么不校验
             if (isValidatePass != null && isValidatePass) {

@@ -34,7 +34,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         }else {
             this.excludedAuthPages = excludedAuthPages;
         }
-        this.excludedAuthPages.add("/inner/**/*");
         this.gatewayFeignClient = gatewayFeignClient;
     }
 
@@ -46,7 +45,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
         boolean isExcludeUri = HttpServletUtil.signle().isExcludeUri(httpServletRequest, excludedAuthPages);
-        if (isExcludeUri) {
+        if (isExcludeUri && !HttpServletUtil.signle().isExcludeUri(httpServletRequest, "/inner/**/*")) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             RequestContextManager.single().setRequestContext(requestContext);
             return;
