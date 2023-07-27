@@ -180,10 +180,6 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.alibaba</groupId>
@@ -250,6 +246,10 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>mfa-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>rabbitmq-common</artifactId>
     </dependency>
   </dependencies>
   <build>

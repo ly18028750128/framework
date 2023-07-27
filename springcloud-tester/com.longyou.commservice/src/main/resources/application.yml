@@ -38,6 +38,12 @@ system: #这里仅是示例，请在配置中心中配置
   api:
     inner:
       url-patterns: "/inner/*" #仅内部调用的api接口
+spring:
+  rabbitmq:
+    addresses: 192.168.30.92:5672,192.168.30.92:5673
+    username: shop-user #ENC("k3vXOirGWCvmF6ucb9pG5rxwES7kM0D7tCIqOzL+e9bUWDhJcPkSx31bavJ6Z6vN")
+    password: shop-user
+    virtual-host: shop_vhost
 #management:
 #  health:
 #    defaults:

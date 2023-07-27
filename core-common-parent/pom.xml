@@ -34,11 +34,12 @@
     <module>validator-common</module>
     <module>swagger-common</module>
     <module>mfa-common</module>
+    <module>rabbitmq-common</module>
   </modules>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <common.jar.version>0.0.3-SNAPSHOT</common.jar.version>
     <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>

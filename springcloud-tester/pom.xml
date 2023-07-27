@@ -13,6 +13,8 @@
   <version>0.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <springboot.version>2.7.0</springboot.version>
     <lucene.version>8.9.0</lucene.version>
     <skipTests>true</skipTests>
@@ -359,6 +361,11 @@
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>mfa-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>rabbitmq-common</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
       <dependency>

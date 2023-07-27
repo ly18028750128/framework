@@ -15,6 +15,8 @@
   <version>0.0.3-SNAPSHOT</version>
   <properties>
     <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
   <dependencyManagement>

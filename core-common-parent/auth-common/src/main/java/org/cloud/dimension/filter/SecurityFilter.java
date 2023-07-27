@@ -65,7 +65,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         } catch (HttpClientErrorException.Unauthorized e) {
             logger.info("rest请求无权限");
         } catch (FeignException.Unauthorized e) {
-            logger.info("feign请求无权限");
+            logger.debug("feign请求,可以不带用户信息");
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
                 logger.error(e.getMessage(), e);

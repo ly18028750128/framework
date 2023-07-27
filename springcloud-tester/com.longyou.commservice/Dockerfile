@@ -1,4 +1,4 @@
-FROM app.lianziyou.tech:5000/public/amazoncorretto:8
+FROM app.lianziyou.tech:5000/public/amazoncorretto:11
 ENV TZ=Asia/Shanghai
 # ENV JAVA_OPTS="-Xms512m -Xmx1024m -Djava.security.egd=file:/dev/./urandom"
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

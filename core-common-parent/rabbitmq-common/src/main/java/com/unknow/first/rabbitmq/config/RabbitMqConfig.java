@@ -1,4 +1,4 @@
-package org.cloud.config;
+package com.unknow.first.rabbitmq.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "system.rabbitmq", name = "enabled", havingValue = "true")
 public class RabbitMqConfig {
 
-
     @Bean
     public MessageConverter jackson2JsonMessageConverter() {
         Jackson2JsonMessageConverter jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
@@ -31,9 +30,7 @@ public class RabbitMqConfig {
             log.info("消息唯一标识: {}，确认结果：{}，失败原因：{}", correlationData, ack, cause);
 
         });
-        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
-            log.info("message:{},replyCode:{},replyText:{},exchange:{},routingKey:{}", message, replyCode, replyText, exchange, routingKey);
-        });
+        rabbitTemplate.setReturnsCallback((returned) -> log.info("{}", returned));
         return rabbitTemplate;
     }
 
