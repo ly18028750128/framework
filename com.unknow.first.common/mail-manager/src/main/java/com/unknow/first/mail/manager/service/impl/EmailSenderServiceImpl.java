@@ -24,7 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.feign.service.ICommonServiceMessageLogFeign;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.MessageLogVO;
@@ -78,7 +79,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
         if (this.javaMailSender instanceof JavaMailSenderImpl) {
             this.userName = Objects.requireNonNull(((JavaMailSenderImpl) this.javaMailSender).getUsername());
         } else {
-            this.userName = CommonUtil.single().getEnv("spring.mail.username", "");
+            this.userName = EnvUtil.single().getEnv("spring.mail.username", "");
         }
     }
 
@@ -88,7 +89,7 @@ public class EmailSenderServiceImpl implements IEmailSenderService {
     }
 
     private String sentEmailFinal(final MailVO mailVO) {
-        final String currentServiceName = CommonUtil.single().getEnv("spring.application.name", "").toLowerCase();
+        final String currentServiceName = EnvUtil.single().getEnv("spring.application.name", "").toLowerCase();
         MessageLogVOBuilder logBuilder = MessageLogVO.builder();
         logBuilder.serviceName(StringUtils.hasLength(mailVO.getServiceName()) ? mailVO.getServiceName() : currentServiceName);
         logBuilder.sender(this.userName);

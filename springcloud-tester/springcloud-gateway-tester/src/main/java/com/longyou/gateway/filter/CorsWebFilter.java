@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.HttpServletUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +54,7 @@ public class CorsWebFilter implements WebFilter {
             return wfc.filter(swe.mutate().request(newRequest).build());
         }
         // 如果自己转发给自己那么直接返回
-        if (CommonUtil.single().pathMatch(uri, Collections.singletonList("/" + applicationName.toUpperCase() + "/**"))) {
+        if (HttpServletUtil.single().pathMatch(uri, Collections.singletonList("/" + applicationName.toUpperCase() + "/**"))) {
             return wfc.filter(swe);
         }
 
@@ -73,7 +73,7 @@ public class CorsWebFilter implements WebFilter {
         filterList.add("/resource/register/all");
         filterList.add("/quartz/job/all");
 
-        if (CommonUtil.single().pathMatch(uri, filterList)) {
+        if (HttpServletUtil.single().pathMatch(uri, filterList)) {
             return wfc.filter(swe);
         }
         final RequestContext requestContext = new RequestContext();

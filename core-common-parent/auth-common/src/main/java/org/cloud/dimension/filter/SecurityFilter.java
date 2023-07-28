@@ -44,8 +44,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         RequestContext requestContext = new RequestContext();
         requestContext.setHttpServletRequest(httpServletRequest);
         requestContext.setHttpServletResponse(httpServletResponse);
-        boolean isExcludeUri = HttpServletUtil.signle().isExcludeUri(httpServletRequest, excludedAuthPages);
-        if (isExcludeUri && !HttpServletUtil.signle().isExcludeUri(httpServletRequest, "/inner/**/*")) {
+        boolean isExcludeUri = HttpServletUtil.single().isExcludeUri(httpServletRequest, excludedAuthPages);
+        if (isExcludeUri && !HttpServletUtil.single().isExcludeUri(httpServletRequest, "/inner/**/*")) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             RequestContextManager.single().setRequestContext(requestContext);
             return;

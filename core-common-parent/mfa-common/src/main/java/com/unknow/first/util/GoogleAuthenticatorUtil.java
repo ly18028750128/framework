@@ -234,7 +234,7 @@ public final class GoogleAuthenticatorUtil {
     }
 
     public Boolean checkGoogleVerifyCode(String googleSecret) throws BusinessException {
-        final String mfaValue = HttpServletUtil.signle().getHttpServlet().getHeader(MfaConstant.MFA_HEADER_NAME.value());
+        final String mfaValue = HttpServletUtil.single().getHttpServlet().getHeader(MfaConstant.MFA_HEADER_NAME.value());
         return checkGoogleVerifyCode(googleSecret, mfaValue);
     }
 

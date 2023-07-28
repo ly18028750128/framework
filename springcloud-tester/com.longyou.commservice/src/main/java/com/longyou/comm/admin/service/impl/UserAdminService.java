@@ -11,7 +11,8 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TFrameUser;
 import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class UserAdminService implements IUserAdminService {
         if (StringUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
-            final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+            final String salt = EnvUtil.single().getEnv("spring.security.salt-password", "");
             frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(), salt));
             if (frameUserDao.insertSelective(frameUser)>0) {
                 result = frameUser.getId();

@@ -44,7 +44,7 @@ public class CommonFeignConfig {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            HttpServletRequest request = HttpServletUtil.signle().getHttpServlet();
+            HttpServletRequest request = HttpServletUtil.single().getHttpServlet();
             if (request == null) {
                 return;
             }

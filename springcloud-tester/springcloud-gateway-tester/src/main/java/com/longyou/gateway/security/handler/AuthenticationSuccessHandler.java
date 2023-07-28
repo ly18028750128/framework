@@ -20,7 +20,7 @@ import org.cloud.constant.LoginConstants.LoginError;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.utils.process.ProcessUtil;
 import org.slf4j.Logger;
@@ -70,9 +70,9 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
             final String userBasic64Random = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix() + Math.random(), "天下无双");
             final String userBasic64RandomKey = MD5Encoder.encode(webFilterExchange.getExchange().getLogPrefix());
             // 获取token的超时时间设置
-            long timeSaltChangeInterval = CommonUtil.single().getEnv("system.auth_basic_expire_time", 120 * 24 * 60 * 60L, Long.class);
+            long timeSaltChangeInterval = EnvUtil.single().getEnv("system.auth_basic_expire_time", 120 * 24 * 60 * 60L, Long.class);
             // 获取解密分隔符的处理
-            final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
+            final String basic64SplitStr = EnvUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
 
             // 分隔userName, 备注用户名和密码不能包含 ：
             // 将token加盐的key增加到尾部
@@ -88,7 +88,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
 
                 // 如果是后台管理用户，那么超时时间为60分钟
                 if (LoginConstants.REGIST_SOURCE_BACKGROUND.equals(loginUserDetails.getUserRegistSource())) {
-                    timeSaltChangeInterval = CommonUtil.single().getEnv("system.auth_basic_background_expire_time", 60 * 60L, Long.class);
+                    timeSaltChangeInterval = EnvUtil.single().getEnv("system.auth_basic_background_expire_time", 60 * 60L, Long.class);
                 }
                 // 缓存当前登录用户的登录信息
                 final String successKey = MD5Encoder.encode("basic " + token);
@@ -120,7 +120,7 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
 
     private void cleanUserLogin(LoginUserDetails loginUserDetails) {
         // 每个用户最大的登录客户端，默认为5个
-        final int maxSingleUserLoginCount = CommonUtil.single().getEnv("system.user.maxSingleUserLoginCount", 5, Integer.class) - 1;
+        final int maxSingleUserLoginCount = EnvUtil.single().getEnv("system.user.maxSingleUserLoginCount", 5, Integer.class) - 1;
         HashOperations<String, String, Long> opsForHash = redisUtil.getRedisTemplate().opsForHash();
         Map<String, Long> userLoginTokenTokeMap = opsForHash.entries(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId());
         if (CollectionUtil.single().isNotEmpty(userLoginTokenTokeMap) && (userLoginTokenTokeMap.size() > maxSingleUserLoginCount)) {

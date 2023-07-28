@@ -30,7 +30,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TopDocs;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.RedissonUtil;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class AimlIndexService {
         return;
       }
 
-      final String lastIndexUpdateTime = __LASTUPDATETIME_KEY + "." + CommonUtil.single().getEnv("spring.application.group", "");
+      final String lastIndexUpdateTime = __LASTUPDATETIME_KEY + "." + EnvUtil.single().getEnv("spring.application.group", "");
 
       Date lastModifyTime = RedissonUtil.single().getValue(lastIndexUpdateTime);
       final Date indexStartDate = new Date();

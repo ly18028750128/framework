@@ -7,7 +7,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class DiscoveryClientController {
     @GetMapping("/getServices")
     public ResponseResult<String> getServices() {
         List<String> services = discoveryClient.getServices();
-        String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
+        String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         services.sort((v1, v2) -> {
             v1 = v1.toUpperCase();
             v2 = v2.toUpperCase();

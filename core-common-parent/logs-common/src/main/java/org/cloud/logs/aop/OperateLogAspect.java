@@ -74,7 +74,7 @@ public class OperateLogAspect {
     // 环绕切面持久化日志
     @Around(value = "authLog()")
     public Object aroundMethod(ProceedingJoinPoint pjd) throws Throwable {
-        final HttpServletRequest request = HttpServletUtil.signle().getHttpServlet();
+        final HttpServletRequest request = HttpServletUtil.single().getHttpServlet();
         final LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
         try {
             Object res = pjd.proceed(pjd.getArgs());
@@ -111,7 +111,7 @@ public class OperateLogAspect {
             doc.append("reqIp", ip);
         }
 
-        final HttpServletResponse response = HttpServletUtil.signle().getHttpServletResponse();
+        final HttpServletResponse response = HttpServletUtil.single().getHttpServletResponse();
         if (response != null) {
             doc.append("httpStatus", response.getStatus());
         }

@@ -70,7 +70,7 @@ public class MfaFilterConfig {
         @Override
         protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
-            if (HttpServletUtil.signle().isExcludeUri(httpServletRequest, noMfaCheckUrl)) {
+            if (HttpServletUtil.single().isExcludeUri(httpServletRequest, noMfaCheckUrl)) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
                 return;
             }
@@ -92,7 +92,7 @@ public class MfaFilterConfig {
             try {
                 GoogleAuthenticatorUtil.single().verifyCurrentUserBindGoogleKey();
             } catch (BusinessException businessException) {
-                HttpServletUtil.signle().handlerBusinessException(businessException, httpServletResponse);
+                HttpServletUtil.single().handlerBusinessException(businessException, httpServletResponse);
                 return;
             }
             final String ipHash = redisUtil.getMd5Key(IPUtil.single().getIpAddress(httpServletRequest));
@@ -103,7 +103,7 @@ public class MfaFilterConfig {
             } else {
                 BusinessException businessException = new BusinessException(MfaConstant.CORRELATION_GOOGLE_NOT_VERIFY_OR_EXPIRE.value(),
                     MfaConstant.CORRELATION_GOOGLE_NOT_VERIFY_OR_EXPIRE.description(), HttpStatus.BAD_REQUEST.value());
-                HttpServletUtil.signle().handlerBusinessException(businessException, httpServletResponse);
+                HttpServletUtil.single().handlerBusinessException(businessException, httpServletResponse);
             }
         }
     }

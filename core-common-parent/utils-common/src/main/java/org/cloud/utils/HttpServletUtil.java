@@ -31,7 +31,7 @@ public final class HttpServletUtil {
         private static HttpServletUtil handler = new HttpServletUtil();
     }
 
-    public static HttpServletUtil signle() {
+    public static HttpServletUtil single() {
         return Handler.handler;
     }
 
@@ -117,5 +117,22 @@ public final class HttpServletUtil {
         // 设置响应的过期时间为1天后
         long expirationTime = currentTime + cacheExpiration * 1000;
         response.setDateHeader("Expires", expirationTime);
+    }
+
+    /**
+     * 匹配Url
+     *
+     * @param uris
+     * @param requestUri
+     * @return
+     */
+    public boolean pathMatch(String requestUri, List<String> uris) {
+        for (String exclude : uris) {
+            final PathMatcher pathMathcer = new AntPathMatcher();
+            if (pathMathcer.match(exclude, requestUri)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
