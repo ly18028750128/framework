@@ -1,16 +1,11 @@
 package com.longyou.comm.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
-import org.cloud.annotation.Query;
-import org.cloud.annotation.Query.Type;
+import org.cloud.mybatisplus.annotation.Query;
+import org.cloud.mybatisplus.annotation.Query.Type;
 
 /**
  * 

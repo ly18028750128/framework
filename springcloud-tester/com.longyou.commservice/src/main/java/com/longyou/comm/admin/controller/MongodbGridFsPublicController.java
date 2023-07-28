@@ -1,10 +1,16 @@
 package com.longyou.comm.admin.controller;
 
-import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangePublic;
-import static org.cloud.utils.mongo.MongoDBEnum.metadataFileAuthRangeResource;
+
+
+import static com.unknow.first.mongo.vo.MongoDBEnum.metadataFileAuthRangePublic;
+import static com.unknow.first.mongo.vo.MongoDBEnum.metadataFileAuthRangeResource;
 
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.unknow.first.mongo.dto.MongoGridFsQueryDTO;
+import com.unknow.first.mongo.utils.MongoDBUtil;
+import com.unknow.first.mongo.vo.MongoDBEnum;
+import com.unknow.first.mongo.vo.MongoDbGridFsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,11 +18,8 @@ import io.swagger.annotations.ApiOperation;
 import java.util.Arrays;
 import javax.servlet.ServletResponse;
 import org.cloud.exception.BusinessException;
-import org.cloud.utils.mongo.MongoDBEnum;
-import org.cloud.utils.mongo.MongoDBUtil;
-import org.cloud.utils.mongo.MongoGridFsQueryDTO;
+
 import org.cloud.vo.CommonApiResult;
-import org.cloud.vo.MongoDbGridFsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;

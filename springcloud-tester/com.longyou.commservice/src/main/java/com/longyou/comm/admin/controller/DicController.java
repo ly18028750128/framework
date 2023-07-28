@@ -2,7 +2,7 @@ package com.longyou.comm.admin.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.longyou.comm.admin.service.IDicService;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.exception.BusinessException;
 import org.cloud.model.TSystemDicMaster;

@@ -1,30 +1,30 @@
 package com.unknow.first.imexport.job;
 
+import static com.unknow.first.imexport.callable.ExportCallableService._TEMP_FILE_PATH;
+
 import com.unknow.first.imexport.constant.ImexportConstants.ProcessStatus;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import com.unknow.first.imexport.feign.ImexportTaskFeignClient;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.cloud.core.redis.RedisUtil;
-import org.cloud.scheduler.constants.MisfireEnum;
-import org.cloud.scheduler.job.BaseQuartzJobBean;
-import org.cloud.utils.CommonUtil;
-import org.cloud.utils.mongo.MongoDBUtil;
-import org.cloud.utils.process.ProcessUtil;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-
+import com.unknow.first.mongo.utils.MongoDBUtil;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.cloud.core.redis.RedisUtil;
+import org.cloud.scheduler.constants.MisfireEnum;
+import org.cloud.scheduler.job.BaseQuartzJobBean;
 
-import static com.unknow.first.imexport.callable.ExportCallableService._TEMP_FILE_PATH;
+import org.cloud.utils.EnvUtil;
+import org.cloud.utils.process.ProcessUtil;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
@@ -55,7 +55,7 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
     @SneakyThrows
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        String currentMicroservice = CommonUtil.single().getEnv("spring.application.name", "");
+        String currentMicroservice = EnvUtil.single().getEnv("spring.application.name", "");
         List<FrameImportExportTask> noProcessTaskList = imexportTaskFeignClient.listNoProcessTaskByMicroservice(currentMicroservice);
 
         if (CollectionUtils.isEmpty(noProcessTaskList)) {
@@ -87,13 +87,12 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
                     Callable<FrameImportExportTask> callable = (Callable<FrameImportExportTask>) constructor.newInstance(importExportTask);
                     callables.add(callable);
                 } catch (ClassNotFoundException notFoundException) {
-                    log.error("{}", notFoundException);
-                    notFoundException.printStackTrace();
+                    log.error(notFoundException.getMessage(), notFoundException);
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
                     importExportTask.setMessage(String.format("class [%s] not found", importExportTask.getProcessClass()));
                     imexportTaskFeignClient.update(importExportTask);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                     importExportTask.setTaskStatus(ProcessStatus.fail.value);
                     importExportTask.setMessage("错误描述:" + e.getMessage() + "   -   错误原因: " + (e.getCause() == null ? "空" : e.getCause().getMessage()));
                     imexportTaskFeignClient.update(importExportTask);

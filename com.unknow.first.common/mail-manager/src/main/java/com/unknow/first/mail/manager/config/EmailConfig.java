@@ -7,7 +7,7 @@ import com.unknow.first.mail.manager.service.IEmailSenderService;
 import com.unknow.first.mail.manager.service.impl.EmailSenderServiceImpl;
 import org.cloud.feign.service.ICommonServiceMessageLogFeign;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +18,10 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 @Configuration
-@ConditionalOnProperty(prefix = "system.email", name = "enable", matchIfMissing = true)
-@ComponentScan({"com.unknow.first.mail.manager.*"})
+//@ConditionalOnProperty(prefix = "system.email", name = "enable", matchIfMissing = true)
+@ComponentScan({"com.unknow.first.mail.manager"})
 @MapperScan({"com.unknow.first.mail.manager.mapper"})
-//@EnableFeignClients(basePackages = {"com.unknow.first.mail.manager.feign"})
+@EnableFeignClients(basePackages = {"com.unknow.first.mail.manager.feign"})
 public class EmailConfig {
 
 

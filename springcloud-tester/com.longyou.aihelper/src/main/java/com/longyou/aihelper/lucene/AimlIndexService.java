@@ -10,9 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
@@ -32,7 +30,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.TopDocs;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.RedissonUtil;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +61,7 @@ public class AimlIndexService {
         return;
       }
 
-      final String lastIndexUpdateTime = __LASTUPDATETIME_KEY + "." + CommonUtil.single().getEnv("spring.application.group", "");
+      final String lastIndexUpdateTime = __LASTUPDATETIME_KEY + "." + EnvUtil.single().getEnv("spring.application.group", "");
 
       Date lastModifyTime = RedissonUtil.single().getValue(lastIndexUpdateTime);
       final Date indexStartDate = new Date();

@@ -14,10 +14,10 @@ import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.cloud.mybatis.dynamic.DynamicSqlUtil;
+import org.cloud.mybatisplus.mybatis.dynamic.DynamicSqlUtil;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.vo.DynamicSqlQueryParamsVO;
-import org.cloud.vo.JavaBeanResultMap;
+import org.cloud.mybatisplus.vo.DynamicSqlQueryParamsVO;
+import org.cloud.mybatisplus.vo.JavaBeanResultMap;
 
 /**
  * 用户导出类，此类不受spring的管理，请不要用注解导入类
@@ -39,7 +39,7 @@ public class UserExportService extends ExportCallableService {
     @Override
     public void process(String fileName) throws RuntimeException {
         log.info("用户导出执行中，任务Id：{}", frameImportExportTask.getTaskId());
-        List<JavaBeanResultMap<Object>> userList = DynamicSqlUtil.single().listDataBySqlContext("select * from t_frame_user", new DynamicSqlQueryParamsVO());
+        List<JavaBeanResultMap> userList = DynamicSqlUtil.single().listDataBySqlContext("select * from t_frame_user", new DynamicSqlQueryParamsVO());
         List<UserExportDTO> userExportDTOList = CollectionUtil.single().convertListToBean(UserExportDTO.class, userList);
         OutputStream outputStream = Files.newOutputStream(Paths.get(fileName));
         try {

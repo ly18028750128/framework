@@ -1,7 +1,7 @@
 package com.longyou.comm.service;
 
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 
 public interface IUserInfoService {
 

@@ -20,7 +20,7 @@
 
     </resultMap>
 
-    <select id="getUserByNameForAuth" parameterType="org.cloud.vo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
+    <select id="getUserByNameForAuth" parameterType="org.cloud.dimension.userinfo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
         select id,user_name,password,default_Role,user_regist_source,user_type,mobile_phone,`status`,avatar
         from t_frame_user
         where status in (1,2,3)

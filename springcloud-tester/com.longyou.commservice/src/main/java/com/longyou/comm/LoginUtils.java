@@ -9,7 +9,7 @@ import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.utils.SpringContextUtil;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 
 public final class LoginUtils {
 

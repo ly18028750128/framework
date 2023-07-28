@@ -7,7 +7,8 @@ import com.mongodb.client.result.DeleteResult;
 import java.util.Date;
 import org.cloud.constant.CoreConstant.MongoDbLogConfig;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.JobExecutionContext;
@@ -36,7 +37,7 @@ public class JobLogCleaner extends BaseQuartzJobBean {
     protected void executeInternal(@NotNull JobExecutionContext context) throws JobExecutionException {
         final MongoTemplate mongoTemplate = SpringContextUtil.getBean(MongoTemplate.class);
         if (mongoTemplate != null) {
-            long expireDays = Long.parseLong(CommonUtil.single().getEnv("system.logger.jobLogs.expire.days", "7"));  //默认保留7天的数据
+            long expireDays = Long.parseLong(EnvUtil.single().getEnv("system.logger.jobLogs.expire.days", "7"));  //默认保留7天的数据
             try {
                 Query query = new Query(Criteria.where(MongoDbLogConfig.CREATE_DATE_FIELD.value()).lt(new Date(System.currentTimeMillis() - expireDays * 24 * 60 * 60 * 1000)));
                 DeleteResult deleteResult = mongoTemplate.remove(query, JOB_LOGS_COLLECTION);

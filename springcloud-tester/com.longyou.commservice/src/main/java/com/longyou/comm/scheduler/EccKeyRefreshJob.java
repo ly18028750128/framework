@@ -2,12 +2,9 @@ package com.longyou.comm.scheduler;
 
 import static org.cloud.utils.EccUtil.ECC_KEYS_REDIS_KEY;
 
-import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
 import org.cloud.utils.EccUtil;
-import org.cloud.utils.RsaUtil;
-import org.cloud.utils.SpringContextUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;

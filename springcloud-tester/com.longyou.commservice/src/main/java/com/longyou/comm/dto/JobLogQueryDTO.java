@@ -1,14 +1,12 @@
 package com.longyou.comm.dto;
 
+import com.unknow.first.mongo.annotation.MongoQuery;
+import com.unknow.first.mongo.vo.MongoEnumVO.DataType;
+import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import java.util.List;
 import lombok.Data;
-import org.cloud.mongo.MongoEnumVO.DataType;
-import org.cloud.mongo.MongoEnumVO.MongoOperatorEnum;
-import org.cloud.mongo.annotation.MongoQuery;
-
 @ApiModel("定时任务日志查询DTO")
 @Data
 public class JobLogQueryDTO {

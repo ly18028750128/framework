@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.longyou</groupId>
     <artifactId>springcloud-tester</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>cloud-core</artifactId>
   <name>cloud-core</name>
@@ -180,48 +180,7 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-boot-starter</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>io.swagger</groupId>
-          <artifactId>swagger-models</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>io.swagger</groupId>
-      <artifactId>swagger-models</artifactId>
-      <version>1.5.22</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-actuator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-actuator-autoconfigure</artifactId>
-    </dependency>
 
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.github.xiaoymin</groupId>
-      <artifactId>knife4j-spring-boot-starter</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>swagger-models</artifactId>
-          <groupId>io.swagger</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>easyexcel-support</artifactId>
@@ -234,23 +193,67 @@
     </dependency>
     <dependency>
       <groupId>com.unknow.first</groupId>
+      <artifactId>redisson-start-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mongo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redis-start-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>utils-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
       <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>auth-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>enc-dec-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>constant-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mybatisplus-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>quartz-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>feign-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>logs-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>swagger-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mfa-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>rabbitmq-common</artifactId>
     </dependency>
   </dependencies>
   <build>
     <plugins>
-      <!--            <plugin>-->
-      <!--                <groupId>org.springframework.boot</groupId>-->
-      <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-      <!--                <configuration>-->
-      <!--                    <excludes>-->
-      <!--                        <exclude>-->
-      <!--                            <groupId>org.springframework.boot</groupId>-->
-      <!--                            <artifactId>spring-boot-configuration-processor</artifactId>-->
-      <!--                        </exclude>-->
-      <!--                    </excludes>-->
-      <!--                </configuration>-->
-      <!--            </plugin>-->
     </plugins>
     <resources>
       <resource>

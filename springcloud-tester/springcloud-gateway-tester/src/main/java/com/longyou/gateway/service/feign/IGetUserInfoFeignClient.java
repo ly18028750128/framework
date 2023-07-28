@@ -1,8 +1,8 @@
 package com.longyou.gateway.service.feign;
 
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.feign.FeignTracerConfiguration;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.feign.config.FeignTracerConfiguration;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;

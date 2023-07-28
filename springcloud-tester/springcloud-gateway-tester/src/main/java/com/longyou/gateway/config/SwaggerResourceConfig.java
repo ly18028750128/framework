@@ -21,7 +21,7 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 @Configuration
 //@ConditionalOnProperty(name = "spring.application.group")
 @ComponentScan(value = {"org.cloud.config.swagger"}, excludeFilters = {
-    @Filter(type = FilterType.REGEX, pattern = {"org.cloud.config.swagger.MyBeanPostProcessor",
+    @Filter(type = FilterType.REGEX, pattern = {"com.unknow.first.swagger.MyBeanPostProcessor",
         "springfox.documentation.swagger.web.InMemorySwaggerResourcesProvider"}),})
 public class SwaggerResourceConfig {
 

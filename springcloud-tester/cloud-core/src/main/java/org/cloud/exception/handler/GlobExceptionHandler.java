@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import org.cloud.exception.BusinessException;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.ExceptionUtil;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.ResponseResult;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +69,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         responseResult.setMessage(e.getMessage());
         responseResult.setData(e.getErrObject());
         response.setStatus(e.getHttpStatus());
-        logger.error(CommonUtil.single().getStackTrace(e));
+        logger.error(ExceptionUtil.single().getStackTrace(e));
         return responseResult;
     }
 
@@ -126,7 +126,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         response.setStatus(httpStatus);
-        logger.error(CommonUtil.single().getStackTrace(e));
+        logger.error(ExceptionUtil.single().getStackTrace(e));
         return responseResult;
     }
 

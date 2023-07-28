@@ -2,7 +2,7 @@ package com.longyou.comm.admin.service;
 
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import org.cloud.mongo.DataInterFaceVO;
+import com.unknow.first.mongo.vo.DataInterFaceVO;
 
 import java.util.List;
 

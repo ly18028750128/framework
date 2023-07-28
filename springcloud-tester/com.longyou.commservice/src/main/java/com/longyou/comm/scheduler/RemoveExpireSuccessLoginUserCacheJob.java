@@ -4,10 +4,8 @@ import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
 
 import java.util.Set;
-import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
-import org.cloud.utils.RsaUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

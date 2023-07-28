@@ -1,7 +1,7 @@
 #FROM openjdk:8-alpine
 FROM kdvolder/jdk8
 COPY Shanghai /etc/localtime
-ADD springcloud-gateway-tester-0.0.2-SNAPSHOT.jar gateway.jar
+ADD springcloud-gateway-tester-0.0.3-SNAPSHOT.jar gateway.jar
 ENV JAVA_OPTS=$JAVA_OPTS
 ENV ENV_OPTS=$ENV_OPTS
 EXPOSE 20004

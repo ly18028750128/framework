@@ -1,7 +1,7 @@
 package org.cloud.context;
 
 import com.alibaba.fastjson.JSON;
-import org.cloud.utils.process.ProcessCallable;
+import org.cloud.dimension.utils.process.ProcessCallable;
 import org.cloud.utils.process.ProcessUtil;
 import org.junit.Test;
 import org.slf4j.Logger;

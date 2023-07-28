@@ -3,7 +3,7 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>mail-manager</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
 3:springboot启动类中增加
   @MapperScan "com.unknow.first.mail.manager.mapper"

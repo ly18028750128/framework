@@ -3,11 +3,12 @@ package com.longyou.comm.admin.controller;
 import static com.longyou.comm.admin.service.IMenuService._ALL_MENUS_CACHE_KEY;
 
 import com.longyou.comm.admin.service.IMenuService;
-import org.cloud.annotation.MfaAuth;
-import org.cloud.annotation.SystemResource;
+import java.util.List;
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.model.TFrameMenu;
+import org.cloud.mybatisplus.vo.JavaBeanResultMap;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +31,9 @@ public class MenuController {
 
     @SystemResource(value = "listAllTreeMenuByParentId", description = "根据ID查询菜单及子菜单", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     @GetMapping("/listAllTreeMenuByParentId")
-    public ResponseResult listAllTreeMenuByParentId(
-        @RequestParam(name = "parentId", required = false) Integer parentId,
+    public ResponseResult listAllTreeMenuByParentId(@RequestParam(name = "parentId", required = false) Integer parentId,
         @RequestParam(name = "maxLevel", required = false) Integer maxLevel,
-        @RequestParam(name = "isAll", required = false,defaultValue = "true") boolean isAll // 是否显示全部
+        @RequestParam(name = "isAll", required = false, defaultValue = "true") boolean isAll // 是否显示全部
     ) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(menuService.listAllTreeMenu(parentId, ((maxLevel == null || maxLevel == 0) ? 10 : maxLevel), isAll));
@@ -63,7 +63,8 @@ public class MenuController {
     @PostMapping("/refreshCache")
     public ResponseResult refreshCache() throws Exception {
         ResponseResult result = ResponseResult.createSuccessResult();
-        result.setData(redisUtil.set(_ALL_MENUS_CACHE_KEY, menuService.listAllTreeMenu(null, 5, false), 0L));
+        List<JavaBeanResultMap> allMenu = menuService.listAllTreeMenu(null, 5, false);
+        result.setData(redisUtil.set(_ALL_MENUS_CACHE_KEY, allMenu, 0L));
         return result;
     }
 

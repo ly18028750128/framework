@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.cloud.annotation.Query;
-import org.cloud.annotation.Query.Type;
+import org.cloud.mybatisplus.annotation.Query;
+import org.cloud.mybatisplus.annotation.Query.Type;
 
 @ApiModel("导出模板查询DTO")
 @Data

@@ -2,7 +2,7 @@ package com.longyou.comm.mapper;
 
 
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;

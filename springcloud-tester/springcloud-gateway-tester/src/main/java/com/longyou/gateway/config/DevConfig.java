@@ -21,7 +21,7 @@ public class DevConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, DiscoveryClient discoveryClient) {
         final List<String> servers = discoveryClient.getServices();
-//        final String group = CommonUtil.single().getEnv("spring.application.group", "");
+//        final String group = EnvUtil.single().getEnv("spring.application.group", "");
         RouteLocatorBuilder.Builder routeBuilder = builder.routes();
         if (!"".equalsIgnoreCase(group)) {
             routeBuilder.route(group + "SPRING-GATEWAY_route", r -> r.order(Integer.MIN_VALUE).path("/SPRING-GATEWAY/**")

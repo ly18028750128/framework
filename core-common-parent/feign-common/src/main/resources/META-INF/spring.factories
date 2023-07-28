@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.cloud.feign.config.CommonFeignConfig,org.cloud.feign.config.FeignTracerConfiguration,org.cloud.feign.config.ResTemplateFactoryConfig

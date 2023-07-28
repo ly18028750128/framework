@@ -5,23 +5,24 @@ import static com.unknow.first.imexport.constant.ImexportMenuConstants.MENU_USER
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
+import com.unknow.first.api.common.CommonPage;
+import com.unknow.first.api.common.CommonParam;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.dto.FrameExportTemplateQueryDTO;
 import com.unknow.first.imexport.service.FrameExportTemplateService;
+import com.unknow.first.mongo.dto.MetadataDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Objects;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.utils.MyBatisPlusUtil;
-import org.cloud.utils.mongo.MetadataDTO;
+import org.cloud.mybatisplus.utils.MyBatisPlusUtil;
 import org.cloud.vo.CommonApiResult;
-import org.common.CommonPage;
-import org.common.CommonParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.Assert;

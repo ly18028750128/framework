@@ -5,24 +5,24 @@
     <parent>
         <artifactId>springcloud-tester</artifactId>
         <groupId>com.longyou</groupId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>com.longyou.commservice</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>com.longyou</groupId>
             <artifactId>cloud-core</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${core.jar.version}</version>
         </dependency>
         <dependency>
             <groupId>com.unknow.first</groupId>
             <artifactId>mail-manager</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${core.jar.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -155,8 +155,12 @@
         <dependency>
             <groupId>com.unknow.first</groupId>
             <artifactId>telegram-message</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${core.jar.version}</version>
         </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>validator-common</artifactId>
+      </dependency>
 
 
     </dependencies>

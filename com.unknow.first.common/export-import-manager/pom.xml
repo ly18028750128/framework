@@ -6,23 +6,19 @@
   <parent>
     <groupId>com.unknow.first</groupId>
     <artifactId>common-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>export-import-manager</artifactId>
+  <name>导入导出服务包</name>
 
   <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.longyou</groupId>
-      <artifactId>cloud-core</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -35,6 +31,38 @@
     <dependency>
       <groupId>com.baomidou</groupId>
       <artifactId>mybatis-plus-extension</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mongo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>constant-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-openfeign-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>auth-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>quartz-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
     </dependency>
   </dependencies>
 </project>

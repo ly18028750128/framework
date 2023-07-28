@@ -1,6 +1,6 @@
 package com.longyou.gateway.security.controller;
 
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
 import org.springframework.http.HttpStatus;

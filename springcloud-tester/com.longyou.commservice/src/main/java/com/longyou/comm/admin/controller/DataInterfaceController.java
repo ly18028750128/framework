@@ -1,11 +1,11 @@
 package com.longyou.comm.admin.controller;
 
 import com.longyou.comm.admin.service.IDataInterFaceService;
-import org.cloud.annotation.SystemResource;
+import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
+import com.unknow.first.mongo.utils.MongoDBUtil;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
-import org.cloud.mongo.DataInterFaceVO;
-import org.cloud.mongo.MongoQueryParamsDTO;
-import org.cloud.utils.mongo.MongoDBUtil;
+import com.unknow.first.mongo.vo.DataInterFaceVO;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

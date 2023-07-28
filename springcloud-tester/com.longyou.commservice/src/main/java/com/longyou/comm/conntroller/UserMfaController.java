@@ -1,9 +1,13 @@
 package com.longyou.comm.conntroller;
 
-import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_CACHE_KEY;
-import static org.cloud.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
+
+
+import static com.unknow.first.config.MfaFilterConfig.__MFA_TOKEN_USER_CACHE_KEY;
+import static com.unknow.first.config.MfaFilterConfig.__MFA_TOKEN_USER_GOOGLE_SECRET_CACHE_KEY;
 
 import com.longyou.comm.service.FrameUserRefService;
+import com.unknow.first.annotation.MfaAuth;
+import com.unknow.first.util.GoogleAuthenticatorUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.LinkedHashMap;
@@ -11,19 +15,18 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
-import org.cloud.annotation.MfaAuth;
-import org.cloud.annotation.SystemResource;
-import org.cloud.common.service.AESService;
+
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.dimension.annotation.SystemResource;
+import org.cloud.encdec.service.AESService;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
-import org.cloud.utils.CommonUtil;
-import org.cloud.utils.GoogleAuthenticatorUtil;
+import org.cloud.utils.IPUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.FrameUserRefVO;
@@ -136,7 +139,7 @@ public class UserMfaController {
         LoginUserDetails user = currentRequestContext.getUser();
         String googleSecret = GoogleAuthenticatorUtil.single().getCurrentUserVerifyKey();
         final Boolean isValidatePass = GoogleAuthenticatorUtil.single().checkGoogleVerifyCode(googleSecret, mfaValue);
-        String ipHash = RedisUtil.single().getMd5Key(CommonUtil.single().getIpAddress(httpServletRequest));
+        String ipHash = RedisUtil.single().getMd5Key(IPUtil.single().getIpAddress(httpServletRequest));
         RedisUtil.single().set(__MFA_TOKEN_USER_CACHE_KEY + user.getId() + ":" + ipHash, isValidatePass, expiredTime);
         return responseResult;
     }

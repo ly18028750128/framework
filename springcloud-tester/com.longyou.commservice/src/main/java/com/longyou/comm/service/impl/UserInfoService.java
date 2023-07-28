@@ -1,5 +1,11 @@
 package com.longyou.comm.service.impl;
 
+import static org.cloud.constant.CoreConstant.OperateLogType;
+import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
+import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_KEY;
+
 import com.longyou.comm.CommonServiceConst.userStatus;
 import com.longyou.comm.mapper.TFrameRoleDao;
 import com.longyou.comm.mapper.TFrameRoleResourceDao;
@@ -7,28 +13,36 @@ import com.longyou.comm.mapper.TFrameUserRoleDao;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.FrameDataDimensionService;
 import com.longyou.comm.service.IUserInfoService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
-import org.cloud.model.*;
+import org.cloud.logs.annotation.AuthLog;
+import org.cloud.model.FrameDataDimension;
+import org.cloud.model.TFrameRole;
+import org.cloud.model.TFrameRoleData;
+import org.cloud.model.TFrameRoleDataInterface;
+import org.cloud.model.TFrameRoleMenu;
+import org.cloud.model.TFrameRoleResource;
+import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
-import org.cloud.vo.LoginUserGetParamsDTO;
 import org.cloud.vo.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.cloud.constant.CoreConstant.*;
-import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_KEY;
 
 @Service
 @Slf4j
@@ -57,7 +71,7 @@ public class UserInfoService implements IUserInfoService {
     public LoginUserDetails getUserByNameForAuth(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         LoginUserDetails loginUserDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
 
-        if(CollectionUtil.single().isEmpty(loginUserDetails)){
+        if (CollectionUtil.single().isEmpty(loginUserDetails)) {
             return null;
         }
 
@@ -98,10 +112,9 @@ public class UserInfoService implements IUserInfoService {
                 if (frameRoleResource.getFrameworkResource() == null) {
                     continue;
                 }
-                final String functionSetStr =
-                    frameRoleResource.getFrameworkResource().getBelongMicroservice() + CoreConstant._FUNCTION_SPLIT_STR +
-                        frameRoleResource.getFrameworkResource().getResourcePath() + CoreConstant._FUNCTION_SPLIT_STR +
-                        frameRoleResource.getFrameworkResource().getResourceCode();
+                final String functionSetStr = frameRoleResource.getFrameworkResource().getBelongMicroservice() + CoreConstant._FUNCTION_SPLIT_STR
+                    + frameRoleResource.getFrameworkResource().getResourcePath() + CoreConstant._FUNCTION_SPLIT_STR + frameRoleResource.getFrameworkResource()
+                    .getResourceCode();
                 userFunctions.add(functionSetStr);
             }
             for (TFrameRoleData frameRoleResource : frameRole.getFrameRoleDataList()) {
@@ -127,37 +140,32 @@ public class UserInfoService implements IUserInfoService {
 
         loginUserDetails.setUserRoles(userRoles);
         // 缓存用户的角色列表
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.ROLE.value(),
-            loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode, role -> role)),
-            24 * 60 * 60L);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.ROLE.value(),
+            loginUserDetails.getRoles().stream().collect(Collectors.toMap(TFrameRole::getRoleCode, role -> role)), 24 * 60 * 60L);
 
         // 缓存用户数据权限，按维度缓存
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.DATA.value(), userDatas, userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA.value(), userDatas, userInfoCacheExpireTime);
 
         // 缓存全部操作权限列表
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.FUNCTION.value(), userFunctions, userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value(), userFunctions,
+            userInfoCacheExpireTime);
 
         // 缓存接口权限
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.DATA_INTERFACE.value(), dataInterfaces, userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.DATA_INTERFACE.value(), dataInterfaces,
+            userInfoCacheExpireTime);
 
         final Map<String, Set<String>> userDataDimensionMap = getUserDataDimension(loginUserDetails.getId());
 
         // 缓存数据权限
-        redisUtil
-            .hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), USER_DIMENSION_CACHE_KEY, userDataDimensionMap,
-                userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), USER_DIMENSION_CACHE_KEY, userDataDimensionMap, userInfoCacheExpireTime);
 
         // 缓存角色名称
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.ROLE_NAME.value(), userRoles, userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.ROLE_NAME.value(), userRoles,
+            userInfoCacheExpireTime);
 
         //缓存菜单
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
-            CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(), userInfoCacheExpireTime);
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(),
+            userInfoCacheExpireTime);
 
         // 缓存登录用户信息
         loginUserDetails.setRoles(new ArrayList<>());
@@ -175,10 +183,8 @@ public class UserInfoService implements IUserInfoService {
     private Map<String, Set<String>> getUserDataDimension(Long userId) {
         List<FrameDataDimension> userDataDimensionList = frameDataDimensionService.selectDataDimensionByUserId(userId);
 
-        Map<String, Set<String>> userScheduleListMap = Optional.ofNullable(userDataDimensionList).orElse(new ArrayList<>())
-            .stream()
-            .collect(Collectors.groupingBy(FrameDataDimension::getDataDimension,
-                Collectors.mapping(FrameDataDimension::getDataDimensionValue, Collectors.toSet())));
+        Map<String, Set<String>> userScheduleListMap = Optional.ofNullable(userDataDimensionList).orElse(new ArrayList<>()).stream().collect(
+            Collectors.groupingBy(FrameDataDimension::getDataDimension, Collectors.mapping(FrameDataDimension::getDataDimensionValue, Collectors.toSet())));
 
         return userScheduleListMap;
 
@@ -190,7 +196,7 @@ public class UserInfoService implements IUserInfoService {
         LoginUserGetParamsDTO getParamsDTO = new LoginUserGetParamsDTO();
         getParamsDTO.setUserId(loginUserDetails.getId());
         LoginUserDetails user = userInfoMapper.getUserByNameForAuth(getParamsDTO);
-        final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+        final String salt = EnvUtil.single().getEnv("spring.security.salt-password", "");
         if (MD5Encoder.encode(oldPassword, salt).equals(user.getPassword())) {
             user.setPassword(MD5Encoder.encode(newPassword, salt));
             userInfoMapper.updateLoginUserById(user);
@@ -206,7 +212,7 @@ public class UserInfoService implements IUserInfoService {
         LoginUserGetParamsDTO getParamsDTO = new LoginUserGetParamsDTO();
         getParamsDTO.setUserId(id);
         LoginUserDetails user = userInfoMapper.getUserByNameForAuth(getParamsDTO);
-        final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+        final String salt = EnvUtil.single().getEnv("spring.security.salt-password", "");
         user.setPassword(MD5Encoder.encode(password, salt));
         userInfoMapper.updateLoginUserById(user);
         return 1;

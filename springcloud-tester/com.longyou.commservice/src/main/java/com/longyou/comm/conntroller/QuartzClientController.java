@@ -11,9 +11,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.utils.process.ProcessUtil;
@@ -42,7 +43,7 @@ public class QuartzClientController {
     @SystemResource(value = "/getAll", description = "查询全部定时任务", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseResult<?> getQuartzJobs() throws Exception {
-        String applicationGroup = CommonUtil.single().getEnv("spring.application.group", "");
+        String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         ResponseResult<?> successResult = ResponseResult.createSuccessResult();
         Map<String, List<Map>> quartzJobs = new HashMap<>();
         List<Callable<Boolean>> callables = new ArrayList<>();

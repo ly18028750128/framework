@@ -4,12 +4,15 @@ import com.longyou.comm.admin.service.IUserAdminService;
 import com.longyou.comm.mapper.TFrameUserDao;
 import com.longyou.comm.mapper.TFrameUserRoleDao;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.logs.annotation.AuthLog;
+import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.model.TFrameUser;
 import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CollectionUtil;
-import org.cloud.utils.CommonUtil;
+
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,21 +28,17 @@ public class UserAdminService implements IUserAdminService {
     @Autowired
     TFrameUserDao frameUserDao;
 
-
     @Override
+    @AuthLog(bizType = "user.admin.saveOrUpdate", desc = "修改用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public long saveOrUpdate(TFrameUser frameUser) throws Exception {
-
         LoginUserDetails userDetails = RequestContextManager.single().getRequestContext().getUser();
-
         long result = 0;
-
         frameUser.setUpdateBy(userDetails.getUsername());
         frameUser.setUpdateDate(new Date());
-
         if (StringUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
-            final String salt = CommonUtil.single().getEnv("spring.security.salt-password", "");
+            final String salt = EnvUtil.single().getEnv("spring.security.salt-password", "");
             frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(), salt));
             if (frameUserDao.insertSelective(frameUser)>0) {
                 result = frameUser.getId();
@@ -49,7 +48,6 @@ public class UserAdminService implements IUserAdminService {
                 result = frameUser.getId();
             }
         }
-
         if (frameUser.isUpdated()) {
             saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
         }

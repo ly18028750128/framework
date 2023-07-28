@@ -2,7 +2,7 @@ package com.longyou.paycenter.controller;
 
 import com.longyou.paycenter.model.PayMerchant;
 import com.longyou.paycenter.service.PayMerchantService;
-import org.cloud.annotation.SystemResource;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,23 +6,19 @@ import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.annotation.AuthLog;
-import org.cloud.constant.CoreConstant;
+import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.userinfo.LoginUserGetInterface;
-import org.cloud.utils.MD5Encoder;
+import org.cloud.dimension.userinfo.LoginUserGetInterface;
 import org.cloud.utils.RsaUtil;
-import org.cloud.vo.LoginUserGetParamsDTO;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
 

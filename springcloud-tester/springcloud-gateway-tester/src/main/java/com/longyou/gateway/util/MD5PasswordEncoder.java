@@ -2,7 +2,7 @@ package com.longyou.gateway.util;
 
 import org.cloud.constant.CoreConstant;
 import org.cloud.core.redis.RedisUtil;
-import org.cloud.utils.CommonUtil;
+import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class MD5PasswordEncoder implements PasswordEncoder {
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         String sRawPassword = (String) rawPassword;
-        final String basic64SplitStr = CommonUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
+        final String basic64SplitStr = EnvUtil.single().getEnv("system.auth_basic64_split", CoreConstant._USER_BASIC64_SPLIT_STR);
         final String[] values = sRawPassword.split(basic64SplitStr);
         if (values.length == 1) {
             return encodedPassword.equals(MD5Encoder.encode(sRawPassword, salt));

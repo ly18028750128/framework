@@ -1,5 +1,12 @@
 package org.cloud.utils;
 
+import org.cloud.vo.poi.WordBookmarkVO;
+import org.cloud.vo.poi.WordParagraphStyleVO;
+import org.cloud.vo.poi.WordPictureVO;
+import org.cloud.vo.poi.WordTableCellVO;
+import org.cloud.vo.poi.WordTableHeaderVO;
+import org.cloud.vo.poi.WordTableVO;
+import org.cloud.vo.poi.WordTextVO;
 import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
 import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +15,6 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.cloud.constant.CoreConstant;
-import org.cloud.vo.poi.*;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
