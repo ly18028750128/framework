@@ -7,7 +7,7 @@ import com.unknow.first.mongo.vo.MongoEnumVO;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.cloud.constant.CoreConstant;
-import org.cloud.mongo.AppLogger;
+import org.cloud.logger.AppLogger;
 import com.unknow.first.mongo.vo.DataInterFaceVO;
 import org.junit.Assert;
 import org.junit.Test;
