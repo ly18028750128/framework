@@ -19,11 +19,6 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.longyou</groupId>
-      <artifactId>cloud-core</artifactId>
-      <version>${core.jar.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
@@ -51,6 +46,16 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redis-start-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>enc-dec-common</artifactId>
+      <version>0.0.3-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>

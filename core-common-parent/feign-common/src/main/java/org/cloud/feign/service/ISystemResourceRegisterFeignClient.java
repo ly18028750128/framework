@@ -7,10 +7,11 @@ import org.cloud.model.TFrameworkResource;
 import org.cloud.model.TMicroserviceRegister;
 import org.cloud.vo.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+@Lazy
 @FeignClient(name = "${spring.application.group:}COMMON-SERVICE", contextId = "commonServiceRegister", configuration = {FeignTracerConfiguration.class})  // 不区分大小写
 public interface ISystemResourceRegisterFeignClient {
 

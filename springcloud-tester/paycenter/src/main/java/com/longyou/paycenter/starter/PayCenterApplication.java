@@ -3,13 +3,11 @@ package com.longyou.paycenter.starter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageHelper;
 import java.util.Properties;
-import javax.sql.DataSource;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.quartz.QuartzDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -21,9 +19,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 @ComponentScan({"org.cloud.*", "com.longyou.paycenter.*"})
-@MapperScan({"com.longyou.paycenter.mapper", "org.cloud.mybatis.dynamic"})
+@MapperScan({"com.longyou.paycenter.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.paycenter.service.feign", "org.cloud.feign.service"})
+@EnableFeignClients(basePackages = {"com.longyou.paycenter.service.feign"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix

@@ -20,6 +20,7 @@ public class DevConfig {
     // 此处只是针对开发环境的group的输入URL时不用输入解决方案，有新的服务部署后需要重新启动网关，生产和测试无此问题，
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, DiscoveryClient discoveryClient) {
+
         final List<String> servers = discoveryClient.getServices();
 //        final String group = EnvUtil.single().getEnv("spring.application.group", "");
         RouteLocatorBuilder.Builder routeBuilder = builder.routes();

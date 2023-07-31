@@ -251,6 +251,14 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>rabbitmq-common</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>async-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>poi-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -43,7 +44,7 @@ public class EmailConfig {
 
     @Bean
     public IEmailSenderService emailSenderService(JavaMailSender javaMailSender, SpringTemplateEngine springTemplateEngine,
-        IEmailTemplateFeignClient emailTemplateFeignClient, ICommonServiceMessageLogFeign serviceMessageLogFeign, Tracer tracer) {
+        @Lazy IEmailTemplateFeignClient emailTemplateFeignClient, @Lazy ICommonServiceMessageLogFeign serviceMessageLogFeign, Tracer tracer) {
         return new EmailSenderServiceImpl(javaMailSender, springTemplateEngine, emailTemplateFeignClient, serviceMessageLogFeign, tracer);
     }
 

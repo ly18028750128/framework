@@ -6,16 +6,23 @@ import java.security.Security;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
 import org.cloud.encdec.service.AESService;
 import org.springframework.context.annotation.Lazy;
 
+@Slf4j
 public final class AES128Util {
 
-    private final AESService aesService;
+    private AESService aesService;
 
     @Lazy
     private AES128Util() {
-        this.aesService = SpringContextUtil.getBean(AESService.class);
+        try {
+            this.aesService = SpringContextUtil.getBean(AESService.class);
+        } catch (Exception e) {
+            log.warn("未找到服务类【{}】",e.getMessage());
+        }
+
     }
 
 
