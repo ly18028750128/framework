@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
@@ -18,6 +19,7 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
+@ComponentScan({"org.cloud.scheduler","com.longyou.gateway"})
 @Slf4j
 public class GatewayApplication {
 

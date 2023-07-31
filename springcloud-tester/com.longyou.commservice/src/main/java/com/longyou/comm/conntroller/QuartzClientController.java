@@ -1,5 +1,6 @@
 package com.longyou.comm.conntroller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
@@ -11,15 +12,15 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant.AuthMethod;
-
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.utils.EnvUtil;
 import org.cloud.utils.RestTemplateUtil;
 import org.cloud.utils.SystemStringUtil;
 import org.cloud.utils.process.ProcessUtil;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -39,19 +40,34 @@ public class QuartzClientController {
     @Autowired
     DiscoveryClient discoveryClient;
 
+    private final static List<String> DEFAULT_QUARTZ_SERVICES = CollectionUtil.newArrayList("CHAIN-BLOCK-SCAN-SERVICE", "COMMON-SERVICE", "SPRING-GATEWAY");
+
+    @Value("${system.quartz.serveList:}")
+    private List<String> quartzService;
+
     @ApiOperation(value = "查询全部定时任务", notes = "查询全部定时任务,查询所有的相关微服务的定时任务")
     @SystemResource(value = "/getAll", description = "查询全部定时任务", authMethod = AuthMethod.BYUSERPERMISSION)
     @GetMapping(value = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseResult<?> getQuartzJobs() throws Exception {
-        String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
+        final String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         ResponseResult<?> successResult = ResponseResult.createSuccessResult();
         Map<String, List<Map>> quartzJobs = new HashMap<>();
         List<Callable<Boolean>> callables = new ArrayList<>();
-        List<String> services = discoveryClient.getServices();
-        for (String serviceId : services) {
-            if (StringUtils.hasLength(applicationGroup) && !serviceId.toUpperCase().startsWith(applicationGroup)) {
-                continue;
+
+        List<String> services = new ArrayList<>();
+        if (StringUtils.hasLength(applicationGroup)) {
+            services = discoveryClient.getServices().stream().filter(serviceId -> serviceId.toUpperCase().startsWith(applicationGroup))
+                .collect(Collectors.toList());
+        } else {
+            if (CollectionUtil.isEmpty(quartzService)) {
+                services = DEFAULT_QUARTZ_SERVICES;
+            } else {
+                services.addAll(quartzService);
+                services.addAll(DEFAULT_QUARTZ_SERVICES);
             }
+        }
+
+        for (String serviceId : services) {
             callables.add(() -> {
                 try {
                     final String url = "http://" + serviceId.toUpperCase() + "/quartz/job/all";
