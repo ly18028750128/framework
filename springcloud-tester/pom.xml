@@ -379,12 +379,6 @@
         <artifactId>mail-manager</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
-      <dependency>
-        <groupId>com.longyou</groupId>
-        <artifactId>cloud-core</artifactId>
-        <version>${core.jar.version}</version>
-      </dependency>
-
     </dependencies>
 
   </dependencyManagement>

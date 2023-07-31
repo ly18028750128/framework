@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Primary;
 
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 @ComponentScan({"org.cloud.*", "com.longyou.comm.*"})
-@MapperScan({"com.longyou.comm.mapper", "org.cloud.mybatis.dynamic"})
+@MapperScan({"com.longyou.comm.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker

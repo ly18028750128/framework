@@ -19,9 +19,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 @ComponentScan({"org.cloud.*", "com.longyou.aihelper.*"})
-@MapperScan({"com.longyou.aihelper.mapper", "org.cloud.mybatis.dynamic"})
+@MapperScan({"com.longyou.aihelper.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.aihelper.service.feign", "org.cloud.feign.service"})
+@EnableFeignClients(basePackages = {"com.longyou.aihelper.service.feign"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix

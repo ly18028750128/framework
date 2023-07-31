@@ -19,9 +19,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 @ComponentScan({"org.cloud.*", "com.longyou.paycenter.*"})
-@MapperScan({"com.longyou.paycenter.mapper", "org.cloud.mybatis.dynamic"})
+@MapperScan({"com.longyou.paycenter.mapper"})
 @ServletComponentScan({"org.cloud.filter"})
-@EnableFeignClients(basePackages = {"com.longyou.paycenter.service.feign", "org.cloud.feign.service"})
+@EnableFeignClients(basePackages = {"com.longyou.paycenter.service.feign"})
 @EnableDiscoveryClient
 @EnableCircuitBreaker
 @EnableHystrix

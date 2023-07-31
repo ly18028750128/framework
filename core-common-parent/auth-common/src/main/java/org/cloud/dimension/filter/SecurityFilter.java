@@ -1,7 +1,6 @@
 package org.cloud.dimension.filter;
 
 import cn.hutool.core.collection.CollectionUtil;
-import feign.FeignException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,8 @@ import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
+import org.cloud.feign.utils.FeignUtil;
 import org.cloud.utils.HttpServletUtil;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -51,7 +49,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
         // 增加上下文的user的处理
-        final LoginUserDetails user = getLoginUser();
+        final LoginUserDetails user = FeignUtil.single().getLoginUser();
         if (user != null) {
             requestContext.setUser(user);
         }
@@ -59,22 +57,5 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
-    private LoginUserDetails getLoginUser() {
-        try {
-            return gatewayFeignClient.getAuthentication();
-        } catch (HttpClientErrorException.Unauthorized e) {
-            logger.info("rest请求无权限");
-        } catch (FeignException.ServiceUnavailable serviceUnavailable) {
-            logger.warn("网关服务未启动，请稍后!");
-        } catch (FeignException.Unauthorized e) {
-            logger.debug("feign请求,未带用户信息!");
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
-                logger.error(e.getMessage(), e);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
+
 }
