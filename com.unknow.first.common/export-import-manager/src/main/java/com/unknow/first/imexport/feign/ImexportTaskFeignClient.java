@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import java.io.Serializable;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+@Lazy
 @FeignClient(name = "${spring.application.group:}COMMON-SERVICE", contextId = "onImexportTaskFeignClient")  // 不区分大小写
 public interface ImexportTaskFeignClient extends Serializable {
 

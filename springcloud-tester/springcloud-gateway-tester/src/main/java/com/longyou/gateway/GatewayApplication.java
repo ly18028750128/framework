@@ -4,15 +4,14 @@ import com.alibaba.druid.pool.DruidDataSource;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.SpringContextUtil;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
@@ -20,10 +19,8 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
-@MapperScan({"com.unknow.first.mail.manager.mapper"})
-@ComponentScan(value = {"com.longyou.gateway", "org.cloud.core.redis", "org.cloud.scheduler", "org.cloud.mongo", "com.unknow.first.mail.manager.*",
-    "org.cloud.config.async",})
 @Slf4j
+@EnableHystrix
 public class GatewayApplication {
 
     public static void main(String[] args) {

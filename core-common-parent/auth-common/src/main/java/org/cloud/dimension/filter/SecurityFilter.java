@@ -29,9 +29,9 @@ public class SecurityFilter extends OncePerRequestFilter {
     private IGatewayFeignClient gatewayFeignClient;
 
     public SecurityFilter(List<String> excludedAuthPages, IGatewayFeignClient gatewayFeignClient) {
-        if(CollectionUtil.isEmpty(excludedAuthPages)){
+        if (CollectionUtil.isEmpty(excludedAuthPages)) {
             this.excludedAuthPages = new ArrayList<>();
-        }else {
+        } else {
             this.excludedAuthPages = excludedAuthPages;
         }
         this.gatewayFeignClient = gatewayFeignClient;
@@ -64,8 +64,10 @@ public class SecurityFilter extends OncePerRequestFilter {
             return gatewayFeignClient.getAuthentication();
         } catch (HttpClientErrorException.Unauthorized e) {
             logger.info("rest请求无权限");
+        } catch (FeignException.ServiceUnavailable serviceUnavailable) {
+            logger.warn("网关服务未启动，请稍后!");
         } catch (FeignException.Unauthorized e) {
-            logger.debug("feign请求,可以不带用户信息");
+            logger.debug("feign请求,未带用户信息!");
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
                 logger.error(e.getMessage(), e);

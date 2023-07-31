@@ -14,6 +14,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <artifactId>mongodb-driver-core</artifactId>-->
+<!--          <groupId>org.mongodb</groupId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
     </dependency>
     <dependency>
       <groupId>io.swagger</groupId>
@@ -64,6 +70,13 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>utils-common</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-core -->
+<!--    <dependency>-->
+<!--      <groupId>org.mongodb</groupId>-->
+<!--      <artifactId>mongodb-driver-core</artifactId>-->
+<!--      <version>3.12.14</version>-->
+<!--    </dependency>-->
+
   </dependencies>
 
 

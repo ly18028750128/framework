@@ -44,6 +44,8 @@ management:
       exposure:
         include: gateway
 spring:
+  main:
+    allow-bean-definition-overriding: true
   cloud:
     gateway:
       discovery:

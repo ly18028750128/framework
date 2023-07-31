@@ -2,11 +2,11 @@ package com.longyou.gateway.security.response;
 
 import static com.longyou.gateway.security.response.MessageCode.COMMON_SUCCESS;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +53,10 @@ public class WsResponse<T> {
     public static <T> WsResponse<T> failure(MessageCode messageCode, String message) {
         WsResponse<T> resp = new WsResponse<>();
         resp.status = messageCode;
-        if (StringUtils.isNotBlank(messageCode.message)) {
+        if (StrUtil.isNotBlank(messageCode.message)) {
             resp.getMessages().add(messageCode.message);
         }
-        if (StringUtils.isNotBlank(message)) {
+        if (StrUtil.isNotBlank(message)) {
             resp.getMessages().add(message);
         }
         return resp;

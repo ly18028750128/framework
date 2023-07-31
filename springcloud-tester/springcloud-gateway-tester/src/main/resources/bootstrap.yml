@@ -5,6 +5,7 @@ spring:
     upperCaseName: ${spring.application.group:}SPRING-GATEWAY  # 为了兼容原来的eureka的访问方式，这里设定一个大写名称用于访问
     name: ${spring.application.group:}${spring.application.noGroupName:}  #不区分大小写
   cloud:
+    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
 #    config:
 #      label: master
 #      name: ${spring.application.noGroupName:}

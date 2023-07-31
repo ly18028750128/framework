@@ -7,8 +7,8 @@ import com.longyou.gateway.security.UserLoginService;
 import com.longyou.gateway.security.response.MessageCode;
 import com.longyou.gateway.security.response.WsResponse;
 import com.longyou.gateway.util.IPUtils;
-import com.unknow.first.mail.manager.util.EmailUtil;
-import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
+//import com.unknow.first.mail.manager.util.EmailUtil;
+//import com.unknow.first.mail.manager.vo.MailVO.EmailParams;
 import java.util.Arrays;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
@@ -73,15 +73,15 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
         if (ipLoginErrorCount > ipLoginErrorLimit) {
             redisUtil.set(ipLockerKey, true, ipLoginErrorLimitTime);
             redisUtil.set(ipAddressLockerCountKey, 0);
-            EmailParams emailParams = new EmailParams();
-            emailParams.getSubjectParams().put("ip", ipAddress);
-            emailParams.getEmailParams().put("ip", ipAddress);
-            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-            try {
-                EmailUtil.single().sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
-            } catch (Exception ex) {
-                log.error("登录异常预警发送失败，{}", ex.getMessage());
-            }
+//            EmailParams emailParams = new EmailParams();
+//            emailParams.getSubjectParams().put("ip", ipAddress);
+//            emailParams.getEmailParams().put("ip", ipAddress);
+//            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+//            try {
+//                EmailUtil.single().sendEmail("IP_LOGIN_LOCKER_EMAIL", emailParams);
+//            } catch (Exception ex) {
+//                log.error("登录异常预警发送失败，{}", ex.getMessage());
+//            }
         } else if (!ipIsLocked) {
             redisUtil.set(ipAddressLockerCountKey, ipLoginErrorCount, 24 * 60 * 60L);
         }
@@ -105,17 +105,17 @@ public class AuthenticationFailHandler implements ServerAuthenticationFailureHan
         if (userLoginErrorCount > userLoginErrorLimit) {
             redisUtil.set(LoginError.USER_LOCK_KEY.value + userNameKey, true, userLoginErrorLimitTime);
             redisUtil.set(userLoginCountKey, 0);
-            EmailParams emailParams = new EmailParams();
-            emailParams.getSubjectParams().put("userName", username);
-            emailParams.getEmailParams().put("userName", username);
-            emailParams.getEmailParams().put("ip", ipAddress);
-            emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
-            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
-            try {
-                EmailUtil.single().sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
-            } catch (Exception ex) {
-                log.error("用户锁定邮件发送异常", ex);
-            }
+//            EmailParams emailParams = new EmailParams();
+//            emailParams.getSubjectParams().put("userName", username);
+//            emailParams.getEmailParams().put("userName", username);
+//            emailParams.getEmailParams().put("ip", ipAddress);
+//            emailParams.getEmailParams().put("serviceName", loginMicroServiceName);
+//            emailParams.getEmailParams().put("unlockedDate", new Date(System.currentTimeMillis() + (userLoginErrorLimitTime * 1000)));
+//            try {
+//                EmailUtil.single().sendEmail("USER_LOGIN_LOCKER_EMAIL", emailParams);
+//            } catch (Exception ex) {
+//                log.error("用户锁定邮件发送异常", ex);
+//            }
         } else if (!userIsLocked) {
             redisUtil.set(userLoginCountKey, userLoginErrorCount);
         }

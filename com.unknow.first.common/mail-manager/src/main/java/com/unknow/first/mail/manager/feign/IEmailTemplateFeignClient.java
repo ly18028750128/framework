@@ -5,9 +5,11 @@ import com.unknow.first.mail.manager.domain.EmailTemplate;
 import java.io.Serializable;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Lazy
 @FeignClient(name = "${spring.application.group:}COMMON-SERVICE", contextId = "onEmailManager")  // 不区分大小写
 public interface IEmailTemplateFeignClient extends Serializable {
 

@@ -14,11 +14,11 @@
     <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>com.longyou</groupId>
-      <artifactId>cloud-core</artifactId>
-      <version>${core.jar.version}</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.longyou</groupId>-->
+<!--      <artifactId>cloud-core</artifactId>-->
+<!--      <version>${core.jar.version}</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>mail-manager</artifactId>
@@ -154,6 +154,10 @@
     </dependency>
     <dependency>
       <groupId>com.unknow.first</groupId>
+      <artifactId>async-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
       <artifactId>telegram-message</artifactId>
       <version>${core.jar.version}</version>
     </dependency>
@@ -161,8 +165,22 @@
       <groupId>com.unknow.first</groupId>
       <artifactId>validator-common</artifactId>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>mfa-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redisson-start-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>swagger-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

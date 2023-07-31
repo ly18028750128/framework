@@ -18,11 +18,6 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>com.longyou</groupId>
-      <artifactId>cloud-core</artifactId>
-      <version>0.0.3-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
@@ -38,6 +33,16 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>api-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>logs-common</artifactId>
+      <version>0.0.3-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>auth-common</artifactId>
     </dependency>
   </dependencies>
 </project>
