@@ -182,6 +182,18 @@
       <version>2.2.10.RELEASE</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>utils-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>redisson-start-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>quartz-common</artifactId>
+    </dependency>
 
   </dependencies>
   <build>
