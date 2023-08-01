@@ -14,11 +14,6 @@
     <core.jar.version>0.0.3-SNAPSHOT</core.jar.version>
   </properties>
   <dependencies>
-<!--    <dependency>-->
-<!--      <groupId>com.longyou</groupId>-->
-<!--      <artifactId>cloud-core</artifactId>-->
-<!--      <version>${core.jar.version}</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>mail-manager</artifactId>
