@@ -2,6 +2,7 @@ package org.cloud.dimension.config;
 
 import java.util.List;
 import lombok.Setter;
+import org.cloud.dimension.aop.SystemResourceAspect;
 import org.cloud.dimension.filter.SecurityFilter;
 import org.cloud.feign.service.IGatewayFeignClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,5 +26,10 @@ public class SecurityFilterConfig {
         registration.setName("securityFilter");
         registration.setOrder(0);
         return registration;
+    }
+
+    @Bean
+    public SystemResourceAspect systemResourceAspect() {
+        return new SystemResourceAspect();
     }
 }
