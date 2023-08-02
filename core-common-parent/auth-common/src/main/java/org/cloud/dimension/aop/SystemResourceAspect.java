@@ -23,13 +23,11 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 @Aspect
-@Component
 @Slf4j
 public class SystemResourceAspect {
     @Value("${spring.application.noGroupName:}")
     private String microName;
-    @Autowired
-    RedisUtil redisUtil;
+
 
     @Pointcut("@annotation(org.cloud.dimension.annotation.SystemResource)")
     public void systemResource() {
@@ -60,7 +58,7 @@ public class SystemResourceAspect {
         }
         // 校验功能权限！
         if (systemResource.authMethod().equals(CoreConstant.AuthMethod.BYUSERPERMISSION)) {
-            Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
+            Set<String> userFunctions = RedisUtil.single().hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.FUNCTION.value());
             final String functionSetStr = microName + CoreConstant._FUNCTION_SPLIT_STR + classResourceAnnotation.path() + CoreConstant._FUNCTION_SPLIT_STR + systemResource.value();
             if (userFunctions == null || userFunctions.isEmpty() || !userFunctions.contains(functionSetStr)) {
                 log.error(loginUserDetails.getUsername() + ",正在非法的请求：" + functionSetStr);
