@@ -1,8 +1,11 @@
 package com.longyou.gateway;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.unknow.first.api.common.config.ExceptionHandlerConfig;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.cloud.dimension.aop.SystemResourceAspect;
+import org.cloud.dimension.config.SecurityFilterConfig;
 import org.cloud.utils.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
-@SpringBootApplication(exclude = {RabbitAutoConfiguration.class})
+@SpringBootApplication(exclude = {RabbitAutoConfiguration.class, ExceptionHandlerConfig.class, SecurityFilterConfig.class,})
 @EnableDiscoveryClient
 @EnableRedisWebSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "system:spring:session")
 @EnableFeignClients(basePackages = {"com.longyou.gateway.service.feign"})
