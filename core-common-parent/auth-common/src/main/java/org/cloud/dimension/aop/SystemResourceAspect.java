@@ -51,7 +51,7 @@ public class SystemResourceAspect {
         final SystemResource systemResource = method.getAnnotation(SystemResource.class);
 
         // 如果是不校验，那么全部用户均可以通过
-        if (!systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
+        if (systemResource.authMethod().equals(CoreConstant.AuthMethod.NOAUTH)) {
             return joinPoint.proceed();
         }
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
