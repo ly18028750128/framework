@@ -1,5 +1,6 @@
 package com.longyou.gateway.security.controller;
 
+import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.constant.CoreConstant;
 import org.cloud.entity.LoginUserDetails;
@@ -20,7 +21,6 @@ import reactor.core.publisher.Mono;
 @Transactional(propagation = Propagation.NEVER)
 public class UserController {
     @GetMapping("/authentication")
-    @SystemResource(value = "/demo谷歌验证码测试", authMethod = CoreConstant.AuthMethod.ALLSYSTEMUSER)
     public Mono<UserDetails> getAuthentication(Authentication authentication, ServerHttpResponse response) {
         if (authentication == null) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
