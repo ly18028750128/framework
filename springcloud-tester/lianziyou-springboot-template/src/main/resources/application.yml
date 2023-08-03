@@ -20,7 +20,7 @@ system: #这里仅是示例，请在配置中心中配置
     #      connect-timeout: 5000
     #      database: ${spring.redis.database:0}
     cluster-config:
-      password: 1qaz@WSX
+      password: ENC("A41e2kn+BpHeAQP8IhWAInL5ihBEPL9V7Bt8Y9LpyKy708qphFXCQ+OzbUR7H2we")
       node-addresses:
         - redis://192.168.74.128:11001
         - redis://192.168.74.128:11002
@@ -44,6 +44,8 @@ spring:
     username: shop-user #ENC("k3vXOirGWCvmF6ucb9pG5rxwES7kM0D7tCIqOzL+e9bUWDhJcPkSx31bavJ6Z6vN")
     password: shop-user
     virtual-host: shop_vhost
+test:
+  value: ENC("A41e2kn+BpHeAQP8IhWAInL5ihBEPL9V7Bt8Y9LpyKy708qphFXCQ+OzbUR7H2we")
 #management:
 #  health:
 #    defaults:

@@ -25,7 +25,7 @@ public class JasyptLocalTest {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
         passwordMap.put("mysql用户名：", "");
-        passwordMap.put("mysql密码：", "");
+        passwordMap.put("mysql密码：", "1qaz@WSX");
         passwordMap.put("邮箱用户名：", "");
         passwordMap.put("邮箱密码：", "");
         passwordMap.put("mongodb用户名：", "");

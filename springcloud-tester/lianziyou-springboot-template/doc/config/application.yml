@@ -1,7 +1,7 @@
 local-server:
   ip: 192.168.30.239 #ip地址
-  suffix:  template #应用前缀，用于区分应用的数据库等
-  prefix:  template #应用后缀，用于区分应用的数据库等
+  suffix:   #应用后缀，用于区分应用的数据库等
+  prefix:  template_ #应用前缀，用于区分应用的数据库等
 db-common-config:
   redis-ip: 192.168.30.239 #ip地址
   mysql-db-ip: 192.168.30.239 #ip地址
@@ -21,7 +21,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 30000
+            timeoutinMilliseconds: 30000
   serverMethod:
     execution:
       isolation:
@@ -88,7 +88,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     quartz:
-      url: jdbc:mysql://${db-common-config.mysql-db-ip}:10002/quartz${local-server.suffix}?userSSL=false&autoReconnect=true&failOverReadOnly=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=CONVERT_TO_NULL
+      url: jdbc:mysql://${db-common-config.mysql-db-ip}:10002/${local-server.prefix}quartz?userSSL=false&autoReconnect=true&failOverReadOnly=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=CONVERT_TO_NULL
       jdbc-url: ${spring.datasource.url}
       username: root
       password: 1qaz@WSX
@@ -215,7 +215,7 @@ logging:  #LOG日志全局配置，默认为debug
       sql:
         Connection: INFO
         PreparedStatement: INFO
-        Statement: INFO
+        Statement: info
     org:
       cloud: INFO
       hibernate: ERROR

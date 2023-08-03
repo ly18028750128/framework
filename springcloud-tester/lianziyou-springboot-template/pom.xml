@@ -78,6 +78,10 @@
     </dependency>
     <dependency>
       <groupId>com.unknow.first</groupId>
+      <artifactId>feign-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
       <artifactId>swagger-common</artifactId>
     </dependency>
 
