@@ -42,7 +42,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: gateway
+        include: *  # 生产在配置中心用，要用info,health覆盖掉
 spring:
   main:
     allow-bean-definition-overriding: true
