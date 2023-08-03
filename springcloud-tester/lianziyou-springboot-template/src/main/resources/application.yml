@@ -1,0 +1,58 @@
+logging:
+  level:
+    com.longyou.common: debug
+    org.cloud: debug
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params:
+system: #这里仅是示例，请在配置中心中配置
+  OperateLog:
+    enabled: true
+  redisson: # 集群状态下database不生效，生产时采用此配置，平时开发时为了区分各环境可以用主从模式
+    enabled: false #如果要放开redisson,那么改成true，暂时只支持主从模式,和集群模式
+    #    master-slave-config:
+    #      password: 1qaz@WSX
+    #      master-address: redis://192.168.74.128:10004
+    #      slave-addresses:
+    #        - redis://192.168.74.128:10005
+    #      connect-timeout: 5000
+    #      database: ${spring.redis.database:0}
+    cluster-config:
+      password: 1qaz@WSX
+      node-addresses:
+        - redis://192.168.74.128:11001
+        - redis://192.168.74.128:11002
+        - redis://192.168.74.128:11003
+        - redis://192.168.74.128:11004
+        - redis://192.168.74.128:11005
+        - redis://192.168.74.128:11006
+      connect-timeout: 5000
+      scan-interval: 2000 # 2秒检测下集群的状态
+      database: ${spring.redis.database:0} #集群状态下无效
+  userinfo:
+    get_url: http://${spring.application.group:}SPRING-GATEWAY/user/info/authentication
+  config:
+    excludedAuthPages: /userinfo/getUserByName
+  api:
+    inner:
+      url-patterns: "/inner/*" #仅内部调用的api接口
+spring:
+  rabbitmq:
+    addresses: 192.168.30.92:5672,192.168.30.92:5673
+    username: shop-user #ENC("k3vXOirGWCvmF6ucb9pG5rxwES7kM0D7tCIqOzL+e9bUWDhJcPkSx31bavJ6Z6vN")
+    password: shop-user
+    virtual-host: shop_vhost
+#management:
+#  health:
+#    defaults:
+#      enabled: false
+#    db:
+#      enabled: true
+#    redis:
+#      enabled: true
+#    mongo:
+#      enabled: true
+#    mail:
+#      enabled: false

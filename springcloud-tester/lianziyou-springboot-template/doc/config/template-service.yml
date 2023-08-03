@@ -1,0 +1,23 @@
+system:
+  current_appname: 模板服务  #根据需要改名称
+logging:
+  level:
+    com:
+      longyou:
+        common: INFO
+feign:
+  compression:
+    request:
+      min-request-size: 8192
+spring:
+  datasource:
+    url: jdbc:mysql://${db-common-config.mysql-db-ip}:10002/${local-server.prefix:}template_yanshi_db?userSSL=false&autoReconnect=true&failOverReadOnly=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT%2B8&zeroDateTimeBehavior=CONVERT_TO_NULL
+    username: root
+    password: 1qaz@WSX
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    max-active: 200
+    max-idle: 100
+    min-idle: 50
+    initial-size: 10
+    maximum-pool-size: 100
