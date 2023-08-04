@@ -69,4 +69,4 @@ eureka:
 # 配置加解密根秘钥
 jasypt:
   encryptor:
-    password: ${jasypt_encryptor_password:} #更换后所有密码要重新加密，不然启动会报错！
+    password: ${jasypt_encryptor_password:12345678} #更换后所有密码要重新加密，不然启动会报错！
