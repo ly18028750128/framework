@@ -52,7 +52,7 @@ public class UserMenuService implements IUserMenuService {
      */
     private void removeNoChildMenu(List<JavaBeanResultMap> menuItems) {
         List<JavaBeanResultMap> noChildMenuList = new ArrayList<>();
-        for (JavaBeanResultMap menu : noChildMenuList) {
+        for (JavaBeanResultMap menu : menuItems) {
             List<JavaBeanResultMap> childMenuList = getJavaBeanResultMaps(menu);
             if (CollectionUtil.single().isNotEmpty(childMenuList)) {
                 this.removeNoChildMenu(childMenuList);
@@ -71,12 +71,16 @@ public class UserMenuService implements IUserMenuService {
         List<JavaBeanResultMap> noAuthMenuList = new ArrayList<>();
         for (JavaBeanResultMap menu : menuItems) {
             List<JavaBeanResultMap> childMenuList = getJavaBeanResultMaps(menu);
+           final Integer showType =  Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
             if (CollectionUtil.single().isNotEmpty(childMenuList)) {
-                this.getCurrentUserMenu(childMenuList, userFunctions);
+                if (showType == 1 && !userFunctions.contains(menu.get("functionResourceCode"))) {
+                    noAuthMenuList.add(menu);
+                }else{
+                    this.getCurrentUserMenu(childMenuList, userFunctions);
+                }
             } else {
-                String showType = menu.get("showType") == null ? "2" : menu.get("showType").toString();
                 // 0：有子菜单时显示 1：有权限时显示 2：任何时候都显示
-                if (Integer.parseInt(showType) == 1 && !userFunctions.contains(menu.get("functionResourceCode"))) {
+                if (showType == 1 && !userFunctions.contains(menu.get("functionResourceCode"))) {
                     noAuthMenuList.add(menu);
                 }
             }
