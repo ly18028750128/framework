@@ -72,7 +72,7 @@ public class UserMenuService implements IUserMenuService {
         List<JavaBeanResultMap> noAuthMenuList = new ArrayList<>();
         for (JavaBeanResultMap menu : menuItems) {
             List<JavaBeanResultMap> childMenuList = getChildMenuItem(menu);
-            final Integer showType = Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
+            final int showType = Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
             if (CollectionUtil.single().isNotEmpty(childMenuList)) {
                 if (showType == 1 && !userFunctions.contains(menu.get("functionResourceCode"))) {
                     noAuthMenuList.add(menu);
