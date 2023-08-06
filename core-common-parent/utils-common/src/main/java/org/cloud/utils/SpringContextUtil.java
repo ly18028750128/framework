@@ -3,6 +3,7 @@ package org.cloud.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -44,6 +45,8 @@ public class SpringContextUtil implements ApplicationContextAware {
         } catch (NoUniqueBeanDefinitionException e) {
             log.error("Bean非唯一");
             throw e;
+        }catch (NoSuchBeanDefinitionException e1){
+            return null;
         }
     }
 
