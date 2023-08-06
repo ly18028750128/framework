@@ -1,6 +1,5 @@
 package com.longyou.comm.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.longyou.comm.admin.service.IMenuService;
 import com.longyou.comm.service.IUserMenuService;
 import java.util.ArrayList;
@@ -53,29 +52,31 @@ public class UserMenuService implements IUserMenuService {
     private void removeNoChildMenu(List<JavaBeanResultMap> menuItems) {
         List<JavaBeanResultMap> noChildMenuList = new ArrayList<>();
         for (JavaBeanResultMap menu : menuItems) {
-            List<JavaBeanResultMap> childMenuList = getJavaBeanResultMaps(menu);
+            List<JavaBeanResultMap> childMenuList = getChildMenuItem(menu);
             if (CollectionUtil.single().isNotEmpty(childMenuList)) {
                 this.removeNoChildMenu(childMenuList);
             } else {
-                String showType = menu.get("showType") == null ? "2" : menu.get("showType").toString();
-                if (Integer.parseInt(showType) == 0) {
+                final int showType = Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
+                if (showType == 0) {
                     noChildMenuList.add(menu);
                 }
             }
         }
-        log.info("noChildMenuList=={}", noChildMenuList);
-        menuItems.removeAll(noChildMenuList);
+        if (CollectionUtil.single().isNotEmpty(noChildMenuList)) {
+            log.info("noChildMenuList=={}", noChildMenuList);
+            menuItems.removeAll(noChildMenuList);
+        }
     }
 
     private void getCurrentUserMenu(List<JavaBeanResultMap> menuItems, Set<String> userFunctions) {
         List<JavaBeanResultMap> noAuthMenuList = new ArrayList<>();
         for (JavaBeanResultMap menu : menuItems) {
-            List<JavaBeanResultMap> childMenuList = getJavaBeanResultMaps(menu);
-           final Integer showType =  Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
+            List<JavaBeanResultMap> childMenuList = getChildMenuItem(menu);
+            final Integer showType = Integer.parseInt(menu.get("showType") == null ? "2" : menu.get("showType").toString());
             if (CollectionUtil.single().isNotEmpty(childMenuList)) {
                 if (showType == 1 && !userFunctions.contains(menu.get("functionResourceCode"))) {
                     noAuthMenuList.add(menu);
-                }else{
+                } else {
                     this.getCurrentUserMenu(childMenuList, userFunctions);
                 }
             } else {
@@ -85,15 +86,16 @@ public class UserMenuService implements IUserMenuService {
                 }
             }
         }
-        log.info("noAuthMenuList=={}", noAuthMenuList);
-        menuItems.removeAll(noAuthMenuList);
+        if (CollectionUtil.single().isNotEmpty(noAuthMenuList)) {
+            log.info("noAuthMenuList=={}", noAuthMenuList);
+            menuItems.removeAll(noAuthMenuList);
+        }
     }
 
-    private static List<JavaBeanResultMap> getJavaBeanResultMaps(JavaBeanResultMap menu) {
+    private static List<JavaBeanResultMap> getChildMenuItem(JavaBeanResultMap menu) {
         if (!menu.containsKey(IMenuService._MENU_CHILD_KEY) || CollectionUtil.single().isEmpty(menu.get(IMenuService._MENU_CHILD_KEY))) {
             return null;
         }
-        String childStr = JSON.toJSONString(menu.get(IMenuService._MENU_CHILD_KEY));
-        return JSON.parseArray(childStr, JavaBeanResultMap.class);
+        return (List<JavaBeanResultMap>) menu.get(IMenuService._MENU_CHILD_KEY);
     }
 }
