@@ -45,3 +45,19 @@ CREATE TABLE `t_article`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- 数据字典
+INSERT INTO `t_system_dic_master` (`dic_master_id`, `dic_code`, `dic_name`, `remark`, `belong_micro_service`, `parent_master_id`, `status`, `create_by`, `create_date`, `update_by`, `update_date`) VALUES (-58, 'articleLanguage', '文章语言编码', '文章语言编码', 'General', NULL, 1, 1, '2023-08-07 21:19:39', 1, '2023-08-07 21:25:19');
+
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'zh_CN', '中文', '1', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:19:39', 1, '2023-08-07 21:25:19', 'zh_CN', 5);
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'en_US', '英文', '2', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:25:19', 1, '2023-08-07 21:25:19', 'zh_CN', 10);
+INSERT INTO `t_system_dic_item` ( `dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'zh_TW', '中文繁体', '3', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:25:19', 1, '2023-08-07 21:25:19', 'zh_CN', 15);
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'vi', '越南语', '4', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:25:19', 1, '2023-08-07 21:25:19', 'zh_CN', 20);
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'ja', '日语', '5', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:25:19', 1, '2023-08-07 21:25:19', 'zh_CN', 25);
+INSERT INTO `t_system_dic_item` (`dic_master_id`, `dic_item_code`, `dic_item_name`, `dic_item_value`, `ext_attribut1`, `ext_attribut3`, `ext_attribut2`, `ext_attribut4`, `ext_attribut5`, `status`, `create_by`, `create_date`, `update_by`, `update_date`, `language`, `seq`)
+VALUES (-58, 'ko', '韩语', '6', NULL, NULL, NULL, NULL, NULL, 1, 1, '2023-08-07 21:25:19', 1, '2023-08-07 21:25:19', 'zh_CN', 30);
