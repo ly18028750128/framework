@@ -27,6 +27,7 @@ public class DataInterFaceVO {
     private Long createdOrUpdateBy;
     private String createdOrUpdateUserName;
     private String md5;
+    private String description; // 接口描述
     private int status = 1;  //状态，0失效，1有效
 
     public void addParam(String fieldName, MongoEnumVO.DataType fieldType, String description) {

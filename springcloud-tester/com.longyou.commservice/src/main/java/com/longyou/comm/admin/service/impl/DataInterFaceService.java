@@ -28,8 +28,8 @@ public class DataInterFaceService implements IDataInterFaceService {
     MongoTemplate mongoTemplate;
 
     @Override
-    public List<Object> saveOrUpdateByIds(List<DataInterFaceVO> dataInterFaceVOS) throws Exception {
-        final List<Object> result = new ArrayList<>();
+    public List<DataInterFaceVO> saveOrUpdateByIds(List<DataInterFaceVO> dataInterFaceVOS) throws Exception {
+        final List<DataInterFaceVO> result = new ArrayList<>();
         LoginUserDetails user = RequestContextManager.single().getRequestContext().getUser();
         for (DataInterFaceVO interFaceVO : dataInterFaceVOS) {
             interFaceVO.setCreatedOrUpdateBy(user.getId());
