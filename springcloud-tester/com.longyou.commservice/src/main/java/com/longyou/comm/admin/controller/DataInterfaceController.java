@@ -1,5 +1,6 @@
 package com.longyou.comm.admin.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.longyou.comm.admin.service.IDataInterFaceService;
 import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
 import com.unknow.first.mongo.utils.MongoDBUtil;
@@ -28,16 +29,16 @@ public class DataInterfaceController {
 
     @PostMapping("/list/{page}/{pageSize}")
     @SystemResource(value = "查询数据接口", description = "查询数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
-    public ResponseResult<?> paged(@PathVariable("page") Long pageNum, @PathVariable("pageSize") Long pageSize, @RequestBody MongoQueryParamsDTO queryParamsDTO) throws Exception {
-        ResponseResult<?> responseResult = ResponseResult.createSuccessResult();
+    public ResponseResult<PageInfo<DataInterFaceVO>> paged(@PathVariable("page") Long pageNum, @PathVariable("pageSize") Long pageSize, @RequestBody MongoQueryParamsDTO queryParamsDTO) throws Exception {
+        ResponseResult<PageInfo<DataInterFaceVO>> responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(MongoDBUtil.single().paged(pageNum, pageSize, queryParamsDTO, DataInterFaceVO.class));
         return responseResult;
     }
 
     @PostMapping("/saveOrUpdate")
     @SystemResource(value = "更新数据接口", description = "更新数据接口", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
-    public ResponseResult<?> updateByIds(@RequestBody List<DataInterFaceVO> dataInterFaceVOS) throws Exception {
-        ResponseResult<?> responseResult = ResponseResult.createSuccessResult();
+    public ResponseResult<List<Object>> updateByIds(@RequestBody List<DataInterFaceVO> dataInterFaceVOS) throws Exception {
+        ResponseResult<List<Object>> responseResult = ResponseResult.createSuccessResult();
         responseResult.setData(dataInterFaceService.saveOrUpdateByIds(dataInterFaceVOS));
         return responseResult;
     }
