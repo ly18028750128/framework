@@ -16,6 +16,7 @@ import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -35,12 +36,12 @@ public class UserAdminService implements IUserAdminService {
         long result = 0;
         frameUser.setUpdateBy(userDetails.getUsername());
         frameUser.setUpdateDate(new Date());
-        if (StringUtils.isEmpty(frameUser.getId())) {
+        if (ObjectUtils.isEmpty(frameUser.getId())) {
             frameUser.setCreateBy(userDetails.getUsername());
             frameUser.setCreateDate(new Date());
             final String salt = EnvUtil.single().getEnv("spring.security.salt-password", "");
             frameUser.setPassword(MD5Encoder.encode(frameUser.getPassword(), salt));
-            if (frameUserDao.insertSelective(frameUser)>0) {
+            if (frameUserDao.insertSelective(frameUser) > 0) {
                 result = frameUser.getId();
             }
         } else {
@@ -48,10 +49,11 @@ public class UserAdminService implements IUserAdminService {
                 result = frameUser.getId();
             }
         }
-        if (frameUser.isUpdated()) {
+
+        if(CollectionUtil.single().isNotEmpty(frameUser.getFrameUserRoleList())){
             saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
         }
-        log.info(userDetails.getUsername() + "正在执行更新用户权限的操作{}", frameUser);
+
         return result;
     }
 
@@ -63,10 +65,10 @@ public class UserAdminService implements IUserAdminService {
         List<TFrameUserRole> updateList = new ArrayList<>();
         if (!CollectionUtil.single().isEmpty(frameUserRoleList)) {
             updateList = frameUserRoleList.stream()
-                    .collect(Collectors.collectingAndThen(
-                            Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(TFrameUserRole::getRoleId)))
-                            , ArrayList::new
-                    ));
+                .collect(Collectors.collectingAndThen(
+                    Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(TFrameUserRole::getRoleId)))
+                    , ArrayList::new
+                ));
         }
         frameUserRoleDao.deleteByUserId(userId);  //如果有更新那么先删除再更新，暂时这样简单处理下
         for (TFrameUserRole frameUserRole : updateList) {
