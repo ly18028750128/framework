@@ -2,6 +2,8 @@ package org.cloud.feign.utils;
 
 
 import feign.FeignException;
+import feign.FeignException.ServiceUnavailable;
+import feign.RetryableException;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
@@ -18,7 +20,7 @@ public final class FeignUtil {
             return gatewayFeignClient.getAuthentication();
         } catch (HttpClientErrorException.Unauthorized e) {
             log.info("rest请求无权限");
-        } catch (FeignException.ServiceUnavailable serviceUnavailable) {
+        } catch (ServiceUnavailable | RetryableException serviceUnavailable) {
             log.warn("网关服务未启动，请稍后!");
         } catch (FeignException.Unauthorized e) {
             log.debug("feign请求,未带用户信息!");
