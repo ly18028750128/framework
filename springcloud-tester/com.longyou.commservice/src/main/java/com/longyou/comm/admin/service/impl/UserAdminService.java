@@ -49,11 +49,8 @@ public class UserAdminService implements IUserAdminService {
                 result = frameUser.getId();
             }
         }
-
-        if(CollectionUtil.single().isNotEmpty(frameUser.getFrameUserRoleList())){
-            saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
-        }
-
+        // 保存角色信息
+        saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
         return result;
     }
 
