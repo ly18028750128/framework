@@ -1,7 +1,11 @@
 package org.cloud.mybatisplus.vo;
 
 import com.alibaba.fastjson.JSONObject;
+import java.sql.Clob;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import org.cloud.constant.CoreConstant.DateTimeFormat;
@@ -10,17 +14,19 @@ import org.cloud.utils.SystemStringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Clob;
-
 public class JavaBeanResultMap extends JSONObject {
 
     Logger logger = LoggerFactory.getLogger(JavaBeanResultMap.class);
 
     private static final long serialVersionUID = 5703867527125507390L;
 
+    public final static TimeZone defaultTimeZone = TimeZone.getDefault();
+    public final static int defaultZoneOffsetSeconds = defaultTimeZone.getRawOffset() / 1000;
+
     public JavaBeanResultMap() {
         super(20);
     }
+
     public JavaBeanResultMap(Map value) {
         super(value);
     }
@@ -45,9 +51,15 @@ public class JavaBeanResultMap extends JSONObject {
 
         if (value instanceof java.util.Date) {
             SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
-            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+0:00"));
+            dateFormat.setTimeZone(defaultTimeZone);
+            return super.put(key, dateFormat.format(value));
+        }
 
-            return super.put(key, dateFormat.format((java.util.Date) value));
+        if (value instanceof LocalDateTime) {
+            SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
+            dateFormat.setTimeZone(defaultTimeZone);
+            long times = ((LocalDateTime) value).toInstant(ZoneOffset.ofTotalSeconds(defaultZoneOffsetSeconds)).toEpochMilli();
+            return super.put(key, dateFormat.format(new Date(times)));
         }
 
         return super.put(key, value);
