@@ -23,6 +23,10 @@ public class JavaBeanResultMap extends JSONObject {
     public final static TimeZone defaultTimeZone = TimeZone.getDefault();
     public final static int defaultZoneOffsetSeconds = defaultTimeZone.getRawOffset() / 1000;
 
+    public final static SimpleDateFormat defaultDateFormat = DateTimeFormat.ISODATE.getDateFormat();
+    static {
+        defaultDateFormat.setTimeZone(defaultTimeZone);
+    }
     public JavaBeanResultMap() {
         super(20);
     }
@@ -50,18 +54,13 @@ public class JavaBeanResultMap extends JSONObject {
         }
 
         if (value instanceof java.util.Date) {
-            SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
-            dateFormat.setTimeZone(defaultTimeZone);
-            return super.put(key, dateFormat.format(value));
+            return super.put(key, defaultDateFormat.format(value));
         }
 
         if (value instanceof LocalDateTime) {
-            SimpleDateFormat dateFormat = DateTimeFormat.ISODATE.getDateFormat();
-            dateFormat.setTimeZone(defaultTimeZone);
             long times = ((LocalDateTime) value).toInstant(ZoneOffset.ofTotalSeconds(defaultZoneOffsetSeconds)).toEpochMilli();
-            return super.put(key, dateFormat.format(new Date(times)));
+            return super.put(key, defaultDateFormat.format(new Date(times)));
         }
-
         return super.put(key, value);
     }
 
