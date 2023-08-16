@@ -3,24 +3,25 @@ package com.longyou.comm.admin.service.impl;
 import com.longyou.comm.admin.service.IUserAdminService;
 import com.longyou.comm.mapper.TFrameUserDao;
 import com.longyou.comm.mapper.TFrameUserRoleDao;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.context.RequestContextManager;
 import org.cloud.entity.LoginUserDetails;
+import org.cloud.logs.annotation.AuthLog;
 import org.cloud.model.TFrameUser;
 import org.cloud.model.TFrameUserRole;
 import org.cloud.utils.CollectionUtil;
-
 import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,6 +52,8 @@ public class UserAdminService implements IUserAdminService {
         }
         // 保存角色信息
         saveOrUpdateFrameRoleDataInterfaceList(frameUser.getId(), frameUser.getFrameUserRoleList());
+
+
         return result;
     }
 
