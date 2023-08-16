@@ -21,9 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_THIRD_LOGIN;
 
 
-@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "LOGIN-BY-THIRD-LOGIN")
+@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + _LOGIN_BY_THIRD_LOGIN)
 @Slf4j
 public class ThirdLoginUserGetService implements LoginUserGetInterface {
 
@@ -44,7 +45,7 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
 
     @Override
     @Transactional
-    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息【第三方外部登录】", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         List<String> rsaKeys = redisUtil.get(RSA_KEYS_REDIS_KEY);
         String realUserName = loginUserGetParamsDTO.getUserName();
