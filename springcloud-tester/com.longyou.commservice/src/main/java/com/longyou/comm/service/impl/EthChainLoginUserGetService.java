@@ -1,5 +1,8 @@
 package com.longyou.comm.service.impl;
 
+import static org.cloud.constant.LoginTypeConstant.LoginType.LOGIN_BY_ETH_CHAIN;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ETH_CHAIN;
+
 import com.alibaba.fastjson.JSON;
 import com.longyou.comm.LoginUtils;
 import com.longyou.comm.dto.EthSignMessageDto;
@@ -27,7 +30,7 @@ import org.web3j.utils.Numeric;
 /**
  *
  */
-@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "LOGIN-BY-ETH-CHAIN")
+@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + _LOGIN_BY_ETH_CHAIN)
 @Slf4j
 public class EthChainLoginUserGetService implements LoginUserGetInterface {
 
@@ -56,7 +59,7 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
      *                   const signValue = JSON.stringify(loginMessage);
      */
     @Override
-    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息【以太坊签名登录】", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
         // 先对password进行验证操作
         // 解密用户名，需要提供加密接口，暂定用rsa加密，防止别人抓包后重新登录

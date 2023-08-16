@@ -1,6 +1,8 @@
 package com.longyou.comm.service.impl;
 
 
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_WEIXIN_MICROAPP;
+
 import com.alibaba.fastjson.JSON;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
@@ -24,7 +26,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + "LOGIN-BY-WEIXIN-MICROAPP")
+/**
+ * 这里要改
+ */
+@Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + _LOGIN_BY_WEIXIN_MICROAPP)
 public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface {
 
     @Value("${spring.security.salt-password:}")
@@ -41,7 +46,7 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
 
     @Override
     @Transactional
-    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
+    @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息【微信小程序登录】", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
 
         final MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
