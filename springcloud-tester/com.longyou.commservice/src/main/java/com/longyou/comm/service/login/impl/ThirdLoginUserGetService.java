@@ -1,27 +1,27 @@
 package com.longyou.comm.service.login.impl;
 
 
+import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_THIRD_LOGIN;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_VIRTUAL_USER;
+
 import com.longyou.comm.LoginUtils;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.IUserInfoService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.core.redis.RedisUtil;
-import org.cloud.entity.LoginUserDetails;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
-import org.cloud.utils.RsaUtil;
 import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.logs.annotation.AuthLog;
+import org.cloud.utils.RsaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static org.cloud.constant.CoreConstant.RSA_KEYS_REDIS_KEY;
-import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_THIRD_LOGIN;
 
 
 @Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + _LOGIN_BY_THIRD_LOGIN)
@@ -55,6 +55,7 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
         }catch (Exception e){
             log.error("解密失败，按明文用户处理！");
         }
+        loginUserGetParamsDTO.getParamMap().put("userType", _LOGIN_BY_THIRD_LOGIN);
         return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
     }
 }

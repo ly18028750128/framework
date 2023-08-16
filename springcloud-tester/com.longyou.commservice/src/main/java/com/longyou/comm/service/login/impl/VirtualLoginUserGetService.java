@@ -1,17 +1,14 @@
 package com.longyou.comm.service.login.impl;
 
-import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ADMIN_USER;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_VIRTUAL_USER;
 
 import com.longyou.comm.service.IUserInfoService;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
 import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.logs.annotation.AuthLog;
-import org.cloud.model.TFrameRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

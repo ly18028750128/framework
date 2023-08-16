@@ -12,22 +12,22 @@ import java.util.HashMap;
 import java.util.Map;
 import okhttp3.Call;
 import okhttp3.ResponseBody;
-import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.OperateLogType;
-import org.cloud.entity.LoginUserDetails;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
+import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.logs.annotation.AuthLog;
 import org.cloud.utils.MD5Encoder;
 import org.cloud.utils.http.HttpRequestParams;
 import org.cloud.utils.http.OKHttpClientUtil;
-import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 这里要改
+ * todo 这里要改造下
  */
 @Service(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + _LOGIN_BY_WEIXIN_MICROAPP)
 public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface {
@@ -96,6 +96,7 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
             userDetails.setSessionKey(sessionKey);
             userInfoMapper.updateLoginUserById(userDetails);
         }
+        loginUserGetParamsDTO.getParamMap().put("userType", _LOGIN_BY_WEIXIN_MICROAPP);
         userDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
         return userDetails;
     }
