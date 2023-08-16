@@ -4,6 +4,7 @@ import static org.cloud.constant.CoreConstant.OperateLogType;
 import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_CACHE_KEY;
 import static org.cloud.constant.CoreConstant._BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ADMIN_USER;
 import static org.cloud.constant.UserDataDimensionConstant.USER_DIMENSION_CACHE_KEY;
 
 import com.longyou.comm.CommonServiceConst.userStatus;
@@ -92,16 +93,6 @@ public class UserInfoService implements IUserInfoService {
                 loginUserDetails.getRoles().add(frameUserRole.getFrameRole());
             }
         }
-        // 将菜单全部加载到对应的菜单列表中
-        for (TFrameRole frameRole : loginUserDetails.getRoles()) {
-            if (frameRole.getFrameRoleMenuList() == null) {
-                continue;
-            }
-            for (TFrameRoleMenu frameRoleMenu : frameRole.getFrameRoleMenuList()) {
-                loginUserDetails.getFrameMenuList().add(frameRoleMenu.getFrameMenu());
-            }
-        }
-
         Set<String> userFunctions = new HashSet<>();
         Map<String, Set<String>> userDatas = new HashMap<>();
         Set<String> dataInterfaces = new HashSet<>();
@@ -118,10 +109,7 @@ public class UserInfoService implements IUserInfoService {
                 userFunctions.add(functionSetStr);
             }
             for (TFrameRoleData frameRoleResource : frameRole.getFrameRoleDataList()) {
-                Set<String> dataDimensionset = userDatas.get(frameRoleResource.getDataDimension());
-                if (dataDimensionset == null) {
-                    userDatas.put(frameRoleResource.getDataDimension(), new HashSet<String>());
-                }
+                userDatas.computeIfAbsent(frameRoleResource.getDataDimension(), k -> new HashSet<>());
                 userDatas.get(frameRoleResource.getDataDimension()).add(frameRoleResource.getDataDimensionValue());
             }
 
@@ -163,15 +151,30 @@ public class UserInfoService implements IUserInfoService {
         redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.ROLE_NAME.value(), userRoles,
             userInfoCacheExpireTime);
 
-        //缓存菜单
-        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(),
-            userInfoCacheExpireTime);
+        if (_LOGIN_BY_ADMIN_USER.equals(loginUserGetParamsDTO.getLoginType())) {
+            cacheUserMenu(loginUserDetails, userInfoCacheExpireTime);
+        }
 
         // 缓存登录用户信息
         loginUserDetails.setRoles(new ArrayList<>());
         loginUserDetails.setFrameMenuList(new ArrayList<>());
         loginUserDetails.setUserDataDimensionMap(userDataDimensionMap);
         return loginUserDetails;
+    }
+
+    private void cacheUserMenu(LoginUserDetails loginUserDetails, Long userInfoCacheExpireTime) {
+        // 将菜单全部加载到对应的菜单列表中
+        for (TFrameRole frameRole : loginUserDetails.getRoles()) {
+            if (frameRole.getFrameRoleMenuList() == null) {
+                continue;
+            }
+            for (TFrameRoleMenu frameRoleMenu : frameRole.getFrameRoleMenuList()) {
+                loginUserDetails.getFrameMenuList().add(frameRoleMenu.getFrameMenu());
+            }
+        }
+        //缓存菜单
+        redisUtil.hashSet(USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(), CoreConstant.UserCacheKey.MENU.value(), loginUserDetails.getFrameMenuList(),
+            userInfoCacheExpireTime);
     }
 
     /**

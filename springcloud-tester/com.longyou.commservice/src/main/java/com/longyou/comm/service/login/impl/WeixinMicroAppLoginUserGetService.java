@@ -1,4 +1,4 @@
-package com.longyou.comm.service.impl;
+package com.longyou.comm.service.login.impl;
 
 
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_WEIXIN_MICROAPP;

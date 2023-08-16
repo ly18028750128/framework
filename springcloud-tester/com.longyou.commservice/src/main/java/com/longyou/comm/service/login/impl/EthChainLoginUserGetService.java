@@ -1,6 +1,5 @@
-package com.longyou.comm.service.impl;
+package com.longyou.comm.service.login.impl;
 
-import static org.cloud.constant.LoginTypeConstant.LoginType.LOGIN_BY_ETH_CHAIN;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ETH_CHAIN;
 
 import com.alibaba.fastjson.JSON;

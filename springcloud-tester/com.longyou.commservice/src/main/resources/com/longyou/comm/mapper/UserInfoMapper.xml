@@ -10,32 +10,38 @@
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="sex" jdbcType="VARCHAR" property="password"/>
         <result column="default_Role" jdbcType="VARCHAR" property="defaultRole"/>
-        <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="full_name" jdbcType="VARCHAR" property="fullName"/>
         <result column="user_regist_source" jdbcType="VARCHAR" property="userRegistSource"/>
         <result column="user_Type" jdbcType="VARCHAR" property="userType"/>
         <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
-
     </resultMap>
 
     <select id="getUserByNameForAuth" parameterType="org.cloud.dimension.userinfo.LoginUserGetParamsDTO" resultMap="BaseResultMap">
-        select id,user_name,password,default_Role,user_regist_source,user_type,mobile_phone,`status`,avatar
-        from t_frame_user
-        where status in (1,2,3)
-        <if test="userId!=null">
-            and id = #{userId,jdbcType=INTEGER}
-        </if>
-        <if test="userName!=null and userName!=''">
-            and user_name = #{userName,jdbcType=VARCHAR}
-        </if>
-        <if test="paramMap.userType!=null and paramMap.userType!=''">
-          and user_Type = #{paramMap.userType,jdbcType=VARCHAR}
-        </if>
-<!--        <if test="userId==null"> &lt;!&ndash;只有当userId为空时才增加这个条件，这里本来是用来控制访问的微服务的数据权限的，还没有用上&ndash;&gt;-->
-<!--          and user_regist_source = #{microServiceName,jdbcType=INTEGER}-->
-<!--        </if>-->
+      select id,
+             user_name,
+             password,
+             default_Role,
+             user_regist_source,
+             user_type,
+             mobile_phone,
+             `status`,
+             avatar
+      from t_frame_user
+      where status in (1, 2, 3)
+      <if test="userId != null">
+        and id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="userName != null and userName != ''">
+        and user_name = #{userName,jdbcType=VARCHAR}
+      </if>
+      <if test="paramMap.userType != null and paramMap.userType != ''">
+        and user_Type = #{paramMap.userType,jdbcType=VARCHAR}
+      </if>
+      <!--        <if test="userId==null"> &lt;!&ndash;只有当userId为空时才增加这个条件，这里本来是用来控制访问的微服务的数据权限的，还没有用上&ndash;&gt;-->
+      <!--          and user_regist_source = #{microServiceName,jdbcType=INTEGER}-->
+      <!--        </if>-->
     </select>
 
     <insert id="insertIntoUserInfo" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="id"

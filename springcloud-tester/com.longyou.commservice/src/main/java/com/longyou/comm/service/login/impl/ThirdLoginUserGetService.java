@@ -1,4 +1,4 @@
-package com.longyou.comm.service.impl;
+package com.longyou.comm.service.login.impl;
 
 
 import com.longyou.comm.LoginUtils;
