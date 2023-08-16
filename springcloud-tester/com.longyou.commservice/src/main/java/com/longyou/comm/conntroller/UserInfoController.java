@@ -1,8 +1,11 @@
 package com.longyou.comm.conntroller;
 
 import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._USER_TYPE_KEY;
+import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ADMIN_USER;
 
 import brave.Tracer;
+import com.alibaba.fastjson.JSON;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.dto.UserOperatorCheckDTO;
@@ -10,7 +13,6 @@ import com.longyou.comm.service.IUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +21,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.CoreConstant.UserCacheKey;
+import org.cloud.constant.LoginTypeConstant.DataShow;
+import org.cloud.constant.LoginTypeConstant.LoginTypeEnum;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
 import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.model.TFrameRole;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,27 +60,25 @@ public class UserInfoController {
 
     @RequestMapping(value = "/getUserByName", method = RequestMethod.POST)
     public LoginUserDetails getUserByName(@RequestBody LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
-        LoginUserDetails loginUserDetails;
-        LoginUserGetInterface loginUserGetInterface;
+        LoginUserGetInterface loginUserGetInterface = getLoginUserBean(loginUserGetParamsDTO);
+        return loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
+    }
+
+    private LoginUserGetInterface getLoginUserBean(LoginUserGetParamsDTO loginUserGetParamsDTO) {
+        String beanType = _LOGIN_BY_ADMIN_USER;
         //@TODO 这里要进行从数据库获取小程序或者公众号的配置，决定通过什么方式获取用户名，如，公众号，微信小程序，支付宝小程序等，目前只支持微信小程序，且配置文件配置在配置中心需更改到数据库
         if (loginUserGetParamsDTO.getMicroAppIndex() != null) {  // 如果没有传递小程序的序号，那么调用数据库进行处理，
             MicroAppConfig microAppConfig = microAppConfigList.getAppList().get(loginUserGetParamsDTO.getMicroAppIndex());
-            loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + microAppConfig.getType(),
-                LoginUserGetInterface.class);
-            loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
+            beanType = microAppConfig.getType();
         } else if (loginUserGetParamsDTO.getLoginType() != null) {
-            loginUserGetInterface = SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + loginUserGetParamsDTO.getLoginType(),
-                LoginUserGetInterface.class);
-            loginUserDetails = loginUserGetInterface.getUserInfo(loginUserGetParamsDTO);
-        } else {
-            loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
-            if (loginUserDetails != null && (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty())) {
-                TFrameRole tFrameRole = new TFrameRole();
-                tFrameRole.setRoleName("User");
-                loginUserDetails.setRoles(Collections.singletonList(tFrameRole));
-            }
+            beanType = loginUserGetParamsDTO.getLoginType();
         }
-        return loginUserDetails;
+        final LoginTypeEnum loginTypeEnum = LoginTypeEnum.forCode(beanType);
+        Assert.notNull(loginTypeEnum, "不支持的登录方式");
+        Map<String, Object> param = loginUserGetParamsDTO.getParamMap();
+        param.put(_USER_TYPE_KEY, loginTypeEnum.userType);
+        loginUserGetParamsDTO.setParams(JSON.toJSONString(param));
+        return SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + beanType);
     }
 
     @ApiOperation(value = "admin-用户更新密码", notes = "admin-用户更新密码")
@@ -138,6 +140,13 @@ public class UserInfoController {
             checkResult.put(operateAuth, currentUserOperateAuthSet.contains(operateAuth));
         }
         return CommonApiResult.createSuccessResult(UserOperatorCheckDTO.builder().userId(loginUserDetails.getId()).checkResult(checkResult).build());
+    }
+
+    @ApiOperation(value = "admin-获取用户类型", notes = "admin-获取用户类型")
+    @GetMapping(value = "/userType/{canCreate}")
+    @SystemResource(value = "enabledUser", description = "启用用户", authMethod = AuthMethod.BYUSERPERMISSION)
+    public CommonApiResult<DataShow> enabledUser(@PathVariable("canCreate") boolean canCreate) throws Exception {
+        return CommonApiResult.createSuccessResult(LoginTypeEnum.getShowList(canCreate));
     }
 
 }

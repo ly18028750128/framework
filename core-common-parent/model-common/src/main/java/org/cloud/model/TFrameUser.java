@@ -1,5 +1,6 @@
 package org.cloud.model;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author
  */
 @Data
+@ApiModel("系统用户信息")
 public class TFrameUser implements Serializable {
     private Long id;
 

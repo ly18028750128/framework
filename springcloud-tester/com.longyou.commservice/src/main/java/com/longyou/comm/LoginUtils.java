@@ -1,5 +1,7 @@
 package com.longyou.comm;
 
+import static org.cloud.constant.CoreConstant._USER_TYPE_KEY;
+
 import com.longyou.comm.mapper.UserInfoMapper;
 import com.longyou.comm.service.impl.UserInfoService;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public final class LoginUtils {
 
         final String password = MD5Encoder.encode(loginUserGetParamsDTO.getPassword(), salt);  // 先用用户名做校验
         final String appName = loginUserGetParamsDTO.getMicroServiceName();
-        loginUserGetParamsDTO.getParamMap().put(CoreConstant._USER_TYPE_KEY, appName);
+        loginUserGetParamsDTO.getParamMap().put(_USER_TYPE_KEY, appName);
 
         LoginUserDetails userDetails = userInfoMapper.getUserByNameForAuth(loginUserGetParamsDTO);
         if (userDetails == null) {
@@ -53,7 +55,7 @@ public final class LoginUtils {
             userMap.put("updateBy", loginUserGetParamsDTO.getUserName());
             userMap.put("status", 1);
             userMap.put("defaultRole", "User");
-            userMap.put("userType", loginUserGetParamsDTO.getLoginType());
+            userMap.put(_USER_TYPE_KEY, loginUserGetParamsDTO.getParamMap().get(_USER_TYPE_KEY));
             userMap.put("userRegistSource", appName);
             userMap.put("sessionKey", "");
             userInfoMapper.insertIntoUserInfo(userMap);

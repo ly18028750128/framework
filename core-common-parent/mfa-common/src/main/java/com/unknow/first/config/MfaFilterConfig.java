@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.cloud.constant.CoreConstant;
-import org.cloud.constant.LoginConstants;
+import org.cloud.constant.LoginTypeConstant.LoginTypeEnum;
 import org.cloud.constant.MfaConstant;
 import org.cloud.context.RequestContext;
 import org.cloud.context.RequestContextManager;
@@ -84,8 +84,8 @@ public class MfaFilterConfig {
 
             RequestContext currentRequestContext = RequestContextManager.single().getRequestContext();
             LoginUserDetails user = currentRequestContext.getUser();
-            // 只有需要登录鉴权的接口并且来源为后台注册的用户才需要校验双因子
-            if (user == null || (!LoginConstants.REGIST_SOURCE_BACKGROUND.equals(user.getUserRegistSource()))) {
+            // 只有需要登录鉴权的接口并且用户类型为管理员才需要校验双因子
+            if (user == null || (!LoginTypeEnum.LOGIN_BY_ADMIN_USER.userType.equals(user.getUserType()))) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
                 return;
             }

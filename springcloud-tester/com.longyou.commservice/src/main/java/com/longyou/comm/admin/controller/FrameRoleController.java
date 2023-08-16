@@ -20,7 +20,7 @@ public class FrameRoleController {
     IRoleAdminService roleAdminService;
 
     @PostMapping("/saveOrUpdate")
-    @SystemResource(value = "saveOrUpdateRoles", description = "操作权限授权", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
+    @SystemResource(value = "saveOrUpdateRoles", description = "增加或保存角色", authMethod = CoreConstant.AuthMethod.BYUSERPERMISSION)
     public ResponseResult saveOrUpdateRoles(@RequestBody TFrameRole frameRole) throws Exception {
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         roleAdminService.saveOrUpdate(frameRole);

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Map;
+import lombok.ToString;
 
 @Data
+@ToString
 public class LoginUserGetParamsDTO {
 
     private Long userId;
@@ -20,17 +22,5 @@ public class LoginUserGetParamsDTO {
     @JsonIgnore
     public Map<String, Object> getParamMap() {
         return JSON.parseObject(params);
-    }
-
-    @Override
-    public String toString() {
-        return "LoginUserGetParamsDTO{" +
-            "userId=" + userId +
-            ", userName='" + userName + '\'' +
-            ", microServiceName='" + microServiceName + '\'' +
-            ", loginType='" + loginType + '\'' +
-            ", microAppIndex=" + microAppIndex +
-            ", params='" + params + '\'' +
-            '}';
     }
 }

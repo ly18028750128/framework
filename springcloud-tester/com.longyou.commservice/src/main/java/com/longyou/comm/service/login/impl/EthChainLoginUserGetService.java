@@ -1,6 +1,5 @@
-package com.longyou.comm.service.impl;
+package com.longyou.comm.service.login.impl;
 
-import static org.cloud.constant.LoginTypeConstant.LoginType.LOGIN_BY_ETH_CHAIN;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ETH_CHAIN;
 
 import com.alibaba.fastjson.JSON;
@@ -11,13 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.Arrays;
-import org.cloud.logs.annotation.AuthLog;
 import org.cloud.constant.CoreConstant.OperateLogType;
 import org.cloud.core.redis.RedisUtil;
-import org.cloud.entity.LoginUserDetails;
-import org.cloud.exception.BusinessException;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
 import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
+import org.cloud.entity.LoginUserDetails;
+import org.cloud.exception.BusinessException;
+import org.cloud.logs.annotation.AuthLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -97,6 +96,7 @@ public class EthChainLoginUserGetService implements LoginUserGetInterface {
         BigInteger recoveredKey = Sign.signedMessageToKey(msgHash, sd);
         String addressRecovered = "0x" + Keys.getAddress(recoveredKey);
         Assert.isTrue(addressRecovered.equalsIgnoreCase(address), "eth.login.error.address.wrong"); // 地址解析错误
+
         return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
     }
 }
