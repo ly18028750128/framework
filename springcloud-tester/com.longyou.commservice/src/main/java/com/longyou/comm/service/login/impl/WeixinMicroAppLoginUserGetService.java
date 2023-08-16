@@ -88,7 +88,7 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
             userMap.put("updateBy", userName);
             userMap.put("status", 1);
             userMap.put("defaultRole", "User");
-            userMap.put("userType",loginUserGetParamsDTO.getParamMap().get(_USER_TYPE_KEY)); // 记录下小程序的appid
+            userMap.put("userType",loginUserGetParamsDTO.getParamMap().get(_USER_TYPE_KEY)); // 用户类型
             userMap.put("userRegistSource", loginUserGetParamsDTO.getMicroServiceName());  // 注册来源为各个微服务的名称
             userMap.put("sessionKey", sessionKey);
             userInfoMapper.insertIntoUserInfo(userMap);

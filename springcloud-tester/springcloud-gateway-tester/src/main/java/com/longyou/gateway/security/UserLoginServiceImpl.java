@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants.LoginError;
+import org.cloud.constant.LoginTypeConstant;
+import org.cloud.constant.LoginTypeConstant.LoginTypeEnum;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
