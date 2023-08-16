@@ -5,7 +5,7 @@ import static org.cloud.constant.CoreConstant._USER_TYPE_KEY;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ADMIN_USER;
 
 import brave.Tracer;
-import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.longyou.comm.config.MicroAppConfig;
 import com.longyou.comm.config.MicroAppConfigList;
 import com.longyou.comm.dto.UserOperatorCheckDTO;
@@ -13,7 +13,6 @@ import com.longyou.comm.service.IUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.dimension.userinfo.LoginUserGetInterface;
 import org.cloud.dimension.userinfo.LoginUserGetParamsDTO;
 import org.cloud.entity.LoginUserDetails;
-import org.cloud.model.TFrameRole;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.CommonApiResult;
 import org.cloud.vo.ResponseResult;
@@ -77,7 +75,9 @@ public class UserInfoController {
         }
         final LoginTypeEnum loginTypeEnum = LoginTypeEnum.forCode(beanType);
         Assert.notNull(loginTypeEnum, "不支持的登录方式");
-        loginUserGetParamsDTO.getParamMap().put(_USER_TYPE_KEY, loginTypeEnum.userType);
+        Map<String, Object> param = loginUserGetParamsDTO.getParamMap();
+        param.put(_USER_TYPE_KEY, loginTypeEnum.userType);
+        loginUserGetParamsDTO.setParams(JSON.toJSONString(param));
         return SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + beanType);
     }
 

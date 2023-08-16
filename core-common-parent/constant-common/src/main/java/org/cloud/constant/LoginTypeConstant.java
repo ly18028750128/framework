@@ -15,9 +15,9 @@ public interface LoginTypeConstant {
 
     @AllArgsConstructor
     enum LoginTypeEnum {
-        LOGIN_BY_ETH_CHAIN(_LOGIN_BY_ETH_CHAIN, "eth", "以太坊签名登录", false),
-        LOGIN_BY_THIRD_LOGIN(_LOGIN_BY_THIRD_LOGIN, "third", "第三方登录，如其它应用程序登录，会生成一个地址+随机密码的用户", false),
-        LOGIN_BY_WEIXIN_MICROAPP(_LOGIN_BY_WEIXIN_MICROAPP, "weixin_microapp", "微信小程序登录，会生成一个openid+密码随机的用户", false),
+        LOGIN_BY_ETH_CHAIN(_LOGIN_BY_ETH_CHAIN, _LOGIN_BY_ETH_CHAIN, "以太坊签名登录", false),
+        LOGIN_BY_THIRD_LOGIN(_LOGIN_BY_THIRD_LOGIN, _LOGIN_BY_THIRD_LOGIN, "第三方登录，如其它应用程序登录，会生成一个地址+随机密码的用户", false),
+        LOGIN_BY_WEIXIN_MICROAPP(_LOGIN_BY_WEIXIN_MICROAPP, _LOGIN_BY_WEIXIN_MICROAPP, "微信小程序登录，会生成一个openid+密码随机的用户", false),
         LOGIN_BY_VIRTUAL_USER(_LOGIN_BY_VIRTUAL_USER, "virtual", "虚拟用户登录，用于外部的租户的调用不校验密码，只校验用户名和密码", true),
 
         LOGIN_BY_ADMIN_USER(_LOGIN_BY_ADMIN_USER, "admin", "后台管理用户登录", true),
