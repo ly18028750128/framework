@@ -27,7 +27,6 @@ public class AdminLoginUserGetService implements LoginUserGetInterface {
     @Override
     @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息【后台管理登录】", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
-        loginUserGetParamsDTO.getParamMap().put("userType", "admin");
         loginUserGetParamsDTO.setLoginType(_LOGIN_BY_ADMIN_USER);
         LoginUserDetails loginUserDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
         if (loginUserDetails != null && (loginUserDetails.getRoles() == null || loginUserDetails.getRoles().isEmpty())) {

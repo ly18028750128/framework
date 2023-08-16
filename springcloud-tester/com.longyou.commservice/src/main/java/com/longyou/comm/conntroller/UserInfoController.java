@@ -1,6 +1,7 @@
 package com.longyou.comm.conntroller;
 
 import static org.cloud.constant.CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY;
+import static org.cloud.constant.CoreConstant._USER_TYPE_KEY;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_ADMIN_USER;
 
 import brave.Tracer;
@@ -73,7 +74,9 @@ public class UserInfoController {
         } else if (loginUserGetParamsDTO.getLoginType() != null) {
             beanType = loginUserGetParamsDTO.getLoginType();
         }
-        Assert.notNull(LoginTypeEnum.forCode(beanType), "不支持的登录方式");
+        final LoginTypeEnum loginTypeEnum = LoginTypeEnum.forCode(beanType);
+        Assert.notNull(loginTypeEnum, "不支持的登录方式");
+        loginUserGetParamsDTO.getParamMap().put(_USER_TYPE_KEY, loginTypeEnum.userType);
         return SpringContextUtil.getBean(LoginUserGetInterface._LOGIN_USER_GET_PREFIX + beanType);
     }
 

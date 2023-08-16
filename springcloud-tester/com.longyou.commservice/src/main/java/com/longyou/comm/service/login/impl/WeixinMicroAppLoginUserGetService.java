@@ -1,6 +1,7 @@
 package com.longyou.comm.service.login.impl;
 
 
+import static org.cloud.constant.CoreConstant._USER_TYPE_KEY;
 import static org.cloud.constant.LoginTypeConstant._LOGIN_BY_WEIXIN_MICROAPP;
 
 import com.alibaba.fastjson.JSON;
@@ -87,7 +88,7 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
             userMap.put("updateBy", userName);
             userMap.put("status", 1);
             userMap.put("defaultRole", "User");
-            userMap.put("userType", microAppConfig.getAppid()); // 记录下小程序的appid
+            userMap.put("userType",loginUserGetParamsDTO.getParamMap().get(_USER_TYPE_KEY)); // 记录下小程序的appid
             userMap.put("userRegistSource", loginUserGetParamsDTO.getMicroServiceName());  // 注册来源为各个微服务的名称
             userMap.put("sessionKey", sessionKey);
             userInfoMapper.insertIntoUserInfo(userMap);
@@ -96,7 +97,6 @@ public class WeixinMicroAppLoginUserGetService implements LoginUserGetInterface 
             userDetails.setSessionKey(sessionKey);
             userInfoMapper.updateLoginUserById(userDetails);
         }
-        loginUserGetParamsDTO.getParamMap().put("userType", _LOGIN_BY_WEIXIN_MICROAPP);
         userDetails = userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
         return userDetails;
     }

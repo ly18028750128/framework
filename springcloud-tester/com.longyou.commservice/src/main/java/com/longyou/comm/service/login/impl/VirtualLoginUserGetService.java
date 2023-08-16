@@ -25,7 +25,6 @@ public class VirtualLoginUserGetService implements LoginUserGetInterface {
     @Override
     @AuthLog(bizType = "getUserInfo", desc = "获取登录用户信息【虚拟用户登录】", operateLogType = OperateLogType.LOG_TYPE_BACKEND)
     public LoginUserDetails getUserInfo(LoginUserGetParamsDTO loginUserGetParamsDTO) throws Exception {
-        loginUserGetParamsDTO.getParamMap().put("userType", _LOGIN_BY_VIRTUAL_USER);
         return userInfoService.getUserByNameForAuth(loginUserGetParamsDTO);
     }
 }

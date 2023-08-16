@@ -55,7 +55,6 @@ public class ThirdLoginUserGetService implements LoginUserGetInterface {
         }catch (Exception e){
             log.error("解密失败，按明文用户处理！");
         }
-        loginUserGetParamsDTO.getParamMap().put("userType", _LOGIN_BY_THIRD_LOGIN);
         return LoginUtils.createOrUpdateUserByLoginUserGetParamsDTO(loginUserGetParamsDTO, salt);
     }
 }
