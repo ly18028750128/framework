@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.CoreConstant.AuthMethod;
 import org.cloud.constant.CoreConstant.UserCacheKey;
+import org.cloud.constant.LoginTypeConstant.DataShow;
 import org.cloud.constant.LoginTypeConstant.LoginTypeEnum;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
@@ -139,6 +140,13 @@ public class UserInfoController {
             checkResult.put(operateAuth, currentUserOperateAuthSet.contains(operateAuth));
         }
         return CommonApiResult.createSuccessResult(UserOperatorCheckDTO.builder().userId(loginUserDetails.getId()).checkResult(checkResult).build());
+    }
+
+    @ApiOperation(value = "admin-获取用户类型", notes = "admin-获取用户类型")
+    @GetMapping(value = "/userType/{canCreate}")
+    @SystemResource(value = "enabledUser", description = "启用用户", authMethod = AuthMethod.BYUSERPERMISSION)
+    public CommonApiResult<DataShow> enabledUser(@PathVariable("canCreate") boolean canCreate) throws Exception {
+        return CommonApiResult.createSuccessResult(LoginTypeEnum.getShowList(canCreate));
     }
 
 }
