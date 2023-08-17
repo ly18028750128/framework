@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.constant.CoreConstant;
+import org.cloud.constant.LoginTypeConstant.LoginTypeEnum;
 import org.cloud.context.RequestContextManager;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.entity.LoginUserDetails;
@@ -15,6 +16,7 @@ import org.cloud.mybatisplus.vo.JavaBeanResultMap;
 import org.cloud.utils.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 @Component
 @Slf4j
@@ -29,9 +31,12 @@ public class UserMenuService implements IUserMenuService {
     @Override
     public List<JavaBeanResultMap> listUserTreeMenu() throws Exception {
         LoginUserDetails loginUserDetails = RequestContextManager.single().getRequestContext().getUser();
+
         if (loginUserDetails == null) {
             return new ArrayList<>();
         }
+        // 只有类型为后台管理员的用户才可以访问菜单查询接口
+        Assert.isTrue(LoginTypeEnum.LOGIN_BY_ADMIN_USER.userType.equals(loginUserDetails.getUserType()),"system.error.menu.only.adminUser");
         List<JavaBeanResultMap> allMenu = menuService.getAllSystemMenuFromCache();
         Set<String> userFunctions = redisUtil.hashGet(CoreConstant.USER_LOGIN_SUCCESS_CACHE_KEY + loginUserDetails.getId(),
             CoreConstant.UserCacheKey.FUNCTION.value());
