@@ -143,6 +143,11 @@
         <artifactId>validator-common</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>api-encrypt-common</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>

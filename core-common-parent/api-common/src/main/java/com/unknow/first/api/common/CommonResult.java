@@ -2,9 +2,10 @@ package com.unknow.first.api.common;
 
 
 /**
- * 通用返回对象
+ * 通用返回对象，请使用CommonApiResult
  * Created by macro on 2019/4/19.
  */
+@Deprecated
 public class CommonResult<T> {
     private long code;
     private String message;

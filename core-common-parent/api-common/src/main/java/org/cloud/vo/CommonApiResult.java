@@ -9,7 +9,7 @@ import org.cloud.constant.CoreConstant;
 @Data
 public class CommonApiResult<T> {
 
-    private HashMap<String,Object> otherInfo = new LinkedHashMap<>(2);
+    private HashMap<String, Object> otherInfo = new LinkedHashMap<>(2);
 
     private int status;
 
@@ -18,6 +18,8 @@ public class CommonApiResult<T> {
     private Object errResultData;
 
     private String message;
+
+    private String encryptType = "NO_ENC"; // 加密方式
 
     private T data;
 

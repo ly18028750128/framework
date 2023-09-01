@@ -1,5 +1,6 @@
 package org.cloud.utils;
 
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ public final class SystemStringUtil {
     }
 
     private static class Handler {
+
         private Handler() {
         }
 
@@ -23,8 +25,7 @@ public final class SystemStringUtil {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为下划线大写方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。</br>
-     * 例如：HelloWorld->HELLO_WORLD
+     * 将驼峰式命名的字符串转换为下划线大写方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。</br> 例如：HelloWorld->HELLO_WORLD
      *
      * @param name 转换前的驼峰式命名的字符串
      * @return 转换后下划线大写方式命名的字符串
@@ -49,8 +50,7 @@ public final class SystemStringUtil {
     }
 
     /**
-     * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。</br>
-     * 例如：HELLO_WORLD->HelloWorld
+     * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。</br> 例如：HELLO_WORLD->HelloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
@@ -133,6 +133,29 @@ public final class SystemStringUtil {
             str = str.replace(matcher.group(1), ch + "");
         }
         return str;
+    }
+
+    /**
+     * 根据指定的长度和字符集生成随机字符串。
+     *
+     * @param length  字符串长度
+     * @param charset 字符集
+     * @return 生成的随机字符串
+     */
+    public static String generateRandomString(int length, String charset) {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(charset.length());
+            sb.append(charset.charAt(randomIndex));
+        }
+
+        return sb.toString();
+    }
+
+    public static String generateRandomString(int length) {
+        return generateRandomString(length, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
     }
 
 }
