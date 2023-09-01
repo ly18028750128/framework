@@ -9,11 +9,14 @@ import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonObject;
 import com.longyou.gateway.security.response.WsResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.cloud.constant.ApiEncryptConstant;
 import org.cloud.constant.CoreConstant;
 import org.cloud.constant.LoginConstants;
 import org.cloud.constant.LoginConstants.LoginError;
@@ -22,6 +25,7 @@ import org.cloud.entity.LoginUserDetails;
 import org.cloud.utils.CollectionUtil;
 import org.cloud.utils.EnvUtil;
 import org.cloud.utils.MD5Encoder;
+import org.cloud.utils.SystemStringUtil;
 import org.cloud.utils.process.ProcessUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +85,10 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                     + userBasic64RandomKey).getBytes());
             if (userDetails instanceof LoginUserDetails) {
                 LoginUserDetails loginUserDetails = ((LoginUserDetails) userDetails);
+
+                List<String> apiEncryptKey = Arrays.asList(SystemStringUtil.generateRandomString(16), SystemStringUtil.generateRandomString(16));
+                loginUserDetails.setApiEncryptKey(apiEncryptKey);
+
                 // 登录成功后重置
                 final String userNameKey = loginUserDetails.getUserType() + ":" + loginUserDetails.getUsername();
                 final String userLoginCountKey = LoginError.USER_ERROR_COUNT_KEY.value + userNameKey;
@@ -101,6 +109,8 @@ public class AuthenticationSuccessHandler extends WebFilterChainServerAuthentica
                 redisUtil.hashSet(_BASIC64_TOKEN_USER_SUCCESS_TOKEN_KEY + loginUserDetails.getId(), successKey, expireTime, -1L);
                 loginUserDetails.setPassword("***********");
                 loginUserDetails.setToken(token);
+                // 将当前用户api的key写入到redis中，每次登录都会更换，所以需要加解密的api只能登录一次
+                redisUtil.hashSet(ApiEncryptConstant.__USER_API_HASH_MAP_KEY, loginUserDetails.getId().toString(), apiEncryptKey);
             }
             // 将token加盐的值放到redis缓存中
             redisUtil.set(CoreConstant._REDIS_USER_SUCCESS_TOKEN_PREFIX + userBasic64RandomKey, userBasic64Random, timeSaltChangeInterval);

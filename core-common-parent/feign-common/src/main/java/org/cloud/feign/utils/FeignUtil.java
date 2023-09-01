@@ -34,6 +34,26 @@ public final class FeignUtil {
         return null;
     }
 
+    /**
+     * 根据token获取用户信息
+     * @param token
+     * @return
+     */
+    public LoginUserDetails getLoginUser(String token) {
+        try {
+            return gatewayFeignClient.getAuthentication(token);
+        } catch (ServiceUnavailable | RetryableException serviceUnavailable) {
+            log.warn("网关服务未启动，请稍后!");
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() != HttpStatus.UNAUTHORIZED.value()) {
+                log.error(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
     private IGatewayFeignClient gatewayFeignClient;
 
     @Lazy
