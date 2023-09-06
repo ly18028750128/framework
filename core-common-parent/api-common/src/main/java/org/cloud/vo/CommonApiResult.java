@@ -1,10 +1,11 @@
 package org.cloud.vo;
 
+import lombok.Data;
+import org.cloud.constant.CoreConstant;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import lombok.Data;
-import org.cloud.constant.CoreConstant;
 
 @Data
 public class CommonApiResult<T> {
@@ -48,6 +49,12 @@ public class CommonApiResult<T> {
     public static <T> CommonApiResult<T> createFailResult() {
         CommonApiResult<T> responseResult = new CommonApiResult<>(CoreConstant.RestStatus.FAIL.value());
         responseResult.setMessage("rest.failed.running");
+        return responseResult;
+    }
+
+    public static <T> CommonApiResult<T> createFailResult(String errorMessage) {
+        CommonApiResult<T> responseResult = new CommonApiResult<>(CoreConstant.RestStatus.FAIL.value());
+        responseResult.setMessage(errorMessage);
         return responseResult;
     }
 
