@@ -8,6 +8,7 @@ import org.cloud.utils.SpringContextUtil;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -23,14 +24,15 @@ public final class LoginUtil {
         return instance;
     }
 
-    public Map<String, Object> login(MultiValueMap<String, String> params) {
+    public Map<String, Object> login(MultiValueMap<String, String> params, Map<String, String> headerMap) {
         RestTemplate restTemplate = SpringContextUtil.getBean(RestTemplate.class);
         final String applicationGroup = EnvUtil.single().getEnv("spring.application.group", "");
         String url = "http://" + applicationGroup + "SPRING-GATEWAY/auth/login";
         HttpHeaders headers = new HttpHeaders();
-
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
-
+        if (!ObjectUtils.isEmpty(headerMap)){
+            headerMap.forEach(headers::add);
+        }
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(params, headers); //  封装参数，千万不要替换为Map与HashMap，否则参数无法传递
         for (int i = 0; i < 5; i++) {  // 暂时增加5次重试，防止有时候报错
             try {
@@ -42,6 +44,10 @@ public final class LoginUtil {
         }
 
         return null;
+    }
+
+    public Map<String, Object> login(MultiValueMap<String, String> params) {
+        return login(params, null);
     }
 
     /**
