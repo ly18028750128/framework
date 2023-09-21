@@ -17,8 +17,6 @@
 package org.springframework.boot.autoconfigure.amqp;
 
 import com.rabbitmq.client.Channel;
-import java.time.Duration;
-import java.util.stream.Collectors;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -28,13 +26,10 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitOperations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.amqp.RabbitAnnotationDrivenConfiguration;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
-import org.springframework.boot.autoconfigure.amqp.RabbitRetryTemplateCustomizer;
-import org.springframework.boot.autoconfigure.amqp.RabbitTemplateConfigurer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -44,6 +39,9 @@ import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.time.Duration;
+import java.util.stream.Collectors;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for {@link RabbitTemplate}.
@@ -163,6 +161,7 @@ public class RabbitAutoConfiguration {
         @ConditionalOnMissingBean(RabbitOperations.class)
         public RabbitTemplate rabbitTemplate(RabbitTemplateConfigurer configurer, ConnectionFactory connectionFactory) {
             RabbitTemplate template = new RabbitTemplate();
+            template.setMessageConverter(new Jackson2JsonMessageConverter());
             configurer.configure(template, connectionFactory);
             return template;
         }

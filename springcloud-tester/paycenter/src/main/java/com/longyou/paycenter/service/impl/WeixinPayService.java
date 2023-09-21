@@ -7,24 +7,10 @@ import com.github.wxpay.sdk.WXPayUtil;
 import com.longyou.paycenter.configuration.PayAppConfig;
 import com.longyou.paycenter.constant.WeixinPayConstants;
 import com.longyou.paycenter.service.PayService;
-import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import okhttp3.Call;
-import okhttp3.ConnectionSpec;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import org.cloud.dimension.annotation.SystemResource;
+import okhttp3.*;
 import org.cloud.constant.CoreConstant;
 import org.cloud.context.RequestContextManager;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.exception.BusinessException;
 import org.cloud.utils.MapUtil;
@@ -38,6 +24,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.InetAddress;
+import java.util.*;
 
 @Service(PayService._PAY_SERVICE_PREFIX + "weixin-microapp")
 @SystemResource(path = "微信支付")
@@ -132,8 +124,11 @@ public class WeixinPayService implements PayService {
     }
 
 
-    public ResponseResult receiver(final Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request,
-        HttpServletResponse response) throws Exception {
+    public Map<String, Object> receiver(final Integer payPlatformIndex, PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request,
+                                        HttpServletResponse response) throws Exception {
+        final Map<String, String> mapStr = MapUtil.single().toStringMap(payResult);
+        boolean signatureValid = WXPayUtil.isSignatureValid(mapStr, payAppConfig.getMchPayPassword());
+        Assert.isTrue(signatureValid, "签名错误");
         ResponseResult responseResult = ResponseResult.createSuccessResult();
         responseResult.put("messageId", String.valueOf(UUID.randomUUID()));
         responseResult.put("createTime", System.currentTimeMillis());
@@ -141,6 +136,9 @@ public class WeixinPayService implements PayService {
         responseResult.setData(payResult);
         rabbitTemplate.convertAndSend(payAppConfig.getTopicExchange(), payAppConfig.getPayTopicName(), responseResult);
         logger.info("微信支付回调返回结果：" + JSON.toJSONString(responseResult));
-        return responseResult;
+        HashMap<String, Object> res = new HashMap<>();
+        res.put("return_code", "SUCCESS");   //微信接受到这个响应才会认为回调成功
+        res.put("return_msg", "OK");   //微信接受到这个响应才会认为回调成功
+        return res;
     }
 }
