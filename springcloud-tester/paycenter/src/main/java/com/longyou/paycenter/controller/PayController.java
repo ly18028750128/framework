@@ -4,21 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.longyou.paycenter.configuration.PayAppConfig;
 import com.longyou.paycenter.configuration.PayAppConfigList;
 import com.longyou.paycenter.service.PayService;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.cloud.utils.EnvUtil;
 import org.cloud.utils.SpringContextUtil;
 import org.cloud.vo.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/pay")
@@ -33,7 +30,7 @@ public class PayController {
    * 支付接口
    *
    * @param payPlatformIndex
-   * @param params
+   * @param params  必需参数：out_trade_no（商户订单号）、total_fee（标价金额，分）、body（商品描述）
    * @return
    * @throws Exception
    */
@@ -71,11 +68,11 @@ public class PayController {
    * @param payResult
    * @param request
    * @param response
-   * @return
+   * @return 微信支付V2，此处返回必须是XML，故添加produces = MimeTypeUtils.APPLICATION_XML_VALUE
    * @throws Exception
    */
-  @RequestMapping(value = "/receiver/{payPlatformIndex}")
-  public ResponseResult receiver(@PathVariable("payPlatformIndex") int payPlatformIndex, @RequestBody Map<String, Object> payResult,
+  @RequestMapping(value = "/receiver/{payPlatformIndex}", produces = MimeTypeUtils.APPLICATION_XML_VALUE)
+  public Map<String, Object> receiver(@PathVariable("payPlatformIndex") int payPlatformIndex, @RequestBody Map<String, Object> payResult,
       HttpServletRequest request, HttpServletResponse response) throws Exception {
     PayAppConfig payAppConfig = payAppConfigList.getPlatformList().get(payPlatformIndex);
     PayService payService = SpringContextUtil.getBean(PayService._PAY_SERVICE_PREFIX + payAppConfig.getType(), PayService.class);

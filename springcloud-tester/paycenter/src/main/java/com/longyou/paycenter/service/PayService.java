@@ -20,7 +20,7 @@ public interface PayService {
 
 
     // 接收地址
-    ResponseResult receiver(final Integer payPlatformIndex, final PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request, HttpServletResponse response) throws Exception;
+    Map<String, Object> receiver(final Integer payPlatformIndex, final PayAppConfig payAppConfig, Map<String, Object> payResult, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 
 
