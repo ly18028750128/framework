@@ -150,6 +150,10 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.unknow.first</groupId>
+      <artifactId>rabbitmq-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

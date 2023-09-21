@@ -1,18 +1,18 @@
 package com.longyou.paycenter.configuration;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "system.rabbitmq.exchange")
@@ -24,10 +24,10 @@ public class PayCenterRabbitMqTopicConfig {
     this.exchanges = exchanges;
   }
 
-  @Bean
-  public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-    return new RabbitAdmin(connectionFactory);
-  }
+//  @Bean
+//  public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+//    return new RabbitAdmin(connectionFactory);
+//  }
 
   @Bean("rabbitmq.topicExchangeMap")
   Map<String, TopicExchange> topicExchangeMap(RabbitAdmin rabbitAdmin) {

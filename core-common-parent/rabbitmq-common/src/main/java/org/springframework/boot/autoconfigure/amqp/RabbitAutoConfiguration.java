@@ -26,7 +26,6 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.amqp.rabbit.core.RabbitOperations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -161,7 +160,6 @@ public class RabbitAutoConfiguration {
         @ConditionalOnMissingBean(RabbitOperations.class)
         public RabbitTemplate rabbitTemplate(RabbitTemplateConfigurer configurer, ConnectionFactory connectionFactory) {
             RabbitTemplate template = new RabbitTemplate();
-            template.setMessageConverter(new Jackson2JsonMessageConverter());
             configurer.configure(template, connectionFactory);
             return template;
         }
