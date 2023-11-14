@@ -2,7 +2,6 @@ package com.longyou.comm.starter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageHelper;
-import java.util.Properties;
 import org.cloud.utils.SpringContextUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +15,8 @@ import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
+
+import java.util.Properties;
 
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
 @ComponentScan({"org.cloud.*", "com.longyou.comm.*"})
@@ -54,7 +55,7 @@ public class CommonServiceApplication {
          *启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
          *禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据
          */
-        p.setProperty("reasonable", "true");
+//        p.setProperty("reasonable", "true");
         pageHelper.setProperties(p);
         return pageHelper;
     }
