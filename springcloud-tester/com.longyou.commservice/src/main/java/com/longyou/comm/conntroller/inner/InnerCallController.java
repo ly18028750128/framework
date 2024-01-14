@@ -19,6 +19,7 @@ import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.MessageLogVO;
+import org.cloud.vo.ParamConfigVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;

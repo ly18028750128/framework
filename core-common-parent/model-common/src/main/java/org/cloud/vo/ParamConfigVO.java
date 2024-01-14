@@ -1,6 +1,6 @@
 package org.cloud.vo;
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ReflectUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -74,6 +74,6 @@ public class ParamConfigVO implements Serializable {
         if (this.configValue == null) {
             return null;
         }
-        return BeanUtil.toBean(this.configValue, cls);
+        return ReflectUtil.newInstance(cls, this.getConfigValue());
     }
 }
