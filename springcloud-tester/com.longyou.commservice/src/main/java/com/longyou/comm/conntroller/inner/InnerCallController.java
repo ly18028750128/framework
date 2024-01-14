@@ -2,23 +2,27 @@ package com.longyou.comm.conntroller.inner;
 
 import static com.longyou.comm.CommonServiceConst.MESSAGE_LOG_COLLECTION;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.longyou.comm.model.ParamConfig;
 import com.longyou.comm.service.FrameUserRefService;
+import com.longyou.comm.service.ParamConfigService;
 import com.unknow.first.mail.manager.domain.EmailSenderConfig;
 import com.unknow.first.mail.manager.domain.EmailTemplate;
 import com.unknow.first.mail.manager.service.EmailTemplateService;
 import com.unknow.first.mail.manager.service.IEmailSenderConfigService;
 import java.util.List;
-import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.context.RequestContextManager;
+import org.cloud.dimension.annotation.SystemResource;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.vo.FrameUserRefVO;
 import org.cloud.vo.MessageLogVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,6 +102,28 @@ public class InnerCallController {
     public Boolean saveMessageLogs(@RequestBody MessageLogVO messageLogVO) {
         mongoTemplate.save(messageLogVO, MESSAGE_LOG_COLLECTION);
         return true;
+    }
+
+    @Autowired
+    private ParamConfigService paramConfigService;
+
+    @GetMapping("/param/config/get/{code}")
+    public ParamConfigVO get(@PathVariable("code") String code) {
+        return BeanUtil.toBean(paramConfigService.get(code), ParamConfigVO.class);
+    }
+
+    @PostMapping("/param/config/update")
+    public Boolean update(@RequestBody ParamConfigVO paramConfigVO) {
+
+        ParamConfig paramConfig = paramConfigService.get(paramConfigVO.getConfigCode());
+
+        if (paramConfig == null) {
+            paramConfig = BeanUtil.toBean(paramConfigVO, ParamConfig.class);
+            return paramConfigService.save(paramConfig);
+
+        }
+
+        return paramConfigService.updateByPrimaryKeySelective(BeanUtil.toBean(paramConfigVO, ParamConfig.class)) > 0;
     }
 
 }

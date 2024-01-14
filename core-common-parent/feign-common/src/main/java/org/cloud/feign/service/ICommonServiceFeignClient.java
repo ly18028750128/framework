@@ -18,5 +18,4 @@ public interface ICommonServiceFeignClient {
 
     @GetMapping(value = "/inner/userinfo/getCurrentUserRefByAttributeName")
     FrameUserRefVO getCurrentUserRefByAttributeName(@RequestParam("name") String attributeName);
-
 }
