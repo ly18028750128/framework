@@ -133,6 +133,12 @@
     <dependency>
       <groupId>com.unknow.first</groupId>
       <artifactId>export-import-manager</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>hutool-all</artifactId>
+          <groupId>cn.hutool</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.unknow.first</groupId>
