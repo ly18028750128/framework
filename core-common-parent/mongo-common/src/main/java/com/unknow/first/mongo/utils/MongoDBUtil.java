@@ -13,19 +13,19 @@ import static com.unknow.first.mongo.vo.MongoDBEnum.metadataOwnerNameKey;
 import cn.hutool.core.bean.BeanUtil;
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.unknow.first.mongo.annotation.MongoQuery;
 import com.unknow.first.mongo.dto.MetadataDTO;
+import com.unknow.first.mongo.dto.MongoGridFsQueryDTO;
+import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
+import com.unknow.first.mongo.param.MongoPagedParam;
+import com.unknow.first.mongo.param.MongoQueryParam;
 import com.unknow.first.mongo.vo.MongoDBEnum;
 import com.unknow.first.mongo.vo.MongoDbGridFsVO;
 import com.unknow.first.mongo.vo.MongoEnumVO;
 import com.unknow.first.mongo.vo.MongoEnumVO.DataType;
 import com.unknow.first.mongo.vo.MongoEnumVO.MongoOperatorEnum;
 import com.unknow.first.mongo.vo.MongoEnumVO.RelationalOperator;
-import com.unknow.first.mongo.dto.MongoGridFsQueryDTO;
-import com.unknow.first.mongo.param.MongoPagedParam;
-import com.unknow.first.mongo.annotation.MongoQuery;
 import com.unknow.first.mongo.vo.MongoQueryOrder;
-import com.unknow.first.mongo.param.MongoQueryParam;
-import com.unknow.first.mongo.dto.MongoQueryParamsDTO;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
@@ -437,12 +437,14 @@ public final class MongoDBUtil {
         if (!queryParamsDTO.getOrders().isEmpty()) {
             query.with(Sort.by(queryParamsDTO.getOrders().stream().map(this::toOrder).collect(Collectors.toList())));
         }
-
+        pageInfo.setPageSize(pageSize.intValue());
+        pageInfo.setPageNum(pageNum.intValue());
         if (collectionName == null) {
             pageInfo.setTotal(mongoTemplate.count(query, cls));
         } else {
             pageInfo.setTotal(mongoTemplate.count(query, collectionName));
         }
+        pageInfo.setPages((int) Math.ceil(Double.parseDouble(String.valueOf(pageInfo.getTotal())) / pageSize));
 
         query.skip((pageNum - 1) * pageSize).limit(pageSize.intValue());
         if (collectionName == null) {

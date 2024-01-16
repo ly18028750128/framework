@@ -7,7 +7,9 @@ import feign.RetryableException;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.entity.LoginUserDetails;
 import org.cloud.feign.service.IGatewayFeignClient;
+import org.cloud.feign.service.IParamConfigFeignClient;
 import org.cloud.utils.SpringContextUtil;
+import org.cloud.vo.ParamConfigVO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -36,6 +38,7 @@ public final class FeignUtil {
 
     /**
      * 根据token获取用户信息
+     *
      * @param token
      * @return
      */
@@ -54,11 +57,25 @@ public final class FeignUtil {
         return null;
     }
 
-    private IGatewayFeignClient gatewayFeignClient;
+    public ParamConfigVO getParamConfig(String code) {
+        ParamConfigVO paramConfigVO = paramConfigFeignClient.get(code);
+        if(paramConfigVO==null){
+            return ParamConfigVO.builder().configCode(code).build();
+        }
+        return paramConfigVO;
+    }
+
+    public Boolean update(ParamConfigVO paramConfigVO) {
+        return paramConfigFeignClient.update(paramConfigVO);
+    }
+
+    private final IGatewayFeignClient gatewayFeignClient;
+    private final IParamConfigFeignClient paramConfigFeignClient;
 
     @Lazy
     private FeignUtil() {
         gatewayFeignClient = SpringContextUtil.getBean(IGatewayFeignClient.class);
+        paramConfigFeignClient = SpringContextUtil.getBean(IParamConfigFeignClient.class);
     }
 
     private static class Handler {
