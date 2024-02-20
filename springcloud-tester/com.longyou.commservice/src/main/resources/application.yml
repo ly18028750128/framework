@@ -4,7 +4,7 @@ logging:
     org.cloud: debug
 pagehelper:
   helper-dialect: mysql
-  reasonable: true
+  reasonable: false
   support-methods-arguments: true
   params:
 system: #这里仅是示例，请在配置中心中配置
