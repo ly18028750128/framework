@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.cloud.exception.BaseAccountException;
 import org.cloud.exception.BusinessException;
 import org.cloud.vo.CommonApiResult;
 import org.jetbrains.annotations.NotNull;
@@ -50,10 +50,20 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         return getStringObjectMap(e, response);
     }
 
+    @ExceptionHandler(BaseAccountException.class)
+    public CommonApiResult<?> handlerAccountException(@NotNull BaseAccountException e, @NotNull HttpServletResponse response) {
+        CommonApiResult<?> responseResult = CommonApiResult.createFailResult(e.getErrorCode());
+        responseResult.setMessage(e.getMessage());
+        response.setStatus(e.getHttpCode());
+        logger.error(getStackTrace(e));
+        return responseResult;
+    }
+
     @ExceptionHandler(Exception.class)
     public CommonApiResult<?> handlerException(@NotNull Exception e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
     }
+
 
     @ExceptionHandler(Throwable.class)
     public CommonApiResult<?> handlerException(@NotNull Throwable e, @NotNull HttpServletResponse response) {
@@ -98,7 +108,6 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, CommonApiResult.createFailResult(errorList), headers, HttpStatus.BAD_REQUEST, request);
     }
 
-
     @ExceptionHandler(SQLException.class)
     public CommonApiResult<?> handlerSQLException(@NotNull SQLException e, @NotNull HttpServletResponse response) {
         return getStringObjectMap(e, response);
@@ -107,6 +116,8 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     private CommonApiResult<?> getStringObjectMap(@NotNull Throwable e, @NotNull HttpServletResponse response, int httpStatus) {
         if (e.getCause() != null && e.getCause() instanceof BusinessException) {
             return this.handlerBusinessException((BusinessException) e.getCause(), response);
+        } else if (e.getCause() != null && e.getCause() instanceof BaseAccountException) {
+            return this.handlerAccountException((BaseAccountException) e, response);
         }
         CommonApiResult<?> responseResult = CommonApiResult.createFailResult();
         if ((e instanceof java.sql.SQLException)) {
