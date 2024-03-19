@@ -1,13 +1,5 @@
 package com.unknow.first.api.common.handler;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import org.cloud.exception.BaseAccountException;
 import org.cloud.exception.BusinessException;
 import org.cloud.vo.CommonApiResult;
@@ -26,6 +18,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
@@ -53,7 +54,7 @@ public class GlobExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BaseAccountException.class)
     public CommonApiResult<?> handlerAccountException(@NotNull BaseAccountException e, @NotNull HttpServletResponse response) {
         CommonApiResult<?> responseResult = CommonApiResult.createFailResult(e.getErrorCode());
-        responseResult.setMessage(e.getMessage());
+//        responseResult.setMessage(e.getMessage());
         response.setStatus(e.getHttpCode());
         logger.error(getStackTrace(e));
         return responseResult;
