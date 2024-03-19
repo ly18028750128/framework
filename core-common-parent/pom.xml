@@ -38,6 +38,7 @@
     <module>async-common</module>
     <module>poi-common</module>
     <module>api-encrypt-common</module>
+    <module>param-manage</module>
   </modules>
 
   <properties>
