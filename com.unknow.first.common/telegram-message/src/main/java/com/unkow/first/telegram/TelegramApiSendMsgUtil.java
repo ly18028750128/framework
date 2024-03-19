@@ -2,11 +2,13 @@ package com.unkow.first.telegram;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 @Slf4j
 public final class TelegramApiSendMsgUtil {
@@ -33,13 +35,30 @@ public final class TelegramApiSendMsgUtil {
      * @return
      */
     public int sendMessage(final String token, final String chatId, final String message, String parseMode) {
+        return sendMessage(null, token, chatId, message, parseMode, null);
+    }
 
+    /**
+     * @param token     机器人token
+     * @param chatId    聊天群ID
+     * @param message   消息内容
+     * @param parseMode 解析方式，Markdown、MarkdownV2、html
+     * @return
+     */
+    public int sendMessage(String baseURL, final String token, final String chatId, final String message, String parseMode, ReplyKeyboard replyMarkup) {
         try {
             SendMessageBuilder messageBuilder = SendMessage.builder().chatId(chatId).text(message);
+            if (replyMarkup != null){
+                messageBuilder.replyMarkup(replyMarkup);
+            }
             if (StringUtils.hasLength(parseMode)) {
                 messageBuilder.parseMode(parseMode);
             }
-            DefaultAbsSender bot = new DefaultAbsSender(new DefaultBotOptions()) {
+            DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
+            if (!ObjectUtils.isEmpty(baseURL)){
+                defaultBotOptions.setBaseUrl(baseURL);
+            }
+            DefaultAbsSender bot = new DefaultAbsSender(defaultBotOptions) {
                 @Override
                 public String getBotToken() {
                     return token;
