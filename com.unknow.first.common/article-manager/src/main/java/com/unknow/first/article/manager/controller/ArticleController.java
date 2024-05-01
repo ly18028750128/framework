@@ -3,15 +3,18 @@ package com.unknow.first.article.manager.controller;
 import com.unknow.first.api.common.CommonPage;
 import com.unknow.first.api.common.CommonParam;
 import com.unknow.first.api.common.CommonResult;
+import com.unknow.first.article.manager.mapper.Article;
 import com.unknow.first.article.manager.service.ArticleService;
 import com.unknow.first.article.manager.vo.ArticleResultVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
@@ -37,4 +40,12 @@ public class ArticleController {
         return CommonResult.success(page);
     }
 
+    @ApiOperation(value = "根据ID获取详情")
+    @RequestMapping(method = RequestMethod.GET, value = "/getById")
+    public CommonResult<ArticleResultVO> getById(@RequestParam Integer id) {
+        Article article = articleService.getById(id);
+        ArticleResultVO articleResultVO = new ArticleResultVO();
+        BeanUtils.copyProperties(article, articleResultVO);
+        return CommonResult.success(articleResultVO);
+    }
 }
