@@ -4,18 +4,14 @@ import com.unknow.first.imexport.constant.ImexportConstants.TaskType;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
 import io.swagger.annotations.ApiParam;
-import java.io.Serializable;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Lazy
 @FeignClient(name = "${spring.application.group:}COMMON-SERVICE", contextId = "onImexportTaskFeignClient")  // 不区分大小写
@@ -30,7 +26,7 @@ public interface ImexportTaskFeignClient extends Serializable {
     @GetMapping("/inner/export/template")
     FrameExportTemplate getExportTemplate(@RequestParam("templateCode") String templateCode) throws Exception;
 
-    @PostMapping(value = "/user/imexport/task", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/inner/imexport/task", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     FrameImportExportTask create(
         @ApiParam("任务名称") @RequestParam(value = "taskName") String taskName,
         @ApiParam("线程执行类的名称，导入继承ImportCallableService，导出继承ExportCallableService") @RequestParam(value = "processClass") String processClass,
