@@ -1,19 +1,20 @@
 package com.unknow.first.imexport.inner.controller;
 
+import com.unknow.first.imexport.constant.ImexportConstants;
 import com.unknow.first.imexport.domain.FrameExportTemplate;
 import com.unknow.first.imexport.domain.FrameImportExportTask;
+import com.unknow.first.imexport.dto.ImportExportTaskCreateDTO;
 import com.unknow.first.imexport.service.FrameExportTemplateService;
 import com.unknow.first.imexport.service.FrameImportExportTaskService;
+import com.unknow.first.imexport.service.impl.ImexportService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping()
@@ -25,6 +26,16 @@ public class ImexportInnerController {
 
     @Autowired
     FrameExportTemplateService frameExportTemplateService;
+    @Autowired
+    private ImexportService imexportService;
+
+    @ApiOperation(value = "创建导入导出任务", notes = "创建导入导出任务")
+    @PostMapping("/inner/imexport/task")
+    public FrameImportExportTask create(ImportExportTaskCreateDTO exportTaskCreateDTO, ImexportConstants.TaskType taskType,
+                                        @ApiParam("需要导入的文件，上传时必传") @RequestPart(required = false, name = "file") MultipartFile file) throws Exception {
+        return imexportService.create(exportTaskCreateDTO, taskType, file);
+
+    }
 
     @ApiOperation(value = "更新任务", notes = "更新任务")
     @PutMapping("/inner/imexport/task")
