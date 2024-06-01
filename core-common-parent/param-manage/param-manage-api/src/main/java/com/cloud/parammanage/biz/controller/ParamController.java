@@ -25,11 +25,10 @@ public class ParamController {
     @Autowired
     private ParamConfigService paramConfigService;
 
-    @ApiOperation(value = "获取参数", notes = "{POS挖矿日产出比例: POS_MINING_DAYS_OUTPUT_RADIO}")
+    @ApiOperation(value = "获取公开参数", notes = "{POS挖矿日产出比例: POS_MINING_DAYS_OUTPUT_RADIO}")
     @ApiImplicitParam(value = "要获取的参数code列表", name = "codeList", required = true, paramType = "query", dataType = "List")
     @RequestMapping(method = RequestMethod.GET, value = "/get")
     public CommonApiResult<Map<String, Object>> get(@RequestParam List<String> codeList){
-
         HashMap<String, Object> res = new HashMap<>();
         for (String code : codeList) {
             ParamConfig paramConfig = paramConfigService.get(code);

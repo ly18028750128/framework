@@ -148,6 +148,21 @@
         <artifactId>api-encrypt-common</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>param-manage</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>param-manage-api</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.common</groupId>
+        <artifactId>param-manage-api</artifactId>
+        <version>${core.jar.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>

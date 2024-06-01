@@ -9,7 +9,6 @@
         <version>0.0.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.unknow</groupId>
     <artifactId>param-manage</artifactId>
     <packaging>pom</packaging>
 
