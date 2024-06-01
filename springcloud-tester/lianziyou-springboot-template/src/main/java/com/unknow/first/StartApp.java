@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Primary;
 
 
 @SpringBootApplication(exclude = {HibernateJpaAutoConfiguration.class})
-@ComponentScan({"org.cloud.*","com.unknow.first.service"})  // 此处按需添加
+@ComponentScan({"org.cloud.*", "com.unknow.first.service", "com.unknow.first.swagger"})  // 此处按需添加
 @MapperScan({"com.longyou.comm.mapper"})  // 此处按需要添加
 @ServletComponentScan({"org.cloud.filter"})
 @EnableDiscoveryClient

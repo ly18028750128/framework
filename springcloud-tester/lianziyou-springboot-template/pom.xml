@@ -103,6 +103,15 @@
       <artifactId>spring-context</artifactId>
     </dependency>
   </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
+        <artifactId>all-dependencies</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <build>
     <plugins>
       <plugin>

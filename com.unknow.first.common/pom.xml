@@ -96,6 +96,11 @@
       </dependency>
       <dependency>
         <groupId>com.unknow.first</groupId>
+        <artifactId>feign-common</artifactId>
+        <version>${common.jar.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.unknow.first</groupId>
         <artifactId>mybatisplus-common</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
@@ -112,11 +117,6 @@
       <dependency>
         <groupId>com.unknow.first</groupId>
         <artifactId>quartz-common</artifactId>
-        <version>${core.jar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.unknow.first</groupId>
-        <artifactId>feign-common</artifactId>
         <version>${core.jar.version}</version>
       </dependency>
       <dependency>
