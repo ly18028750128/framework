@@ -1,5 +1,6 @@
 package org.cloud.scheduler.interceptor;
 
+import java.util.Locale;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
 import org.cloud.scheduler.dto.JobTaskLog;
@@ -30,7 +31,7 @@ public class DefaultJobTaskMethodInterceptor implements JobTaskLogCustomizer {
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
         if (!StringUtils.hasLength(this.microName)) {
-            this.microName = EnvUtil.single().getEnv("spring.application.name", "");
+            this.microName = EnvUtil.single().getEnv("spring.application.name", "UNKNOW").toUpperCase(Locale.ROOT);
         }
 
         //开始时间
@@ -38,8 +39,7 @@ public class DefaultJobTaskMethodInterceptor implements JobTaskLogCustomizer {
         String result = "success";
         String message = "success";
         try {
-            Object response = invocation.proceed();
-            return response;
+            return invocation.proceed();
         } catch (Throwable ex) {
             message = ex.getMessage();
             result = "fail";

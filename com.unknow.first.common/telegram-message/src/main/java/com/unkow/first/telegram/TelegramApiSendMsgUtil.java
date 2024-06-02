@@ -6,12 +6,29 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMemberCount;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMemberCount.GetChatMemberCountBuilder;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 public final class TelegramApiSendMsgUtil {
+
+    private TelegramLongPollingBot telegramBot;
+
+    public void setTelegramBot(TelegramLongPollingBot telegramBot) {
+        if (handler.telegramBot == null) {
+            handler.telegramBot = telegramBot;
+        }
+
+    }
 
     private TelegramApiSendMsgUtil() {
 
@@ -48,14 +65,14 @@ public final class TelegramApiSendMsgUtil {
     public int sendMessage(String baseURL, final String token, final String chatId, final String message, String parseMode, ReplyKeyboard replyMarkup) {
         try {
             SendMessageBuilder messageBuilder = SendMessage.builder().chatId(chatId).text(message);
-            if (replyMarkup != null){
+            if (replyMarkup != null) {
                 messageBuilder.replyMarkup(replyMarkup);
             }
             if (StringUtils.hasLength(parseMode)) {
                 messageBuilder.parseMode(parseMode);
             }
             DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-            if (!ObjectUtils.isEmpty(baseURL)){
+            if (!ObjectUtils.isEmpty(baseURL)) {
                 defaultBotOptions.setBaseUrl(baseURL);
             }
             DefaultAbsSender bot = new DefaultAbsSender(defaultBotOptions) {
@@ -71,6 +88,61 @@ public final class TelegramApiSendMsgUtil {
             return 500;
         }
         return 200;
+    }
+
+    public boolean isUserInChannel(String channelId, String userId) {
+
+        ChatMember chatMember = getChatMember(channelId, userId);
+        if (chatMember == null) {
+            return false;
+        }
+        String status = chatMember.getStatus();
+        return "member".equals(status) || "administrator".equals(status) || "creator".equals(status);
+    }
+
+    public ChatMember getChatMember(String channelId, Long userId) {
+        try {
+            GetChatMember getChatMember = new GetChatMember();
+            getChatMember.setChatId(channelId);
+            getChatMember.setUserId(userId);
+            return telegramBot.execute(getChatMember);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 机器人只能获取到通过名称只能获取到自己的info信息
+     * @param channelId
+     * @param username
+     * @return
+     */
+    public ChatMember getChatMember(String channelId, String username) {
+        try {
+            Chat chat = getUserIdByUsername(username);
+            if (chat == null) {
+                return null;
+            }
+            GetChatMember getChatMember = new GetChatMember();
+            getChatMember.setChatId(channelId);
+            getChatMember.setUserId(chat.getId());
+            return telegramBot.execute(getChatMember);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public Chat getUserIdByUsername(String username) {
+        try {
+            GetChat getChat = new GetChat();
+            getChat.setChatId(username);
+            return telegramBot.execute(getChat);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 
 //    public static void main(String[] args) {
