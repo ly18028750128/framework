@@ -25,6 +25,7 @@
     <module>export-import-api</module>
     <module>telegram-message</module>
     <module>all-dependencies</module>
+    <module>twitter-app</module>
   </modules>
 
   <properties>

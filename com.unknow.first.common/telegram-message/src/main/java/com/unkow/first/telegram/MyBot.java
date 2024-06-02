@@ -2,7 +2,7 @@ package com.unkow.first.telegram;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
-
+@Deprecated
 public abstract class MyBot extends TelegramLongPollingBot {
 
     private String botUsername;

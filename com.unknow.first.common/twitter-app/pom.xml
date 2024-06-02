@@ -7,24 +7,27 @@
     <artifactId>common-parent</artifactId>
     <version>0.0.3-SNAPSHOT</version>
   </parent>
-  <artifactId>telegram-message</artifactId>
-  <name>telegram消息组件</name>
-
+  <groupId>com.lianziyou</groupId>
+  <artifactId>twitter-app</artifactId>
+  <name>Archetype - twitter-app</name>
+  <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
-      <groupId>org.telegram</groupId>
-      <artifactId>telegrambots</artifactId>
-      <version>6.9.7.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.telegram</groupId>
-      <artifactId>telegrambots-spring-boot-starter</artifactId>
-      <version>6.9.7.1</version>
+      <groupId>oauth.signpost</groupId>
+      <artifactId>signpost-core</artifactId>
+      <version>1.2.1.2</version>
     </dependency>
 
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
+      <groupId>oauth.signpost</groupId>
+      <artifactId>signpost-commonshttp4</artifactId>
+      <version>1.2.1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>twitter-api-java-sdk</artifactId>
+      <version>1.1.4</version>
     </dependency>
   </dependencies>
 </project>
