@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.cloud.core.redis.RedisUtil;
 import org.cloud.scheduler.constants.MisfireEnum;
 import org.cloud.scheduler.job.BaseQuartzJobBean;
-
 import org.cloud.utils.EnvUtil;
 import org.cloud.utils.process.ProcessUtil;
 import org.quartz.JobExecutionContext;
@@ -56,8 +55,14 @@ public class ImexportTaskRemoteJob extends BaseQuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         String currentMicroservice = EnvUtil.single().getEnv("spring.application.name", "");
-        List<FrameImportExportTask> noProcessTaskList = imexportTaskFeignClient.listNoProcessTaskByMicroservice(currentMicroservice);
 
+        List<FrameImportExportTask> noProcessTaskList = null;
+        try {
+            noProcessTaskList = imexportTaskFeignClient.listNoProcessTaskByMicroservice(currentMicroservice);
+        } catch (Exception e) {
+            log.error("获取定时任务失败，可能是项目没有引用导入导出的任务{}", e.getMessage());
+            return;
+        }
         if (CollectionUtils.isEmpty(noProcessTaskList)) {
             return;
         }
