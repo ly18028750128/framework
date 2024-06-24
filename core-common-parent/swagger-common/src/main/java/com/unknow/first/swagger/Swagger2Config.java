@@ -21,7 +21,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  */
 @Configuration
 @EnableOpenApi
-@ConditionalOnProperty(prefix = "swagger", name = "enabled", matchIfMissing = true )
+@ConditionalOnProperty(prefix = "swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class Swagger2Config {
 
     // 默认打开，生产环境需要关闭

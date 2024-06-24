@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.cloud.utils.RestTemplateUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,8 +20,8 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
 @Slf4j
 @Configuration
-//@ConditionalOnProperty(name = "spring.application.group")
-@ComponentScan(value = {"org.cloud.config.swagger"}, excludeFilters = {
+@ConditionalOnProperty(prefix = "swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ComponentScan(excludeFilters = {
     @Filter(type = FilterType.REGEX, pattern = {"com.unknow.first.swagger.MyBeanPostProcessor",
         "springfox.documentation.swagger.web.InMemorySwaggerResourcesProvider"}),})
 public class SwaggerResourceConfig {

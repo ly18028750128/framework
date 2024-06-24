@@ -21,7 +21,7 @@ public class MD5EncoderTest {
 
     @Test
     public void encode() {
-        logger.debug("encodePassword = {}", MD5Encoder.encode("Qwe123456", "Vt@pfkkxc43mpuFn"));
+        logger.debug("encodePassword = {}", MD5Encoder.encode("", ""));
     }
 
 
