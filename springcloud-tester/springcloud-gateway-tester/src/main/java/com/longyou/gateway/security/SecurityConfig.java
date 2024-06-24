@@ -24,7 +24,7 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
     @Autowired
-    private AuthenticationFailHandler authenticationFaillHandler;
+    private AuthenticationFailHandler authenticationFailHandler;
     @Autowired
     private CustomHttpBasicServerAuthenticationEntryPoint customHttpBasicServerAuthenticationEntryPoint;
     @Autowired
@@ -49,7 +49,7 @@ public class SecurityConfig {
             .pathMatchers(HttpMethod.OPTIONS).permitAll() //option 请求默认放行
             .anyExchange().authenticated().and().httpBasic().and().formLogin().loginPage("/auth/login")
             .authenticationSuccessHandler(authenticationSuccessHandler) //认证成功
-            .authenticationFailureHandler(authenticationFaillHandler) //登陆验证失败
+            .authenticationFailureHandler(authenticationFailHandler) //登陆验证失败
             .and().exceptionHandling().authenticationEntryPoint(customHttpBasicServerAuthenticationEntryPoint)  //基于http的接口请求鉴权失败
             .and().csrf().disable()//必须支持跨域
             .logout().logoutSuccessHandler(customServerLogoutSuccessHandler).logoutUrl("/auth/logout");

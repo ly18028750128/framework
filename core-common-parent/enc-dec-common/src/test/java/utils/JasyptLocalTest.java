@@ -15,20 +15,20 @@ import org.junit.Test;
 @Slf4j
 public class JasyptLocalTest {
 
-    final String aesKey="abcdefgh12345678";
-    final String aesIV="abcdefgh12345678";
-    final String encKey="12345678";
+    final String aesKey="";
+    final String aesIV="";
+    final String encKey="";
 
 
     @Test
     public void encryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("mysql用户名：", "");
-        passwordMap.put("mysql密码：", "1qaz@WSX");
+        passwordMap.put("mysql用户名：", "root");
+        passwordMap.put("mysql密码：", "");
         passwordMap.put("邮箱用户名：", "");
         passwordMap.put("邮箱密码：", "");
-        passwordMap.put("mongodb用户名：", "");
+        passwordMap.put("mongodb用户名：", "admin");
         passwordMap.put("mongodb密码：", "");
         passwordMap.put("redis密码：", "");
         passwordMap.put("md5 salt", "");
@@ -64,8 +64,10 @@ public class JasyptLocalTest {
     public void decryptTest() throws Exception {
         pbeByteEncryptor.setPassword(encKey);  // 更改这个密码
         Map<String, String> passwordMap = new LinkedHashMap<>();
-        passwordMap.put("aaa", "");
-//        passwordMap.put("bbb","");
+        passwordMap.put("salt", "");
+        passwordMap.put("aes key","");
+        passwordMap.put("aes vi","");
+        passwordMap.put("邮箱密码","");
 //        passwordMap.put("mongo","");
 //        passwordMap.put("salt","");
         for (String key : passwordMap.keySet()) {
